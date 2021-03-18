@@ -1,1 +1,1 @@
-# Neatio in Go
+# Neatio full-node in Go

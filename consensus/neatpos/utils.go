@@ -1,0 +1,55 @@
+package neatpos
+
+import (
+	"os"
+	"os/user"
+	"path/filepath"
+	"runtime"
+
+	"gopkg.in/urfave/cli.v1"
+
+	tmcfg "github.com/neatlab/neatio/consensus/neatpos/config/neatcon"
+	cfg "github.com/neatlib/config-go"
+)
+
+func GetNeatConConfig(chainId string, ctx *cli.Context) cfg.Config {
+	datadir := ctx.GlobalString(DataDirFlag.Name)
+	config := tmcfg.GetConfig(datadir, chainId)
+
+	return config
+}
+
+func HomeDir() string {
+	if home := os.Getenv("HOME"); home != "" {
+		return home
+	}
+	if usr, err := user.Current(); err == nil {
+		return usr.HomeDir
+	}
+	return ""
+}
+
+func DefaultDataDir() string {
+	home := HomeDir()
+	if home != "" {
+		if runtime.GOOS == "windows" {
+			return filepath.Join(home, "AppData", "Roaming", "neatio")
+		} else {
+			return filepath.Join(home, ".neatio")
+		}
+	}
+	return ""
+}
+
+func ConcatCopyPreAllocate(slices [][]byte) []byte {
+	var totalLen int
+	for _, s := range slices {
+		totalLen += len(s)
+	}
+	tmp := make([]byte, totalLen)
+	var i int
+	for _, s := range slices {
+		i += copy(tmp[i:], s)
+	}
+	return tmp
+}
