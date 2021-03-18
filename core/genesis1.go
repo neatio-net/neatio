@@ -255,7 +255,7 @@ var DefaultMainnetGenesisJSON = `{
 		}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x5f447f1d",
+	"timestamp": "0x6053b6d8",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
@@ -263,8 +263,8 @@ var DefaultMainnetGenesisJSON = `{
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
 		"NEAT97nr9rEfDVYT5jUudLHGSeNieBje": {
-			"balance": "0x29569e2db20e16b46000000",
-			"amount": "0x54b40b1f852bda000000"
+			"balance": "0x44dcdf8b0024469b4000000",
+			"amount": "0x17d78400"
 		}
 	},
 	"number": "0x0",
@@ -288,7 +288,7 @@ var DefaultTestnetGenesisJSON = `{
 		}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x5fa278cc",
+	"timestamp": "0x6053b6d8",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
@@ -296,8 +296,8 @@ var DefaultTestnetGenesisJSON = `{
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
 		"NEATGYS19y2AGxiNptdQSQ1tQLogXAtd": {
-			"balance": "0x29569e2db20e16b46000000",
-			"amount": "0x54b40b1f852bda000000"
+			"balance": "0x44dcdf8b0024469b4000000",
+			"amount": "0x17d78400"
 		}
 	},
 	"number": "0x0",
