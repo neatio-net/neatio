@@ -28,20 +28,20 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.0 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
-	github.com/neatio-project/bls-go v1.0.2
-	github.com/neatio-project/common-go v1.0.2
-	github.com/neatio-project/config-go v1.0.1
-	github.com/neatio-project/crypto-go v1.0.1
-	github.com/neatio-project/data-go v1.0.1 // indirect
-	github.com/neatio-project/db-go v1.0.1
-	github.com/neatio-project/ed25519-go v1.0.1 // indirect
-	github.com/neatio-project/events-go v1.0.1
-	github.com/neatio-project/flock-go v1.0.0
-	github.com/neatio-project/log15-go v1.0.1 // indirect
-	github.com/neatio-project/logger-go v1.0.1 // indirect
-	github.com/neatio-project/merkle-go v1.0.1
-	github.com/neatio-project/set-go v1.0.0
-	github.com/neatio-project/wire-go v1.0.1
+	github.com/neatlib/bls-go v1.0.2
+	github.com/neatlib/common-go v1.0.2
+	github.com/neatlib/config-go v1.0.1
+	github.com/neatlib/crypto-go v1.0.1
+	github.com/neatlib/data-go v1.0.1 // indirect
+	github.com/neatlib/db-go v1.0.1
+	github.com/neatlib/ed25519-go v1.0.1 // indirect
+	github.com/neatlib/events-go v1.0.1
+	github.com/neatlib/flock-go v1.0.0
+	github.com/neatlib/log15-go v1.0.1 // indirect
+	github.com/neatlib/logger-go v1.0.1 // indirect
+	github.com/neatlib/merkle-go v1.0.1
+	github.com/neatlib/set-go v1.0.0
+	github.com/neatlib/wire-go v1.0.1
 	github.com/nsf/termbox-go v0.0.0-20200204031403-4d2b513ad8be // indirect
 	github.com/pborman/uuid v1.2.0
 	github.com/peterh/liner v1.2.0
