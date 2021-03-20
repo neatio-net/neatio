@@ -201,29 +201,29 @@ var MainnetGenesisJSON string = `{
 }`
 
 var TestnetGenesisJSON string = `{
-	"chain_id": "neatio",
+	"chain_id": "testnet",
 	"consensus": "neatpos",
-	"genesis_time": "2021-03-20T09:21:15.447606535+02:00",
+	"genesis_time": "2021-03-20T15:43:01.043376214+01:00",
 	"reward_scheme": {
-		"total_reward": "0x98f2ea83765ac3cf90200000",
-		"reward_first_year": "0x51929f350bec242a6f00000",
-		"epoch_no_per_year": "0x88f",
-		"total_year": "0x1e"
+			"total_reward": "0x98f2ea83765ac3cf90200000",
+			"reward_first_year": "0x51929f350bec242a6f00000",
+			"epoch_no_per_year": "0x88f",
+			"total_year": "0x1e"
 	},
 	"current_epoch": {
-		"number": "0x0",
-		"reward_per_block": "0x2b5e3af16b1880000",
-		"start_block": "0x0",
-		"end_block": "0x3840",
-		"validators": [
-			{
-				"address": "NEATjwNfZyDbiaJovSsi1RjqHnCUKR85",
-				"pub_key": "0x788E47C2C4A27FAC30A8A0805D0A4A82153B42BC1618F64CA65C9F2976CB5662567AE104E987E92480C210DFD38CC9CD39FDFBF3B8906BE5C143ED5BD0EB3B3A80A47C50453FE0D4D6BF5899D6CD467CB65760BD7187BB7D09F2039824F4F822196CC0B0A3D70D86B27ED2A20FBAF78001FCAC52396053AC9562991B83A906E9",
-				"amount": "0xd3c21bcecceda1000000",
-				"name": "",
-				"epoch": "0x0"
-			}
-		]
+			"number": "0x0",
+			"reward_per_block": "0x2b5e3af16b1880000",
+			"start_block": "0x0",
+			"end_block": "0x3840",
+			"validators": [
+					{
+							"address": "NEATfGFLzu8vR6zr2QShtfh4vnw5Hi8R",
+							"pub_key": "0x0CA7C89F00FE871DF7381544C345439F32C6C40D5C4C3D85E7EEE7CA2D8C07BB7F29F8529EF3C76B>
+							"amount": "0xd3c21bcecceda1000000",
+							"name": "",
+							"epoch": "0x0"
+					}
+			]
 	}
 }`
 

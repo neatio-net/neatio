@@ -274,33 +274,33 @@ var DefaultMainnetGenesisJSON = `{
 
 var DefaultTestnetGenesisJSON = `{
 	"config": {
-		"neatChainId": "neatio",
-		"chainId": 1,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatpos": {
-			"epoch": 65730,
-			"policy": 0
-		}
+			"neatChainId": "testnet",
+			"chainId": 2,
+			"homesteadBlock": 0,
+			"eip150Block": 0,
+			"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
+			"eip155Block": 0,
+			"eip158Block": 0,
+			"byzantiumBlock": 0,
+			"neatpos": {
+					"epoch": 65730,
+					"policy": 0
+			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6055F8A5",
-	"extraData": "0x",
-	"gasLimit": "0x7270e00",
-	"difficulty": "0x1",
+	"nonce": 16045690984833335023,
+	"timestamp": 1616251113,
+	"extraData": "",
+	"gasLimit": 120000000,
+	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-		"NEATjwNfZyDbiaJovSsi1RjqHnCUKR85": {
-			"balance": "0xA18F07D736B90BE550000000",
-			"amount": "0x17D78400"
-		}
+			"NEATfGFLzu8vR6zr2QShtfh4vnw5Hi8R": {
+					"balance": "0xa18f07d736b90be550000000",
+					"amount": "0xd3c21bcecceda1000000"
+			}
 	},
-	"number": "0x0",
-	"gasUsed": "0x0",
+	"number": 0,
+	"gasUsed": 0,
 	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
 }`
