@@ -240,68 +240,55 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 }
 
 var DefaultMainnetGenesisJSON = `{
-	"config": {
-		"neatChainId": "neatio",
-		"chainId": 1,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatpos": {
-			"epoch": 30000,
-			"policy": 0
-		}
+	"chain_id": "neatio",
+	"consensus": "neatpos",
+	"genesis_time": "2021-03-20T09:14:13.711797155+02:00",
+	"reward_scheme": {
+		"total_reward": "0x98f2ea83765ac3cf90200000",
+		"reward_first_year": "0x51929f350bec242a6f00000",
+		"epoch_no_per_year": "0x88f",
+		"total_year": "0x1e"
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6053b6d8",
-	"extraData": "0x",
-	"gasLimit": "0x7270e00",
-	"difficulty": "0x1",
-	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-	"alloc": {
-		"NEAT97nr9rEfDVYT5jUudLHGSeNieBje": {
-			"balance": "0x44dcdf8b0024469b4000000",
-			"amount": "0x17d78400"
-		}
-	},
-	"number": "0x0",
-	"gasUsed": "0x0",
-	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+	"current_epoch": {
+		"number": "0x0",
+		"reward_per_block": "0x2b5e3af16b1880000",
+		"start_block": "0x0",
+		"end_block": "0x3840",
+		"validators": [
+			{
+				"address": "NEATmhcxgZsW1q72PXJpCBFVVEkRwFGz",
+				"pub_key": "0x09EDAAB65FF718E632CC3363505BF149A14D0D355D2CE6F2009DC988045184DE0E59C02DFCBAF485FDD272FAE133F76F94CF760691E778ACB9A2942390BC346580298F0C2D1900C857C3C25E13ACCBE8873DB579FD86DF5FC69A2C0BD8B6A41854F49EF2BEABC261494F831BDBC93B37C48E8F8BFEA8E83CFB80F1ADC5E18FD6",
+				"amount": "0xd3c21bcecceda1000000",
+				"name": "",
+				"epoch": "0x0"
+			}
+		]
+	}
 }`
 
 var DefaultTestnetGenesisJSON = `{
-	"config": {
-		"neatChainId": "testnet",
-		"chainId": 2,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatpos": {
-			"epoch": 30000,
-			"policy": 0
-		}
+	"chain_id": "neatio",
+	"consensus": "neatpos",
+	"genesis_time": "2021-03-20T09:14:13.711797155+02:00",
+	"reward_scheme": {
+		"total_reward": "0x98f2ea83765ac3cf90200000",
+		"reward_first_year": "0x51929f350bec242a6f00000",
+		"epoch_no_per_year": "0x88f",
+		"total_year": "0x1e"
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6053b6d8",
-	"extraData": "0x",
-	"gasLimit": "0x7270e00",
-	"difficulty": "0x1",
-	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-	"alloc": {
-		"NEATGYS19y2AGxiNptdQSQ1tQLogXAtd": {
-			"balance": "0x44dcdf8b0024469b4000000",
-			"amount": "0x17d78400"
-		}
-	},
-	"number": "0x0",
-	"gasUsed": "0x0",
-	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
-}
-`
+	"current_epoch": {
+		"number": "0x0",
+		"reward_per_block": "0x2b5e3af16b1880000",
+		"start_block": "0x0",
+		"end_block": "0x3840",
+		"validators": [
+			{
+				"address": "NEATmhcxgZsW1q72PXJpCBFVVEkRwFGz",
+				"pub_key": "0x09EDAAB65FF718E632CC3363505BF149A14D0D355D2CE6F2009DC988045184DE0E59C02DFCBAF485FDD272FAE133F76F94CF760691E778ACB9A2942390BC346580298F0C2D1900C857C3C25E13ACCBE8873DB579FD86DF5FC69A2C0BD8B6A41854F49EF2BEABC261494F831BDBC93B37C48E8F8BFEA8E83CFB80F1ADC5E18FD6",
+				"amount": "0xd3c21bcecceda1000000",
+				"name": "",
+				"epoch": "0x0"
+			}
+		]
+	}
+}`

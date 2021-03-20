@@ -54,6 +54,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073
 	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0
 	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
+	golang.org/x/tools v0.0.0-20200221224223-e1da425f72fd
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce
 	gopkg.in/olebedev/go-duktape.v3 v3.0.0-20190213234257-ec84240a7772
