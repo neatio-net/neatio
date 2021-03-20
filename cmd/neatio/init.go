@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	POSReward = "5000000000000000000000000000" // 50 Billions
+	POSReward = "47335389000000000000000000000" // 47.335389 Billions
 
 	TotalYear = 30
 
