@@ -14,20 +14,19 @@ import (
 
 var _ = (*genesisAccountMarshaling)(nil)
 
+// MarshalJSON marshals as JSON.
 func (g GenesisAccount) MarshalJSON() ([]byte, error) {
 	type GenesisAccount struct {
-		Code    hexutil.Bytes               `json:"code,omitempty"`
-		Storage map[storageJSON]storageJSON `json:"storage,omitempty"`
-		Balance *math.HexOrDecimal256       `json:"balance" gencodec:"required"`
-		Nonce   math.HexOrDecimal64         `json:"nonce,omitempty"`
-		Amount  *math.HexOrDecimal256       `json:"amount,omitempty"`
-
-		DelegateBalance      *math.HexOrDecimal256                    `json:"delegate,omitempty"`
-		DepositProxiedDetail map[common.Address]*math.HexOrDecimal256 `json:"proxiedList,omitempty"`
-		Candidate            bool                                     `json:"candidate,omitempty"`
-		Commission           uint8                                    `json:"commission,omitempty"`
-
-		PrivateKey hexutil.Bytes `json:"secretKey,omitempty"`
+		Code                 hexutil.Bytes               `json:"code,omitempty"`
+		Storage              map[storageJSON]storageJSON `json:"storage,omitempty"`
+		Balance              *math.HexOrDecimal256       `json:"balance" gencodec:"required"`
+		Nonce                math.HexOrDecimal64         `json:"nonce,omitempty"`
+		Amount               *math.HexOrDecimal256       `json:"amount,omitempty"`
+		DelegateBalance      *big.Int                    `json:"delegate,omitempty"`
+		DepositProxiedDetail map[common.Address]*big.Int `json:"proxiedList,omitempty"`
+		Candidate            bool                        `json:"candidate,omitempty"`
+		Commission           uint8                       `json:"commission,omitempty"`
+		PrivateKey           hexutil.Bytes               `json:"secretKey,omitempty"`
 	}
 	var enc GenesisAccount
 	enc.Code = g.Code
@@ -40,38 +39,27 @@ func (g GenesisAccount) MarshalJSON() ([]byte, error) {
 	enc.Balance = (*math.HexOrDecimal256)(g.Balance)
 	enc.Nonce = math.HexOrDecimal64(g.Nonce)
 	enc.Amount = (*math.HexOrDecimal256)(g.Amount)
-
-	if g.DelegateBalance != nil {
-		enc.DelegateBalance = (*math.HexOrDecimal256)(g.DelegateBalance)
-	}
-	if g.DepositProxiedDetail != nil {
-		enc.DepositProxiedDetail = make(map[common.Address]*math.HexOrDecimal256, len(g.DepositProxiedDetail))
-		for k, v := range g.DepositProxiedDetail {
-			enc.DepositProxiedDetail[k] = (*math.HexOrDecimal256)(v)
-		}
-	}
+	enc.DelegateBalance = g.DelegateBalance
+	enc.DepositProxiedDetail = g.DepositProxiedDetail
 	enc.Candidate = g.Candidate
 	enc.Commission = g.Commission
-
 	enc.PrivateKey = g.PrivateKey
 	return json.Marshal(&enc)
 }
 
+// UnmarshalJSON unmarshals from JSON.
 func (g *GenesisAccount) UnmarshalJSON(input []byte) error {
 	type GenesisAccount struct {
-		Code    *hexutil.Bytes              `json:"code,omitempty"`
-		Storage map[storageJSON]storageJSON `json:"storage,omitempty"`
-		Balance *math.HexOrDecimal256       `json:"balance" gencodec:"required"`
-		Nonce   *math.HexOrDecimal64        `json:"nonce,omitempty"`
-		Amount  *math.HexOrDecimal256       `json:"amount,omitempty"`
-
-		// Delegate
-		DelegateBalance      *math.HexOrDecimal256                    `json:"delegate,omitempty"`
-		DepositProxiedDetail map[common.Address]*math.HexOrDecimal256 `json:"proxiedList,omitempty"`
-		Candidate            bool                                     `json:"candidate,omitempty"`
-		Commission           uint8                                    `json:"commission,omitempty"`
-
-		PrivateKey *hexutil.Bytes `json:"secretKey,omitempty"`
+		Code                 *hexutil.Bytes              `json:"code,omitempty"`
+		Storage              map[storageJSON]storageJSON `json:"storage,omitempty"`
+		Balance              *math.HexOrDecimal256       `json:"balance" gencodec:"required"`
+		Nonce                *math.HexOrDecimal64        `json:"nonce,omitempty"`
+		Amount               *math.HexOrDecimal256       `json:"amount,omitempty"`
+		DelegateBalance      *big.Int                    `json:"delegate,omitempty"`
+		DepositProxiedDetail map[common.Address]*big.Int `json:"proxiedList,omitempty"`
+		Candidate            *bool                       `json:"candidate,omitempty"`
+		Commission           *uint8                      `json:"commission,omitempty"`
+		PrivateKey           *hexutil.Bytes              `json:"secretKey,omitempty"`
 	}
 	var dec GenesisAccount
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -97,17 +85,17 @@ func (g *GenesisAccount) UnmarshalJSON(input []byte) error {
 		g.Amount = (*big.Int)(dec.Amount)
 	}
 	if dec.DelegateBalance != nil {
-		g.DelegateBalance = (*big.Int)(dec.DelegateBalance)
+		g.DelegateBalance = dec.DelegateBalance
 	}
 	if dec.DepositProxiedDetail != nil {
-		g.DepositProxiedDetail = make(map[common.Address]*big.Int, len(dec.DepositProxiedDetail))
-		for k, v := range dec.DepositProxiedDetail {
-			g.DepositProxiedDetail[k] = (*big.Int)(v)
-		}
+		g.DepositProxiedDetail = dec.DepositProxiedDetail
 	}
-	g.Candidate = dec.Candidate
-	g.Commission = dec.Commission
-
+	if dec.Candidate != nil {
+		g.Candidate = *dec.Candidate
+	}
+	if dec.Commission != nil {
+		g.Commission = *dec.Commission
+	}
 	if dec.PrivateKey != nil {
 		g.PrivateKey = *dec.PrivateKey
 	}

@@ -12,6 +12,7 @@ require (
 	github.com/deckarep/golang-set v1.7.1
 	github.com/docker/docker v1.13.1
 	github.com/fatih/color v1.7.0
+	github.com/fjl/gencodec v0.0.0-20191126094850-e283372f291f // indirect
 	github.com/gizak/termui v2.3.0+incompatible
 	github.com/go-stack/stack v1.8.0
 	github.com/golang/protobuf v1.3.3
