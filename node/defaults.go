@@ -29,9 +29,9 @@ import (
 
 const (
 	DefaultHTTPHost = "localhost" // Default host interface for the HTTP RPC server
-	DefaultHTTPPort = 8555        // Default TCP port for the HTTP RPC server
+	DefaultHTTPPort = 9915        // Default TCP port for the HTTP RPC server
 	DefaultWSHost   = "localhost" // Default host interface for the websocket RPC server
-	DefaultWSPort   = 8556        // Default TCP port for the websocket RPC server
+	DefaultWSPort   = 9916        // Default TCP port for the websocket RPC server
 )
 
 // DefaultConfig contains reasonable default settings.
