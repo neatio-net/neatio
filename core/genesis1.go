@@ -263,8 +263,8 @@ var DefaultMainnetGenesisJSON = `{
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
 		"NEATg3sgfJuQpDzqaKafFA8YQRHKwgUA": {
-			"balance": "0xA18F07D736B90BE550000000",
-			"amount": "0x17D78400"
+			"balance": "0xd3c21bcecceda1000000",
+			"amount": "0xd3c21bcecceda1000000"
 		}
 	},
 	"number": "0x0",
