@@ -255,7 +255,7 @@ var DefaultMainnetGenesisJSON = `{
 		}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6055F8A5",
+	"timestamp": "0x60577635",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
