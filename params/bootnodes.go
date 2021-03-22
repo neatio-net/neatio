@@ -20,7 +20,8 @@ package params
 // the Neatio main network.
 var MainnetBootnodes = []string{
 
-	"enode://7eb31644b1287035867410f477eef6b069dee6226b682cb600 b38be977c9f26152901f73c53dbed86151286a17f126e17f0d371d656b98e6f878733c045b1f7a@135.181.154.74:9910",
+	"enode://7eb31644b1287035867410f477eef6b069dee6226b682cb600b38be977c9f26152901f73c53dbed86151286a17f126e17f0d371d656b98e6f878733c045b1f7a@135.181.154.74:9910",
+	"enode://2ecd139bfee3d5cfeaa352be010ea1fe2f6cb3a5f58528c68e9fbfb76069691cc2444e85ea78542d042ccdcd1b3048f55f68f893ce22508b7bcf9ad10ecbcbb4@109.166.131.109:9910",
 }
 
 // TestnetBootnodes are the enode URLs of the P2P bootstrap nodes running on the
