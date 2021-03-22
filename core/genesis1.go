@@ -241,34 +241,34 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{
 	"config": {
-		"neatChainId": "neatio",
-		"chainId": 1,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatpos": {
-			"epoch": 65730,
-			"policy": 0
-		}
+			"neatChainId": "neatio",
+			"chainId": 1,
+			"homesteadBlock": 0,
+			"eip150Block": 0,
+			"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
+			"eip155Block": 0,
+			"eip158Block": 0,
+			"byzantiumBlock": 0,
+			"neatpos": {
+					"epoch": 65730,
+					"policy": 0
+			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x60577635",
-	"extraData": "0x",
-	"gasLimit": "0x7270e00",
-	"difficulty": "0x1",
+	"nonce": 16045690984833335023,
+	"timestamp": 1616440542,
+	"extraData": "",
+	"gasLimit": 120000000,
+	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-		"NEATg3sgfJuQpDzqaKafFA8YQRHKwgUA": {
-			"balance": "0xd3c21bcecceda1000000",
-			"amount": "0xd3c21bcecceda1000000"
-		}
+			"NEATk1bnuejfHs21KBk85VVYAoVjr7W4": {
+					"balance": "0xdc69552cd63a6893300000",
+					"amount": "0xd3c21bcecceda1000000"
+			}
 	},
-	"number": "0x0",
-	"gasUsed": "0x0",
+	"number": 0,
+	"gasUsed": 0,
 	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
 }`
 

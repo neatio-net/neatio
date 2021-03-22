@@ -176,27 +176,27 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatpos",
-	"genesis_time": "2021-03-21T18:37:25.618856733+02:00",
+	"genesis_time": "2021-03-22T20:16:57.18628394+01:00",
 	"reward_scheme": {
-		"total_reward": "0x98f2ea83765ac3cf90200000",
-		"reward_first_year": "0x51929f350bec242a6f00000",
-		"epoch_no_per_year": "0x88f",
-		"total_year": "0x1e"
+			"total_reward": "0x98f2ea83765ac3cf90200000",
+			"reward_first_year": "0x51929f350bec242a6f00000",
+			"epoch_no_per_year": "0x88f",
+			"total_year": "0x1e"
 	},
 	"current_epoch": {
-		"number": "0x0",
-		"reward_per_block": "0x2b5e3af16b1880000",
-		"start_block": "0x0",
-		"end_block": "0x3840",
-		"validators": [
-			{
-				"address": "NEATsYKVX1mRs36CQ5AbxTEUWhE7mreP",
-				"pub_key": "0x8959F258CA84A4C632FCB03ECBDC1B0E5526B54096CEA55110341FA789BD311743BC8803EDE8D2832C554D01464DF699B1FF533631C7112C158DC8B5BF9052484C201238A3273DA910ACF53531199AB7EFEDD4E25E0432AE0F81923917852E782FC06CACFC35DDC409EBEF0D3765C2B55E37F6A0D58F644C9AA46299F6F970EA",
-				"amount": "0xd3c21bcecceda1000000",
-				"name": "NeatNode",
-				"epoch": "0x0"
-			}
-		]
+			"number": "0x0",
+			"reward_per_block": "0x2b5e3af16b1880000",
+			"start_block": "0x0",
+			"end_block": "0x3840",
+			"validators": [
+					{
+							"address": "NEATk1bnuejfHs21KBk85VVYAoVjr7W4",
+							"pub_key": "0x52EC984F5E94EE6494E4B4628F60A41962424509D5BDCEF31262F8A060008DCA424FE0555DCA8BC0AD48>
+							"amount": "0xd3c21bcecceda1000000",
+							"name": "",
+							"epoch": "0x0"
+					}
+			]
 	}
 }`
 
