@@ -255,16 +255,16 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": 16045690984833335023,
-	"timestamp": 1616440542,
+	"timestamp": 1626197087,
 	"extraData": "",
-	"gasLimit": 120000000,
+	"gasLimit": 200000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-			"NEATk1bnuejfHs21KBk85VVYAoVjr7W4": {
+			"NEATsr4rvYq69SJ9Ds1eqa1NA1L4fBwJ": {
 					"balance": "0xdc69552cd63a6893300000",
-					"amount": "0xd3c21bcecceda1000000"
+					"amount": "0x422ca8b0a00a425000000"
 			}
 	},
 	"number": 0,
@@ -290,7 +290,7 @@ var DefaultTestnetGenesisJSON = `{
 	"nonce": 16045690984833335023,
 	"timestamp": 1618595503,
 	"extraData": "",
-	"gasLimit": 120000000,
+	"gasLimit": 200000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",

@@ -176,7 +176,7 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatpos",
-	"genesis_time": "2021-03-22T20:16:57.18628394+01:00",
+	"genesis_time": "2021-07-13T19:28:42.899184344+02:00",
 	"reward_scheme": {
 			"total_reward": "0x98f2ea83765ac3cf90200000",
 			"reward_first_year": "0x51929f350bec242a6f00000",
@@ -190,9 +190,9 @@ var MainnetGenesisJSON string = `{
 			"end_block": "0x3840",
 			"validators": [
 					{
-							"address": "NEATk1bnuejfHs21KBk85VVYAoVjr7W4",
-							"pub_key": "0x52EC984F5E94EE6494E4B4628F60A41962424509D5BDCEF31262F8A060008DCA424FE0555DCA8BC0AD48>
-							"amount": "0xd3c21bcecceda1000000",
+							"address": "NEATsr4rvYq69SJ9Ds1eqa1NA1L4fBwJ",
+							"pub_key": "0x62219D09A55FAE2093BBAD39B033E2D1FFDEC4E3F92D23185A7BA51DBA47C45F8C5A4735C03407638E38253A8EABE320C17FF1F8E735625FD5490CF7C54A294A54CBE907FB398BBA16DA16D4A2A4E7B2014C974B9BEA587959BA7620DAC88D6437521890091C70F1DBDDB14CD01A834B5695C9B2577C8E2A42C19808396DE01D1A69"
+							"amount": "0x422ca8b0a00a425000000",
 							"name": "",
 							"epoch": "0x0"
 					}
