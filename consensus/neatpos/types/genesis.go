@@ -203,7 +203,7 @@ var MainnetGenesisJSON string = `{
 var TestnetGenesisJSON string = `{
 	"chain_id": "testnet",
 	"consensus": "neatpos",
-	"genesis_time": "2021-03-20T15:43:01.043376214+01:00",
+	"genesis_time": "2021-04-16T19:51:48.738131345+02:00",
 	"reward_scheme": {
 			"total_reward": "0x98f2ea83765ac3cf90200000",
 			"reward_first_year": "0x51929f350bec242a6f00000",
@@ -217,9 +217,9 @@ var TestnetGenesisJSON string = `{
 			"end_block": "0x3840",
 			"validators": [
 					{
-							"address": "NEATfGFLzu8vR6zr2QShtfh4vnw5Hi8R",
-							"pub_key": "0x0CA7C89F00FE871DF7381544C345439F32C6C40D5C4C3D85E7EEE7CA2D8C07BB7F29F8529EF3C76B>
-							"amount": "0xd3c21bcecceda1000000",
+							"address": "NEATjAfa8qqoZC9zXvHesXnjEfTFgm8q",
+							"pub_key": "0x10219662B558A41671120889479E08C0826E542B37B9F6DD9CAE0ACF35C7FDF841EB688E8C2E4244ECB712B30B5F6C18AFFA35897A829C3589562BC990AC0A08318CD6F63476A368183CDA34EFD3F13D6ABF2A59C187B6367B904AE55DA481E85AC62D460FA7E26D76A792CBBC1C1E52F85D93A736C33B21909A4CA62A54B8DC",
+							"amount": "0x3635c9adc5dea00000",
 							"name": "",
 							"epoch": "0x0"
 					}

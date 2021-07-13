@@ -288,16 +288,16 @@ var DefaultTestnetGenesisJSON = `{
 			}
 	},
 	"nonce": 16045690984833335023,
-	"timestamp": 1616251113,
+	"timestamp": 1618595503,
 	"extraData": "",
 	"gasLimit": 120000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-			"NEATfGFLzu8vR6zr2QShtfh4vnw5Hi8R": {
+			"NEATjAfa8qqoZC9zXvHesXnjEfTFgm8q": {
 					"balance": "0xa18f07d736b90be550000000",
-					"amount": "0xd3c21bcecceda1000000"
+					"amount": "0x3635c9adc5dea00000"
 			}
 	},
 	"number": 0,
