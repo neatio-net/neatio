@@ -20,7 +20,7 @@ import (
 
 const (
 	OfficialMinimumValidators = 1
-	OfficialMinimumValDeposit = "1000000000000000000000000"
+	OfficialMinimumValDeposit = "5000000000000000000000000"
 )
 
 type CoreChainInfo struct {

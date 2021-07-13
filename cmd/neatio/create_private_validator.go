@@ -19,10 +19,10 @@ type PrivValidatorForConsole struct {
 	// NeatChain Account Address
 	Address string `json:"address"`
 	// NeatChain Consensus Public Key, in BLS format
-	PubKey crypto.PubKey `json:"consensus_pub_key"`
+	PubKey crypto.PubKey `json:"validator_pub_key"`
 	// NeatChain Consensus Private Key, in BLS format
 	// PrivKey should be empty if a Signer other than the default is being used.
-	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
+	PrivKey crypto.PrivKey `json:"validator_priv_key"`
 }
 
 func CreatePrivateValidatorCmd(ctx *cli.Context) error {

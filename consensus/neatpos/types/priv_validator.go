@@ -17,10 +17,10 @@ type PrivValidator struct {
 	// Neatio Account Address
 	Address common.Address `json:"address"`
 	// Neatio Consensus Public Key, in BLS format
-	PubKey crypto.PubKey `json:"consensus_pub_key"`
+	PubKey crypto.PubKey `json:"validator_pub_key"`
 	// Neatio Consensus Private Key, in BLS format
 	// PrivKey should be empty if a Signer other than the default is being used.
-	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
+	PrivKey crypto.PrivKey `json:"validator_priv_key"`
 
 	Signer `json:"-"`
 
@@ -33,8 +33,8 @@ type PrivValidator struct {
 // The address type of the modified privalidator is string
 type PrivV struct {
 	Address string         `json:"address"`
-	PubKey  crypto.PubKey  `json:"consensus_pub_key"`
-	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
+	PubKey  crypto.PubKey  `json:"validator_pub_key"`
+	PrivKey crypto.PrivKey `json:"validator_priv_key"`
 
 	Signer `json:"-"`
 
