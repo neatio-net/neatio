@@ -55,35 +55,35 @@ func (t FunctionType) AllowInSideChain() bool {
 func (t FunctionType) RequiredGas() uint64 {
 	switch t {
 	case CreateSideChain:
-		return 2000000
+		return 40000
 	case JoinSideChain:
-		return 1000000
+		return 20000
 	case DepositInMainChain:
-		return 2000000
+		return 40000
 	case DepositInSideChain:
 		return 0
 	case WithdrawFromSideChain:
-		return 2000000
+		return 20000
 	case WithdrawFromMainChain:
 		return 0
 	case SaveDataToMainChain:
 		return 0
 	case VoteNextEpoch:
-		return 1000000
+		return 20000
 	case RevealVote:
-		return 1000000
+		return 20000
 	case Delegate, UnDelegate, Register, UnRegister:
-		return 1000000
+		return 20000
 	case SetBlockReward:
-		return 1000000
+		return 20000
 	case EditValidator:
-		return 1000000
+		return 20000
 	case WithdrawReward:
-		return 1000000
+		return 20000
 	case UnBanned:
-		return 1000000
+		return 20000
 	case SetCommission:
-		return 1000000
+		return 20000
 	default:
 		return 0
 	}

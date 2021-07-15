@@ -257,7 +257,7 @@ var DefaultMainnetGenesisJSON = `{
 	"nonce": 16045690984833335023,
 	"timestamp": 1626198532,
 	"extraData": "",
-	"gasLimit": 200000000,
+	"gasLimit": 100000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
