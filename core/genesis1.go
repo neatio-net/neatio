@@ -255,14 +255,14 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": 16045690984833335023,
-	"timestamp": 1626198532,
+	"timestamp": 1626362613,
 	"extraData": "",
 	"gasLimit": 100000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-			"NEATizngRVCA8jdjTmgZHHYeXDqdZUPr": {
+			"NEATh2XbRB3F26NVGTSD36AFzdXHUm7s": {
 					"balance": "0xdc69552cd63a6893300000",
 					"amount": "0x422ca8b0a00a425000000"
 			}
