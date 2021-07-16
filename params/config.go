@@ -27,7 +27,7 @@ import (
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0x106dfd0a7c22f44e3a38fefab1b0c2c4dc76ef222003bf0defdc4ce134c94af0") // Mainnet genesis hash to enforce below configs on
+	MainnetGenesisHash = common.HexToHash("0xa3976e3078c173cfca9f27d1bdac7dd626cfb1a3530442f5f72c0f6cefb54cc2") // Mainnet genesis hash to enforce below configs on
 	TestnetGenesisHash = common.HexToHash("0xf56ad16afc8b693f1971f276069088b4f5908f587047758040244f75d67fcf45") // Testnet genesis hash to enforce below configs on
 )
 
@@ -38,7 +38,7 @@ var (
 		ChainId:             big.NewInt(1),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
-		EIP150Hash:          common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0), //let's start from 1 block
@@ -55,7 +55,7 @@ var (
 		ChainId:             big.NewInt(2),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
-		EIP150Hash:          common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0),
@@ -120,7 +120,7 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 		NeatChainId:    sideChainID,
 		HomesteadBlock: big.NewInt(0),
 		EIP150Block:    big.NewInt(0),
-		EIP150Hash:     common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
+		EIP150Hash:     common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
 		//ByzantiumBlock:      big.NewInt(4370000),

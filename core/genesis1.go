@@ -245,7 +245,7 @@ var DefaultMainnetGenesisJSON = `{
 			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
-			"eip150Hash": "0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0",
+			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
@@ -255,14 +255,14 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": 16045690984833335023,
-	"timestamp": 1626362613,
+	"timestamp": 1626378762,
 	"extraData": "",
 	"gasLimit": 100000000,
 	"difficulty": 1,
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 	"alloc": {
-			"NEATh2XbRB3F26NVGTSD36AFzdXHUm7s": {
+			"NEATiuCnJ9pt253LsTJTW7fcw3Ms5vn1": {
 					"balance": "0xdc69552cd63a6893300000",
 					"amount": "0x422ca8b0a00a425000000"
 			}
