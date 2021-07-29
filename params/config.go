@@ -82,7 +82,7 @@ func init() {
 // that any network, identified by its genesis block, can have its own
 // set of configuration options.
 type ChainConfig struct {
-	NeatChainId string   `json:"neatChainId"` //NeatChain id identifies the current chain
+	NeatChainId string   `json:"NeatChainId"` //NeatChain id identifies the current chain
 	ChainId     *big.Int `json:"chainId"`     // Chain id identifies the current chain and is used for replay protection
 
 	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
