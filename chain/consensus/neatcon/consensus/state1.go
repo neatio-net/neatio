@@ -3,13 +3,13 @@ package consensus
 import (
 	"time"
 
-	cmn "github.com/Gessiux/go-common"
 	consss "github.com/neatlab/neatio/chain/consensus"
 	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
+	cmn "github.com/neatlib/common-go"
 )
 
 // The +2/3 and other Precommit-votes for block at `height`.

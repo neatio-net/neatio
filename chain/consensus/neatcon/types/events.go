@@ -2,10 +2,10 @@ package types
 
 import (
 	// for registering TMEventData as events.EventData
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-events"
-	"github.com/Gessiux/go-wire"
 	neatTypes "github.com/neatlab/neatio/chain/core/types"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/events-go"
+	"github.com/neatlib/wire-go"
 )
 
 // Functions to generate eventId strings

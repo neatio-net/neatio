@@ -1,7 +1,7 @@
 package state
 
 import (
-	. "github.com/Gessiux/go-common"
+	. "github.com/neatlib/common-go"
 )
 
 type (

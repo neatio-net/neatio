@@ -11,8 +11,6 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/Gessiux/go-crypto"
-	dbm "github.com/Gessiux/go-db"
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
@@ -31,6 +29,8 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/common/math"
 	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatlib/crypto-go"
+	dbm "github.com/neatlib/db-go"
 )
 
 type CrossChainHelper struct {

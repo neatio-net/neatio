@@ -7,7 +7,6 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/Gessiux/go-wire"
 	lru "github.com/hashicorp/golang-lru"
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
@@ -17,6 +16,7 @@ import (
 	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
 	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlib/wire-go"
 )
 
 const (

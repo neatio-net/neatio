@@ -3,12 +3,12 @@ package main
 import (
 	"path/filepath"
 
-	cfg "github.com/Gessiux/go-config"
 	"github.com/neatlab/neatio/chain/accounts/keystore"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/log"
 	neatnode "github.com/neatlab/neatio/network/node"
 	"github.com/neatlab/neatio/utilities/utils"
+	cfg "github.com/neatlib/config-go"
 	"gopkg.in/urfave/cli.v1"
 )
 

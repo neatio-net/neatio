@@ -1,22 +1,8 @@
-module github.com/Gessiux/neatio
+module github.com/neatlab/neatio
 
 go 1.16
 
 require (
-	github.com/Gessiux/bls v1.0.0
-	github.com/Gessiux/ed25519 v1.0.0 // indirect
-	github.com/Gessiux/go-common v1.0.4
-	github.com/Gessiux/go-config v1.0.0
-	github.com/Gessiux/go-crypto v1.0.2
-	github.com/Gessiux/go-data v1.0.0 // indirect
-	github.com/Gessiux/go-db v1.0.0
-	github.com/Gessiux/go-events v1.0.0
-	github.com/Gessiux/go-logger v1.0.0 // indirect
-	github.com/Gessiux/go-merkle v1.0.0
-	github.com/Gessiux/go-wire v1.0.0
-	github.com/Gessiux/log15 v1.0.0 // indirect
-	github.com/Gessiux/prometheus-flock v1.0.0
-	github.com/Gessiux/set.v0 v1.0.0
 	github.com/allegro/bigcache v1.2.1
 	github.com/aristanetworks/goarista v0.0.0-20210715113802-a1396632fc37
 	github.com/btcsuite/btcd v0.22.0-beta
@@ -43,6 +29,20 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
+	github.com/neatlib/bls-go v1.1.0
+	github.com/neatlib/common-go v1.1.0
+	github.com/neatlib/config-go v1.1.0
+	github.com/neatlib/crypto-go v1.1.0
+	github.com/neatlib/data-go v1.1.0 // indirect
+	github.com/neatlib/db-go v1.1.0
+	github.com/neatlib/ed25519-go v1.1.0 // indirect
+	github.com/neatlib/events-go v1.1.0
+	github.com/neatlib/flock-go v1.1.0
+	github.com/neatlib/log15-go v1.1.0 // indirect
+	github.com/neatlib/logger-go v1.1.0 // indirect
+	github.com/neatlib/merkle-go v1.1.0
+	github.com/neatlib/set-go v1.1.0
+	github.com/neatlib/wire-go v1.1.0
 	github.com/nsf/termbox-go v1.1.1 // indirect
 	github.com/pborman/uuid v1.2.1
 	github.com/peterh/liner v1.2.1

@@ -29,7 +29,6 @@ import (
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/core/state"
 
-	goCrypto "github.com/Gessiux/go-crypto"
 	"github.com/neatlab/neatio/chain/accounts"
 	"github.com/neatlab/neatio/chain/accounts/keystore"
 	"github.com/neatlab/neatio/chain/core"
@@ -46,6 +45,7 @@ import (
 	"github.com/neatlab/neatio/utilities/common/math"
 	"github.com/neatlab/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/rlp"
+	goCrypto "github.com/neatlib/crypto-go"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

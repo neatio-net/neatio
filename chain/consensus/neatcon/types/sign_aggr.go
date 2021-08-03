@@ -6,11 +6,13 @@ import (
 	"fmt"
 	"math/big"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
-	//"github.com/Gessiux/go-data"
-	"github.com/Gessiux/go-wire"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+
+	//"github.com/neatlib/data-go"
 	"io"
+
+	"github.com/neatlib/wire-go"
 )
 
 //------------------------ signature aggregation -------------------

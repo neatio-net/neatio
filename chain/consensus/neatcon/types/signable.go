@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"io"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-merkle"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/merkle-go"
 )
 
 // Signable is an interface for all signable things.

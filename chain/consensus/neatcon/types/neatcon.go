@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Gessiux/go-merkle"
-	"github.com/Gessiux/go-wire"
 	neatTypes "github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlib/merkle-go"
+	"github.com/neatlib/wire-go"
 )
 
 type NeatConExtra struct {

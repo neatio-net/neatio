@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 
-	goCrypto "github.com/Gessiux/go-crypto"
-	dbm "github.com/Gessiux/go-db"
-	"github.com/Gessiux/go-wire"
 	tmTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core/state"
 	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/common"
+	goCrypto "github.com/neatlib/crypto-go"
+	dbm "github.com/neatlib/db-go"
+	"github.com/neatlib/wire-go"
 
 	//"math"
 	"math/big"

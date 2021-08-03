@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	//. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
-	"github.com/Gessiux/go-wire"
-	// crypto "github.com/Gessiux/go-crypto"
+	//. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
+	// crypto "github.com/neatlib/crypto-go"
 )
 
 var (

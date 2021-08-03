@@ -24,8 +24,8 @@ import (
 	"sync"
 	"time"
 
-	set "github.com/Gessiux/set.v0"
 	"github.com/neatlab/neatio/chain/log"
+	set "github.com/neatlib/set-go"
 )
 
 // fileCache is a cache of files seen during scan of keystore.

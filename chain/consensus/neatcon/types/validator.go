@@ -7,11 +7,11 @@ import (
 
 	"math/big"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
-	"github.com/Gessiux/go-wire"
 	neatTypes "github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/utilities/common"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
 )
 
 // Volatile state for each Validator

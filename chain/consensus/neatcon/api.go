@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/Gessiux/go-crypto"
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/common/hexutil"
 	neatCrypto "github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatlib/crypto-go"
 )
 
 // API is a user facing RPC API of NeatCon

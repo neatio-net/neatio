@@ -18,9 +18,6 @@ import (
 	"crypto/sha256"
 	"math/big"
 
-	. "github.com/Gessiux/go-common"
-	cfg "github.com/Gessiux/go-config"
-	tmdcrypto "github.com/Gessiux/go-crypto"
 	consss "github.com/neatlab/neatio/chain/consensus"
 	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
@@ -31,6 +28,9 @@ import (
 	"github.com/neatlab/neatio/params"
 	"github.com/neatlab/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/rlp"
+	. "github.com/neatlib/common-go"
+	cfg "github.com/neatlib/config-go"
+	tmdcrypto "github.com/neatlib/crypto-go"
 )
 
 const ROUND_NOT_PROPOSED int = 0

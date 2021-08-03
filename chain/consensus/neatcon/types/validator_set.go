@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
-	cmn "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
-	"github.com/Gessiux/go-merkle"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/common"
+	cmn "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/merkle-go"
 )
 
 // ValidatorSet represent a set of *Validator at a given height.

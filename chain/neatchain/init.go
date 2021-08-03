@@ -21,15 +21,15 @@ import (
 	"strings"
 	"time"
 
-	cmn "github.com/Gessiux/go-common"
-	cfg "github.com/Gessiux/go-config"
-	dbm "github.com/Gessiux/go-db"
 	"github.com/neatlab/neatio/chain/accounts/keystore"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/params"
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/utils"
+	cmn "github.com/neatlib/common-go"
+	cfg "github.com/neatlib/config-go"
+	dbm "github.com/neatlib/db-go"
 	"github.com/pkg/errors"
 )
 

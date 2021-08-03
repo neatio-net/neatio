@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/Gessiux/go-common"
-	cfg "github.com/Gessiux/go-config"
+	. "github.com/neatlib/common-go"
+	cfg "github.com/neatlib/config-go"
 )
 
 const (

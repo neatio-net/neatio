@@ -7,14 +7,14 @@ import (
 	"io"
 	"time"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
-	"github.com/Gessiux/go-merkle"
-	"github.com/Gessiux/go-wire"
 	"github.com/neatlab/neatio/chain/core/state"
 	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/rlp"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/merkle-go"
+	"github.com/neatlib/wire-go"
 )
 
 const MaxBlockSize = 22020096 // 21MB TODO make it configurable

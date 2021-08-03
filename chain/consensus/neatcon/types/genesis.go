@@ -9,9 +9,9 @@ import (
 
 	"github.com/neatlab/neatio/utilities/common/hexutil"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-crypto"
 	"github.com/neatlab/neatio/utilities/common"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
 )
 
 //------------------------------------------------------------

@@ -27,10 +27,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gessiux/set.v0"
 	"github.com/neatlab/neatio/chain/accounts"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlib/set-go"
 )
 
 // Minimum amount of time between cache reloads. This limit applies if the platform does

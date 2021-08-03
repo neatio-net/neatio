@@ -23,7 +23,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Gessiux/set.v0"
 	"github.com/neatlab/neatio/chain/consensus"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
@@ -34,6 +33,7 @@ import (
 	"github.com/neatlab/neatio/params"
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatlib/set-go"
 )
 
 const (

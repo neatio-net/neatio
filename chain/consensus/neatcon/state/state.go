@@ -6,10 +6,10 @@ import (
 
 	"github.com/neatlab/neatio/chain/log"
 
-	. "github.com/Gessiux/go-common"
-	//cfg "github.com/Gessiux/go-config"
-	//dbm "github.com/Gessiux/go-db"
-	"github.com/Gessiux/go-wire"
+	. "github.com/neatlib/common-go"
+	//cfg "github.com/neatlib/config-go"
+	//dbm "github.com/neatlib/db-go"
+	"github.com/neatlib/wire-go"
 	//"github.com/neatlab/neatio/chain/consensus/neatcon/state/txindex"
 	//"github.com/neatlab/neatio/chain/consensus/neatcon/state/txindex/null"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"

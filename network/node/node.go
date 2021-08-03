@@ -28,7 +28,6 @@ import (
 
 	"github.com/neatlab/neatio/chain/core/rawdb"
 
-	flock "github.com/Gessiux/prometheus-flock"
 	"github.com/neatlab/neatio/chain/accounts"
 	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/internal/debug"
@@ -36,6 +35,7 @@ import (
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/utilities/event"
+	flock "github.com/neatlib/flock-go"
 )
 
 // Node is a container on which services can be registered.

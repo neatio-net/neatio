@@ -5,7 +5,7 @@ import (
 
 	"github.com/neatlab/neatio/chain/log"
 
-	. "github.com/Gessiux/go-common"
+	. "github.com/neatlib/common-go"
 )
 
 var (

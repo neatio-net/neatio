@@ -23,14 +23,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Gessiux/go-wire"
 	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlib/wire-go"
 
-	"github.com/Gessiux/set.v0"
 	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatlib/set-go"
 )
 
 var (

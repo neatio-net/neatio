@@ -11,8 +11,8 @@ import (
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/log"
 
-	. "github.com/Gessiux/go-common"
-	"github.com/Gessiux/go-wire"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/wire-go"
 
 	//sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"

@@ -2,7 +2,7 @@ package types
 
 // canonical json is go-wire's json for structs with fields in alphabetical order
 import (
-	crypto "github.com/Gessiux/go-crypto"
+	crypto "github.com/neatlib/crypto-go"
 )
 
 type CanonicalJSONBlockID struct {

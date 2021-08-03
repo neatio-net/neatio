@@ -49,8 +49,8 @@ import (
 	"gopkg.in/urfave/cli.v1"
 
 	// import neatcon config
-	cfg "github.com/Gessiux/go-config"
 	tmcfg "github.com/neatlab/neatio/chain/consensus/neatcon/config/neatcon"
+	cfg "github.com/neatlib/config-go"
 )
 
 var (

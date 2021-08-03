@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	. "github.com/Gessiux/go-common"
+	. "github.com/neatlib/common-go"
 )
 
 // kind of arbitrary

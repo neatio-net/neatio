@@ -6,8 +6,9 @@ import (
 	"strings"
 	"sync"
 
-	. "github.com/Gessiux/go-common"
 	"math/big"
+
+	. "github.com/neatlib/common-go"
 )
 
 /*
