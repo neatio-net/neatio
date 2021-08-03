@@ -19,14 +19,14 @@ package neatptc
 import (
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/bitutil"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/bloombits"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/bloombits"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/bitutil"
 )
 
 const (
@@ -49,7 +49,7 @@ const (
 
 // startBloomHandlers starts a batch of goroutines to accept bloom bit database
 // retrievals from possibly a range of filters and serving the data to satisfy.
-func (neatChain *NeatChain) startBloomHandlers() {
+func (neatChain *NeatIO) startBloomHandlers() {
 	for i := 0; i < bloomServiceThreads; i++ {
 		go func() {
 			for {

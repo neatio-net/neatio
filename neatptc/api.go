@@ -26,30 +26,30 @@ import (
 	"os"
 	"strings"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/datareduction"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/state"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/crypto"
-	"github.com/neatlab/neatio/log"
-	"github.com/neatlab/neatio/miner"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/datareduction"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/trie"
+	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
-	"github.com/neatlab/neatio/rpc"
-	"github.com/neatlab/neatio/trie"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/utilities/miner"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // PublicEthereumAPI provides an API to access Ethereum full node-related
 // information.
 type PublicEthereumAPI struct {
-	e *NeatChain
+	e *NeatIO
 }
 
 // NewPublicEthereumAPI creates a new Ethereum protocol API for full nodes.
-func NewPublicEthereumAPI(e *NeatChain) *PublicEthereumAPI {
+func NewPublicEthereumAPI(e *NeatIO) *PublicEthereumAPI {
 	return &PublicEthereumAPI{e}
 }
 
@@ -67,12 +67,12 @@ func (api *PublicEthereumAPI) Coinbase() (string, error) {
 // PublicMinerAPI provides an API to control the miner.
 // It offers only methods that operate on data that pose no security risk when it is publicly accessible.
 type PublicMinerAPI struct {
-	e     *NeatChain
+	e     *NeatIO
 	agent *miner.RemoteAgent
 }
 
 // NewPublicMinerAPI create a new PublicMinerAPI instance.
-func NewPublicMinerAPI(e *NeatChain) *PublicMinerAPI {
+func NewPublicMinerAPI(e *NeatIO) *PublicMinerAPI {
 	agent := miner.NewRemoteAgent(e.BlockChain(), e.Engine())
 	if e.Miner() != nil {
 		e.Miner().Register(agent)
@@ -123,11 +123,11 @@ func (api *PublicMinerAPI) SubmitHashrate(hashrate hexutil.Uint64, id common.Has
 // PrivateMinerAPI provides private RPC methods to control the miner.
 // These methods can be abused by external users and must be considered insecure for use by untrusted users.
 type PrivateMinerAPI struct {
-	e *NeatChain
+	e *NeatIO
 }
 
 // NewPrivateMinerAPI create a new RPC service which controls the miner of this node.
-func NewPrivateMinerAPI(e *NeatChain) *PrivateMinerAPI {
+func NewPrivateMinerAPI(e *NeatIO) *PrivateMinerAPI {
 	return &PrivateMinerAPI{e: e}
 }
 
@@ -198,15 +198,15 @@ func (api *PrivateMinerAPI) SetCoinbase(coinbase common.Address) bool {
 	return true
 }
 
-// PrivateAdminAPI is the collection of NeatChain full node-related APIs
+// PrivateAdminAPI is the collection of NeatIO full node-related APIs
 // exposed over the private admin endpoint.
 type PrivateAdminAPI struct {
-	eth *NeatChain
+	eth *NeatIO
 }
 
 // NewPrivateAdminAPI creates a new API definition for the full node private
-// admin methods of the NeatChain service.
-func NewPrivateAdminAPI(eth *NeatChain) *PrivateAdminAPI {
+// admin methods of the NeatIO service.
+func NewPrivateAdminAPI(eth *NeatIO) *PrivateAdminAPI {
 	return &PrivateAdminAPI{eth: eth}
 }
 
@@ -307,15 +307,15 @@ func (api *PrivateAdminAPI) LatestPruneState() (*datareduction.PruneStatus, erro
 	return status, nil
 }
 
-// PublicDebugAPI is the collection of NeatChain full node APIs exposed
+// PublicDebugAPI is the collection of NeatIO full node APIs exposed
 // over the public debugging endpoint.
 type PublicDebugAPI struct {
-	eth *NeatChain
+	eth *NeatIO
 }
 
 // NewPublicDebugAPI creates a new API definition for the full node-
-// related public debug methods of the NeatChain service.
-func NewPublicDebugAPI(eth *NeatChain) *PublicDebugAPI {
+// related public debug methods of the NeatIO service.
+func NewPublicDebugAPI(eth *NeatIO) *PublicDebugAPI {
 	return &PublicDebugAPI{eth: eth}
 }
 
@@ -344,16 +344,16 @@ func (api *PublicDebugAPI) DumpBlock(blockNr rpc.BlockNumber) (state.Dump, error
 	return stateDb.RawDump(), nil
 }
 
-// PrivateDebugAPI is the collection of NeatChain full node APIs exposed over
+// PrivateDebugAPI is the collection of NeatIO full node APIs exposed over
 // the private debugging endpoint.
 type PrivateDebugAPI struct {
 	config *params.ChainConfig
-	eth    *NeatChain
+	eth    *NeatIO
 }
 
 // NewPrivateDebugAPI creates a new API definition for the full node-related
-// private debug methods of the NeatChain service.
-func NewPrivateDebugAPI(config *params.ChainConfig, eth *NeatChain) *PrivateDebugAPI {
+// private debug methods of the NeatIO service.
+func NewPrivateDebugAPI(config *params.ChainConfig, eth *NeatIO) *PrivateDebugAPI {
 	return &PrivateDebugAPI{config: config, eth: eth}
 }
 

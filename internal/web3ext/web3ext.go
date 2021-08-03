@@ -32,10 +32,6 @@ var Modules = map[string]string{
 	"swarmfs":    SWARMFS_JS,
 	"txpool":     TxPool_JS,
 	"istanbul":   Istanbul_JS,
-	//// NeatChain JS
-	//"chain": Chain_JS,
-	//"tdm":   Tdm_JS,
-	//"del":   Del_JS,
 }
 
 const Chequebook_JS = `
@@ -562,8 +558,8 @@ web3._extend({
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
 		}),
 		new web3._extend.Method({
-			name: 'unBanned',
-			call: 'neat_unBanned',
+			name: 'unForbidden',
+			call: 'neat_unForbidden',
 			params: 2,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null]
 		}),
@@ -595,8 +591,8 @@ web3._extend({
 			params: 0
 		}),
 		new web3._extend.Method({
-			name: 'getBannedList',
-			call: 'neat_getBannedList',
+			name: 'getForbiddenList',
+			call: 'neat_getForbiddenList',
 			params: 0
 		}),
 		new web3._extend.Method({
@@ -626,8 +622,8 @@ web3._extend({
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter]
 		}),
 		new web3._extend.Method({
-			name: 'getBannedStatus',
-			call: 'neat_getBannedStatus',
+			name: 'getForbiddenStatus',
+			call: 'neat_getForbiddenStatus',
 			params: 2,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter]
 		}),

@@ -25,15 +25,15 @@ import (
 	"sync/atomic"
 	"time"
 
-	neatio "github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/event"
-	"github.com/neatlab/neatio/log"
-	"github.com/neatlab/neatio/metrics"
+	"github.com/neatlab/neatio"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatlab/neatio/utilities/metrics"
 )
 
 var (
@@ -389,7 +389,7 @@ func (d *Downloader) synchronise(id string, hash common.Hash, td *big.Int, mode 
 
 	defer d.Cancel() // No matter what, we can't leave the cancel channel open
 
-	// Set the requested sync mode, unless it's banned
+	// Set the requested sync mode, unless it's forbidden
 	d.mode = mode
 
 	// Retrieve the origin peer and initiate the downloading process

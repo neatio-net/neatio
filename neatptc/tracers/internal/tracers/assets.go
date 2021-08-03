@@ -286,8 +286,8 @@ func AssetDir(name string) ([]string, error) {
 		return nil, fmt.Errorf("Asset %s not found", name)
 	}
 	rv := make([]string, 0, len(node.Children))
-	for childName := range node.Children {
-		rv = append(rv, childName)
+	for sideName := range node.Children {
+		rv = append(rv, sideName)
 	}
 	return rv, nil
 }
@@ -329,13 +329,13 @@ func RestoreAsset(dir, name string) error {
 
 // RestoreAssets restores an asset under the given directory recursively
 func RestoreAssets(dir, name string) error {
-	children, err := AssetDir(name)
+	sideren, err := AssetDir(name)
 	// File
 	if err != nil {
 		return RestoreAsset(dir, name)
 	}
 	// Dir
-	for _, side := range children {
+	for _, side := range sideren {
 		err = RestoreAssets(dir, filepath.Join(name, side))
 		if err != nil {
 			return err

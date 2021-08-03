@@ -19,7 +19,7 @@ package params
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 // DAOForkBlockExtra is the block header extra-data field to set for the DAO fork

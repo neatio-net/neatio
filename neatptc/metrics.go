@@ -17,9 +17,9 @@
 package neatptc
 
 import (
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/metrics"
-	"github.com/neatlab/neatio/p2p"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/utilities/metrics"
 )
 
 var (

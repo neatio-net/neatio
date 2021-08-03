@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatlab/neatio/accounts/abi"
-	"github.com/neatlab/neatio/common"
+	"github.com/neatlab/neatio/chain/accounts/abi"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 type FunctionType struct {
@@ -34,7 +34,7 @@ var (
 	UnRegister     = FunctionType{15, false, true, true}
 	EditValidator  = FunctionType{16, false, true, true}
 	WithdrawReward = FunctionType{17, false, true, true}
-	UnBanned       = FunctionType{18, false, true, true}
+	UnForbidden    = FunctionType{18, false, true, true}
 	SetCommission  = FunctionType{19, false, true, true}
 	// Unknown
 	Unknown = FunctionType{-1, false, false, false}
@@ -55,35 +55,35 @@ func (t FunctionType) AllowInSideChain() bool {
 func (t FunctionType) RequiredGas() uint64 {
 	switch t {
 	case CreateSideChain:
-		return 40000
+		return 200000
 	case JoinSideChain:
-		return 20000
+		return 100000
 	case DepositInMainChain:
-		return 40000
+		return 200000
 	case DepositInSideChain:
 		return 0
 	case WithdrawFromSideChain:
-		return 20000
+		return 200000
 	case WithdrawFromMainChain:
 		return 0
 	case SaveDataToMainChain:
 		return 0
 	case VoteNextEpoch:
-		return 20000
+		return 100000
 	case RevealVote:
-		return 20000
+		return 100000
 	case Delegate, UnDelegate, Register, UnRegister:
-		return 20000
+		return 100000
 	case SetBlockReward:
-		return 20000
+		return 100000
 	case EditValidator:
-		return 20000
+		return 100000
 	case WithdrawReward:
-		return 20000
-	case UnBanned:
-		return 20000
+		return 100000
+	case UnForbidden:
+		return 100000
 	case SetCommission:
-		return 20000
+		return 100000
 	default:
 		return 0
 	}
@@ -123,8 +123,8 @@ func (t FunctionType) String() string {
 		return "EditValidator"
 	case WithdrawReward:
 		return "WithdrawReward"
-	case UnBanned:
-		return "UnBanned"
+	case UnForbidden:
+		return "UnForbidden"
 	case SetCommission:
 		return "SetCommission"
 	default:
@@ -166,8 +166,8 @@ func StringToFunctionType(s string) FunctionType {
 		return EditValidator
 	case "WithdrawReward":
 		return WithdrawReward
-	case "UnBanned":
-		return UnBanned
+	case "UnForbidden":
+		return UnForbidden
 	case "SetCommission":
 		return SetCommission
 	default:
@@ -250,7 +250,7 @@ type WithdrawRewardArgs struct {
 	DelegateAddress common.Address
 }
 
-type UnBannedArgs struct {
+type UnForbiddenArgs struct {
 }
 
 type SetCommissionArgs struct {
@@ -508,7 +508,7 @@ const jsonChainABI = `
 	},
 	{
 		"type": "function",
-		"name": "UnBanned",
+		"name": "UnForbidden",
 		"constant": false,
 		"inputs": []
 	},
@@ -525,11 +525,11 @@ const jsonChainABI = `
 	}
 ]`
 
-// Neatio Side Chain Token Incentive Address
-var SideChainTokenIncentiveAddr = common.StringToAddress("NEATEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+// NeatIO Side Chain Token Incentive Address
+var SideChainTokenIncentiveAddr = common.StringToAddress("NEATCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
 
-// Neatio Internal Contract Address
-var ChainContractMagicAddr = common.StringToAddress("NEATFFFFFFFFFFFFFFFFFFFFFFFFFFFF") // don't conflict with neatio/core/vm/contracts.go
+// NeatIO Internal Contract Address
+var ChainContractMagicAddr = common.StringToAddress("NEATBBBBBBBBBBBBBBBBBBBBBBBBBBBB") // don't conflict with neatio/core/vm/contracts.go
 
 var ChainABI abi.ABI
 

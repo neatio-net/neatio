@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"math/big"
 
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
 )
 
 var _ = (*stTransactionMarshaling)(nil)

@@ -33,7 +33,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/log"
 )
 
 // Handler is the global debugging handler.

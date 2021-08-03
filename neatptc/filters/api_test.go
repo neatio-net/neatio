@@ -21,8 +21,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 func TestUnmarshalJSONNewFilterArgs(t *testing.T) {

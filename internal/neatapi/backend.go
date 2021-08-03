@@ -14,24 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-// Package neatapi implements the general Neatio API functions.
+// Package neatapi implements the general NEAT Blockchain API functions.
 package neatapi
 
 import (
 	"context"
 	"math/big"
 
-	"github.com/neatlab/neatio/accounts"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/state"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/event"
+	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/neatptc/downloader"
+	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 // Backend interface provides the common API services (that are provided by
@@ -87,7 +87,7 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 		{
 			Namespace: "eth",
 			Version:   "1.0",
-			Service:   NewPublicNeatioAPI(apiBackend),
+			Service:   NewPublicNEATChainAPI(apiBackend),
 			Public:    true,
 		}, {
 			Namespace: "eth",
@@ -100,17 +100,17 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   txapi,
 			Public:    true,
 		}, {
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
-			Service:   NewPublicNeatioAPI(apiBackend),
+			Service:   NewPublicNEATChainAPI(apiBackend),
 			Public:    true,
 		}, {
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
 			Service:   NewPublicBlockChainAPI(apiBackend),
 			Public:    true,
 		}, {
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
 			Service:   txapi,
 			Public:    true,
@@ -134,7 +134,7 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   NewPublicAccountAPI(apiBackend.AccountManager()),
 			Public:    true,
 		}, {
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
 			Service:   NewPublicAccountAPI(apiBackend.AccountManager()),
 			Public:    true,
@@ -144,9 +144,9 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   NewPrivateAccountAPI(apiBackend, nonceLock),
 			Public:    false,
 		}, {
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
-			Service:   NewPublicNeatApi(apiBackend, nonceLock),
+			Service:   NewPublicNEATAPI(apiBackend, nonceLock),
 			Public:    true,
 		},
 	}

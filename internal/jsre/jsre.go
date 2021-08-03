@@ -26,8 +26,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/neatlab/neatio/common"
 	"github.com/neatlab/neatio/internal/jsre/deps"
+	"github.com/neatlab/neatio/utilities/common"
 	"github.com/robertkrimen/otto"
 )
 

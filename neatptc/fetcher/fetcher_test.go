@@ -24,12 +24,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/crypto"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 var (

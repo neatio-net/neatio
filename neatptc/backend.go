@@ -25,31 +25,31 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/neatlab/neatio/accounts"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/consensus/neatpos"
-	neatconBackend "github.com/neatlab/neatio/consensus/neatpos"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/bloombits"
-	"github.com/neatlab/neatio/core/datareduction"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/event"
+	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/consensus/neatcon"
+	ntcBackend "github.com/neatlab/neatio/chain/consensus/neatcon"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/bloombits"
+	"github.com/neatlab/neatio/chain/core/datareduction"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/internal/neatapi"
-	"github.com/neatlab/neatio/log"
-	"github.com/neatlab/neatio/miner"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/neatptc/filters"
 	"github.com/neatlab/neatio/neatptc/gasprice"
-	"github.com/neatlab/neatio/node"
-	"github.com/neatlab/neatio/p2p"
+	"github.com/neatlab/neatio/network/node"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatlab/neatio/utilities/miner"
+	"github.com/neatlab/neatio/utilities/rlp"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -60,8 +60,8 @@ type LesServer interface {
 	SetBloomBitsIndexer(bbIndexer *core.ChainIndexer)
 }
 
-// NeatChain implements the Neatio full node service.
-type NeatChain struct {
+// NeatIO implements the NEAT Blockchain full node service.
+type NeatIO struct {
 	config      *Config
 	chainConfig *params.ChainConfig
 
@@ -78,7 +78,7 @@ type NeatChain struct {
 	pruneDb neatdb.Database // Prune data database
 
 	eventMux       *event.TypeMux
-	engine         consensus.NeatPoS
+	engine         consensus.NeatCon
 	accountManager *accounts.Manager
 
 	bloomRequests chan chan *bloombits.Retrieval // Channel receiving bloom data retrieval requests
@@ -97,10 +97,10 @@ type NeatChain struct {
 	lock sync.RWMutex // Protects the variadic fields (e.g. gas price and etherbase)
 }
 
-// New creates a new Neatio object (including the
-// initialisation of the common Neatio object)
+// New creates a new NEAT Blockchain object (including the
+// initialisation of the common NEAT Blockchain object)
 func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
-	cch core.CrossChainHelper, logger log.Logger, isTestnet bool) (*NeatChain, error) {
+	cch core.CrossChainHelper, logger log.Logger, isTestnet bool) (*NeatIO, error) {
 
 	if !config.SyncMode.IsValid() {
 		return nil, fmt.Errorf("invalid sync mode %d", config.SyncMode)
@@ -121,9 +121,9 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 		return nil, genesisErr
 	}
 	chainConfig.ChainLogger = logger
-	logger.Info("Initialised chain configuration", "network", ctx.ChainId())
+	//logger.Info("Initialised chain configuration", "config", chainConfig)
 
-	neatChain := &NeatChain{
+	neatChain := &NeatIO{
 		config:         config,
 		chainDb:        chainDb,
 		pruneDb:        pruneDb,
@@ -145,12 +145,11 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	if bcVersion != nil {
 		dbVer = fmt.Sprintf("%d", *bcVersion)
 	}
-	//logger.Info("Initialising NeatChain protocol", "versions", eth.engine.Protocol().Versions, "network", config.NetworkId, "dbversion", dbVer)
-	logger.Info("Initialising neatio protocol", "network-port", config.NetworkId, "db-version", dbVer)
+	logger.Info("Initialising Neatio protocol", "Network", chainConfig.NeatChainId)
 
 	if !config.SkipBcVersionCheck {
 		if bcVersion != nil && *bcVersion > core.BlockChainVersion {
-			return nil, fmt.Errorf("database version is v%d, Geth %s only supports v%d", *bcVersion, params.VersionWithMeta, core.BlockChainVersion)
+			return nil, fmt.Errorf("database version is v%d, Neatio %s only supports v%d", *bcVersion, params.VersionWithMeta, core.BlockChainVersion)
 		} else if bcVersion == nil || *bcVersion < core.BlockChainVersion {
 			logger.Warn("Upgrade blockchain database version", "from", dbVer, "to", core.BlockChainVersion)
 			rawdb.WriteDatabaseVersion(chainDb, core.BlockChainVersion)
@@ -166,7 +165,6 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 			TrieTimeLimit:     config.TrieTimeout,
 		}
 	)
-	//eth.engine = CreateConsensusEngine(ctx, config, chainConfig, chainDb, cliCtx, cch)
 
 	neatChain.blockchain, err = core.NewBlockChain(chainDb, cacheConfig, neatChain.chainConfig, neatChain.engine, vmConfig, cch)
 	if err != nil {
@@ -219,20 +217,20 @@ func makeExtraData(extra []byte) []byte {
 	return extra
 }
 
-// CreateConsensusEngine creates the required type of consensus engine instance for an NeatChain service
+// CreateConsensusEngine creates the required type of consensus engine instance for an NeatIO service
 func CreateConsensusEngine(ctx *node.ServiceContext, config *Config, chainConfig *params.ChainConfig, db neatdb.Database,
-	cliCtx *cli.Context, cch core.CrossChainHelper) consensus.NeatPoS {
+	cliCtx *cli.Context, cch core.CrossChainHelper) consensus.NeatCon {
 	// If NeatCon is requested, set it up
-	if chainConfig.NeatPoS.Epoch != 0 {
-		config.NeatPoS.Epoch = chainConfig.NeatPoS.Epoch
+	if chainConfig.NeatCon.Epoch != 0 {
+		config.NeatCon.Epoch = chainConfig.NeatCon.Epoch
 	}
-	config.NeatPoS.ProposerPolicy = neatpos.ProposerPolicy(chainConfig.NeatPoS.ProposerPolicy)
-	return neatconBackend.New(chainConfig, cliCtx, ctx.NodeKey(), cch)
+	config.NeatCon.ProposerPolicy = neatcon.ProposerPolicy(chainConfig.NeatCon.ProposerPolicy)
+	return ntcBackend.New(chainConfig, cliCtx, ctx.NodeKey(), cch)
 }
 
-// APIs returns the collection of RPC services the NeatChain package offers.
+// APIs returns the collection of RPC services the NeatIO package offers.
 // NOTE, some of these services probably need to be moved to somewhere else.
-func (s *NeatChain) APIs() []rpc.API {
+func (s *NeatIO) APIs() []rpc.API {
 
 	apis := neatapi.GetAPIs(s.ApiBackend, s.solcPath)
 	// Append any APIs exposed explicitly by the consensus engine
@@ -307,13 +305,13 @@ func (s *NeatChain) APIs() []rpc.API {
 	return apis
 }
 
-func (s *NeatChain) ResetWithGenesisBlock(gb *types.Block) {
+func (s *NeatIO) ResetWithGenesisBlock(gb *types.Block) {
 	s.blockchain.ResetWithGenesisBlock(gb)
 }
 
-func (s *NeatChain) Coinbase() (eb common.Address, err error) {
-	if neatpos, ok := s.engine.(consensus.NeatPoS); ok {
-		eb = neatpos.PrivateValidator()
+func (s *NeatIO) Coinbase() (eb common.Address, err error) {
+	if neatcon, ok := s.engine.(consensus.NeatCon); ok {
+		eb = neatcon.PrivateValidator()
 		if eb != (common.Address{}) {
 			return eb, nil
 		} else {
@@ -340,11 +338,11 @@ func (s *NeatChain) Coinbase() (eb common.Address, err error) {
 			}
 		}
 	}
-	return common.Address{}, fmt.Errorf("etherbase must be explicitly specified")
+	return common.Address{}, fmt.Errorf("Base address must be explicitly specified")
 }
 
 // set in js console via admin interface or wrapper from cli flags
-func (self *NeatChain) SetCoinbase(coinbase common.Address) {
+func (self *NeatIO) SetCoinbase(coinbase common.Address) {
 
 	self.lock.Lock()
 	self.coinbase = coinbase
@@ -353,19 +351,19 @@ func (self *NeatChain) SetCoinbase(coinbase common.Address) {
 	self.miner.SetCoinbase(coinbase)
 }
 
-func (s *NeatChain) StartMining(local bool) error {
+func (s *NeatIO) StartMining(local bool) error {
 	var eb common.Address
-	if neatpos, ok := s.engine.(consensus.NeatPoS); ok {
-		eb = neatpos.PrivateValidator()
+	if neatcon, ok := s.engine.(consensus.NeatCon); ok {
+		eb = neatcon.PrivateValidator()
 		if (eb == common.Address{}) {
-			log.Error("Cannot start mining without private validator")
-			return errors.New("private validator missing")
+			log.Error("Cannot start minting without private validator")
+			return errors.New("private validator file missing")
 		}
 	} else {
 		_, err := s.Coinbase()
 		if err != nil {
-			log.Error("Cannot start mining without etherbase", "err", err)
-			return fmt.Errorf("etherbase missing: %v", err)
+			log.Error("Cannot start mining without base address", "err", err)
+			return fmt.Errorf("base address missing: %v", err)
 		}
 	}
 
@@ -380,31 +378,31 @@ func (s *NeatChain) StartMining(local bool) error {
 	return nil
 }
 
-func (s *NeatChain) StopMining()         { s.miner.Stop() }
-func (s *NeatChain) IsMining() bool      { return s.miner.Mining() }
-func (s *NeatChain) Miner() *miner.Miner { return s.miner }
+func (s *NeatIO) StopMining()         { s.miner.Stop() }
+func (s *NeatIO) IsMining() bool      { return s.miner.Mining() }
+func (s *NeatIO) Miner() *miner.Miner { return s.miner }
 
-func (s *NeatChain) ChainConfig() *params.ChainConfig   { return s.chainConfig }
-func (s *NeatChain) AccountManager() *accounts.Manager  { return s.accountManager }
-func (s *NeatChain) BlockChain() *core.BlockChain       { return s.blockchain }
-func (s *NeatChain) TxPool() *core.TxPool               { return s.txPool }
-func (s *NeatChain) EventMux() *event.TypeMux           { return s.eventMux }
-func (s *NeatChain) Engine() consensus.NeatPoS          { return s.engine }
-func (s *NeatChain) ChainDb() neatdb.Database           { return s.chainDb }
-func (s *NeatChain) IsListening() bool                  { return true } // Always listening
-func (s *NeatChain) EthVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
-func (s *NeatChain) NetVersion() uint64                 { return s.networkId }
-func (s *NeatChain) Downloader() *downloader.Downloader { return s.protocolManager.downloader }
+func (s *NeatIO) ChainConfig() *params.ChainConfig   { return s.chainConfig }
+func (s *NeatIO) AccountManager() *accounts.Manager  { return s.accountManager }
+func (s *NeatIO) BlockChain() *core.BlockChain       { return s.blockchain }
+func (s *NeatIO) TxPool() *core.TxPool               { return s.txPool }
+func (s *NeatIO) EventMux() *event.TypeMux           { return s.eventMux }
+func (s *NeatIO) Engine() consensus.NeatCon          { return s.engine }
+func (s *NeatIO) ChainDb() neatdb.Database           { return s.chainDb }
+func (s *NeatIO) IsListening() bool                  { return true } // Always listening
+func (s *NeatIO) EthVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
+func (s *NeatIO) NetVersion() uint64                 { return s.networkId }
+func (s *NeatIO) Downloader() *downloader.Downloader { return s.protocolManager.downloader }
 
 // Protocols implements node.Service, returning all the currently configured
 // network protocols to start.
-func (s *NeatChain) Protocols() []p2p.Protocol {
+func (s *NeatIO) Protocols() []p2p.Protocol {
 	return s.protocolManager.SubProtocols
 }
 
 // Start implements node.Service, starting all internal goroutines needed by the
-// NeatChain protocol implementation.
-func (s *NeatChain) Start(srvr *p2p.Server) error {
+// NeatIO protocol implementation.
+func (s *NeatIO) Start(srvr *p2p.Server) error {
 	// Start the bloom bits servicing goroutines
 	s.startBloomHandlers()
 
@@ -429,8 +427,8 @@ func (s *NeatChain) Start(srvr *p2p.Server) error {
 }
 
 // Stop implements node.Service, terminating all internal goroutines used by the
-// NeatChain protocol.
-func (s *NeatChain) Stop() error {
+// NeatIO protocol.
+func (s *NeatIO) Stop() error {
 	s.bloomIndexer.Close()
 	s.blockchain.Stop()
 	s.protocolManager.Stop()
@@ -447,7 +445,7 @@ func (s *NeatChain) Stop() error {
 	return nil
 }
 
-func (s *NeatChain) loopForMiningEvent() {
+func (s *NeatIO) loopForMiningEvent() {
 	// Start/Stop mining Feed
 	startMiningCh := make(chan core.StartMiningEvent, 1)
 	startMiningSub := s.blockchain.SubscribeStartMiningEvent(startMiningCh)
@@ -466,18 +464,18 @@ func (s *NeatChain) loopForMiningEvent() {
 				price := s.gasPrice
 				s.lock.RUnlock()
 				s.txPool.SetGasPrice(price)
-				s.chainConfig.ChainLogger.Info("NeatPoS Consensus Engine will be start shortly")
-				s.engine.(consensus.NeatPoS).ForceStart()
+				s.chainConfig.ChainLogger.Info("NeatCon Consensus Engine will start shortly")
+				s.engine.(consensus.NeatCon).ForceStart()
 				s.StartMining(true)
 			} else {
-				s.chainConfig.ChainLogger.Info("NeatPoS Consensus Engine already started")
+				s.chainConfig.ChainLogger.Info("NeatCon Consensus Engine already started")
 			}
 		case <-stopMiningCh:
 			if s.IsMining() {
-				s.chainConfig.ChainLogger.Info("NeatPoS Consensus Engine will be stop shortly")
+				s.chainConfig.ChainLogger.Info("NeatCon Consensus Engine will stop shortly")
 				s.StopMining()
 			} else {
-				s.chainConfig.ChainLogger.Info("NeatPoS Consensus Engine already stopped")
+				s.chainConfig.ChainLogger.Info("NeatCon Consensus Engine already stopped")
 			}
 		case <-startMiningSub.Err():
 			return
@@ -487,7 +485,7 @@ func (s *NeatChain) loopForMiningEvent() {
 	}
 }
 
-func (s *NeatChain) StartScanAndPrune(blockNumber uint64) {
+func (s *NeatIO) StartScanAndPrune(blockNumber uint64) {
 
 	if datareduction.StartPruning() {
 		log.Info("Data Reduction - Start")

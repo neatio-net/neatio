@@ -19,11 +19,11 @@ package downloader
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 // FakePeer is a mock downloader peer that operates on a local database instance

@@ -20,9 +20,9 @@ import (
 	"context"
 	"sync"
 
-	ethereum "github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/event"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 // PublicDownloaderAPI provides an API which gives information about the current synchronisation status.
@@ -121,8 +121,8 @@ func (api *PublicDownloaderAPI) Syncing(ctx context.Context) (*rpc.Subscription,
 
 // SyncingResult provides information about the current synchronisation status for this node.
 type SyncingResult struct {
-	Syncing bool                  `json:"syncing"`
-	Status  ethereum.SyncProgress `json:"status"`
+	Syncing bool                `json:"syncing"`
+	Status  neatio.SyncProgress `json:"status"`
 }
 
 // uninstallSyncSubscriptionRequest uninstalles a syncing subscription in the API event loop.

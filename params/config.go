@@ -20,15 +20,15 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/log"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/crypto"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xa3976e3078c173cfca9f27d1bdac7dd626cfb1a3530442f5f72c0f6cefb54cc2") // Mainnet genesis hash to enforce below configs on
-	TestnetGenesisHash = common.HexToHash("0xf56ad16afc8b693f1971f276069088b4f5908f587047758040244f75d67fcf45") // Testnet genesis hash to enforce below configs on
+	MainnetGenesisHash = common.HexToHash("0xb8ec7179904a79bd642b43355ec5e3180fdf76724870f23b1adfda6a993cb5c8") // Mainnet genesis hash to enforce below configs on
+	TestnetGenesisHash = common.HexToHash("0x1cbef527b5e69640b795df3b76437741e7fd4c98be557c6ead9be5f38ae7febc") // Testnet genesis hash to enforce below configs on
 )
 
 var (
@@ -38,13 +38,13 @@ var (
 		ChainId:             big.NewInt(1),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
-		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		EIP150Hash:          common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0), //let's start from 1 block
 		ConstantinopleBlock: nil,
-		NeatPoS: &NeatPoSConfig{
-			Epoch:          65730,
+		NeatCon: &NeatConConfig{
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
@@ -55,13 +55,13 @@ var (
 		ChainId:             big.NewInt(2),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
-		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		EIP150Hash:          common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
-		NeatPoS: &NeatPoSConfig{
-			Epoch:          65730,
+		NeatCon: &NeatConConfig{
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
@@ -82,7 +82,7 @@ func init() {
 // that any network, identified by its genesis block, can have its own
 // set of configuration options.
 type ChainConfig struct {
-	NeatChainId string   `json:"NeatChainId"` //NeatChain id identifies the current chain
+	NeatChainId string   `json:"NeatChainId"` //NeatIO id identifies the current chain
 	ChainId     *big.Int `json:"chainId"`     // Chain id identifies the current chain and is used for replay protection
 
 	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
@@ -98,20 +98,20 @@ type ChainConfig struct {
 	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
 
 	// Various consensus engines
-	NeatPoS *NeatPoSConfig `json:"neatpos,omitempty"`
+	NeatCon *NeatConConfig `json:"neatcon,omitempty"`
 
 	ChainLogger log.Logger `json:"-"`
 }
 
-// NeatPoSConfig is the consensus engine configs for Istanbul based sealing.
-type NeatPoSConfig struct {
+// NeatConConfig is the consensus engine configs for Istanbul based sealing.
+type NeatConConfig struct {
 	Epoch          uint64 `json:"epoch"`  // Epoch length to reset votes and checkpoint
 	ProposerPolicy uint64 `json:"policy"` // The policy for proposer selection
 }
 
 // String implements the stringer interface, returning the consensus engine details.
-func (c *NeatPoSConfig) String() string {
-	return "neatpos"
+func (c *NeatConConfig) String() string {
+	return "neatcon"
 }
 
 // Create a new Chain Config based on the Chain ID, for side chain creation purpose
@@ -120,13 +120,13 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 		NeatChainId:    sideChainID,
 		HomesteadBlock: big.NewInt(0),
 		EIP150Block:    big.NewInt(0),
-		EIP150Hash:     common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		EIP150Hash:     common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
 		//ByzantiumBlock:      big.NewInt(4370000),
 		ByzantiumBlock:      big.NewInt(0), //let's start from 1 block
 		ConstantinopleBlock: nil,
-		NeatPoS: &NeatPoSConfig{
+		NeatCon: &NeatConConfig{
 			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
@@ -142,8 +142,8 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 func (c *ChainConfig) String() string {
 	var engine interface{}
 	switch {
-	case c.NeatPoS != nil:
-		engine = c.NeatPoS
+	case c.NeatCon != nil:
+		engine = c.NeatCon
 	default:
 		engine = "unknown"
 	}

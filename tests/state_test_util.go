@@ -23,18 +23,18 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/state"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/crypto"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -239,7 +239,7 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 }
 
 func rlpHash(x interface{}) (h common.Hash) {
-	hw := sha3.NewLegacyKeccak256() //sha3.NewLegacyKeccak256
+	hw := sha3.NewKeccak256()
 	rlp.Encode(hw, x)
 	hw.Sum(h[:0])
 	return h

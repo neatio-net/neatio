@@ -7,8 +7,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/math"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
 )
 
 var _ = (*stEnvMarshaling)(nil)

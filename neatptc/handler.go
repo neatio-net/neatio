@@ -26,22 +26,22 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatlab/neatio/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/rawdb"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/crypto"
-	"github.com/neatlab/neatio/event"
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/neatptc/fetcher"
-	"github.com/neatlab/neatio/p2p"
-	"github.com/neatlab/neatio/p2p/discover"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/network/p2p/discover"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 const (
@@ -115,8 +115,8 @@ type ProtocolManager struct {
 	preimageLogger log.Logger
 }
 
-// NewProtocolManager returns a new Neatio sub protocol manager. The Neatio sub protocol manages peers capable
-// with the Neatio network.
+// NewProtocolManager returns a new NEAT Blockchain sub protocol manager. The NEAT Blockchain sub protocol manages peers capable
+// with the NEAT Blockchain network.
 func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, networkId uint64, mux *event.TypeMux, txpool txPool, engine consensus.Engine, blockchain *core.BlockChain, chaindb neatdb.Database, cch core.CrossChainHelper) (*ProtocolManager, error) {
 	// Create the protocol manager with the base fields
 	manager := &ProtocolManager{
@@ -216,9 +216,9 @@ func (pm *ProtocolManager) removePeer(id string) {
 	if peer == nil {
 		return
 	}
-	pm.logger.Debug("Removing Neatio peer", "peer", id)
+	pm.logger.Debug("Removing NEAT Blockchain peer", "peer", id)
 
-	// Unregister the peer from the downloader and Neatio peer set
+	// Unregister the peer from the downloader and NEAT Blockchain peer set
 	pm.downloader.UnregisterPeer(id)
 	if err := pm.peers.Unregister(id); err != nil {
 		pm.logger.Error("Peer removal failed", "peer", id, "err", err)
@@ -287,9 +287,9 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	if pm.peers.Len() >= pm.maxPeers && !p.Peer.Info().Network.Trusted {
 		return p2p.DiscTooManyPeers
 	}
-	p.Log().Debug("Neatio peer connected", "name", p.Name())
+	p.Log().Debug("NEAT Blockchain peer connected", "name", p.Name())
 
-	// Execute the Neatio handshake
+	// Execute the NEAT Blockchain handshake
 	var (
 		genesis = pm.blockchain.Genesis()
 		head    = pm.blockchain.CurrentHeader()
@@ -298,7 +298,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 		td      = pm.blockchain.GetTd(hash, number)
 	)
 	if err := p.Handshake(pm.networkId, td, hash, genesis.Hash()); err != nil {
-		p.Log().Debug("Neatio handshake failed", "err", err)
+		p.Log().Debug("NEAT Blockchain handshake failed", "err", err)
 		return err
 	}
 	if rw, ok := p.rw.(*meteredMsgReadWriter); ok {
@@ -306,7 +306,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	}
 	// Register the peer locally
 	if err := pm.peers.Register(p); err != nil {
-		p.Log().Error("Neatio peer registration failed", "err", err)
+		p.Log().Error("NEAT Blockchain peer registration failed", "err", err)
 		return err
 	}
 
@@ -335,7 +335,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	// main loop. handle incoming messages.
 	for {
 		if err := pm.handleMsg(p); err != nil {
-			p.Log().Debug("Neatio message handling failed", "err", err)
+			p.Log().Debug("NEAT Blockchain message handling failed", "err", err)
 			return err
 		}
 	}
@@ -356,7 +356,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 
 	// Handle the message depending on its contents
 	switch {
-	// NeatChain Consensus Message
+	// NeatIO Consensus Message
 	case msg.Code >= 0x20 && msg.Code <= 0x23:
 		if handler, ok := pm.engine.(consensus.Handler); ok {
 			var msgBytes []byte
@@ -930,10 +930,10 @@ func (self *ProtocolManager) tx3PrfDtBroadcastLoop() {
 	}
 }
 
-// NodeInfo represents a short summary of the Neatio sub-protocol metadata
+// NodeInfo represents a short summary of the NEAT Blockchain sub-protocol metadata
 // known about the host peer.
 type NodeInfo struct {
-	Network    uint64              `json:"network"`    // Neatio network ID (1=Frontier, 2=Morden, Ropsten=3, Rinkeby=4)
+	Network    uint64              `json:"network"`    // NEAT Blockchain network ID (1=Frontier, 2=Morden, Ropsten=3, Rinkeby=4)
 	Difficulty *big.Int            `json:"difficulty"` // Total difficulty of the host's blockchain
 	Genesis    common.Hash         `json:"genesis"`    // SHA3 hash of the host's genesis block
 	Config     *params.ChainConfig `json:"config"`     // Chain configuration for the fork rules

@@ -23,14 +23,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlib/wire-go"
+	"github.com/Gessiux/go-wire"
+	"github.com/neatlab/neatio/chain/consensus"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/p2p"
-	"github.com/neatlab/neatio/rlp"
-	"github.com/neatlib/set-go"
+	"github.com/Gessiux/set.v0"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 var (
@@ -56,7 +56,7 @@ type PeerInfo struct {
 
 type peer struct {
 	id                string
-	validator_pub_key string
+	consensus_pub_key string
 
 	*p2p.Peer
 	rw p2p.MsgReadWriter
@@ -103,7 +103,7 @@ func (p *peer) Info() *PeerInfo {
 }
 
 func (p *peer) GetConsensusKey() string {
-	return p.validator_pub_key
+	return p.consensus_pub_key
 }
 
 // Head retrieves a copy of the current head hash and total difficulty of the
@@ -155,7 +155,7 @@ func (p *peer) MarkTX3ProofData(hash common.Hash) {
 	p.knownTX3ProofDatas.Add(hash)
 }
 
-// ---------- NeatChain P2P peer function - Start ----------
+// ---------- NeatIO P2P peer function - Start ----------
 // Send writes an RLP-encoded message with the given code.
 // data should encode as an RLP list.
 func (p *peer) Send(msgcode uint64, data interface{}) error {
@@ -180,7 +180,7 @@ func (p *peer) SetPeerState(ps consensus.PeerState) {
 	p.peerState = ps
 }
 
-// ---------- NeatChain P2P peer function - End ----------
+// ---------- NeatIO P2P peer function - End ----------
 
 // SendTransactions sends transactions to the peer and includes the hashes
 // in its transaction hash set for future reference.

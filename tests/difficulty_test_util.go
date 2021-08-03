@@ -19,9 +19,9 @@ package tests
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/math"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
 )
 
 //go:generate gencodec -type DifficultyTest -field-override difficultyTestMarshaling -out gen_difficultytest.go

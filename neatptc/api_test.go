@@ -21,9 +21,9 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/state"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 var dumper = spew.ConfigState{Indent: "    "}

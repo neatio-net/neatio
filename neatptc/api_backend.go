@@ -20,26 +20,26 @@ import (
 	"context"
 	"math/big"
 
-	"github.com/neatlab/neatio/accounts"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/bloombits"
-	"github.com/neatlab/neatio/core/state"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/event"
+	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/bloombits"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/neatptc/gasprice"
+	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 // EthApiBackend implements neatapi.Backend for full nodes
 type EthApiBackend struct {
-	eth *NeatChain
+	eth *NeatIO
 	gpo *gasprice.Oracle
 	//apiBridge        neatapi.InnerAPIBridge
 	crossChainHelper core.CrossChainHelper

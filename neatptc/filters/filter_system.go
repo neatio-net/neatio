@@ -25,13 +25,13 @@ import (
 	"sync"
 	"time"
 
-	neatio "github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/event"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 // Type determines the kind of filter and is used to put the filter in to

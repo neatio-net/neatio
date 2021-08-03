@@ -7,9 +7,9 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
 )
 
 var _ = (*vmExecMarshaling)(nil)

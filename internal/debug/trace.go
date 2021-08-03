@@ -23,7 +23,7 @@ import (
 	"os"
 	"runtime/trace"
 
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/log"
 )
 
 // StartGoTrace turns on tracing, writing to the given file.

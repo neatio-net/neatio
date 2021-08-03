@@ -23,8 +23,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatlab/neatio/common"
 	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 var (

@@ -22,11 +22,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/prque"
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/prque"
 )
 
 const (

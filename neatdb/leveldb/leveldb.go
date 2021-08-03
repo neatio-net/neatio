@@ -26,9 +26,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/log"
-	"github.com/neatlab/neatio/metrics"
+	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/utilities/metrics"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/errors"
 	"github.com/syndtr/goleveldb/leveldb/filter"

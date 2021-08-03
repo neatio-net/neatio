@@ -19,8 +19,8 @@ package neatapi
 import (
 	"sync"
 
-	"github.com/neatlab/neatio/common/compiler"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common/compiler"
 )
 
 func makeCompilerAPIs(solcPath string) []rpc.API {
@@ -33,7 +33,7 @@ func makeCompilerAPIs(solcPath string) []rpc.API {
 			Public:    true,
 		},
 		{
-			Namespace: "neat",
+			Namespace: "int",
 			Version:   "1.0",
 			Service:   (*PublicCompilerAPI)(c),
 			Public:    true,

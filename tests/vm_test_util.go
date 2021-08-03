@@ -22,15 +22,15 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/state"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/crypto"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 // VMTest checks EVM execution without block or transaction context.

@@ -29,9 +29,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/event"
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 const (

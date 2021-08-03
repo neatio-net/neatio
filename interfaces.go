@@ -1,4 +1,4 @@
-// Package neatio defines interfaces for interacting with Neatio.
+// Package neatio defines interfaces for interacting with NEAT Blockchain.
 package neatio
 
 import (
@@ -6,8 +6,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 // NotFound is returned by API methods if the requested item does not exist.

@@ -20,8 +20,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 // senderFromServer is a types.Signer that remembers the sender address returned by the RPC

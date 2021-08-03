@@ -6,17 +6,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/crypto"
-	neatabi "github.com/neatlab/neatio/neatabi/abi"
+	neatAbi "github.com/neatlab/neatio/neatabi/abi"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 type MethoadParams struct {
 	Input   string
 	Args    interface{}
-	FunType neatabi.FunctionType
+	FunType neatAbi.FunctionType
 }
 
 var inputHex = "0x91e8537e000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000044c696b6500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001068747470733a2f2f6c696b652e636f6d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000104531353733453236384138313835303300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c4d792076616c696461746f720000000000000000000000000000000000000000"
@@ -24,18 +24,18 @@ var inputHex = "0x91e8537e000000000000000000000000000000000000000000000000000000
 var inputArray = []*MethoadParams{
 	{
 		Input:   "0x49339f0f494e5433437046756b32634a31746539575a563177385933776b51436341355a",
-		Args:    neatabi.DelegateArgs{},
-		FunType: neatabi.Delegate,
+		Args:    neatAbi.DelegateArgs{},
+		FunType: neatAbi.Delegate,
 	},
 	{
 		Input:   "0x91e8537e000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000044c696b6500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001068747470733a2f2f6c696b652e636f6d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000104531353733453236384138313835303300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c4d792076616c696461746f720000000000000000000000000000000000000000",
-		Args:    neatabi.EditValidatorArgs{},
-		FunType: neatabi.EditValidator,
+		Args:    neatAbi.EditValidatorArgs{},
+		FunType: neatAbi.EditValidator,
 	},
 }
 
 func TestMethodId(t *testing.T) {
-	method := neatabi.ChainABI.Methods[neatabi.Delegate.String()]
+	method := neatAbi.ChainABI.Methods[neatAbi.Delegate.String()]
 	methdid := method.ID()
 
 	fmt.Printf("method id, %v", hexutil.Encode(methdid))
@@ -48,17 +48,17 @@ func TestABI_UnpackMethodInputs(t *testing.T) {
 	//	t.Error(err)
 	//}
 	//
-	//function, err := neatabi.FunctionTypeFromId(inputByte[:4])
+	//function, err := neatAbi.FunctionTypeFromId(inputByte[:4])
 	//if err != nil {
 	//	t.Error(err)
 	//}
 	//fmt.Printf("function=%v\n", function)
 	//
-	////var args neatabi.CandidateArgs
-	//var args neatabi.DelegateArgs
-	////var args neatabi.EditValidatorArgs
+	////var args neatAbi.CandidateArgs
+	//var args neatAbi.DelegateArgs
+	////var args neatAbi.EditValidatorArgs
 	//
-	//err = neatabi.ChainABI.UnpackMethodInputs(&args, function.String(), inputByte[4:])
+	//err = neatAbi.ChainABI.UnpackMethodInputs(&args, function.String(), inputByte[4:])
 	//if err != nil {
 	//	t.Error(err)
 	//}
@@ -88,8 +88,8 @@ func TestABI_UnpackMethodInputs(t *testing.T) {
 	}
 }
 
-func checkFunType(input []byte, funType neatabi.FunctionType) error {
-	function, err := neatabi.FunctionTypeFromId(input[:4])
+func checkFunType(input []byte, funType neatAbi.FunctionType) error {
+	function, err := neatAbi.FunctionTypeFromId(input[:4])
 
 	if err != nil {
 		return err
@@ -102,10 +102,10 @@ func checkFunType(input []byte, funType neatabi.FunctionType) error {
 	return nil
 }
 
-func unpackMethod(input []byte, funType neatabi.FunctionType) (unpackArgs neatabi.DelegateArgs, err error) {
-	var args neatabi.DelegateArgs
+func unpackMethod(input []byte, funType neatAbi.FunctionType) (unpackArgs neatAbi.DelegateArgs, err error) {
+	var args neatAbi.DelegateArgs
 
-	err = neatabi.ChainABI.UnpackMethodInputs(&args, funType.String(), input[4:])
+	err = neatAbi.ChainABI.UnpackMethodInputs(&args, funType.String(), input[4:])
 	if err != nil {
 		return unpackArgs, err
 	}
@@ -114,7 +114,7 @@ func unpackMethod(input []byte, funType neatabi.FunctionType) (unpackArgs neatab
 
 }
 
-var FromAddr = "NEATnKrEknZdzQjpqVuZ5GUUbMqVPSUX"
+var FromAddr = "NEAToB7XfdxkFBotPapruktdRNkALpUT"
 var PubKey = "0x618CEAF6AD449B826E2521222A94426B82800202332251F0929EC47B36A647C65E00D2EA34C07A8EF7953C2E1555D8321449423CCFB0B64BB13090E7A433114D68F1C1891BAA20101E5CC8E2B10E207F5D21D1A1116547E1EED5E92FDFE4F5E58119C5267B82AE06BBA5016827396B74E1ECDCC3801746242CA24C7749EB2F88"
 var Amount = "0x152d02c7e14af68000000"
 var Salt = "like"

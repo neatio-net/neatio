@@ -1,16 +1,17 @@
 BUILD_FLAGS = -tags "$(BUILD_TAGS)" -ldflags "
 
 build:
-	@ echo "Building Neatio full node..."
-	@ go build -o $(GOPATH)/bin/neatio ./cmd/neatio/
-	@ echo "Done building!"
+	@ echo "start building......"
+	@ go build -o $(GOPATH)/bin/neatio ./chain/neatio/
+	@ echo "Done building."
+#.PHONY: neatio
 neatio:
-	@ echo "Building Neatio full node..."
-	@ go build -o $(GOPATH)/bin/neatio ./cmd/neatio/
-	@ echo "Done building!"
-	@ echo "Run 'neatio' to start Neatio full node."
+	@ echo "start building......"
+	@ go build -o $(GOPATH)/bin/neatio ./chain/neatio/
+	@ echo "Done building."
+	@ echo "Run neatio to launch neatio network."
 
 install:
-	@ echo "Installing..."
-	@ go install -mod=readonly $(BUILD_FLAGS) ./cmd/neatio
-	@ echo "Installation done!"
+	@ echo "start install......"
+	@ go install -mod=readonly $(BUILD_FLAGS) ./chain/neatio
+	@ echo "install success......"

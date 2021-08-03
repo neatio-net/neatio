@@ -24,7 +24,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatlab/neatio/rlp"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // RLPTest is the JSON structure of a single RLP test.

@@ -19,7 +19,7 @@ package downloader
 import (
 	"fmt"
 
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core/types"
 )
 
 // peerDropFn is a callback type for dropping a peer detected as malicious.

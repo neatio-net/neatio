@@ -19,7 +19,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/neatlab/neatio/core/vm"
+	"github.com/neatlab/neatio/chain/core/vm"
 )
 
 func TestVM(t *testing.T) {

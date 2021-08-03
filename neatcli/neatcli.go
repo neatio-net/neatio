@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-// Package neatcli provides a client for the Neatio RPC API.
+// Package neatcli provides a client for the NEAT Blockchain RPC API.
 package neatcli
 
 import (
@@ -24,12 +24,12 @@ import (
 	"fmt"
 	"math/big"
 
-	neatio "github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/rlp"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // Client defines typed wrappers for the Ethereum RPC API.

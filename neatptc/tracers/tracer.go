@@ -25,11 +25,11 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/crypto"
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/crypto"
 	duktape "gopkg.in/olebedev/go-duktape.v3"
 )
 

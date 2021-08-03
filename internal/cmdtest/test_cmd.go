@@ -74,7 +74,7 @@ func (tt *TestCmd) Run(name string, args ...string) {
 	}
 }
 
-// InputLine writes the given text to the childs stdin.
+// InputLine writes the given text to the sides stdin.
 // This method can also be called from an expect template, e.g.:
 //
 //     neatio.expect(`Passphrase: {{.InputLine "password"}}`)

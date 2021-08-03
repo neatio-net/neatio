@@ -19,7 +19,7 @@
 package fetcher
 
 import (
-	"github.com/neatlab/neatio/metrics"
+	"github.com/neatlab/neatio/utilities/metrics"
 )
 
 var (

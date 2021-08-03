@@ -1,1 +1,1 @@
-# Neatio full-node in Go
+# This is NEAT Blockchain | by Neatio

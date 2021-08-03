@@ -25,13 +25,13 @@ import (
 	"sync"
 	"time"
 
-	ethereum "github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/event"
+	"github.com/neatlab/neatio"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 var (
@@ -241,7 +241,7 @@ func (api *PublicFilterAPI) Logs(ctx context.Context, crit FilterCriteria) (*rpc
 		matchedLogs = make(chan []*types.Log)
 	)
 
-	logsSub, err := api.events.SubscribeLogs(ethereum.FilterQuery(crit), matchedLogs)
+	logsSub, err := api.events.SubscribeLogs(neatio.FilterQuery(crit), matchedLogs)
 	if err != nil {
 		return nil, err
 	}
@@ -269,7 +269,7 @@ func (api *PublicFilterAPI) Logs(ctx context.Context, crit FilterCriteria) (*rpc
 
 // FilterCriteria represents a request to create a new filter.
 //
-// TODO(karalabe): Kill this in favor of ethereum.FilterQuery.
+// TODO(karalabe): Kill this in favor of neatio.FilterQuery.
 type FilterCriteria struct {
 	FromBlock *big.Int
 	ToBlock   *big.Int
@@ -292,7 +292,7 @@ type FilterCriteria struct {
 // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_newfilter
 func (api *PublicFilterAPI) NewFilter(crit FilterCriteria) (rpc.ID, error) {
 	logs := make(chan []*types.Log)
-	logsSub, err := api.events.SubscribeLogs(ethereum.FilterQuery(crit), logs)
+	logsSub, err := api.events.SubscribeLogs(neatio.FilterQuery(crit), logs)
 	if err != nil {
 		return rpc.ID(""), err
 	}
@@ -539,7 +539,7 @@ func (args *FilterCriteria) UnmarshalJSON(data []byte) error {
 
 func decodeAddress(s string) (common.Address, error) {
 	b, err := hexutil.Decode(s)
-	if err == nil && len(b) != common.NeatAddressLength {
+	if err == nil && len(b) != common.NEATAddressLength {
 		err = fmt.Errorf("hex has invalid length %d after decoding", len(b))
 	}
 	return common.BytesToAddress(b), err

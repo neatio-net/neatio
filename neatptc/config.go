@@ -25,16 +25,16 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/consensus/neatpos"
-	"github.com/neatlab/neatio/core"
+	"github.com/neatlab/neatio/chain/consensus/neatcon"
+	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/neatptc/gasprice"
 	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
 )
 
-// DefaultConfig contains default settings for use on the Neatio main net.
+// DefaultConfig contains default settings for use on the NEATIO main net.
 var DefaultConfig = Config{
 	//SyncMode: downloader.FastSync,
 	SyncMode: downloader.FullSync,
@@ -111,7 +111,7 @@ type Config struct {
 	EnablePreimageRecording bool
 
 	// NeatCon options
-	NeatPoS neatpos.Config
+	NeatCon neatcon.Config
 
 	// Miscellaneous options
 	DocRoot string `toml:"-"`

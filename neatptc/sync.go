@@ -21,11 +21,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/log"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
 	"github.com/neatlab/neatio/neatptc/downloader"
-	"github.com/neatlab/neatio/p2p/discover"
+	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 const (

@@ -22,12 +22,12 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/core/types"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // TransactionTest checks RLP decoding and sender derivation of transactions.

@@ -20,13 +20,13 @@ import (
 	"context"
 	"math/big"
 
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/bloombits"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/event"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/bloombits"
+	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/rpc"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/event"
 )
 
 type Backend interface {

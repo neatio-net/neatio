@@ -25,27 +25,27 @@ import (
 	"strings"
 	"time"
 
-	"github.com/neatlab/neatio/consensus"
-	"github.com/neatlab/neatio/consensus/neatpos/epoch"
-	"github.com/neatlab/neatio/core/state"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
+	"github.com/neatlab/neatio/chain/core/state"
 
-	"github.com/neatlab/neatio/accounts"
-	"github.com/neatlab/neatio/accounts/keystore"
-	"github.com/neatlab/neatio/common"
-	"github.com/neatlab/neatio/common/hexutil"
-	"github.com/neatlab/neatio/common/math"
-	"github.com/neatlab/neatio/core"
-	"github.com/neatlab/neatio/core/rawdb"
-	"github.com/neatlab/neatio/core/types"
-	"github.com/neatlab/neatio/core/vm"
-	"github.com/neatlab/neatio/crypto"
-	"github.com/neatlab/neatio/log"
-	neatabi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/p2p"
+	goCrypto "github.com/Gessiux/go-crypto"
+	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatlab/neatio/chain/log"
+	neatAbi "github.com/neatlab/neatio/neatabi/abi"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/rlp"
-	"github.com/neatlab/neatio/rpc"
-	goCrypto "github.com/neatlib/crypto-go"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/utilities/rlp"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
@@ -54,25 +54,25 @@ const (
 	updateValidatorThreshold = 100
 )
 
-// PublicNeatioAPI provides an API to access neatio related information.
+// PublicNEATChainAPI provides an API to access neatio related information.
 // It offers only methods that operate on public data that is freely available to anyone.
-type PublicNeatioAPI struct {
+type PublicNEATChainAPI struct {
 	b Backend
 }
 
-// NewPublicNeatioAPI creates a new neatio protocol API.
-func NewPublicNeatioAPI(b Backend) *PublicNeatioAPI {
-	return &PublicNeatioAPI{b}
+// NewPublicNEATChainAPI creates a new neatio protocol API.
+func NewPublicNEATChainAPI(b Backend) *PublicNEATChainAPI {
+	return &PublicNEATChainAPI{b}
 }
 
 // GasPrice returns a suggestion for a gas price.
-func (s *PublicNeatioAPI) GasPrice(ctx context.Context) (*hexutil.Big, error) {
+func (s *PublicNEATChainAPI) GasPrice(ctx context.Context) (*hexutil.Big, error) {
 	price, err := s.b.SuggestPrice(ctx)
 	return (*hexutil.Big)(price), err
 }
 
 // ProtocolVersion returns the current neatio protocol version this node supports
-func (s *PublicNeatioAPI) ProtocolVersion() hexutil.Uint {
+func (s *PublicNEATChainAPI) ProtocolVersion() hexutil.Uint {
 	return hexutil.Uint(s.b.ProtocolVersion())
 }
 
@@ -83,7 +83,7 @@ func (s *PublicNeatioAPI) ProtocolVersion() hexutil.Uint {
 // - highestBlock:  block number of the highest block header this node has received from peers
 // - pulledStates:  number of state entries processed until now
 // - knownStates:   number of known state entries that still need to be pulled
-func (s *PublicNeatioAPI) Syncing() (interface{}, error) {
+func (s *PublicNEATChainAPI) Syncing() (interface{}, error) {
 	progress := s.b.Downloader().Progress()
 
 	// Return not syncing if the synchronisation already completed
@@ -227,7 +227,7 @@ func NewPrivateAccountAPI(b Backend, nonceLock *AddrLocker) *PrivateAccountAPI {
 }
 
 // ListAccounts will return a list of addresses for accounts this node manages.
-//The modified account list returns an address type of string
+//修改帐户列表返回地址类型为 string
 func (s *PrivateAccountAPI) ListAccounts() []string {
 	addresses := make([]string, 0) // return [] instead of nil if empty
 	for _, wallet := range s.am.Wallets() {
@@ -419,16 +419,16 @@ func (s *PrivateAccountAPI) SignTransaction(ctx context.Context, args SendTxArgs
 // safely used to calculate a signature from.
 //
 // The hash is calulcated as
-//   keccak256("\x19Neatio Signed Message:\n"${message length}${message}).
+//   keccak256("\x19NEAT Chain Signed Message:\n"${message length}${message}).
 //
 // This gives context to the signed message and prevents signing of transactions.
 func signHash(data []byte) []byte {
-	msg := fmt.Sprintf("\x19Neatio Signed Message:\n%d%s", len(data), data)
+	msg := fmt.Sprintf("\x19NEAT Chain Signed Message:\n%d%s", len(data), data)
 	return crypto.Keccak256([]byte(msg))
 }
 
-// Sign calculates an Neatio ECDSA signature for:
-// keccack256("\x19Neatio Signed Message:\n" + len(message) + message))
+// Sign calculates an NEAT Blockchain ECDSA signature for:
+// keccack256("\x19NEAT Chain Signed Message:\n" + len(message) + message))
 //
 // Note, the produced signature conforms to the secp256k1 curve R, S and V values,
 // where the V value will be 27 or 28 for legacy reasons.
@@ -456,7 +456,7 @@ func (s *PrivateAccountAPI) Sign(ctx context.Context, data hexutil.Bytes, addr c
 // EcRecover returns the address for the account that was used to create the signature.
 // Note, this function is compatible with eth_sign and personal_sign. As such it recovers
 // the address of:
-// hash = keccak256("\x19Neatio Signed Message:\n"${message length}${message})
+// hash = keccak256("\x19NEAT Chain Signed Message:\n"${message length}${message})
 // addr = ecrecover(hash, signature)
 //
 // Note, the signature must conform to the secp256k1 curve R, S and V values, where
@@ -468,7 +468,7 @@ func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Byt
 		return "", fmt.Errorf("signature must be 65 bytes long")
 	}
 	if sig[64] != 27 && sig[64] != 28 {
-		return "", fmt.Errorf("invalid Neatio signature (V is not 27 or 28)")
+		return "", fmt.Errorf("invalid NEAT Blockchain signature (V is not 27 or 28)")
 	}
 	sig[64] -= 27 // Transform yellow paper V from 27/28 to 0/1
 
@@ -1266,8 +1266,8 @@ type SendTxArgs struct {
 // setDefaults is a helper function that fills in default values for unspecified tx fields.
 func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 
-	var function = neatabi.Unknown
-	if neatabi.IsNeatChainContractAddr(args.To) {
+	var function = neatAbi.Unknown
+	if neatAbi.IsNeatChainContractAddr(args.To) {
 		var input []byte
 		if args.Data != nil {
 			input = *args.Data
@@ -1279,14 +1279,14 @@ func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 		}
 
 		var err error
-		function, err = neatabi.FunctionTypeFromId(input[:4])
+		function, err = neatAbi.FunctionTypeFromId(input[:4])
 		if err != nil {
 			return err
 		}
 	}
 
 	// force GasLimit to 0 for DepositInSideChain/WithdrawFromMainChain/SaveDataToMainChain in order to avoid being dropped by TxPool.
-	if function == neatabi.DepositInSideChain || function == neatabi.WithdrawFromMainChain || function == neatabi.SaveDataToMainChain {
+	if function == neatAbi.DepositInSideChain || function == neatAbi.WithdrawFromMainChain || function == neatAbi.SaveDataToMainChain {
 		args.Gas = new(hexutil.Uint64)
 		*(*uint64)(args.Gas) = 0
 	} else {
@@ -1320,7 +1320,7 @@ func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 		if len(input) == 0 {
 			return errors.New(`contract creation without any data provided`)
 		}
-	} else if !crypto.ValidateNeatAddr(string(args.To[:])) { // added on 2019年11月02日
+	} else if !crypto.ValidateNEATAddr(string(args.To[:])) { // added on 2019年11月02日
 		return errors.New(`invalid address`)
 	}
 
@@ -1451,7 +1451,7 @@ func (s *PublicTransactionPoolAPI) SendRawTransaction(ctx context.Context, encod
 }
 
 // Sign calculates an ECDSA signature for:
-// keccack256("\x19Neatio Signed Message:\n" + len(message) + message).
+// keccack256("\x19NEAT Chain Signed Message:\n" + len(message) + message).
 //
 // Note, the produced signature conforms to the secp256k1 curve R, S and V values,
 // where the V value will be 27 or 28 for legacy reasons.
@@ -1573,14 +1573,14 @@ func (s *PublicTransactionPoolAPI) Resend(ctx context.Context, sendArgs SendTxAr
 	return common.Hash{}, fmt.Errorf("Transaction %#x not found", matchTx.Hash())
 }
 
-// PublicDebugAPI is the collection of Neatio APIs exposed over the public
+// PublicDebugAPI is the collection of NEAT Blockchain APIs exposed over the public
 // debugging endpoint.
 type PublicDebugAPI struct {
 	b Backend
 }
 
 // NewPublicDebugAPI creates a new API definition for the public debug methods
-// of the Neatio service.
+// of the NEAT Blockchain service.
 func NewPublicDebugAPI(b Backend) *PublicDebugAPI {
 	return &PublicDebugAPI{b: b}
 }
@@ -1607,14 +1607,14 @@ func (api *PublicDebugAPI) PrintBlock(ctx context.Context, number uint64) (strin
 	return block.String(), nil
 }
 
-// PrivateDebugAPI is the collection of Neatio APIs exposed over the private
+// PrivateDebugAPI is the collection of NEAT Blockchain APIs exposed over the private
 // debugging endpoint.
 type PrivateDebugAPI struct {
 	b Backend
 }
 
 // NewPrivateDebugAPI creates a new API definition for the private debug methods
-// of the Neatio service.
+// of the NEAT Blockchain service.
 func NewPrivateDebugAPI(b Backend) *PrivateDebugAPI {
 	return &PrivateDebugAPI{b: b}
 }
@@ -1687,18 +1687,18 @@ var (
 	maxEditValidatorLength = 100
 )
 
-type PublicNeatApi struct {
+type PublicNEATAPI struct {
 	am        *accounts.Manager
 	b         Backend
 	nonceLock *AddrLocker
 }
 
-// NewPublicNeatApi creates a new NEAT API instance.
-func NewPublicNeatApi(b Backend, nonceLock *AddrLocker) *PublicNeatApi {
-	return &PublicNeatApi{b.AccountManager(), b, nonceLock}
+// NewPublicNEATAPI creates a new NEAT API instance.
+func NewPublicNEATAPI(b Backend, nonceLock *AddrLocker) *PublicNEATAPI {
+	return &PublicNEATAPI{b.AccountManager(), b, nonceLock}
 }
 
-func (s *PublicNeatApi) SignAddress(from common.Address, consensusPrivateKey hexutil.Bytes) (goCrypto.Signature, error) {
+func (s *PublicNEATAPI) SignAddress(from common.Address, consensusPrivateKey hexutil.Bytes) (goCrypto.Signature, error) {
 	if len(consensusPrivateKey) != 32 {
 		return nil, errors.New("invalid consensus private key")
 	}
@@ -1711,17 +1711,17 @@ func (s *PublicNeatApi) SignAddress(from common.Address, consensusPrivateKey hex
 	return blsSign, nil
 }
 
-func (api *PublicNeatApi) WithdrawReward(ctx context.Context, from common.Address, delegateAddress common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatabi.ChainABI.Pack(neatabi.WithdrawReward.String(), delegateAddress)
+func (api *PublicNEATAPI) WithdrawReward(ctx context.Context, from common.Address, delegateAddress common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.WithdrawReward.String(), delegateAddress)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.WithdrawReward.RequiredGas()
+	defaultGas := neatAbi.WithdrawReward.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1732,18 +1732,18 @@ func (api *PublicNeatApi) WithdrawReward(ctx context.Context, from common.Addres
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) Delegate(ctx context.Context, from, candidate common.Address, amount *hexutil.Big, gasPrice *hexutil.Big) (common.Hash, error) {
+func (api *PublicNEATAPI) Delegate(ctx context.Context, from, candidate common.Address, amount *hexutil.Big, gasPrice *hexutil.Big) (common.Hash, error) {
 
-	input, err := neatabi.ChainABI.Pack(neatabi.Delegate.String(), candidate)
+	input, err := neatAbi.ChainABI.Pack(neatAbi.Delegate.String(), candidate)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.Delegate.RequiredGas()
+	defaultGas := neatAbi.Delegate.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    amount,
@@ -1753,18 +1753,18 @@ func (api *PublicNeatApi) Delegate(ctx context.Context, from, candidate common.A
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) UnDelegate(ctx context.Context, from, candidate common.Address, amount *hexutil.Big, gasPrice *hexutil.Big) (common.Hash, error) {
+func (api *PublicNEATAPI) UnDelegate(ctx context.Context, from, candidate common.Address, amount *hexutil.Big, gasPrice *hexutil.Big) (common.Hash, error) {
 
-	input, err := neatabi.ChainABI.Pack(neatabi.UnDelegate.String(), candidate, (*big.Int)(amount))
+	input, err := neatAbi.ChainABI.Pack(neatAbi.UnDelegate.String(), candidate, (*big.Int)(amount))
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.UnDelegate.RequiredGas()
+	defaultGas := neatAbi.UnDelegate.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1775,18 +1775,18 @@ func (api *PublicNeatApi) UnDelegate(ctx context.Context, from, candidate common
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) Register(ctx context.Context, from common.Address, registerAmount *hexutil.Big, pubkey goCrypto.BLSPubKey, signature hexutil.Bytes, commission uint8, gasPrice *hexutil.Big) (common.Hash, error) {
+func (api *PublicNEATAPI) Register(ctx context.Context, from common.Address, registerAmount *hexutil.Big, pubkey goCrypto.BLSPubKey, signature hexutil.Bytes, commission uint8, gasPrice *hexutil.Big) (common.Hash, error) {
 
-	input, err := neatabi.ChainABI.Pack(neatabi.Register.String(), pubkey.Bytes(), signature, commission)
+	input, err := neatAbi.ChainABI.Pack(neatAbi.Register.String(), pubkey.Bytes(), signature, commission)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.Register.RequiredGas()
+	defaultGas := neatAbi.Register.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    registerAmount,
@@ -1796,18 +1796,18 @@ func (api *PublicNeatApi) Register(ctx context.Context, from common.Address, reg
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) UnRegister(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
+func (api *PublicNEATAPI) UnRegister(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
 
-	input, err := neatabi.ChainABI.Pack(neatabi.UnRegister.String())
+	input, err := neatAbi.ChainABI.Pack(neatAbi.UnRegister.String())
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.UnRegister.RequiredGas()
+	defaultGas := neatAbi.UnRegister.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1817,7 +1817,7 @@ func (api *PublicNeatApi) UnRegister(ctx context.Context, from common.Address, g
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) CheckCandidate(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
+func (api *PublicNEATAPI) CheckCandidate(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
 	state, _, err := api.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
 		return nil, err
@@ -1830,31 +1830,31 @@ func (api *PublicNeatApi) CheckCandidate(ctx context.Context, address common.Add
 	return fields, state.Error()
 }
 
-func (api *PublicNeatApi) GetBannedStatus(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
+func (api *PublicNEATAPI) GetForbiddenStatus(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
 	state, _, err := api.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
 		return nil, err
 	}
 
 	fields := map[string]interface{}{
-		"banned":      state.GetBanned(address),
-		"bannedEpoch": state.GetBannedTime(address),
-		"blocks":      state.GetMinedBlocks(address),
+		"forbidden":      state.GetForbidden(address),
+		"forbiddenEpoch": state.GetForbiddenTime(address),
+		"blocks":         state.GetMinedBlocks(address),
 	}
 	return fields, state.Error()
 }
 
-func (api *PublicNeatApi) SetCommission(ctx context.Context, from common.Address, commission uint8, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatabi.ChainABI.Pack(neatabi.SetCommission.String(), commission)
+func (api *PublicNEATAPI) SetCommission(ctx context.Context, from common.Address, commission uint8, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.SetCommission.String(), commission)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.SetCommission.RequiredGas()
+	defaultGas := neatAbi.SetCommission.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1865,17 +1865,17 @@ func (api *PublicNeatApi) SetCommission(ctx context.Context, from common.Address
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) EditValidator(ctx context.Context, from common.Address, moniker, website string, identity string, details string, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatabi.ChainABI.Pack(neatabi.EditValidator.String(), moniker, website, identity, details)
+func (api *PublicNEATAPI) EditValidator(ctx context.Context, from common.Address, moniker, website string, identity string, details string, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.EditValidator.String(), moniker, website, identity, details)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.EditValidator.RequiredGas()
+	defaultGas := neatAbi.EditValidator.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1886,17 +1886,17 @@ func (api *PublicNeatApi) EditValidator(ctx context.Context, from common.Address
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNeatApi) UnBanned(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatabi.ChainABI.Pack(neatabi.UnBanned.String())
+func (api *PublicNEATAPI) UnForbidden(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.UnForbidden.String())
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatabi.UnBanned.RequiredGas()
+	defaultGas := neatAbi.UnForbidden.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatabi.ChainContractMagicAddr,
+		To:       &neatAbi.ChainContractMagicAddr,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1909,35 +1909,35 @@ func (api *PublicNeatApi) UnBanned(ctx context.Context, from common.Address, gas
 
 func init() {
 	// Withdraw reward
-	core.RegisterValidateCb(neatabi.WithdrawReward, withdrawRewardValidateCb)
-	core.RegisterApplyCb(neatabi.WithdrawReward, withdrawRewardApplyCb)
+	core.RegisterValidateCb(neatAbi.WithdrawReward, withdrawRewardValidateCb)
+	core.RegisterApplyCb(neatAbi.WithdrawReward, withdrawRewardApplyCb)
 
 	// Delegate
-	core.RegisterValidateCb(neatabi.Delegate, delegateValidateCb)
-	core.RegisterApplyCb(neatabi.Delegate, delegateApplyCb)
+	core.RegisterValidateCb(neatAbi.Delegate, delegateValidateCb)
+	core.RegisterApplyCb(neatAbi.Delegate, delegateApplyCb)
 
 	// Cancel Delegate
-	core.RegisterValidateCb(neatabi.UnDelegate, unDelegateValidateCb)
-	core.RegisterApplyCb(neatabi.UnDelegate, unDelegateApplyCb)
+	core.RegisterValidateCb(neatAbi.UnDelegate, unDelegateValidateCb)
+	core.RegisterApplyCb(neatAbi.UnDelegate, unDelegateApplyCb)
 
 	// Register
-	core.RegisterValidateCb(neatabi.Register, registerValidateCb)
-	core.RegisterApplyCb(neatabi.Register, registerApplyCb)
+	core.RegisterValidateCb(neatAbi.Register, registerValidateCb)
+	core.RegisterApplyCb(neatAbi.Register, registerApplyCb)
 
 	// Cancel Register
-	core.RegisterValidateCb(neatabi.UnRegister, unRegisterValidateCb)
-	core.RegisterApplyCb(neatabi.UnRegister, unRegisterApplyCb)
+	core.RegisterValidateCb(neatAbi.UnRegister, unRegisterValidateCb)
+	core.RegisterApplyCb(neatAbi.UnRegister, unRegisterApplyCb)
 
 	// Set Commission
-	core.RegisterValidateCb(neatabi.SetCommission, setCommisstionValidateCb)
-	core.RegisterApplyCb(neatabi.SetCommission, setCommisstionApplyCb)
+	core.RegisterValidateCb(neatAbi.SetCommission, setCommisstionValidateCb)
+	core.RegisterApplyCb(neatAbi.SetCommission, setCommisstionApplyCb)
 
 	// Edit Validator
-	core.RegisterValidateCb(neatabi.EditValidator, editValidatorValidateCb)
+	core.RegisterValidateCb(neatAbi.EditValidator, editValidatorValidateCb)
 
-	// UnBanned
-	core.RegisterValidateCb(neatabi.UnBanned, unBannedValidateCb)
-	core.RegisterApplyCb(neatabi.UnBanned, unBannedApplyCb)
+	// UnForbidden
+	core.RegisterValidateCb(neatAbi.UnForbidden, unForbiddenValidateCb)
+	core.RegisterApplyCb(neatAbi.UnForbidden, unForbiddenApplyCb)
 }
 
 func withdrawRewardValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
@@ -1965,11 +1965,11 @@ func withdrawRewardApplyCb(tx *types.Transaction, state *state.StateDB, bc *core
 	return nil
 }
 
-func withDrawRewardValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatabi.WithdrawRewardArgs, error) {
+func withDrawRewardValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.WithdrawRewardArgs, error) {
 
-	var args neatabi.WithdrawRewardArgs
+	var args neatAbi.WithdrawRewardArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.WithdrawReward.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.WithdrawReward.String(), data[4:]); err != nil {
 		return nil, err
 	}
 
@@ -2036,7 +2036,7 @@ func registerApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 	return nil
 }
 
-func registerValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatabi.RegisterArgs, error) {
+func registerValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.RegisterArgs, error) {
 	candidateSet := state.GetCandidateSet()
 	if len(candidateSet) > maxCandidateNumber {
 		return nil, core.ErrMaxCandidate
@@ -2052,9 +2052,9 @@ func registerValidation(from common.Address, tx *types.Transaction, state *state
 		return nil, core.ErrMinimumRegisterAmount
 	}
 
-	var args neatabi.RegisterArgs
+	var args neatAbi.RegisterArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.Register.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.Register.String(), data[4:]); err != nil {
 		return nil, err
 	}
 
@@ -2069,8 +2069,8 @@ func registerValidation(from common.Address, tx *types.Transaction, state *state
 
 	// Annual/SemiAnnual supernode can not become candidate
 	var ep *epoch.Epoch
-	if tdm, ok := bc.Engine().(consensus.NeatPoS); ok {
-		ep = tdm.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
+	if nc, ok := bc.Engine().(consensus.NeatCon); ok {
+		ep = nc.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
 	}
 	if _, supernode := ep.Validators.GetByAddress(from.Bytes()); supernode != nil && supernode.RemainingEpoch > 0 {
 		return nil, core.ErrCannotCandidate
@@ -2133,15 +2133,15 @@ func unRegisterValidation(from common.Address, tx *types.Transaction, state *sta
 		return core.ErrNotCandidate
 	}
 
-	// Banned candidate can't unregister
-	if state.GetBanned(from) {
-		return core.ErrBannedUnRegister
+	// Forbidden candidate can't unregister
+	if state.GetForbidden(from) {
+		return core.ErrForbiddenUnRegister
 	}
 
 	// Super node can't unregister
 	var ep *epoch.Epoch
-	if tdm, ok := bc.Engine().(consensus.NeatPoS); ok {
-		ep = tdm.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
+	if nc, ok := bc.Engine().(consensus.NeatCon); ok {
+		ep = nc.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
 	}
 	if _, supernode := ep.Validators.GetByAddress(from.Bytes()); supernode != nil && supernode.RemainingEpoch > 0 {
 		return core.ErrCannotUnRegister
@@ -2187,8 +2187,8 @@ func delegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 	// Add Balance to Candidate's Proxied Balance
 	state.AddProxiedBalanceByUser(args.Candidate, from, amount)
 
-	// if banned, don't add to next epoch validator vote set
-	if !state.GetBanned(from) {
+	// if forbidden, don't add to next epoch validator vote set
+	if !state.GetForbidden(from) {
 		verror = updateNextEpochValidatorVoteSet(tx, state, bc, args.Candidate, ops)
 		if verror != nil {
 			return verror
@@ -2198,15 +2198,15 @@ func delegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 	return nil
 }
 
-func delegateValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatabi.DelegateArgs, error) {
+func delegateValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.DelegateArgs, error) {
 	// Check minimum delegate amount
 	if tx.Value().Sign() == -1 {
 		return nil, core.ErrDelegateAmount
 	}
 
-	var args neatabi.DelegateArgs
+	var args neatAbi.DelegateArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.Delegate.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.Delegate.String(), data[4:]); err != nil {
 		return nil, err
 	}
 
@@ -2227,8 +2227,8 @@ func delegateValidation(from common.Address, tx *types.Transaction, state *state
 
 	// If Candidate is supernode, only allow to increase the stack(whitelist proxied list), not allow to create the new stack
 	var ep *epoch.Epoch
-	if tdm, ok := bc.Engine().(consensus.NeatPoS); ok {
-		ep = tdm.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
+	if nc, ok := bc.Engine().(consensus.NeatCon); ok {
+		ep = nc.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
 	}
 	if _, supernode := ep.Validators.GetByAddress(args.Candidate.Bytes()); supernode != nil && supernode.RemainingEpoch > 0 {
 		if depositBalance.Sign() == 0 {
@@ -2293,11 +2293,11 @@ func unDelegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Blo
 	return nil
 }
 
-func unDelegateValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatabi.UnDelegateArgs, error) {
+func unDelegateValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.UnDelegateArgs, error) {
 
-	var args neatabi.UnDelegateArgs
+	var args neatAbi.UnDelegateArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.UnDelegate.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.UnDelegate.String(), data[4:]); err != nil {
 		return nil, err
 	}
 
@@ -2308,8 +2308,8 @@ func unDelegateValidation(from common.Address, tx *types.Transaction, state *sta
 
 	// Super node Candidate can't decrease balance
 	var ep *epoch.Epoch
-	if tdm, ok := bc.Engine().(consensus.NeatPoS); ok {
-		ep = tdm.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
+	if nc, ok := bc.Engine().(consensus.NeatCon); ok {
+		ep = nc.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
 	}
 	if _, supernode := ep.Validators.GetByAddress(args.Candidate.Bytes()); supernode != nil && supernode.RemainingEpoch > 0 {
 		return nil, core.ErrCannotUnBond
@@ -2364,14 +2364,14 @@ func setCommisstionApplyCb(tx *types.Transaction, state *state.StateDB, bc *core
 	return nil
 }
 
-func setCommissionValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatabi.SetCommissionArgs, error) {
+func setCommissionValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.SetCommissionArgs, error) {
 	if !state.IsCandidate(from) {
 		return nil, core.ErrNotCandidate
 	}
 
-	var args neatabi.SetCommissionArgs
+	var args neatAbi.SetCommissionArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.SetCommission.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.SetCommission.String(), data[4:]); err != nil {
 		return nil, err
 	}
 
@@ -2388,9 +2388,9 @@ func editValidatorValidateCb(tx *types.Transaction, state *state.StateDB, bc *co
 		return errors.New("you are not a validator or candidate")
 	}
 
-	var args neatabi.EditValidatorArgs
+	var args neatAbi.EditValidatorArgs
 	data := tx.Data()
-	if err := neatabi.ChainABI.UnpackMethodInputs(&args, neatabi.EditValidator.String(), data[4:]); err != nil {
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.EditValidator.String(), data[4:]); err != nil {
 		return err
 	}
 
@@ -2405,10 +2405,10 @@ func editValidatorValidateCb(tx *types.Transaction, state *state.StateDB, bc *co
 	return nil
 }
 
-func unBannedValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
+func unForbiddenValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
 	from := derivedAddressFromTx(tx)
 
-	err := unBannedValidation(from, state, bc)
+	err := unForbiddenValidation(from, state, bc)
 	if err != nil {
 		return err
 	}
@@ -2416,22 +2416,22 @@ func unBannedValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.Bl
 	return nil
 }
 
-func unBannedApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
+func unForbiddenApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
 	from := derivedAddressFromTx(tx)
-	err := unBannedValidation(from, state, bc)
+	err := unForbiddenValidation(from, state, bc)
 	if err != nil {
 		return err
 	}
 
-	state.SetBanned(from, false)
+	state.SetForbidden(from, false)
 
-	// remove address from banned set
-	state.ClearBannedSetByAddress(from)
+	// remove address from forbidden set
+	state.ClearForbiddenSetByAddress(from)
 
 	return nil
 }
 
-func unBannedValidation(from common.Address, state *state.StateDB, bc *core.BlockChain) error {
+func unForbiddenValidation(from common.Address, state *state.StateDB, bc *core.BlockChain) error {
 	if !state.IsCandidate(from) {
 		return core.ErrNotCandidate
 	}
@@ -2447,15 +2447,15 @@ func unBannedValidation(from common.Address, state *state.StateDB, bc *core.Bloc
 		return verror
 	}
 
-	if !state.GetBanned(from) {
-		return fmt.Errorf("should not unbanned")
+	if !state.GetForbidden(from) {
+		return fmt.Errorf("should not unforbidden")
 	}
 
-	bannedEpoch := state.GetBannedTime(from)
-	fmt.Printf("Unbannedden validation, banned epoch %v\n", bannedEpoch)
+	forbiddenEpoch := state.GetForbiddenTime(from)
+	fmt.Printf("Unforbiddenden validation, forbidden epoch %v\n", forbiddenEpoch)
 
-	if bannedEpoch.Cmp(common.Big0) == 1 {
-		return fmt.Errorf("please unbanned %v epoch later", bannedEpoch)
+	if forbiddenEpoch.Cmp(common.Big0) == 1 {
+		return fmt.Errorf("please unforbidden %v epoch later", forbiddenEpoch)
 	}
 
 	return nil
@@ -2476,12 +2476,12 @@ func concatCopyPreAllocate(slices [][]byte) []byte {
 
 func getEpoch(bc *core.BlockChain) (*epoch.Epoch, error) {
 	var ep *epoch.Epoch
-	if tdm, ok := bc.Engine().(consensus.NeatPoS); ok {
-		ep = tdm.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
+	if nc, ok := bc.Engine().(consensus.NeatCon); ok {
+		ep = nc.GetEpoch().GetEpochByBlockNumber(bc.CurrentBlock().NumberU64())
 	}
 
 	if ep == nil {
-		return nil, errors.New("epoch is nil, are you running on NeatPoS Consensus Engine")
+		return nil, errors.New("epoch is nil, are you running on NeatCon Consensus Engine")
 	}
 
 	return ep, nil
