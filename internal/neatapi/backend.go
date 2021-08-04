@@ -100,17 +100,17 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   txapi,
 			Public:    true,
 		}, {
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   NewPublicNEATChainAPI(apiBackend),
 			Public:    true,
 		}, {
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   NewPublicBlockChainAPI(apiBackend),
 			Public:    true,
 		}, {
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   txapi,
 			Public:    true,
@@ -134,7 +134,7 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   NewPublicAccountAPI(apiBackend.AccountManager()),
 			Public:    true,
 		}, {
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   NewPublicAccountAPI(apiBackend.AccountManager()),
 			Public:    true,
@@ -144,7 +144,7 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 			Service:   NewPrivateAccountAPI(apiBackend, nonceLock),
 			Public:    false,
 		}, {
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   NewPublicNEATAPI(apiBackend, nonceLock),
 			Public:    true,

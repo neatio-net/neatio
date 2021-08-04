@@ -99,8 +99,8 @@ func defaultNodeConfig() node.Config {
 	cfg := node.DefaultConfig
 	cfg.Name = clientIdentifier
 	cfg.Version = params.VersionWithCommit(gitCommit)
-	cfg.HTTPModules = append(cfg.HTTPModules, "int", "eth")
-	cfg.WSModules = append(cfg.WSModules, "int", "eth")
+	cfg.HTTPModules = append(cfg.HTTPModules, "neat", "eth")
+	cfg.WSModules = append(cfg.WSModules, "neat", "eth")
 	cfg.IPCPath = "neatio.ipc"
 	return cfg
 }

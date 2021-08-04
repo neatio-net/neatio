@@ -33,7 +33,7 @@ func makeCompilerAPIs(solcPath string) []rpc.API {
 			Public:    true,
 		},
 		{
-			Namespace: "int",
+			Namespace: "neat",
 			Version:   "1.0",
 			Service:   (*PublicCompilerAPI)(c),
 			Public:    true,

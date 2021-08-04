@@ -50,7 +50,7 @@ func TestConsoleWelcome(t *testing.T) {
 	neatio.SetTemplateFunc("goos", func() string { return runtime.GOOS })
 	neatio.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
 	neatio.SetTemplateFunc("gover", runtime.Version)
-	neatio.SetTemplateFunc("neatchainver", func() string { return params.Version })
+	neatio.SetTemplateFunc("neatiover", func() string { return params.Version })
 	neatio.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
 	neatio.SetTemplateFunc("apis", func() string { return ipcAPIs })
 
@@ -58,7 +58,7 @@ func TestConsoleWelcome(t *testing.T) {
 	neatio.Expect(`
 Welcome to the neatio JavaScript console!
 
-instance: neatio/v{{neatchainver}}/{{goos}}-{{goarch}}/{{gover}}
+instance: neatio/v{{neatiover}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{.Etherbase}}
 at block: 0 ({{niltime}})
  datadir: {{.Datadir}}
@@ -133,7 +133,7 @@ func testAttachWelcome(t *testing.T, neatio *testneatchain, endpoint, apis strin
 	attach.SetTemplateFunc("goos", func() string { return runtime.GOOS })
 	attach.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
 	attach.SetTemplateFunc("gover", runtime.Version)
-	attach.SetTemplateFunc("neatchainver", func() string { return params.Version })
+	attach.SetTemplateFunc("neatiover", func() string { return params.Version })
 	attach.SetTemplateFunc("etherbase", func() string { return neatio.Etherbase })
 	attach.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
 	attach.SetTemplateFunc("ipc", func() bool { return strings.HasPrefix(endpoint, "ipc") })
@@ -144,7 +144,7 @@ func testAttachWelcome(t *testing.T, neatio *testneatchain, endpoint, apis strin
 	attach.Expect(`
 Welcome to the neatio JavaScript console!
 
-instance: neatio/v{{neatchainver}}/{{goos}}-{{goarch}}/{{gover}}
+instance: neatio/v{{neatiover}}/{{goos}}-{{goarch}}/{{gover}}
 coinbase: {{etherbase}}
 at block: 0 ({{niltime}}){{if ipc}}
  datadir: {{datadir}}{{end}}
