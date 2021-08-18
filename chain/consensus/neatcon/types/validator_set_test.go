@@ -52,7 +52,6 @@ func TestValidatorSet_Hash(t *testing.T) {
 		validators[i], _ = makeValidator(v.Address, v.PublicKey, vp)
 		totalVP.Add(totalVP, vp)
 	}
-	// 用内部的生成 validatorset 的方法，会把 validator 重新排序，不应该使用
 	validatorSet := NewValidatorSet(validators)
 
 	valSet = ValidatorSet{
@@ -114,7 +113,7 @@ func makeValidator(address, blsPubKey string, vp *big.Int) (validator *Validator
 }
 
 func TestDecodeValidatorsHash(t *testing.T) {
-	//var validatorsHashStr = "2uZsa8qZEBL29i1NtCx5xg48LkQ="
+
 	var validatorsHashStr = "7CmedS/UtB8Oo9Wk4rNQ5vOhRxs="
 	var validators Validator
 
@@ -125,7 +124,6 @@ func TestDecodeValidatorsHash(t *testing.T) {
 	fmt.Printf("validatorshash=%v\n", data)
 	fmt.Printf("validatorshashhex=%v\n", hexutil.Encode(data))
 
-	// 解不出来 validator
 	err = wire.ReadBinaryBytes(data, &validators)
 	if err != nil {
 		t.Error(err)

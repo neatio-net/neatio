@@ -3,7 +3,6 @@ package neatcon
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"math/big"
 	"time"
 
@@ -113,7 +112,7 @@ func (sb *backend) Start(chain consensus.ChainReader, currentBlock func() *types
 	sb.vcommitCh = make(chan *ntcTypes.IntermediateBlockResult, 1)
 
 	sb.chain = chain
-	fmt.Printf("neatcon backend start chain %v\n", chain)
+	//fmt.Printf("neatcon backend start chain %v\n", chain)
 	sb.currentBlock = currentBlock
 	sb.hasBadBlock = hasBadBlock
 
@@ -511,7 +510,7 @@ func (sb *backend) Finalize(chain consensus.ChainReader, header *types.Header, s
 // seal place on top.
 func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan struct{}) (interface{}, error) {
 
-	sb.logger.Info("NeatCon backend seal")
+	//sb.logger.Info("NeatCon backend seal")
 	// update the block header timestamp and signature and propose the block to core engine
 	header := block.Header()
 	number := header.Number.Uint64()
@@ -540,7 +539,7 @@ func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-
 	defer clear()
 
 	// post block into NeatCon engine
-	sb.logger.Infof("NeatCon Seal, before fire event with block height: %d", block.NumberU64())
+	//sb.logger.Infof("NeatCon Seal. Block height: %d", block.NumberU64())
 	go ntcTypes.FireEventRequest(sb.core.EventSwitch(), ntcTypes.EventDataRequest{Proposal: block})
 	//go sb.EventMux().Post(ntcTypes.RequestEvent{
 	//	Proposal: block,

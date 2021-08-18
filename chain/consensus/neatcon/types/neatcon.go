@@ -71,15 +71,14 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 }
 
 func (te *NeatConExtra) String() string {
-	str := fmt.Sprintf(`NeatConExtra: {
-ChainID:     %s
-EpochNumber: %v
-Height:      %v
-Time:        %v
+	str := fmt.Sprintf(`Network info: {
+ChainID:   %s
+EpochNo.:  %v
+Height:    %v
+Timestamp: %v
 
-EpochBytes: length %v
 }
-`, te.ChainID, te.EpochNumber, te.Height, te.Time, len(te.EpochBytes))
+`, te.ChainID, te.EpochNumber, te.Height, te.Time)
 	return str
 }
 

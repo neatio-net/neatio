@@ -283,7 +283,7 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 		//if conR.conS.Step < RoundStepPropose {
 		re := data.(types.EventDataRequest)
 		block := re.Proposal
-		conR.logger.Infof("registerEventCallbacks received block height: %d, conR.conS.Height: %d, conR.conS.Step: %v", block.NumberU64(), conR.conS.Height, conR.conS.Step)
+		//conR.logger.Infof("registerEventCallbacks received block height: %d, conR.conS.Height: %d, conR.conS.Step: %v", block.NumberU64(), conR.conS.Height, conR.conS.Step)
 		//wait block in new height or new block has been inserted to start a new height
 		if block.NumberU64() >= conR.conS.Height {
 
@@ -294,9 +294,9 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 
 			//set block here
 			conR.conS.blockFromMiner = re.Proposal
-			conR.logger.Infof("registerEventCallbacks received Request Event conR.conS.blockFromMiner has been set with height: %v", conR.conS.blockFromMiner.NumberU64())
+			//conR.logger.Infof("registerEventCallbacks received Request Event conR.conS.blockFromMiner has been set with height: %v", conR.conS.blockFromMiner.NumberU64())
 		} else {
-			conR.logger.Info("registerEventCallbacks received Request Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
+			//conR.logger.Info("registerEventCallbacks received Request Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
 		}
 	})
 
@@ -311,12 +311,12 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 	})
 
 	types.AddListenerForEvent(conR.evsw, "conR", types.EventStringFinalCommitted(), func(data types.TMEventData) {
-		conR.logger.Info("registerEventCallbacks received Final Committed Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
+		//conR.logger.Info("registerEventCallbacks received Final Committed Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
 
 		edfc := data.(types.EventDataFinalCommitted)
 
 		if edfc.BlockNumber == conR.conS.Height {
-			conR.logger.Info("start new height to apply this commit", "new height", edfc.BlockNumber+1)
+			//conR.logger.Info("start new height to apply this commit", "new height", edfc.BlockNumber+1)
 			conR.conS.StartNewHeight()
 		}
 	})

@@ -28,10 +28,10 @@ func (cs *ConsensusState) StartNewHeight() {
 	defer cs.mtx.Unlock()
 
 	//reload the block
-	cr := cs.backend.ChainReader()
-	curEthBlock := cr.CurrentBlock()
-	curHeight := curEthBlock.NumberU64()
-	cs.logger.Infof("StartNewHeight. current block height is %v", curHeight)
+	//cr := cs.backend.ChainReader()
+	//curEthBlock := cr.CurrentBlock()
+	//curHeight := curEthBlock.NumberU64()
+	//cs.logger.Infof("StartNewHeight. current block height is %v", curHeight)
 
 	state := cs.InitState(cs.Epoch)
 	cs.UpdateToState(state)
@@ -55,12 +55,12 @@ func (cs *ConsensusState) InitState(epoch *ep.Epoch) *sm.State {
 		}
 		state.Epoch = epoch
 
-		cs.logger.Infof("InitStateAndEpoch. genesis state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
+		//cs.logger.Infof("InitStateAndEpoch. genesis state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
 	} else {
 		state.Epoch = epoch
 		cs.ReconstructLastCommit(state)
 
-		cs.logger.Infof("InitStateAndEpoch. state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
+		//cs.logger.Infof("InitStateAndEpoch. state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
 	}
 
 	return state

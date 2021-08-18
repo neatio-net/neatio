@@ -237,9 +237,10 @@ func (epoch *Epoch) ValidateNextEpoch(next *Epoch, lastHeight uint64, lastBlockT
 //check if need propose next epoch
 func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 	// If next epoch already proposed, then no need propose again
-	fmt.Printf("should propose next epoch %v\n", epoch.nextEpoch)
+	fmt.Printf("......................................\n")
+	fmt.Printf("Next epoch proposal: %v", epoch.nextEpoch)
 	if epoch.nextEpoch != nil {
-		fmt.Printf("should propose next epoch")
+		fmt.Printf("\n")
 		return false
 	}
 
@@ -872,18 +873,18 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 }
 
 func (epoch *Epoch) String() string {
-	return fmt.Sprintf("Epoch : {"+
-		"Number : %v,\n"+
-		"RewardPerBlock : %v,\n"+
-		"StartBlock : %v,\n"+
-		"EndBlock : %v,\n"+
-		"StartTime : %v,\n"+
-		"EndTime : %v,\n"+
-		"BlockGenerated : %v,\n"+
-		"Status : %v,\n"+
-		"Next Epoch : %v,\n"+
-		"Prev Epoch : %v,\n"+
-		"Contains RS : %v, \n"+
+	return fmt.Sprintf("{"+
+		"Number: %v,\n"+
+		"RewardPerBlock: %v,\n"+
+		"StartBlock: %v,\n"+
+		"EndBlock: %v,\n"+
+		"StartTime: %v,\n"+
+		"EndTime: %v,\n"+
+		"BlockGenerated: %v,\n"+
+		"Status: %v,\n"+
+		"Next Epoch: %v,\n"+
+		"Prev Epoch: %v,\n"+
+		"Contains RS: %v, \n"+
 		"}",
 		epoch.Number,
 		epoch.RewardPerBlock,

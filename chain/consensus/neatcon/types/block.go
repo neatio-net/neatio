@@ -217,21 +217,9 @@ func (commit *Commit) Hash() []byte {
 
 func (commit *Commit) StringIndented(indent string) string {
 	if commit == nil {
-		return "nil-Commit"
+		return ""
 	}
-	return fmt.Sprintf(`Commit{
-%s  BlockID:    %v
-%s  Height:     %v
-%s  Round:      %v
-%s  Type:       %v
-%s  BitArray:   %v
-%s}#%X`,
-		indent, commit.BlockID,
-		indent, commit.Height,
-		indent, commit.Round,
-		indent, commit.Type(),
-		indent, commit.BitArray.String(),
-		indent, commit.hash)
+	return ""
 }
 
 type BlockID struct {

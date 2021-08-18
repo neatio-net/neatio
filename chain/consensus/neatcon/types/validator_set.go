@@ -382,9 +382,7 @@ func (valSet *ValidatorSet) StringIndented(indent string) string {
 		valStrings = append(valStrings, val.String())
 		return false
 	})
-	return fmt.Sprintf(`ValidatorSet{
-%s  Validators:
-%s    %v
+	return fmt.Sprintf(`{
 %s}`,
 		indent,
 		indent, strings.Join(valStrings, "\n"+indent+"    "),
