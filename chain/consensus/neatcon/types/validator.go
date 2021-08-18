@@ -23,7 +23,7 @@ type Validator struct {
 	RemainingEpoch uint64        `json:"remain_epoch"`
 
 	//LastBlockTime *big.Int `json:"last_block_time"`
-	//IsForbidden   bool     `json:"is_forbidden"`
+	//IsBanned   bool     `json:"is_banned"`
 }
 
 func NewValidator(address []byte, pubKey crypto.PubKey, votingPower *big.Int) *Validator {

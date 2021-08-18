@@ -68,9 +68,9 @@ type StateDB struct {
 	candidateSet      CandidateSet
 	candidateSetDirty bool
 
-	// forbidden set
-	forbiddenSet      ForbiddenSet
-	forbiddenSetDirty bool
+	// banned set
+	bannedSet      BannedSet
+	bannedSetDirty bool
 
 	// Cache of Side Chain Reward Per Block
 	sideChainRewardPerBlock      *big.Int
@@ -118,8 +118,8 @@ func New(root common.Hash, db Database) (*StateDB, error) {
 		rewardSetDirty:               false,
 		candidateSet:                 make(CandidateSet),
 		candidateSetDirty:            false,
-		forbiddenSet:                 make(ForbiddenSet),
-		forbiddenSetDirty:            false,
+		bannedSet:                    make(BannedSet),
+		bannedSetDirty:               false,
 		sideChainRewardPerBlock:      nil,
 		sideChainRewardPerBlockDirty: false,
 		logs:                         make(map[common.Hash][]*types.Log),
@@ -151,7 +151,7 @@ func (self *StateDB) Reset(root common.Hash) error {
 	self.delegateRefundSet = make(DelegateRefundSet)
 	self.rewardSet = make(RewardSet)
 	self.candidateSet = make(CandidateSet)
-	self.forbiddenSet = make(ForbiddenSet)
+	self.bannedSet = make(BannedSet)
 	self.sideChainRewardPerBlock = nil
 	self.thash = common.Hash{}
 	self.bhash = common.Hash{}
@@ -642,8 +642,8 @@ func (self *StateDB) Copy() *StateDB {
 		rewardSetDirty:               self.rewardSetDirty,
 		candidateSet:                 make(CandidateSet, len(self.candidateSet)),
 		candidateSetDirty:            self.candidateSetDirty,
-		forbiddenSet:                 make(ForbiddenSet, len(self.forbiddenSet)),
-		forbiddenSetDirty:            self.forbiddenSetDirty,
+		bannedSet:                    make(BannedSet, len(self.bannedSet)),
+		bannedSetDirty:               self.bannedSetDirty,
 		sideChainRewardPerBlockDirty: self.sideChainRewardPerBlockDirty,
 		refund:                       self.refund,
 		logs:                         make(map[common.Hash][]*types.Log, len(self.logs)),
@@ -666,8 +666,8 @@ func (self *StateDB) Copy() *StateDB {
 		state.candidateSet[addr] = struct{}{}
 	}
 
-	for addr := range self.forbiddenSet {
-		state.forbiddenSet[addr] = struct{}{}
+	for addr := range self.bannedSet {
+		state.bannedSet[addr] = struct{}{}
 	}
 
 	if self.sideChainRewardPerBlock != nil {
@@ -750,8 +750,8 @@ func (s *StateDB) Finalise(deleteEmptyObjects bool) {
 		s.commitCandidateSet()
 	}
 
-	if s.forbiddenSetDirty {
-		s.commitForbiddenSet()
+	if s.bannedSetDirty {
+		s.commitBannedSet()
 	}
 
 	// Update Side Chain Reward per Block if something changed
@@ -868,9 +868,9 @@ func (s *StateDB) Commit(deleteEmptyObjects bool) (root common.Hash, err error) 
 		s.candidateSetDirty = false
 	}
 
-	if s.forbiddenSetDirty {
-		s.commitForbiddenSet()
-		s.forbiddenSetDirty = false
+	if s.bannedSetDirty {
+		s.commitBannedSet()
+		s.bannedSetDirty = false
 	}
 
 	// Commit Reward Per Block to the trie

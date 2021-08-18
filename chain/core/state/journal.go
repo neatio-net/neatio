@@ -127,7 +127,7 @@ type (
 		prev    uint8
 	}
 
-	forbiddenChange struct {
+	bannedChange struct {
 		account *common.Address
 		prev    bool
 	}
@@ -137,7 +137,7 @@ type (
 		prev    *big.Int
 	}
 
-	forbiddenTimeChange struct {
+	bannedTimeChange struct {
 		account *common.Address
 		prev    *big.Int
 	}
@@ -289,16 +289,16 @@ func (ch commissionChange) undo(s *StateDB) {
 	s.getStateObject(*ch.account).setCommission(ch.prev)
 }
 
-func (ch forbiddenChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setForbidden(ch.prev)
+func (ch bannedChange) undo(s *StateDB) {
+	s.getStateObject(*ch.account).setBanned(ch.prev)
 }
 
 func (ch blockTimeChange) undo(s *StateDB) {
 	s.getStateObject(*ch.account).setBlockTime(ch.prev)
 }
 
-func (ch forbiddenTimeChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setForbiddenTime(ch.prev)
+func (ch bannedTimeChange) undo(s *StateDB) {
+	s.getStateObject(*ch.account).setBannedTime(ch.prev)
 }
 
 func (ch refundChange) undo(s *StateDB) {

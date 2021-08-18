@@ -109,13 +109,13 @@ type ConsensusAggr struct {
 }
 
 type ValidatorStatus struct {
-	IsForbidden bool `json:"isForbidden"`
+	IsBanned bool `json:"isBanned"`
 }
 
 type CandidateApi struct {
 	CandidateList []string `json:"candidateList"`
 }
 
-type ForbiddenApi struct {
-	ForbiddenList []string `json:"forbiddenList"`
+type BannedApi struct {
+	BannedList []string `json:"bannedList"`
 }

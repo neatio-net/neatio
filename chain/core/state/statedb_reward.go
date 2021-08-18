@@ -12,9 +12,6 @@ import (
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
-// ----- RewardBalance (Total)
-
-// GetTotalRewardBalance Retrieve the reward balance from the given address or 0 if object not found
 func (self *StateDB) GetTotalRewardBalance(addr common.Address) *big.Int {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {
@@ -26,7 +23,7 @@ func (self *StateDB) GetTotalRewardBalance(addr common.Address) *big.Int {
 func (self *StateDB) AddRewardBalance(addr common.Address, amount *big.Int) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		// Add amount to Total Reward Balance
+
 		stateObject.AddRewardBalance(amount)
 	}
 }
@@ -34,14 +31,11 @@ func (self *StateDB) AddRewardBalance(addr common.Address, amount *big.Int) {
 func (self *StateDB) SubRewardBalance(addr common.Address, amount *big.Int) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		// Add amount to Total Reward Balance
+
 		stateObject.SubRewardBalance(amount)
 	}
 }
 
-// ----- AvailableRewardBalance (Total)
-
-// GetTotalAvailableRewardBalance retrieve the available reward balance from the given address or 0 if object not found
 func (self *StateDB) GetTotalAvailableRewardBalance(addr common.Address) *big.Int {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {
@@ -63,8 +57,6 @@ func (self *StateDB) SubAvailableRewardBalance(addr common.Address, amount *big.
 		stateObject.SubAvailableRewardBalance(amount)
 	}
 }
-
-// ----- Reward Trie
 
 func (self *StateDB) GetDelegateRewardAddress(addr common.Address) map[common.Address]struct{} {
 	var deleAddr map[common.Address]struct{}
@@ -99,7 +91,6 @@ func (self *StateDB) GetDelegateRewardAddress(addr common.Address) map[common.Ad
 	return deleAddr
 }
 
-// GetRewardBalanceByDelegateAddress
 func (self *StateDB) GetRewardBalanceByDelegateAddress(addr common.Address, deleAddress common.Address) *big.Int {
 	stateObject := self.getStateObject(addr)
 	if stateObject != nil {
@@ -113,11 +104,10 @@ func (self *StateDB) GetRewardBalanceByDelegateAddress(addr common.Address, dele
 	return common.Big0
 }
 
-// AddRewardBalanceByDelegateAddress adds reward amount to the account associated with delegate address
 func (self *StateDB) AddRewardBalanceByDelegateAddress(addr common.Address, deleAddress common.Address, amount *big.Int) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		// Get EpochRewardBalance and update EpochRewardBalance
+
 		rewardBalance := stateObject.GetDelegateRewardBalance(self.db, deleAddress)
 		var dirtyRewardBalance *big.Int
 		if rewardBalance == nil {
@@ -127,16 +117,14 @@ func (self *StateDB) AddRewardBalanceByDelegateAddress(addr common.Address, dele
 		}
 		stateObject.SetDelegateRewardBalance(self.db, deleAddress, dirtyRewardBalance)
 
-		// Add amount to Total Reward Balance
 		stateObject.AddRewardBalance(amount)
 	}
 }
 
-// AddRewardBalanceByDelegateAddress subtracts reward amount from the account associated with delegate address
 func (self *StateDB) SubRewardBalanceByDelegateAddress(addr common.Address, deleAddress common.Address, amount *big.Int) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		// Get EpochRewardBalance and update EpochRewardBalance
+
 		rewardBalance := stateObject.GetDelegateRewardBalance(self.db, deleAddress)
 		var dirtyRewardBalance *big.Int
 		if rewardBalance == nil {
@@ -146,7 +134,6 @@ func (self *StateDB) SubRewardBalanceByDelegateAddress(addr common.Address, dele
 		}
 		stateObject.SetDelegateRewardBalance(self.db, deleAddress, dirtyRewardBalance)
 
-		// Sub amount from Total Reward Balance
 		stateObject.SubRewardBalance(amount)
 	}
 }
@@ -170,9 +157,6 @@ func (db *StateDB) ForEachReward(addr common.Address, cb func(key common.Address
 	}
 }
 
-// ----- Reward Set
-
-// MarkAddressReward adds the specified object to the dirty map to avoid
 func (self *StateDB) MarkAddressReward(addr common.Address) {
 	if _, exist := self.GetRewardSet()[addr]; !exist {
 		self.rewardSet[addr] = struct{}{}
@@ -184,7 +168,7 @@ func (self *StateDB) GetRewardSet() RewardSet {
 	if len(self.rewardSet) != 0 {
 		return self.rewardSet
 	}
-	// Try to get from Trie
+
 	enc, err := self.trie.TryGet(rewardSetKey)
 	if err != nil {
 		self.setError(err)
@@ -214,8 +198,6 @@ func (self *StateDB) ClearRewardSetByAddress(addr common.Address) {
 	self.rewardSetDirty = true
 }
 
-// Store the Reward Address Set
-
 var rewardSetKey = []byte("RewardSet")
 
 type RewardSet map[common.Address]struct{}
@@ -244,8 +226,6 @@ func (set *RewardSet) DecodeRLP(s *rlp.Stream) error {
 	return nil
 }
 
-// ----- Side Chain Reward Per Block
-
 func (self *StateDB) SetSideChainRewardPerBlock(rewardPerBlock *big.Int) {
 	self.sideChainRewardPerBlock = rewardPerBlock
 	self.sideChainRewardPerBlockDirty = true
@@ -255,7 +235,7 @@ func (self *StateDB) GetSideChainRewardPerBlock() *big.Int {
 	if self.sideChainRewardPerBlock != nil {
 		return self.sideChainRewardPerBlock
 	}
-	// Try to get from Trie
+
 	enc, err := self.trie.TryGet(sideChainRewardPerBlockKey)
 	if err != nil {
 		self.setError(err)
@@ -279,7 +259,5 @@ func (self *StateDB) commitSideChainRewardPerBlock() {
 	}
 	self.setError(self.trie.TryUpdate(sideChainRewardPerBlockKey, data))
 }
-
-// Side Chain Reward Per Block
 
 var sideChainRewardPerBlockKey = []byte("RewardPerBlock")

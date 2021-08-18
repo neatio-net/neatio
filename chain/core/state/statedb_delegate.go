@@ -316,33 +316,33 @@ func (self *StateDB) CancelCandidate(addr common.Address, allRefund bool) {
 	}
 }
 
-func (self *StateDB) GetForbidden(addr common.Address) bool {
+func (self *StateDB) GetBanned(addr common.Address) bool {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		return stateObject.IsForbidden()
+		return stateObject.IsBanned()
 	}
 	return false
 }
 
-func (self *StateDB) SetForbidden(addr common.Address, forbidden bool) {
+func (self *StateDB) SetBanned(addr common.Address, banned bool) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		stateObject.SetForbidden(forbidden)
+		stateObject.SetBanned(banned)
 	}
 }
 
-func (self *StateDB) GetForbiddenTime(addr common.Address) *big.Int {
+func (self *StateDB) GetBannedTime(addr common.Address) *big.Int {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		return stateObject.ForbiddenTime()
+		return stateObject.BannedTime()
 	}
 	return common.Big0
 }
 
-func (self *StateDB) SetForbiddenTime(addr common.Address, forbiddenTime *big.Int) {
+func (self *StateDB) SetBannedTime(addr common.Address, bannedTime *big.Int) {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		stateObject.SetForbiddenTime(forbiddenTime)
+		stateObject.SetBannedTime(bannedTime)
 	}
 }
 

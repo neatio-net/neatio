@@ -1830,16 +1830,16 @@ func (api *PublicNEATAPI) CheckCandidate(ctx context.Context, address common.Add
 	return fields, state.Error()
 }
 
-func (api *PublicNEATAPI) GetForbiddenStatus(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
+func (api *PublicNEATAPI) GetBannedStatus(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
 	state, _, err := api.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
 		return nil, err
 	}
 
 	fields := map[string]interface{}{
-		"forbidden":      state.GetForbidden(address),
-		"forbiddenEpoch": state.GetForbiddenTime(address),
-		"blocks":         state.GetMinedBlocks(address),
+		"banned":      state.GetBanned(address),
+		"bannedEpoch": state.GetBannedTime(address),
+		"blocks":      state.GetMinedBlocks(address),
 	}
 	return fields, state.Error()
 }
@@ -1886,13 +1886,13 @@ func (api *PublicNEATAPI) EditValidator(ctx context.Context, from common.Address
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNEATAPI) UnForbidden(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatAbi.ChainABI.Pack(neatAbi.UnForbidden.String())
+func (api *PublicNEATAPI) UnBanned(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.UnBanned.String())
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatAbi.UnForbidden.RequiredGas()
+	defaultGas := neatAbi.UnBanned.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
@@ -1935,9 +1935,9 @@ func init() {
 	// Edit Validator
 	core.RegisterValidateCb(neatAbi.EditValidator, editValidatorValidateCb)
 
-	// UnForbidden
-	core.RegisterValidateCb(neatAbi.UnForbidden, unForbiddenValidateCb)
-	core.RegisterApplyCb(neatAbi.UnForbidden, unForbiddenApplyCb)
+	// UnBanned
+	core.RegisterValidateCb(neatAbi.UnBanned, unBannedValidateCb)
+	core.RegisterApplyCb(neatAbi.UnBanned, unBannedApplyCb)
 }
 
 func withdrawRewardValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
@@ -2133,9 +2133,9 @@ func unRegisterValidation(from common.Address, tx *types.Transaction, state *sta
 		return core.ErrNotCandidate
 	}
 
-	// Forbidden candidate can't unregister
-	if state.GetForbidden(from) {
-		return core.ErrForbiddenUnRegister
+	// Banned candidate can't unregister
+	if state.GetBanned(from) {
+		return core.ErrBannedUnRegister
 	}
 
 	// Super node can't unregister
@@ -2187,8 +2187,8 @@ func delegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 	// Add Balance to Candidate's Proxied Balance
 	state.AddProxiedBalanceByUser(args.Candidate, from, amount)
 
-	// if forbidden, don't add to next epoch validator vote set
-	if !state.GetForbidden(from) {
+	// if banned, don't add to next epoch validator vote set
+	if !state.GetBanned(from) {
 		verror = updateNextEpochValidatorVoteSet(tx, state, bc, args.Candidate, ops)
 		if verror != nil {
 			return verror
@@ -2405,10 +2405,10 @@ func editValidatorValidateCb(tx *types.Transaction, state *state.StateDB, bc *co
 	return nil
 }
 
-func unForbiddenValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
+func unBannedValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
 	from := derivedAddressFromTx(tx)
 
-	err := unForbiddenValidation(from, state, bc)
+	err := unBannedValidation(from, state, bc)
 	if err != nil {
 		return err
 	}
@@ -2416,22 +2416,22 @@ func unForbiddenValidateCb(tx *types.Transaction, state *state.StateDB, bc *core
 	return nil
 }
 
-func unForbiddenApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
+func unBannedApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
 	from := derivedAddressFromTx(tx)
-	err := unForbiddenValidation(from, state, bc)
+	err := unBannedValidation(from, state, bc)
 	if err != nil {
 		return err
 	}
 
-	state.SetForbidden(from, false)
+	state.SetBanned(from, false)
 
-	// remove address from forbidden set
-	state.ClearForbiddenSetByAddress(from)
+	// remove address from banned set
+	state.ClearBannedSetByAddress(from)
 
 	return nil
 }
 
-func unForbiddenValidation(from common.Address, state *state.StateDB, bc *core.BlockChain) error {
+func unBannedValidation(from common.Address, state *state.StateDB, bc *core.BlockChain) error {
 	if !state.IsCandidate(from) {
 		return core.ErrNotCandidate
 	}
@@ -2447,15 +2447,15 @@ func unForbiddenValidation(from common.Address, state *state.StateDB, bc *core.B
 		return verror
 	}
 
-	if !state.GetForbidden(from) {
-		return fmt.Errorf("should not unforbidden")
+	if !state.GetBanned(from) {
+		return fmt.Errorf("should not unbanned")
 	}
 
-	forbiddenEpoch := state.GetForbiddenTime(from)
-	fmt.Printf("Unforbiddenden validation, forbidden epoch %v\n", forbiddenEpoch)
+	bannedEpoch := state.GetBannedTime(from)
+	fmt.Printf("Unbannedden validation, banned epoch %v\n", bannedEpoch)
 
-	if forbiddenEpoch.Cmp(common.Big0) == 1 {
-		return fmt.Errorf("please unforbidden %v epoch later", forbiddenEpoch)
+	if bannedEpoch.Cmp(common.Big0) == 1 {
+		return fmt.Errorf("please unbanned %v epoch later", bannedEpoch)
 	}
 
 	return nil

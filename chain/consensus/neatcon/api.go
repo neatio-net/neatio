@@ -241,7 +241,7 @@ func (api *API) GetValidatorStatus(from common.Address) (*ntcTypes.ValidatorStat
 		return nil, err
 	}
 	status := &ntcTypes.ValidatorStatus{
-		IsForbidden: state.GetOrNewStateObject(from).IsForbidden(),
+		IsBanned: state.GetOrNewStateObject(from).IsBanned(),
 	}
 
 	return status, nil
@@ -268,23 +268,23 @@ func (api *API) GetCandidateList() (*ntcTypes.CandidateApi, error) {
 	return candidates, nil
 }
 
-func (api *API) GetForbiddenList() (*ntcTypes.ForbiddenApi, error) {
+func (api *API) GetBannedList() (*ntcTypes.BannedApi, error) {
 	state, err := api.chain.State()
 
 	if state == nil || err != nil {
 		return nil, err
 	}
 
-	forbiddenList := make([]string, 0)
-	forbiddenSet := state.GetForbiddenSet()
-	fmt.Printf("forbidden set %v", forbiddenSet)
-	for addr := range forbiddenSet {
-		forbiddenList = append(forbiddenList, addr.String())
+	bannedList := make([]string, 0)
+	bannedSet := state.GetBannedSet()
+	fmt.Printf("banned set %v", bannedSet)
+	for addr := range bannedSet {
+		bannedList = append(bannedList, addr.String())
 	}
 
-	forbiddenAddresses := &ntcTypes.ForbiddenApi{
-		ForbiddenList: forbiddenList,
+	bannedAddresses := &ntcTypes.BannedApi{
+		BannedList: bannedList,
 	}
 
-	return forbiddenAddresses, nil
+	return bannedAddresses, nil
 }

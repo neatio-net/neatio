@@ -24,7 +24,7 @@ import (
 var NextEpochNotExist = errors.New("next epoch parameters do not exist, fatal error")
 var NextEpochNotEXPECTED = errors.New("next epoch parameters are not excepted, fatal error")
 
-var ForbiddenEpoch = big.NewInt(2) // forbid 2 epoch
+var BannedEpoch = big.NewInt(2) //  2 epoch
 
 const (
 	EPOCH_NOT_EXIST          = iota // value --> 0
@@ -38,8 +38,8 @@ const (
 	epochKey       = "Epoch:%v"
 	latestEpochKey = "LatestEpoch"
 
-	TimeForForbidden  = 4 * time.Hour
-	ForbiddenDuration = 24 * time.Hour
+	TimeForBanned  = 2 * time.Hour
+	BannedDuration = 24 * time.Hour
 )
 
 type Epoch struct {
@@ -339,8 +339,8 @@ func (epoch *Epoch) ShouldEnterNewEpoch(height uint64, state *state.StateDB) (bo
 
 			for _, v := range newValidators.Validators {
 				vAddr := common.BytesToAddress(v.Address)
-				if !state.GetForbidden(vAddr) {
-					fmt.Printf("Should enter new epoch, validator %v is not forbidden\n", vAddr.String())
+				if !state.GetBanned(vAddr) {
+					fmt.Printf("Should enter new epoch, validator %v is not banned\n", vAddr.String())
 					totalProxiedBalance := new(big.Int).Add(state.GetTotalProxiedBalance(vAddr), state.GetTotalDepositProxiedBalance(vAddr))
 					// Voting Power = Proxied amount + Deposit amount
 					newVotingPower := new(big.Int).Add(totalProxiedBalance, state.GetDepositBalance(vAddr))
@@ -350,20 +350,20 @@ func (epoch *Epoch) ShouldEnterNewEpoch(height uint64, state *state.StateDB) (bo
 						v.VotingPower = newVotingPower
 					}
 				} else {
-					// if forbidden then remove from the validator set and candidate list
+					// if banned then remove from the validator set and candidate list
 					newValidators.Remove(v.Address)
 					delete(candidateList, vAddr)
 
-					// if forbidden epoch bigger than 0, subtract 1 epoch
-					forbiddenEpoch := state.GetForbiddenTime(vAddr)
-					if forbiddenEpoch.Cmp(common.Big0) == 1 {
-						forbiddenEpoch.Sub(forbiddenEpoch, common.Big1)
-						state.SetForbiddenTime(vAddr, forbiddenEpoch)
-						fmt.Printf("Should enter new epoch 1, left forbidden epoch is %v\n", forbiddenEpoch)
+					// if banned epoch bigger than 0, subtract 1 epoch
+					bannedEpoch := state.GetBannedTime(vAddr)
+					if bannedEpoch.Cmp(common.Big0) == 1 {
+						bannedEpoch.Sub(bannedEpoch, common.Big1)
+						state.SetBannedTime(vAddr, bannedEpoch)
+						fmt.Printf("Should enter new epoch 1, left banned epoch is %v\n", bannedEpoch)
 					}
 
 					refunds = append(refunds, &ncTypes.RefundValidatorAmount{Address: vAddr, Amount: v.VotingPower, Voteout: true})
-					epoch.logger.Debugf("Should enter new epoch, validator %v is forbidden", vAddr.String())
+					epoch.logger.Debugf("Should enter new epoch, validator %v is banned", vAddr.String())
 				}
 			}
 
@@ -375,16 +375,16 @@ func (epoch *Epoch) ShouldEnterNewEpoch(height uint64, state *state.StateDB) (bo
 			// if has candidate and next epoch vote set not nil, add them to next epoch vote set
 			if len(candidateList) > 0 {
 				for addr := range candidateList {
-					if state.GetForbidden(addr) {
+					if state.GetBanned(addr) {
 						// first, delete from the candidate list
 						delete(candidateList, addr)
 
-						// if forbidden epoch bigger than 0, subtract 1 epoch
-						forbiddenEpoch := state.GetForbiddenTime(addr)
-						if forbiddenEpoch.Cmp(common.Big0) == 1 {
-							forbiddenEpoch.Sub(forbiddenEpoch, common.Big1)
-							state.SetForbiddenTime(addr, forbiddenEpoch)
-							fmt.Printf("Should enter new epoch 2, left forbidden epoch is %v\n", forbiddenEpoch)
+						// if banned epoch bigger than 0, subtract 1 epoch
+						bannedEpoch := state.GetBannedTime(addr)
+						if bannedEpoch.Cmp(common.Big0) == 1 {
+							bannedEpoch.Sub(bannedEpoch, common.Big1)
+							state.SetBannedTime(addr, bannedEpoch)
+							fmt.Printf("Should enter new epoch 2, left banned epoch is %v\n", bannedEpoch)
 						}
 					}
 				}
@@ -913,44 +913,44 @@ func UpdateEpochEndTime(db dbm.DB, epNumber uint64, endTime time.Time) {
 	}
 }
 
-func (epoch *Epoch) GetForbiddenDuration() time.Duration {
-	return ForbiddenDuration
+func (epoch *Epoch) GetBannedDuration() time.Duration {
+	return BannedDuration
 }
 
-// Update validator block time and set forbidden if this validator did not participate in consensus in one epoch
-func (epoch *Epoch) UpdateForbiddenState(header *types.Header, prevHeader *types.Header, commit *ncTypes.Commit, state *state.StateDB) {
+// Update validator block time and set banned if this validator did not participate in consensus in one epoch
+func (epoch *Epoch) UpdateBannedState(header *types.Header, prevHeader *types.Header, commit *ncTypes.Commit, state *state.StateDB) {
 	validators := epoch.Validators.Validators
 	height := header.Number.Uint64()
-	//forbiddenTime := prevHeader.Time
+	//bannedTime := prevHeader.Time
 
-	// epoch.logger.Infof("Update validator forbidden state height %v", height)
+	// epoch.logger.Infof("Update validator banned state height %v", height)
 
 	if height <= 1 || height == epoch.StartBlock {
 		return
 	} else if height == epoch.EndBlock {
-		// epoch.logger.Debugf("Update validator forbidden state, epoch end block %v", height)
+		// epoch.logger.Debugf("Update validator banned state, epoch end block %v", height)
 		// epoch end block set all validators mined block times 0
 		for _, v := range validators {
 			addr := common.BytesToAddress(v.Address[:])
 			state.SetMinedBlocks(addr, common.Big0)
 		}
 	} else if height == (epoch.EndBlock - 1) {
-		epoch.logger.Debugf("Update validator forbidden state, epoch end block - 1 %v", height)
-		// epoch end block - 1, if mined block times 0, set the validator forbidden true
+		epoch.logger.Debugf("Update validator banned state, epoch end block - 1 %v", height)
+		// epoch end block - 1, if mined block times 0, set the validator banned true
 		for _, v := range validators {
 			addr := common.BytesToAddress(v.Address[:])
 			times := state.GetMinedBlocks(addr)
 			if times.Cmp(common.Big0) == 0 {
-				epoch.logger.Debugf("Update validator forbidden state, set %v forbidden, mined blocks %v, forbidden epoch %v", addr.String(), times, ForbiddenEpoch)
-				state.SetForbidden(addr, true)
-				state.SetForbiddenTime(addr, ForbiddenEpoch)
+				epoch.logger.Debugf("Update validator banned state, set %v banned, mined blocks %v, banned epoch %v", addr.String(), times, BannedEpoch)
+				state.SetBanned(addr, true)
+				state.SetBannedTime(addr, BannedEpoch)
 
-				state.MarkAddressForbidden(addr)
+				state.MarkAddressBanned(addr)
 			}
 		}
 	} else {
 		if commit == nil || commit.BitArray == nil {
-			epoch.logger.Debugf("Update validator forbidden state seenCommit %v", commit)
+			epoch.logger.Debugf("Update validator banned state seenCommit %v", commit)
 			return
 		}
 
@@ -967,7 +967,7 @@ func (epoch *Epoch) UpdateForbiddenState(header *types.Header, prevHeader *types
 
 				state.SetMinedBlocks(addr, newTimes)
 
-				epoch.logger.Debugf("Update validator forbidden state, %v new mined block times %v, current times %v", addr.String(), newTimes, times)
+				epoch.logger.Debugf("Update validator banned state, %v new mined block times %v, current times %v", addr.String(), newTimes, times)
 			}
 		}
 	}

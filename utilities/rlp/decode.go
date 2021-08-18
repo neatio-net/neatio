@@ -59,7 +59,7 @@ var (
 // decoding rules or need to decode into private fields.
 //
 // The DecodeRLP method should read one value from the given
-// Stream. It is not forbidden to read less or more, but it might
+// Stream. It is not banned to read less or more, but it might
 // be confusing.
 type Decoder interface {
 	DecodeRLP(*Stream) error

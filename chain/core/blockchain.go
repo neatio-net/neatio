@@ -65,8 +65,8 @@ const (
 	// BlockChainVersion ensures that an incompatible database forces a resync from scratch.
 	BlockChainVersion = 3
 
-	TimeForForbidden  = 4 * time.Hour
-	ForbiddenDuration = 24 * time.Hour
+	TimeForBanned  = 4 * time.Hour
+	BannedDuration = 24 * time.Hour
 )
 
 // CacheConfig contains the configuration values for the trie caching/pruning
@@ -1284,9 +1284,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks, verifySeals bool) (int, []
 		}
 		proctime := time.Since(start)
 
-		//err = bc.UpdateForbiddenState(block.Header(), statedb)
+		//err = bc.UpdateBannedState(block.Header(), statedb)
 		//if err != nil {
-		//	bc.logger.Error("Block chain failed to update forbidden state", "err", err)
+		//	bc.logger.Error("Block chain failed to update banned state", "err", err)
 		//}
 
 		// Write the block to the chain and get the status.
@@ -1807,12 +1807,12 @@ func (bc *BlockChain) SubscribeStopMiningEvent(ch chan<- StopMiningEvent) event.
 	return bc.scope.Track(bc.stopMiningFeed.Subscribe(ch))
 }
 
-//func (bc *BlockChain) GetForbiddenDuration() time.Duration {
-//	return ForbiddenDuration
+//func (bc *BlockChain) GetBannedDuration() time.Duration {
+//	return BannedDuration
 //}
 //
-//// Update validator block time and set forbidden if this validator did not participate in consensus more than 4 Hours
-//func (bc *BlockChain) UpdateForbiddenState(header *types.Header, state *state.StateDB) error {
+//// Update validator block time and set banned if this validator did not participate in consensus more than 4 Hours
+//func (bc *BlockChain) UpdateBannedState(header *types.Header, state *state.StateDB) error {
 //	bc.wg.Add(1)
 //	defer bc.wg.Done()
 //
@@ -1849,12 +1849,12 @@ func (bc *BlockChain) SubscribeStopMiningEvent(ch chan<- StopMiningEvent) event.
 //		} else {
 //			lastBlockTime := vObj.BlockTime()
 //			durationTime := new(big.Int).Sub(blockTime, lastBlockTime)
-//			bc.logger.Debugf("Update validator last block time, duration time %v, default forbidden time %v", durationTime, TimeForForbidden)
-//			if durationTime.Cmp(big.NewInt(int64(TimeForForbidden.Seconds()))) >= 0 {
-//				bc.logger.Debugf("update validator status forbidden true")
-//				vObj.SetForbidden(true)
+//			bc.logger.Debugf("Update validator last block time, duration time %v, default banned time %v", durationTime, TimeForBanned)
+//			if durationTime.Cmp(big.NewInt(int64(TimeForBanned.Seconds()))) >= 0 {
+//				bc.logger.Debugf("update validator status banned true")
+//				vObj.SetBanned(true)
 //				vObj.SetBlockTime(big.NewInt(time.Now().Unix()))
-//				state.MarkAddressForbidden(addr)
+//				state.MarkAddressBanned(addr)
 //			}
 //		}
 //	}

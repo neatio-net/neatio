@@ -23,7 +23,6 @@ type RewardScheme struct {
 	TotalYear          uint64
 }
 
-// Load Reward Scheme
 func LoadRewardScheme(db dbm.DB) *RewardScheme {
 	buf := db.Get([]byte(rewardSchemeKey))
 	if len(buf) == 0 {
@@ -39,7 +38,6 @@ func LoadRewardScheme(db dbm.DB) *RewardScheme {
 	}
 }
 
-// Convert Reward Scheme from json to struct
 func MakeRewardScheme(db dbm.DB, rsDoc *ncTypes.RewardSchemeDoc) *RewardScheme {
 
 	rs := &RewardScheme{
@@ -53,7 +51,6 @@ func MakeRewardScheme(db dbm.DB, rsDoc *ncTypes.RewardSchemeDoc) *RewardScheme {
 	return rs
 }
 
-// Save the Reward Scheme to DB
 func (rs *RewardScheme) Save() {
 	rs.mtx.Lock()
 	defer rs.mtx.Unlock()

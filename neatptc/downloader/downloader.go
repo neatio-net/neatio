@@ -389,7 +389,7 @@ func (d *Downloader) synchronise(id string, hash common.Hash, td *big.Int, mode 
 
 	defer d.Cancel() // No matter what, we can't leave the cancel channel open
 
-	// Set the requested sync mode, unless it's forbidden
+	// Set the requested sync mode, unless it's banned
 	d.mode = mode
 
 	// Retrieve the origin peer and initiate the downloading process

@@ -10,57 +10,57 @@ import (
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
-// ----- forbidden Set
+// ----- banned Set
 
-// MarkAddressForbidden adds the specified object to the dirty map
-func (self *StateDB) MarkAddressForbidden(addr common.Address) {
-	if _, exist := self.GetForbiddenSet()[addr]; !exist {
-		self.forbiddenSet[addr] = struct{}{}
-		self.forbiddenSetDirty = true
+// MarkAddressBanned adds the specified object to the dirty map
+func (self *StateDB) MarkAddressBanned(addr common.Address) {
+	if _, exist := self.GetBannedSet()[addr]; !exist {
+		self.bannedSet[addr] = struct{}{}
+		self.bannedSetDirty = true
 	}
 }
 
-func (self *StateDB) GetForbiddenSet() ForbiddenSet {
-	if len(self.forbiddenSet) != 0 {
-		return self.forbiddenSet
+func (self *StateDB) GetBannedSet() BannedSet {
+	if len(self.bannedSet) != 0 {
+		return self.bannedSet
 	}
 	// Try to get from Trie
-	enc, err := self.trie.TryGet(forbiddenSetKey)
+	enc, err := self.trie.TryGet(bannedSetKey)
 	if err != nil {
 		self.setError(err)
 		return nil
 	}
-	var value ForbiddenSet
+	var value BannedSet
 	if len(enc) > 0 {
 		err := rlp.DecodeBytes(enc, &value)
 		if err != nil {
 			self.setError(err)
 		}
-		self.forbiddenSet = value
+		self.bannedSet = value
 	}
 	return value
 }
 
-func (self *StateDB) commitForbiddenSet() {
-	data, err := rlp.EncodeToBytes(self.forbiddenSet)
+func (self *StateDB) commitBannedSet() {
+	data, err := rlp.EncodeToBytes(self.bannedSet)
 	if err != nil {
-		panic(fmt.Errorf("can't encode forbidden set : %v", err))
+		panic(fmt.Errorf("can't encode banned set : %v", err))
 	}
-	self.setError(self.trie.TryUpdate(forbiddenSetKey, data))
+	self.setError(self.trie.TryUpdate(bannedSetKey, data))
 }
 
-func (self *StateDB) ClearForbiddenSetByAddress(addr common.Address) {
-	delete(self.forbiddenSet, addr)
-	self.forbiddenSetDirty = true
+func (self *StateDB) ClearBannedSetByAddress(addr common.Address) {
+	delete(self.bannedSet, addr)
+	self.bannedSetDirty = true
 }
 
-// Store the Forbidden Address Set
+// Store the Banned Address Set
 
-var forbiddenSetKey = []byte("ForbiddenSet")
+var bannedSetKey = []byte("BannedSet")
 
-type ForbiddenSet map[common.Address]struct{}
+type BannedSet map[common.Address]struct{}
 
-func (set ForbiddenSet) EncodeRLP(w io.Writer) error {
+func (set BannedSet) EncodeRLP(w io.Writer) error {
 	var list []common.Address
 	for addr := range set {
 		list = append(list, addr)
@@ -71,15 +71,15 @@ func (set ForbiddenSet) EncodeRLP(w io.Writer) error {
 	return rlp.Encode(w, list)
 }
 
-func (set *ForbiddenSet) DecodeRLP(s *rlp.Stream) error {
+func (set *BannedSet) DecodeRLP(s *rlp.Stream) error {
 	var list []common.Address
 	if err := s.Decode(&list); err != nil {
 		return err
 	}
-	forbiddenSet := make(ForbiddenSet, len(list))
+	bannedSet := make(BannedSet, len(list))
 	for _, addr := range list {
-		forbiddenSet[addr] = struct{}{}
+		bannedSet[addr] = struct{}{}
 	}
-	*set = forbiddenSet
+	*set = bannedSet
 	return nil
 }

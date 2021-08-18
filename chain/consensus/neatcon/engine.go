@@ -480,14 +480,14 @@ func (sb *backend) Finalize(chain consensus.ChainReader, header *types.Header, s
 	// Calculate the rewards
 	accumulateRewards(sb.chainConfig, state, header, epoch, totalGasFee)
 
-	// update validator status include participating consensus block times and forbidden
+	// update validator status include participating consensus block times and banned
 	if header.Number.Uint64() > 1 {
 		//TODO use chain instead of sb.chain
 		prevHeader := chain.GetHeaderByNumber(header.Number.Uint64() - 1)
 		if prevHeader != nil {
 			extra, err := ntcTypes.ExtractNeatConExtra(prevHeader)
 			if err == nil {
-				epoch.UpdateForbiddenState(header, prevHeader, extra.SeenCommit, state)
+				epoch.UpdateBannedState(header, prevHeader, extra.SeenCommit, state)
 			}
 		}
 	}

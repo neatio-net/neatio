@@ -34,9 +34,9 @@ import (
 )
 
 const (
-	POSReward = "415360000000000000000000000" // 41536000 per year
+	POSReward = "44150400000000000000000000" // 44.1504 M
 
-	TotalYear = 10
+	TotalYear = 28
 
 	DefaultAccountPassword = "neatio"
 )
@@ -290,21 +290,21 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        posReward,
 				RewardFirstYear:    rewardFirstYear,
-				EpochNumberPerYear: 105120,
+				EpochNumberPerYear: 8760, // 1h epoch time
 				TotalYear:          uint64(totalYear),
 			}
 		} else {
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        big.NewInt(0),
 				RewardFirstYear:    big.NewInt(0),
-				EpochNumberPerYear: 105120,
+				EpochNumberPerYear: 8760,
 				TotalYear:          0,
 			}
 		}
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(1317097919840000000) // TBD
+			rewardPerBlock = big.NewInt(50000000000000000) // 0.05 NEAT per block
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
@@ -319,7 +319,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 				Number:         0,
 				RewardPerBlock: rewardPerBlock,
 				StartBlock:     0,
-				EndBlock:       300,
+				EndBlock:       3600,
 				Status:         0,
 			},
 		}
@@ -348,7 +348,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 	var rewardScheme = types.RewardSchemeDoc{
 		TotalReward:        big.NewInt(0),
 		RewardFirstYear:    big.NewInt(0),
-		EpochNumberPerYear: 3155693,
+		EpochNumberPerYear: 8760,
 		TotalYear:          0,
 	}
 
@@ -361,7 +361,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 			Number:         0,
 			RewardPerBlock: big.NewInt(0),
 			StartBlock:     0,
-			EndBlock:       300,
+			EndBlock:       3600,
 			Status:         0,
 			Validators:     validators,
 		},

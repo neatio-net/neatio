@@ -14,13 +14,7 @@ import (
 	"github.com/neatlib/crypto-go"
 )
 
-//------------------------------------------------------------
-// we store the gendoc in the db
-
 var GenDocKey = []byte("GenDocKey")
-
-//------------------------------------------------------------
-// core types for a genesis definition
 
 var CONSENSUS_POS string = "pos"
 var CONSENSUS_POW string = "pow"
@@ -52,7 +46,7 @@ type RewardSchemeDoc struct {
 
 type GenesisDoc struct {
 	ChainID      string          `json:"chain_id"`
-	Consensus    string          `json:"consensus"` //should be 'pos' or 'pow'
+	Consensus    string          `json:"consensus"`
 	GenesisTime  time.Time       `json:"genesis_time"`
 	RewardScheme RewardSchemeDoc `json:"reward_scheme"`
 	CurrentEpoch OneEpochDoc     `json:"current_epoch"`
@@ -60,7 +54,7 @@ type GenesisDoc struct {
 
 type GenesisDocWrite struct {
 	ChainID      string           `json:"chain_id"`
-	Consensus    string           `json:"consensus"` //should be 'pos' or 'pow'
+	Consensus    string           `json:"consensus"`
 	GenesisTime  time.Time        `json:"genesis_time"`
 	RewardScheme RewardSchemeDoc  `json:"reward_scheme"`
 	CurrentEpoch OneEpochDocWrite `json:"current_epoch"`

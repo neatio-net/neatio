@@ -408,20 +408,20 @@ func (self *stateObject) setCommission(commission uint8) {
 	}
 }
 
-func (self *stateObject) IsForbidden() bool {
-	return self.data.IsForbidden
+func (self *stateObject) IsBanned() bool {
+	return self.data.IsBanned
 }
 
-func (self *stateObject) SetForbidden(forbidden bool) {
-	self.db.journal = append(self.db.journal, forbiddenChange{
+func (self *stateObject) SetBanned(banned bool) {
+	self.db.journal = append(self.db.journal, bannedChange{
 		account: &self.address,
-		prev:    self.data.IsForbidden,
+		prev:    self.data.IsBanned,
 	})
-	self.setForbidden(forbidden)
+	self.setBanned(banned)
 }
 
-func (self *stateObject) setForbidden(forbidden bool) {
-	self.data.IsForbidden = forbidden
+func (self *stateObject) setBanned(banned bool) {
+	self.data.IsBanned = banned
 
 	if self.onDirty != nil {
 		self.onDirty(self.Address())
@@ -450,20 +450,20 @@ func (self *stateObject) setBlockTime(blockTime *big.Int) {
 	}
 }
 
-func (self *stateObject) ForbiddenTime() *big.Int {
-	return self.data.ForbiddenTime
+func (self *stateObject) BannedTime() *big.Int {
+	return self.data.BannedTime
 }
 
-func (self *stateObject) SetForbiddenTime(forbiddenTime *big.Int) {
-	self.db.journal = append(self.db.journal, forbiddenTimeChange{
+func (self *stateObject) SetBannedTime(bannedTime *big.Int) {
+	self.db.journal = append(self.db.journal, bannedTimeChange{
 		account: &self.address,
-		prev:    self.data.ForbiddenTime,
+		prev:    self.data.BannedTime,
 	})
-	self.setForbiddenTime(forbiddenTime)
+	self.setBannedTime(bannedTime)
 }
 
-func (self *stateObject) setForbiddenTime(forbiddenTime *big.Int) {
-	self.data.ForbiddenTime = forbiddenTime
+func (self *stateObject) setBannedTime(bannedTime *big.Int) {
+	self.data.BannedTime = bannedTime
 
 	if self.onDirty != nil {
 		self.onDirty(self.Address())

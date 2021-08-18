@@ -558,8 +558,8 @@ web3._extend({
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
 		}),
 		new web3._extend.Method({
-			name: 'unForbidden',
-			call: 'neat_unForbidden',
+			name: 'unBanned',
+			call: 'neat_unBanned',
 			params: 2,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null]
 		}),
@@ -591,8 +591,8 @@ web3._extend({
 			params: 0
 		}),
 		new web3._extend.Method({
-			name: 'getForbiddenList',
-			call: 'neat_getForbiddenList',
+			name: 'getBannedList',
+			call: 'neat_getBannedList',
 			params: 0
 		}),
 		new web3._extend.Method({
@@ -622,8 +622,8 @@ web3._extend({
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter]
 		}),
 		new web3._extend.Method({
-			name: 'getForbiddenStatus',
-			call: 'neat_getForbiddenStatus',
+			name: 'getBannedStatus',
+			call: 'neat_getBannedStatus',
 			params: 2,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter]
 		}),

@@ -67,7 +67,7 @@ var (
 	// ErrNotCandidate is returned if the request address is not a candidate
 	ErrNotCandidate = errors.New("address not candidate")
 
-	ErrForbiddenUnRegister = errors.New("forbidden candidate can not unregister")
+	ErrBannedUnRegister = errors.New("banned candidate can not unregister")
 
 	//ErrExceedDelegationAddressLimit is returned if delegated address number exceed the limit
 	ErrExceedDelegationAddressLimit = errors.New("exceed the delegation address limit")
