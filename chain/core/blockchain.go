@@ -65,7 +65,7 @@ const (
 	// BlockChainVersion ensures that an incompatible database forces a resync from scratch.
 	BlockChainVersion = 3
 
-	TimeForBanned  = 4 * time.Hour
+	TimeForBanned  = 2 * time.Hour
 	BannedDuration = 24 * time.Hour
 )
 

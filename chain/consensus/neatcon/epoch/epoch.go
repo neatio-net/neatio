@@ -33,7 +33,7 @@ const (
 	EPOCH_SAVED                     // value --> 3
 
 	MinimumValidatorsSize = 1
-	MaximumValidatorsSize = 100 // Until delegation activated
+	MaximumValidatorsSize = 50 // ? Until delegation activated ?
 
 	epochKey       = "Epoch:%v"
 	latestEpochKey = "LatestEpoch"
