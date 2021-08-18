@@ -9,10 +9,6 @@ import (
 
 type Tx []byte
 
-// NOTE: this is the hash of the go-wire encoded Tx.
-// Tx has no types at this level, so just length-prefixed.
-// Alternatively, it may make sense to add types here and let
-// []byte be type 0x1 so we can have versioned txs if need be in the future.
 func (tx Tx) Hash() []byte {
 	return merkle.SimpleHashFromBinary(tx)
 }
@@ -20,8 +16,7 @@ func (tx Tx) Hash() []byte {
 type Txs []Tx
 
 func (txs Txs) Hash() []byte {
-	// Recursive impl.
-	// Copied from go-merkle to avoid allocations
+
 	switch len(txs) {
 	case 0:
 		return nil
@@ -34,7 +29,6 @@ func (txs Txs) Hash() []byte {
 	}
 }
 
-// Index returns the index of this transaction in the list, or -1 if not found
 func (txs Txs) Index(tx Tx) int {
 	for i := range txs {
 		if bytes.Equal(txs[i], tx) {
@@ -44,7 +38,6 @@ func (txs Txs) Index(tx Tx) int {
 	return -1
 }
 
-// Index returns the index of this transaction hash in the list, or -1 if not found
 func (txs Txs) IndexByHash(hash []byte) int {
 	for i := range txs {
 		if bytes.Equal(txs[i].Hash(), hash) {
@@ -54,11 +47,6 @@ func (txs Txs) IndexByHash(hash []byte) int {
 	return -1
 }
 
-// Proof returns a simple merkle proof for this node.
-//
-// Panics if i < 0 or i >= len(txs)
-//
-// TODO: optimize this!
 func (txs Txs) Proof(i int) TxProof {
 	l := len(txs)
 	hashables := make([]merkle.Hashable, l)
@@ -87,8 +75,6 @@ func (tp TxProof) LeafHash() []byte {
 	return tp.Data.Hash()
 }
 
-// Validate returns nil if it matches the dataHash, and is internally consistent
-// otherwise, returns a sensible error
 func (tp TxProof) Validate(dataHash []byte) error {
 	if !bytes.Equal(dataHash, tp.RootHash) {
 		return errors.New("Proof matches different data hash")

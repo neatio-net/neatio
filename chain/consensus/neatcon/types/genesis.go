@@ -58,7 +58,6 @@ type GenesisDoc struct {
 	CurrentEpoch OneEpochDoc     `json:"current_epoch"`
 }
 
-// 写入文件使用
 type GenesisDocWrite struct {
 	ChainID      string           `json:"chain_id"`
 	Consensus    string           `json:"consensus"` //should be 'pos' or 'pow'
@@ -67,7 +66,6 @@ type GenesisDocWrite struct {
 	CurrentEpoch OneEpochDocWrite `json:"current_epoch"`
 }
 
-// 写入文件使用
 type OneEpochDocWrite struct {
 	Number         uint64                  `json:"number"`
 	RewardPerBlock *big.Int                `json:"reward_per_block"`
@@ -77,7 +75,6 @@ type OneEpochDocWrite struct {
 	Validators     []GenesisValidatorWrite `json:"validators"`
 }
 
-// 写入文件使用
 type GenesisValidatorWrite struct {
 	EthAccount     string        `json:"address"`
 	PubKey         crypto.PubKey `json:"pub_key"`
@@ -86,16 +83,6 @@ type GenesisValidatorWrite struct {
 	RemainingEpoch uint64        `json:"epoch"`
 }
 
-// Utility method for saving GenensisDoc as JSON file.
-//func (genDoc *GenesisDoc) SaveAs(file string) error {
-//	genDocBytes, err := json.MarshalIndent(genDoc, "", "\t")
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//
-//	return WriteFile(file, genDocBytes, 0644)
-//}
-// 写入文件使用
 func (genDoc *GenesisDoc) SaveAs(file string) error {
 
 	genDocWrite := GenesisDocWrite{
@@ -130,15 +117,6 @@ func (genDoc *GenesisDoc) SaveAs(file string) error {
 	return WriteFile(file, genDocBytes, 0644)
 }
 
-//------------------------------------------------------------
-// Make genesis state from file
-
-//func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
-//	err = json.Unmarshal(jsonBlob, &genDoc)
-//	return
-//}
-
-// 读取 genesisdocjson，并做转换
 func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 	var genDocWrite *GenesisDocWrite
 	err = json.Unmarshal(jsonBlob, &genDocWrite)
@@ -270,7 +248,6 @@ func (ep *OneEpochDoc) UnmarshalJSON(input []byte) error {
 	return nil
 }
 
-// 写入文件中间转换
 func (ep OneEpochDocWrite) MarshalJSON() ([]byte, error) {
 	type hexEpoch struct {
 		Number         hexutil.Uint64          `json:"number"`
@@ -290,7 +267,6 @@ func (ep OneEpochDocWrite) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&enc)
 }
 
-// 写入文件中间转换
 func (ep *OneEpochDocWrite) UnmarshalJSON(input []byte) error {
 	type hexEpoch struct {
 		Number         hexutil.Uint64          `json:"number"`
@@ -363,7 +339,6 @@ func (gv *GenesisValidator) UnmarshalJSON(input []byte) error {
 	return nil
 }
 
-// 写入文件中间转换
 func (gv GenesisValidatorWrite) MarshalJSON() ([]byte, error) {
 	type hexValidator struct {
 		Address        string         `json:"address"`
@@ -382,7 +357,6 @@ func (gv GenesisValidatorWrite) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&enc)
 }
 
-// 写入文件中间转换
 func (gv *GenesisValidatorWrite) UnmarshalJSON(input []byte) error {
 	type hexValidator struct {
 		Address        string         `json:"address"`

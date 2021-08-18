@@ -20,7 +20,6 @@ func getTMRoot(rootDir string) string {
 		rootDir = os.Getenv("TMHOME")
 	}
 	if rootDir == "" {
-		// deprecated, use TMHOME (TODO: remove in TM 0.11.0)
 		rootDir = os.Getenv("TMROOT")
 	}
 	if rootDir == "" {
@@ -36,10 +35,7 @@ func initTMRoot(rootDir, chainId string) {
 
 	configFilePath := filepath.Join(rootDir, defaultConfigFileName)
 
-	// Write default config file if missing.
 	if !FileExists(configFilePath) {
-		// Ask user for moniker
-		// moniker := cfg.Prompt("Type hostname: ", "anonymous")
 		MustWriteFile(configFilePath, []byte(defaultConfig("anonymous")), 0644)
 	}
 }
@@ -73,7 +69,6 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("moniker", "anonymous")
 	mapConfig.SetDefault("node_laddr", "tcp://0.0.0.0:46656")
 	mapConfig.SetDefault("seeds", "")
-	// mapConfig.SetDefault("seeds", "goldenalchemist.chaintest.net:46656")
 	mapConfig.SetDefault("fast_sync", true)
 	mapConfig.SetDefault("skip_upnp", false)
 	mapConfig.SetDefault("addrbook_file", filepath.Join(rootDir, chainId, "addrbook.json"))

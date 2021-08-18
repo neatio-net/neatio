@@ -19,7 +19,6 @@ type EpochApi struct {
 	Validators     []*EpochValidator `json:"validators"`
 }
 
-// For console
 type EpochApiForConsole struct {
 	Number         hexutil.Uint64              `json:"number"`
 	RewardPerBlock *hexutil.Big                `json:"rewardPerBlock"`
@@ -47,14 +46,14 @@ type EpochVotesApiForConsole struct {
 type EpochValidatorVoteApi struct {
 	EpochValidator
 	Salt     string      `json:"salt"`
-	VoteHash common.Hash `json:"voteHash"` // VoteHash = Keccak256(Epoch Number + PubKey + Amount + Salt)
+	VoteHash common.Hash `json:"voteHash"`
 	TxHash   common.Hash `json:"txHash"`
 }
 
 type EpochValidatorVoteApiForConsole struct {
 	EpochValidatorForConsole
 	Salt     string      `json:"salt"`
-	VoteHash common.Hash `json:"voteHash"` // VoteHash = Keccak256(Epoch Number + PubKey + Amount + Salt)
+	VoteHash common.Hash `json:"voteHash"`
 	TxHash   common.Hash `json:"txHash"`
 }
 
@@ -65,7 +64,6 @@ type EpochValidator struct {
 	RemainingEpoch hexutil.Uint64 `json:"remainEpoch"`
 }
 
-// For console
 type EpochValidatorForConsole struct {
 	Address        string         `json:"address"`
 	PubKey         string         `json:"publicKey"`
@@ -80,8 +78,8 @@ type NeatConExtraApi struct {
 	NeedToSave      bool           `json:"needToSave"`
 	NeedToBroadcast bool           `json:"needToBroadcast"`
 	EpochNumber     hexutil.Uint64 `json:"epochNumber"`
-	SeenCommitHash  string         `json:"lastCommitHash"` // commit from validators from the last block
-	ValidatorsHash  string         `json:"validatorsHash"` // validators for the current block
+	SeenCommitHash  string         `json:"lastCommitHash"`
+	ValidatorsHash  string         `json:"validatorsHash"`
 	SeenCommit      *CommitApi     `json:"seenCommit"`
 	EpochBytes      []byte         `json:"epochBytes"`
 }
@@ -91,12 +89,8 @@ type CommitApi struct {
 	Height  hexutil.Uint64 `json:"height"`
 	Round   int            `json:"round"`
 
-	// BLS signature aggregation to be added here
 	SignAggr crypto.BLSSignature `json:"signAggr"`
 	BitArray *BitArray           `json:"bitArray"`
-
-	//// Volatile
-	//hash []byte
 }
 
 type BlockIDApi struct {

@@ -1,6 +1,5 @@
 package types
 
-// canonical json is go-wire's json for structs with fields in alphabetical order
 import (
 	crypto "github.com/neatlib/crypto-go"
 )
@@ -41,9 +40,6 @@ type CanonicalJSONSignAggr struct {
 	Sum           int64                `json:"sum"`
 }
 
-//------------------------------------
-// Messages including a "chain id" can only be applied to one chain, hence "Once"
-
 type CanonicalJSONOnceProposal struct {
 	ChainID  string                `json:"chain_id"`
 	Proposal CanonicalJSONProposal `json:"proposal"`
@@ -59,8 +55,6 @@ type CanonicalJSONOnceSignAggr struct {
 	SignAggr CanonicalJSONSignAggr `json:"sign_aggr"`
 }
 
-//-----------------------------
-//author@liaoyd
 type CanonicalJSONOnceValidatorMsg struct {
 	ChainID      string                    `json:"chain_id"`
 	ValidatorMsg CanonicalJSONValidatorMsg `json:"validator_msg"`
@@ -76,9 +70,6 @@ type CanonicalJSONValidatorMsg struct {
 	Action         string        `json:"action"`
 	Target         string        `json:"target"`
 }
-
-//-----------------------------------
-// Canonicalize the structs
 
 func CanonicalBlockID(blockID BlockID) CanonicalJSONBlockID {
 	return CanonicalJSONBlockID{

@@ -58,55 +58,6 @@ func TestValidator_Hash(t *testing.T) {
 	fmt.Printf("validatorHashHex=%v\n", hexutil.Encode(validatorHash))
 }
 
-//type val struct {
-//	Address 	string `json:"address"`
-//	PublicKey 	string `json:"public_key"`
-//	RemainEpoch string `json:"remain_epoch"`
-//	VotingPower string `json:"voting_power"`
-//}
-//func TestValidatorSet_Hash(t *testing.T) {
-//	var valSet ValidatorSet
-//	var validators []*Validator
-//	var valList = []*val{
-//		{
-//			Address: "NEAThe27yJUFcSaxGWhLMggWUcYt9eXR",
-//			PublicKey: "0x3589CA45DFD8EFB4103F8FB59BD3185B0BF73DC1EB8B659B0DDB2AFDEDB2BC433D89AF7791019456C79943113CA1370C9CA0B9DC341D884C5DDEDF0056E4057C45EB54DD9007917007C804BFBA3DF6E29D59CC43EFC7C3C10057C99818AEBECC21D8466741547D7CFCB709AF6293C338701EA82B2E4FC8F03188A47F35F261C6",
-//			RemainEpoch:"0x0",
-//			VotingPower: "0x2540be400",
-//		},
-//		{
-//			Address: "NEATduktkcXEFYTVpmTGbnt4umZrpYMU",
-//			PublicKey: "0x49DC3C606826D11FB38463197E3184DA388D829FC95835D4891C42CDCD0AACA84E65220F3034BF2B3C83497D90432C4A1B960F255613B062DFD3BD36CD9A061788EF399B142AAA8E3852206E72FF525DB76FBBDCC9F0FDB5C1C4028CE5D5421D3C334D893B67C90EC9DF4FD6D14C48F37DB133ACA561D4732D172DE3D41086F2",
-//			RemainEpoch:"0x0",
-//			VotingPower: "0x54b40b1f852bda000000",
-//		},
-//		//{
-//		//	Address: "NEATcfoFiNW3i5pBxPpjSs6m1YJzjQMU",
-//		//	PublicKey: "0x372EC175F6D52B91FF43493AC9E113790C0CC6AD6562A1AD7E581717C40F017A6587F3FED9DFA590CED46AE37B99617F06DB3C36BE68F1AB9005276439AB44A455DDE3C1472467D84F851B9974D46A6A525E24638D5101BE207258D91983C03A2FB021C4C50DFE95E6169C698879ED9EA4A6089B24C596C17F46489823EA7CF7",
-//		//	RemainEpoch:"0x0",
-//		//	VotingPower: "0x54b40b1f852bda000000",
-//		//},
-//	}
-//
-//	var totalVP = big.NewInt(0)
-//	validators = make([]*Validator, len(valList))
-//	for i, v := range valList {
-//		vp, _ := hexutil.DecodeBig(v.VotingPower)
-//		validators[i], _ = makeValidator(v.Address, v.PublicKey, vp)
-//		totalVP.Add(totalVP, vp)
-//	}
-//
-//	valSet = ValidatorSet{
-//		validators,
-//		totalVP,
-//	}
-//
-//	fmt.Printf("validatorset validators %v\n", valSet.Validators)
-//	fmt.Printf("validatorset validatorset hash %v\n", valSet.Hash())
-//	fmt.Printf("validatorset validatorset hash hex %v\n", hexutil.Encode(valSet.Hash()))
-//
-//}
-
 func TestDecodeNeatConExtra(t *testing.T) {
 	var extra = NeatConExtra{}
 	extraByte, err := hexutil.Decode(extraHex2)
@@ -125,44 +76,3 @@ func TestDecodeNeatConExtra(t *testing.T) {
 	fmt.Printf("extra.SeenCommit.BitArray=%v\n", extra.SeenCommit.BitArray)
 	fmt.Printf("extra.SeenCommit.NumCommits=%v\n", extra.SeenCommit.NumCommits())
 }
-
-//func TestDecodeValidatorsHash(t *testing.T) {
-//	//var validatorsHashStr = "2uZsa8qZEBL29i1NtCx5xg48LkQ="
-//	var validatorsHashStr = "7CmedS/UtB8Oo9Wk4rNQ5vOhRxs="
-//	var validators Validator
-//
-//	data, err := base64.StdEncoding.DecodeString(validatorsHashStr)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	fmt.Printf("validatorshash=%v\n", data)
-//	fmt.Printf("validatorshashhex=%v\n", hexutil.Encode(data))
-//
-//	// 解不出来 validator
-//	err = wire.ReadBinaryBytes(data, &validators)
-//	if err != nil {
-//		t.Error(err)
-//	}
-//	fmt.Printf("validator=%v\n", validators)
-//}
-
-//func makeValidator(address, blsPubKey string, vp *big.Int) (validator *Validator, err error){
-//	var blsPK crypto.BLSPubKey
-//	blsPubKeyByte, err := hexutil.Decode(blsPubKey)
-//	if err != nil {
-//		return validator, err
-//	}
-//
-//	for i, v := range blsPubKeyByte {
-//		blsPK[i] = v
-//	}
-//
-//	validator = &Validator{
-//		Address:        []byte(address),
-//		PubKey:         blsPK,
-//		VotingPower:    vp,
-//		RemainingEpoch: uint64(0),
-//	}
-//
-//	return validator, nil
-//}

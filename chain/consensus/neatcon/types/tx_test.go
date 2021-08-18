@@ -53,7 +53,7 @@ func TestValidTxProof(t *testing.T) {
 	for h, tc := range cases {
 		txs := tc.txs
 		root := txs.Hash()
-		// make sure valid proof for every tx
+
 		for i := range txs {
 			leaf := txs[i]
 			leafHash := leaf.Hash()
@@ -66,7 +66,6 @@ func TestValidTxProof(t *testing.T) {
 			assert.Nil(proof.Validate(root), "%d: %d", h, i)
 			assert.NotNil(proof.Validate([]byte("foobar")), "%d: %d", h, i)
 
-			// read-write must also work
 			var p2 TxProof
 			bin := wire.BinaryBytes(proof)
 			err := wire.ReadBinaryBytes(bin, &p2)
@@ -78,7 +77,7 @@ func TestValidTxProof(t *testing.T) {
 }
 
 func TestTxProofUnchangable(t *testing.T) {
-	// run the other test a bunch...
+
 	for i := 0; i < 40; i++ {
 		testTxProofUnchangable(t)
 	}
@@ -87,17 +86,14 @@ func TestTxProofUnchangable(t *testing.T) {
 func testTxProofUnchangable(t *testing.T) {
 	assert := assert.New(t)
 
-	// make some proof
 	txs := makeTxs(randInt(2, 100), randInt(16, 128))
 	root := txs.Hash()
 	i := randInt(0, len(txs)-1)
 	proof := txs.Proof(i)
 
-	// make sure it is valid to start with
 	assert.Nil(proof.Validate(root))
 	bin := wire.BinaryBytes(proof)
 
-	// try mutating the data and make sure nothing breaks
 	for j := 0; j < 500; j++ {
 		bad := ctest.MutateByteSlice(bin)
 		if !bytes.Equal(bad, bin) {
@@ -106,16 +102,13 @@ func testTxProofUnchangable(t *testing.T) {
 	}
 }
 
-// this make sure the proof doesn't deserialize into something valid
 func assertBadProof(t *testing.T, root []byte, bad []byte, good TxProof) {
 	var proof TxProof
 	err := wire.ReadBinaryBytes(bad, &proof)
 	if err == nil {
 		err = proof.Validate(root)
 		if err == nil {
-			// okay, this can happen if we have a slightly different total
-			// (where the path ends up the same), if it is something else, we have
-			// a real problem
+
 			assert.NotEqual(t, proof.Total, good.Total, "bad: %#v\ngood: %#v", proof, good)
 		}
 	}

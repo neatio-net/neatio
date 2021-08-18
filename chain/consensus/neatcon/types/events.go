@@ -1,16 +1,12 @@
 package types
 
 import (
-	// for registering TMEventData as events.EventData
 	neatTypes "github.com/neatlab/neatio/chain/core/types"
 	. "github.com/neatlib/common-go"
 	"github.com/neatlib/events-go"
 	"github.com/neatlib/wire-go"
 )
 
-// Functions to generate eventId strings
-
-// Reserved
 func EventStringBond() string    { return "Bond" }
 func EventStringUnbond() string  { return "Unbond" }
 func EventStringRebond() string  { return "Rebond" }
@@ -40,9 +36,6 @@ func EventStringRequest() string        { return "Request" }
 func EventStringMessage() string        { return "Message" }
 func EventStringFinalCommitted() string { return "FinalCommitted" }
 
-//----------------------------------------
-
-// implements events.EventData
 type TMEventData interface {
 	events.EventData
 	AssertIsTMEventData()
@@ -68,7 +61,7 @@ var _ = wire.RegisterInterface(
 	struct{ TMEventData }{},
 	wire.ConcreteType{EventDataNewBlock{}, EventDataTypeNewBlock},
 	wire.ConcreteType{EventDataNewBlockHeader{}, EventDataTypeNewBlockHeader},
-	// wire.ConcreteType{EventDataFork{}, EventDataTypeFork },
+
 	wire.ConcreteType{EventDataTx{}, EventDataTypeTx},
 	wire.ConcreteType{EventDataRoundState{}, EventDataTypeRoundState},
 	wire.ConcreteType{EventDataVote{}, EventDataTypeVote},
@@ -80,34 +73,27 @@ var _ = wire.RegisterInterface(
 	wire.ConcreteType{EventDataFinalCommitted{}, EventDataTypeFinalCommitted},
 )
 
-// Most event messages are basic types (a block, a transaction)
-// but some (an input to a call tx or a receive) are more exotic
-
 type EventDataNewBlock struct {
 	Block *NCBlock `json:"block"`
 }
 
-// light weight event for benchmarking
 type EventDataNewBlockHeader struct {
 	Height int `json:"height"`
 }
 
-// All txs fire EventDataTx
 type EventDataTx struct {
 	Height int    `json:"height"`
 	Tx     Tx     `json:"tx"`
 	Data   []byte `json:"data"`
 	Log    string `json:"log"`
-	Error  string `json:"error"` // this is redundant information for now
+	Error  string `json:"error"`
 }
 
-// NOTE: This goes into the replay WAL
 type EventDataRoundState struct {
 	Height uint64 `json:"height"`
 	Round  int    `json:"round"`
 	Step   string `json:"step"`
 
-	// private, not exposed to websockets
 	RoundState interface{} `json:"-"`
 }
 
@@ -124,17 +110,14 @@ type EventDataVote2Proposer struct {
 	ProposerKey string
 }
 
-// EventDataRequest is posted to propose a proposal
 type EventDataRequest struct {
 	Proposal *neatTypes.Block `json:"proposal"`
 }
 
-// EventDataMessage is posted for Istanbul engine communication
 type EventDataMessage struct {
 	Payload []byte `json:"payload"`
 }
 
-// FinalCommittedEvent is posted when a proposal is committed
 type EventDataFinalCommitted struct {
 	BlockNumber uint64
 }
@@ -150,9 +133,6 @@ func (_ EventDataVote2Proposer) AssertIsTMEventData()  {}
 func (_ EventDataRequest) AssertIsTMEventData()        {}
 func (_ EventDataMessage) AssertIsTMEventData()        {}
 func (_ EventDataFinalCommitted) AssertIsTMEventData() {}
-
-//----------------------------------------
-// Wrappers for type safety
 
 type Fireable interface {
 	events.Fireable
@@ -179,7 +159,6 @@ func NewEventCache(evsw EventSwitch) EventCache {
 	return events.NewEventCache(evsw)
 }
 
-// All events should be based on this FireEvent to ensure they are TMEventData
 func fireEvent(fireable events.Fireable, event string, data TMEventData) {
 	if fireable != nil {
 		fireable.FireEvent(event, data)
@@ -192,8 +171,6 @@ func AddListenerForEvent(evsw EventSwitch, id, event string, cb func(data TMEven
 	})
 
 }
-
-//--- block, tx, and vote events
 
 func FireEventNewBlock(fireable events.Fireable, block EventDataNewBlock) {
 	fireEvent(fireable, EventStringNewBlock(), block)
@@ -218,8 +195,6 @@ func FireEventVote2Proposer(fireable events.Fireable, vote EventDataVote2Propose
 func FireEventTx(fireable events.Fireable, tx EventDataTx) {
 	fireEvent(fireable, EventStringTx(tx.Tx), tx)
 }
-
-//--- EventDataRoundState events
 
 func FireEventNewRoundStep(fireable events.Fireable, rs EventDataRoundState) {
 	fireEvent(fireable, EventStringNewRoundStep(), rs)

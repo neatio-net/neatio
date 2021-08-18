@@ -24,7 +24,6 @@ type Part struct {
 	Bytes []byte             `json:"bytes"`
 	Proof merkle.SimpleProof `json:"proof"`
 
-	// Cache
 	hash []byte
 }
 
@@ -33,7 +32,7 @@ func (part *Part) Hash() []byte {
 		return part.hash
 	} else {
 		hasher := ripemd160.New()
-		hasher.Write(part.Bytes) // doesn't err
+		hasher.Write(part.Bytes)
 		part.hash = hasher.Sum(nil)
 		return part.hash
 	}
@@ -53,8 +52,6 @@ func (part *Part) StringIndented(indent string) string {
 		indent, part.Proof.StringIndented(indent+"  "),
 		indent)
 }
-
-//-------------------------------------
 
 type PartSetHeader struct {
 	Total uint64 `json:"total"`
@@ -77,8 +74,6 @@ func (psh PartSetHeader) WriteSignBytes(w io.Writer, n *int, err *error) {
 	wire.WriteJSON(CanonicalPartSetHeader(psh), w, n, err)
 }
 
-//-------------------------------------
-
 type PartSet struct {
 	total int
 	hash  []byte
@@ -89,10 +84,8 @@ type PartSet struct {
 	count         int
 }
 
-// Returns an immutable, full PartSet from the data bytes.
-// The data bytes are split into "partSize" chunks, and merkle tree computed.
 func NewPartSetFromData(data []byte, partSize int) *PartSet {
-	// divide data into 4kb parts.
+
 	total := (len(data) + partSize - 1) / partSize
 	parts := make([]*Part, total)
 	parts_ := make([]merkle.Hashable, total)
@@ -106,7 +99,7 @@ func NewPartSetFromData(data []byte, partSize int) *PartSet {
 		parts_[i] = part
 		partsBitArray.SetIndex(uint64(i), true)
 	}
-	// Compute merkle proofs
+
 	root, proofs := merkle.SimpleProofsFromHashables(parts_)
 	for i := 0; i < total; i++ {
 		parts[i].Proof = *proofs[i]
@@ -120,7 +113,6 @@ func NewPartSetFromData(data []byte, partSize int) *PartSet {
 	}
 }
 
-// Returns an empty PartSet ready to be populated.
 func NewPartSetFromHeader(header PartSetHeader) *PartSet {
 	return &PartSet{
 		total:         int(header.Total),
@@ -188,24 +180,20 @@ func (ps *PartSet) AddPart(part *Part, verify bool) (bool, error) {
 	ps.mtx.Lock()
 	defer ps.mtx.Unlock()
 
-	// Invalid part index
 	if part.Index >= ps.total {
 		return false, ErrPartSetUnexpectedIndex
 	}
 
-	// If part already exists, return false.
 	if ps.parts[part.Index] != nil {
 		return false, nil
 	}
 
-	// Check hash proof
 	if verify {
 		if !part.Proof.Verify(part.Index, ps.total, part.Hash(), ps.Hash()) {
 			return false, ErrPartSetInvalidProof
 		}
 	}
 
-	// Add part
 	ps.parts[part.Index] = part
 	ps.partsBitArray.SetIndex(uint64(part.Index), true)
 	ps.count++

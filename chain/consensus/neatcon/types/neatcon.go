@@ -17,41 +17,13 @@ type NeatConExtra struct {
 	NeedToSave      bool      `json:"need_to_save"`
 	NeedToBroadcast bool      `json:"need_to_broadcast"`
 	EpochNumber     uint64    `json:"epoch_number"`
-	SeenCommitHash  []byte    `json:"last_commit_hash"` // commit from validators from the last block
-	ValidatorsHash  []byte    `json:"validators_hash"`  // validators for the current block
+	SeenCommitHash  []byte    `json:"last_commit_hash"`
+	ValidatorsHash  []byte    `json:"validators_hash"`
 	SeenCommit      *Commit   `json:"seen_commit"`
 	EpochBytes      []byte    `json:"epoch_bytes"`
 }
 
-/*
-// EncodeRLP serializes ist into the Ethereum RLP format.
-func (te *NeatConExtra) EncodeRLP(w io.Writer) error {
-	return rlp.Encode(w, []interface{}{
-		te.ChainID, te.Height, te.Time, te.LastBlockID,
-		te.SeenCommitHash, te.ValidatorsHash,
-		te.SeenCommit,
-	})
-}
-
-// DecodeRLP implements rlp.Decoder, and load the istanbul fields from a RLP stream.
-func (te *NeatConExtra) DecodeRLP(s *rlp.Stream) error {
-	var ncExtra NeatConExtra
-	if err := s.Decode(&ncExtra); err != nil {
-		return err
-	}
-	te.ChainID, te.Height, te.Time, te.LastBlockID,
-		te.SeenCommitHash, te.ValidatorsHash,
-		te.SeenCommit = ncExtra.ChainID, ncExtra.Height, ncExtra.Time, ncExtra.LastBlockID,
-		ncExtra.SeenCommitHash, ncExtra.ValidatorsHash,
-		ncExtra.SeenCommit
-	return nil
-}
-*/
-
-//be careful, here not deep copy because just reference to SeenCommit
 func (te *NeatConExtra) Copy() *NeatConExtra {
-	//fmt.Printf("State.Copy(), s.LastValidators are %v\n",s.LastValidators)
-	//debug.PrintStack()
 
 	return &NeatConExtra{
 		ChainID:         te.ChainID,
@@ -67,7 +39,6 @@ func (te *NeatConExtra) Copy() *NeatConExtra {
 	}
 }
 
-// NOTE: hash is nil if required fields are missing.
 func (te *NeatConExtra) Hash() []byte {
 	if len(te.ValidatorsHash) == 0 {
 		return nil
@@ -84,9 +55,6 @@ func (te *NeatConExtra) Hash() []byte {
 	})
 }
 
-// ExtractNeatConExtra extracts all values of the NeatConExtra from the header. It returns an
-// error if the length of the given extra-data is less than 32 bytes or the extra-data can not
-// be decoded.
 func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 	if len(h.Extra) == 0 {
@@ -95,7 +63,7 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 	var ncExtra = NeatConExtra{}
 	err := wire.ReadBinaryBytes(h.Extra[:], &ncExtra)
-	//err := rlp.DecodeBytes(h.Extra[:], &ncExtra)
+
 	if err != nil {
 		return nil, err
 	}

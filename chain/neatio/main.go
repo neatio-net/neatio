@@ -1,4 +1,3 @@
-// neatio is the official command-line client for NEAT Blockchain.
 package main
 
 import (
@@ -18,17 +17,15 @@ import (
 )
 
 const (
-	clientIdentifier = "neatio" // Client identifier to advertise over the network
+	clientIdentifier = "neatio"
 )
 
 var (
-	// Git SHA1 commit hash of the release (set via linker flags)
 	gitCommit = ""
 	gitDate   = ""
 
-	// The app that holds all commands and flags.
 	app = utils.NewApp(gitCommit, "the neatio command line interface")
-	// flags that configure the node
+
 	nodeFlags = []cli.Flag{
 		utils.IdentityFlag,
 		utils.UnlockedAccountFlag,
@@ -49,7 +46,7 @@ var (
 		utils.TxPoolAccountQueueFlag,
 		utils.TxPoolGlobalQueueFlag,
 		utils.TxPoolLifetimeFlag,
-		//utils.FastSyncFlag,
+
 		utils.SyncModeFlag,
 		utils.GCModeFlag,
 		utils.CacheFlag,
@@ -76,15 +73,13 @@ var (
 		utils.NetworkIdFlag,
 		utils.RPCCORSDomainFlag,
 		utils.RPCVirtualHostsFlag,
-		//utils.EthStatsURLFlag,
+
 		utils.MetricsEnabledFlag,
 		utils.NoCompactionFlag,
 		utils.GpoBlocksFlag,
 		utils.GpoPercentileFlag,
 		utils.ExtraDataFlag,
-		//configFileFlag,
 
-		//utils.LogDirFlag,
 		utils.SideChainFlag,
 	}
 
@@ -104,34 +99,32 @@ var (
 )
 
 func init() {
-	// Initialize the CLI app and start neatio
+
 	app.Action = neatchainCmd
-	app.HideVersion = true // we have a command to print the version
+	app.HideVersion = true
 	app.Copyright = "Copyright 2021 Neatio Developers"
 	app.Commands = []cli.Command{
-		// See chaincmd.go:
+
 		createValidatorCmd,
 		initNEATGenesisCmd,
 		initCommand,
-		//initSideChainCmd,
+
 		importCommand,
 		exportCommand,
 		copydbCommand,
 		removedbCommand,
 		dumpCommand,
-		// See monitorcmd.go:
+
 		monitorCommand,
-		// See accountcmd.go:
+
 		accountCommand,
-		//walletCommand,
-		// See consolecmd.go:
+
 		consoleCommand,
 		attachCommand,
 		javascriptCommand,
-		// See misccmd.go:
 
 		bugCommand,
-		// See config.go
+
 		dumpConfigCommand,
 		versionCommand,
 	}
@@ -145,15 +138,12 @@ func init() {
 	app.Before = func(ctx *cli.Context) error {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 
-		// Setup the Global Logger
-
 		log.NewLogger("", "", ctx.GlobalInt("verbosity"), ctx.GlobalBool("debug"), ctx.GlobalString("vmodule"), ctx.GlobalString("backtrace"))
 
 		if err := debug.Setup(ctx); err != nil {
 			return err
 		}
 
-		// Start system runtime metrics collection
 		go metrics.CollectProcessMetrics(3 * time.Second)
 
 		return nil
@@ -161,7 +151,7 @@ func init() {
 
 	app.After = func(ctx *cli.Context) error {
 		debug.Exit()
-		console.Stdin.Close() // Resets terminal mode.
+		console.Stdin.Close()
 		return nil
 	}
 }

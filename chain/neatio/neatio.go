@@ -25,23 +25,18 @@ func neatchainCmd(ctx *cli.Context) error {
 
 	chainMgr := GetCMInstance(ctx)
 
-	// SideChainFlag flag
 	requestSideChain := strings.Split(ctx.GlobalString(utils.SideChainFlag.Name), ",")
 
-	// Initial P2P Server
 	chainMgr.InitP2P()
 
-	// Load Main Chain
 	err := chainMgr.LoadMainChain()
 	if err != nil {
 		log.Errorf("Load Main Chain failed. %v", err)
 		return nil
 	}
 
-	//set the event.TypeMutex to cch
 	chainMgr.InitCrossChainHelper()
 
-	// Start P2P Server
 	err = chainMgr.StartP2PServer()
 	if err != nil {
 		log.Errorf("Start P2P Server failed. %v", err)
@@ -49,17 +44,14 @@ func neatchainCmd(ctx *cli.Context) error {
 	}
 	consensus.NodeID = chainMgr.GetNodeID()[0:16]
 
-	// Start Main Chain
 	err = chainMgr.StartMainChain()
 
-	// Load Side Chain
 	err = chainMgr.LoadChains(requestSideChain)
 	if err != nil {
 		log.Errorf("Load Side Chains failed. %v", err)
 		return err
 	}
 
-	// Start Side Chain
 	err = chainMgr.StartChains()
 	if err != nil {
 		log.Error("start chains failed")
@@ -91,7 +83,7 @@ func neatchainCmd(ctx *cli.Context) error {
 				log.Info(fmt.Sprintf("Already shutting down, interrupt %d more times for panic.", i-1))
 			}
 		}
-		debug.Exit() // ensure trace and CPU profile data is flushed.
+		debug.Exit()
 		debug.LoudPanic("boom")
 	}()
 

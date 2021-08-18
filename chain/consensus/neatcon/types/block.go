@@ -17,12 +17,9 @@ import (
 	"github.com/neatlib/wire-go"
 )
 
-const MaxBlockSize = 22020096 // 21MB TODO make it configurable
-
-// IntermediateBlockResult represents intermediate block execute result.
+const MaxBlockSize = 22020096 // 22 Mb
 type IntermediateBlockResult struct {
-	Block *types.Block
-	// followed by block execute result
+	Block    *types.Block
 	State    *state.StateDB
 	Receipts types.Receipts
 	Ops      *types.PendingOps
@@ -55,7 +52,6 @@ func MakeBlock(height uint64, chainID string, commit *Commit,
 	return ncBlock, ncBlock.MakePartSet(partSize)
 }
 
-// Basic validation that doesn't involve state data.
 func (b *NCBlock) ValidateBasic(ncExtra *NeatConExtra) error {
 
 	if b.NTCExtra.ChainID != ncExtra.ChainID {
@@ -65,19 +61,6 @@ func (b *NCBlock) ValidateBasic(ncExtra *NeatConExtra) error {
 		return errors.New(Fmt("Wrong Block.Header.Height. Expected %v, got %v", ncExtra.Height+1, b.NTCExtra.Height))
 	}
 
-	/*
-		if !b.NTCExtra.BlockID.Equals(blockID) {
-			return errors.New(Fmt("Wrong Block.Header.LastBlockID.  Expected %v, got %v", blockID, b.NTCExtra.BlockID))
-		}
-		if !bytes.Equal(b.NTCExtra.SeenCommitHash, b.NTCExtra.SeenCommit.Hash()) {
-			return errors.New(Fmt("Wrong Block.Header.LastCommitHash.  Expected %X, got %X", b.NTCExtra.SeenCommitHash, b.NTCExtra.SeenCommit.Hash()))
-		}
-		if b.NTCExtra.Height != 1 {
-			if err := b.NTCExtra.SeenCommit.ValidateBasic(); err != nil {
-				return err
-			}
-		}
-	*/
 	return nil
 }
 
@@ -87,10 +70,7 @@ func (b *NCBlock) FillSeenCommitHash() {
 	}
 }
 
-// Computes and returns the block hash.
-// If the block is incomplete, block hash is nil for safety.
 func (b *NCBlock) Hash() []byte {
-	// fmt.Println(">>", b.Data)
 	if b == nil || b.NTCExtra.SeenCommit == nil {
 		return nil
 	}
@@ -110,7 +90,6 @@ func (b *NCBlock) ToBytes() []byte {
 		NTCExtra     *NeatConExtra
 		TX3ProofData []*types.TX3ProofData
 	}
-	//fmt.Printf("NCBlock.toBytes 0 with block: %v\n", b)
 
 	bs, err := rlp.EncodeToBytes(b.Block)
 	if err != nil {
@@ -133,8 +112,6 @@ func (b *NCBlock) FromBytes(reader io.Reader) (*NCBlock, error) {
 		NTCExtra     *NeatConExtra
 		TX3ProofData []*types.TX3ProofData
 	}
-
-	//fmt.Printf("NCBlock.FromBytes \n")
 
 	var n int
 	var err error
@@ -161,9 +138,6 @@ func (b *NCBlock) FromBytes(reader io.Reader) (*NCBlock, error) {
 	return ncBlock, nil
 }
 
-// Convenience.
-// A nil block never hashes to anything.
-// Nothing hashes to a nil hash.
 func (b *NCBlock) HashesTo(hash []byte) bool {
 	if len(hash) == 0 {
 		return false
@@ -202,22 +176,14 @@ func (b *NCBlock) StringShort() string {
 	}
 }
 
-//-------------------------------------
-
-// NOTE: Commit is empty for height 1, but never nil.
 type Commit struct {
-	// NOTE: The Precommits are in order of address to preserve the bonded ValidatorSet order.
-	// Any peer with a block can gossip precommits by index with a peer without recalculating the
-	// active ValidatorSet.
 	BlockID BlockID `json:"blockID"`
 	Height  uint64  `json:"height"`
 	Round   int     `json:"round"`
 
-	// BLS signature aggregation to be added here
 	SignAggr crypto.BLSSignature `json:"SignAggr"`
 	BitArray *BitArray
 
-	// Volatile
 	hash []byte
 }
 
@@ -237,14 +203,6 @@ func (commit *Commit) ValidateBasic() error {
 	if commit.BlockID.IsZero() {
 		return errors.New("Commit cannot be for nil block")
 	}
-	/*
-		if commit.Type() != VoteTypePrecommit {
-			return fmt.Errorf("Invalid commit type. Expected VoteTypePrecommit, got %v",
-				precommit.Type)
-		}
-
-		// shall we validate the signature aggregation?
-	*/
 
 	return nil
 }
@@ -275,8 +233,6 @@ func (commit *Commit) StringIndented(indent string) string {
 		indent, commit.BitArray.String(),
 		indent, commit.hash)
 }
-
-//--------------------------------------------------------------------------------
 
 type BlockID struct {
 	Hash        []byte        `json:"hash"`

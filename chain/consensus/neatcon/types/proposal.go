@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	//. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/wire-go"
-	// crypto "github.com/neatlib/crypto-go"
 )
 
 var (
@@ -22,14 +20,13 @@ type Proposal struct {
 	Round            int              `json:"round"`
 	Hash             []byte           `json:"hash"`
 	BlockPartsHeader PartSetHeader    `json:"block_parts_header"`
-	POLRound         int              `json:"pol_round"`    // -1 if null.
-	POLBlockID       BlockID          `json:"pol_block_id"` // zero if null.
+	POLRound         int              `json:"pol_round"`
+	POLBlockID       BlockID          `json:"pol_block_id"`
 	ProposerNetAddr  string           `json:"proposer_net_addr"`
 	ProposerPeerKey  string           `json:"proposer_peer_key"`
 	Signature        crypto.Signature `json:"signature"`
 }
 
-// polRound: -1 if no polRound.
 func NewProposal(height uint64, round int, hash []byte, blockPartsHeader PartSetHeader, polRound int, polBlockID BlockID, peerKey string) *Proposal {
 	return &Proposal{
 		Height:           height,

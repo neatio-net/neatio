@@ -27,7 +27,6 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
-// AppHelpTemplate is the test template for the default, global app help topic.
 var AppHelpTemplate = `NAME:
    {{.App.Name}} - {{.App.Usage}}
 
@@ -54,13 +53,11 @@ COPYRIGHT:
    {{end}}
 `
 
-// flagGroup is a collection of flags belonging to a single topic.
 type flagGroup struct {
 	Name  string
 	Flags []cli.Flag
 }
 
-// AppHelpFlagGroups is the application flags, grouped by functionality.
 var AppHelpFlagGroups = []flagGroup{
 	{
 		Name: "NEATIO",
@@ -186,15 +183,13 @@ var AppHelpFlagGroups = []flagGroup{
 	},
 }
 
-// byCategory sorts an array of flagGroup by Name in the order
-// defined in AppHelpFlagGroups.
 type byCategory []flagGroup
 
 func (a byCategory) Len() int      { return len(a) }
 func (a byCategory) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a byCategory) Less(i, j int) bool {
 	iCat, jCat := a[i].Name, a[j].Name
-	iIdx, jIdx := len(AppHelpFlagGroups), len(AppHelpFlagGroups) // ensure non categorized flags come last
+	iIdx, jIdx := len(AppHelpFlagGroups), len(AppHelpFlagGroups)
 
 	for i, group := range AppHelpFlagGroups {
 		if iCat == group.Name {
@@ -220,20 +215,18 @@ func flagCategory(flag cli.Flag) string {
 }
 
 func init() {
-	// Override the default app help template
+
 	cli.AppHelpTemplate = AppHelpTemplate
 
-	// Define a one shot struct to pass to the usage template
 	type helpData struct {
 		App        interface{}
 		FlagGroups []flagGroup
 	}
 
-	// Override the default app help printer, but only for the global app help
 	originalHelpPrinter := cli.HelpPrinter
 	cli.HelpPrinter = func(w io.Writer, tmpl string, data interface{}) {
 		if tmpl == AppHelpTemplate {
-			// Iterate over all the flags and add any uncategorized ones
+
 			categorized := make(map[string]struct{})
 			for _, group := range AppHelpFlagGroups {
 				for _, flag := range group.Flags {
@@ -247,19 +240,18 @@ func init() {
 				}
 			}
 			if len(uncategorized) > 0 {
-				// Append all ungategorized options to the misc group
+
 				miscs := len(AppHelpFlagGroups[len(AppHelpFlagGroups)-1].Flags)
 				AppHelpFlagGroups[len(AppHelpFlagGroups)-1].Flags = append(AppHelpFlagGroups[len(AppHelpFlagGroups)-1].Flags, uncategorized...)
 
-				// Make sure they are removed afterwards
 				defer func() {
 					AppHelpFlagGroups[len(AppHelpFlagGroups)-1].Flags = AppHelpFlagGroups[len(AppHelpFlagGroups)-1].Flags[:miscs]
 				}()
 			}
-			// Render out custom usage screen
+
 			originalHelpPrinter(w, tmpl, helpData{data, AppHelpFlagGroups})
 		} else if tmpl == utils.CommandHelpTemplate {
-			// Iterate over all command specific flags and categorize them
+
 			categorized := make(map[string][]cli.Flag)
 			for _, flag := range data.(cli.Command).Flags {
 				if _, ok := categorized[flag.String()]; !ok {
@@ -267,14 +259,12 @@ func init() {
 				}
 			}
 
-			// sort to get a stable ordering
 			sorted := make([]flagGroup, 0, len(categorized))
 			for cat, flgs := range categorized {
 				sorted = append(sorted, flagGroup{cat, flgs})
 			}
 			sort.Sort(byCategory(sorted))
 
-			// add sorted array to data and render with default printer
 			originalHelpPrinter(w, tmpl, map[string]interface{}{
 				"cmd":              data,
 				"categorizedFlags": sorted,

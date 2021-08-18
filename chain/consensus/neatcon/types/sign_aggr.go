@@ -1,22 +1,18 @@
 package types
 
 import (
-	//"bytes"
-	//"errors"
 	"fmt"
 	"math/big"
 
 	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 
-	//"github.com/neatlib/data-go"
 	"io"
 
 	"github.com/neatlib/wire-go"
 )
 
-//------------------------ signature aggregation -------------------
-const MaxSignAggrSize = 22020096 // 21MB TODO make it configurable
+const MaxSignAggrSize = 22020096
 
 type SignAggr struct {
 	ChainID       string
@@ -29,7 +25,6 @@ type SignAggr struct {
 	BitArray      *BitArray `json:"bitarray"`
 	Sum           int64     `json:"sum"`
 
-	// BLS signature aggregation to be added here
 	SignatureAggr crypto.BLSSignature `json:"SignatureAggr"`
 	SignBytes     []byte              `json:"sign_bytes"`
 }
@@ -89,16 +84,8 @@ func (sa *SignAggr) HasTwoThirdsMajority(valSet *ValidatorSet) bool {
 		return false
 	}
 
-	/*
-		quorum := big.NewInt(0)
-		quorum.Mul(valSet.totalVotingPower, big.NewInt(2))
-		quorum.Div(quorum, big.NewInt(3))
-		quorum.Add(quorum, big.NewInt(1))
-	*/
-	//quorum := Loose23MajorThreshold(valSet.TotalVotingPower(), sa.Round)
 	quorum := Loose23MajorThreshold(totalVotes, sa.Round)
 
-	//return talliedVotingPower.Cmp(quorum) >= 0
 	return votesSum.Cmp(quorum) >= 0
 }
 
@@ -132,15 +119,6 @@ func (sa *SignAggr) IsCommit() bool {
 }
 
 func (sa *SignAggr) MakeCommit() *Commit {
-	//        if sa.Type != types.VoteTypePrecommit {
-	//               PanicSanity("Cannot MakeCommit() unless SignAggr.Type is VoteTypePrecommit")
-	//        }
-
-	// Make sure we have a 2/3 majority
-	/*        if sa.HasTwoThirdsMajority()== false {
-	                  PanicSanity("Cannot MakeCommit() unless a blockhash has +2/3")
-	          }
-	*/
 	return &Commit{
 		BlockID:  sa.Maj23,
 		Height:   sa.Height,
@@ -161,27 +139,10 @@ func (sa *SignAggr) SignAggrVerify(msg []byte, valSet *ValidatorSet) bool {
 	return pubKey.VerifyBytes(msg, sa.SignatureAggr) && sa.HasTwoThirdsMajority(valSet)
 }
 
-//func (sa *SignAggr) HasTwoThirdsAny(valSet *ValidatorSet) bool {
-//	if sa == nil {
-//		return false
-//	}
-//
-//	/*
-//		twoThird := new(big.Int).Mul(voteSet.valSet.TotalVotingPower(), big.NewInt(2))
-//		twoThird.Div(twoThird, big.NewInt(3))sa
-//	*/
-//	twoThirdPlus1 := Loose23MajorThreshold(valSet.TotalVotingPower(), sa.Round)
-//	twoThird := twoThirdPlus1.Sub(twoThirdPlus1, big.NewInt(1))
-//
-//	return big.NewInt(sa.Sum).Cmp(twoThird) == 1
-//}
-
 func (sa *SignAggr) HasAll(valSet *ValidatorSet) bool {
 	return big.NewInt(sa.Sum).Cmp(valSet.TotalVotingPower()) == 0
 }
 
-// Returns either a blockhash (or nil) that received +2/3 majority.
-// If there exists no such majority, returns (nil, PartSetHeader{}, false).
 func (sa *SignAggr) TwoThirdsMajority() (blockID BlockID, ok bool) {
 	if sa == nil {
 		return BlockID{}, false
