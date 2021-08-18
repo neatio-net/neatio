@@ -196,7 +196,7 @@ func (epoch *Epoch) Save() {
 		epoch.db.SetSync(calcEpochKeyWithHeight(epoch.nextEpoch.Number), epoch.nextEpoch.Bytes())
 	}
 
-	// TODO whether save next epoch validator vote set
+	// Save next epoch validator vote set
 	if epoch.nextEpoch != nil && epoch.nextEpoch.validatorVoteSet != nil {
 		// Save the next epoch vote set
 		SaveEpochVoteSet(epoch.db, epoch.nextEpoch.Number, epoch.nextEpoch.validatorVoteSet)
@@ -264,7 +264,7 @@ func (epoch *Epoch) ProposeNextEpoch(lastBlockHeight uint64, lastBlockTime time.
 			EndBlock:       epoch.EndBlock + blocks,
 			BlockGenerated: 0,
 			Status:         EPOCH_PROPOSED_NOT_VOTED,
-			Validators:     epoch.Validators.Copy(), // Old Validators
+			Validators:     epoch.Validators.Copy(),
 
 			logger: epoch.logger,
 		}
@@ -279,7 +279,6 @@ func (epoch *Epoch) GetNextEpoch() *Epoch {
 		epoch.nextEpoch = loadOneEpoch(epoch.db, epoch.Number+1, epoch.logger)
 		if epoch.nextEpoch != nil {
 			epoch.nextEpoch.rs = epoch.rs
-			// Set ValidatorVoteSet
 			epoch.nextEpoch.validatorVoteSet = LoadEpochVoteSet(epoch.db, epoch.Number+1)
 		}
 	}
@@ -733,9 +732,9 @@ func (epoch *Epoch) copy(copyPrevNext bool) *Epoch {
 
 func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime time.Time) (rewardPerBlock *big.Int, blocksOfNextEpoch uint64) {
 
-	var rewardFirstYear = epoch.rs.RewardFirstYear       //20000000e+18  every year
-	var epochNumberPerYear = epoch.rs.EpochNumberPerYear //4380
-	var totalYear = epoch.rs.TotalYear                   //10
+	var rewardFirstYear = epoch.rs.RewardFirstYear       // 15768e+24  every year
+	var epochNumberPerYear = epoch.rs.EpochNumberPerYear // 8760
+	var totalYear = epoch.rs.TotalYear                   // 28
 	var timePerBlockOfEpoch int64
 
 	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 100 // al least 100 blocks per epoch
