@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	tmTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	ncTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/log"
 	dbm "github.com/neatlib/db-go"
 	"github.com/neatlib/wire-go"
@@ -40,7 +40,7 @@ func LoadRewardScheme(db dbm.DB) *RewardScheme {
 }
 
 // Convert Reward Scheme from json to struct
-func MakeRewardScheme(db dbm.DB, rsDoc *tmTypes.RewardSchemeDoc) *RewardScheme {
+func MakeRewardScheme(db dbm.DB, rsDoc *ncTypes.RewardSchemeDoc) *RewardScheme {
 
 	rs := &RewardScheme{
 		db:                 db,

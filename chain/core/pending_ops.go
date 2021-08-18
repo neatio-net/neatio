@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/neatlab/neatio/chain/consensus"
-	tmTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	ncTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core/types"
 )
 
@@ -41,7 +41,7 @@ func ApplyOp(op types.PendingOp, bc *BlockChain, cch CrossChainHelper) error {
 		return cch.UpdateNextEpoch(ep, op.From, op.PubKey, op.Amount, op.Salt, op.TxHash)
 	case *types.SaveDataToMainChainOp:
 		return cch.SaveSideChainProofDataToMainChain(op.Data)
-	case *tmTypes.SwitchEpochOp:
+	case *ncTypes.SwitchEpochOp:
 		eng := bc.engine.(consensus.NeatCon)
 		nextEp, err := eng.GetEpoch().EnterNewEpoch(op.NewValidators)
 		if err == nil {

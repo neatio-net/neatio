@@ -180,14 +180,14 @@ var MainnetGenesisJSON string = `{
 	"reward_scheme": {
 		"total_reward": "0xa56fa5b99019a5c8000000",
 		"reward_first_year": "0x108b2a2c28029094000000",
-		"epoch_no_per_year": "0x111c",
-		"total_year": "0xa"
+		"epoch_no_per_year": "0x3026ed",
+		"total_year": "0xab"
 	},
 	"current_epoch": {
 		"number": "0x0",
-		"reward_per_block": "0x8cd1dc18de05834",
+		"reward_per_block": "0x1b3069329c6f800",
 		"start_block": "0x0",
-		"end_block": "0x1c20",
+		"end_block": "0xa",
 		"validators": [
 			{
 				"address": "NEATbtF9SRcvbnZJbK6QFmSL4aw8fZd1",
