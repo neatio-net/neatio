@@ -37,7 +37,7 @@ type ChainManager struct {
 	sideChains          map[string]*Chain
 	sideQuits           map[string]<-chan struct{}
 
-	stop chan struct{} // Channel wait for NEATIO stop
+	stop chan struct{}
 
 	server *utils.NeatChainP2PServer
 	cch    *CrossChainHelper
@@ -67,7 +67,7 @@ func (cm *ChainManager) InitP2P() {
 }
 
 func (cm *ChainManager) LoadMainChain() error {
-	// Load Main Chain
+
 	chainId := MainChain
 	if cm.ctx.GlobalBool(utils.TestnetFlag.Name) {
 		chainId = TestnetChain
@@ -83,39 +83,32 @@ func (cm *ChainManager) LoadMainChain() error {
 func (cm *ChainManager) LoadChains(sideIds []string) error {
 
 	sideChainIds := core.GetSideChainIds(cm.cch.chainInfoDB)
-	//log.Infof("Before load side chains, side chain IDs are %v, len is %d", sideChainIds, len(sideChainIds))
 
-	readyToLoadChains := make(map[string]bool) // Key: Side Chain ID, Value: Enable Mining (deprecated)
+	readyToLoadChains := make(map[string]bool)
 
-	// Check we are belong to the validator of Side Chain in DB first (Mining Mode)
 	for _, chainId := range sideChainIds {
-		// Check Current Validator is Side Chain Validator
+
 		ci := core.GetChainInfo(cm.cch.chainInfoDB, chainId)
-		// Check if we are in this side chain
+
 		if ci.Epoch != nil && cm.checkCoinbaseInSideChain(ci.Epoch) {
 			readyToLoadChains[chainId] = true
 		}
 	}
 
-	// Check request from Side Chain
 	for _, requestId := range sideIds {
 		if requestId == "" {
-			// Ignore the Empty ID
+
 			continue
 		}
 
 		if _, present := readyToLoadChains[requestId]; present {
-			// Already loaded, ignore
+
 			continue
 		} else {
-			// Launch in non-mining mode, including both correct and wrong chain id
-			// Wrong chain id will be ignore after loading failed
+
 			readyToLoadChains[requestId] = false
 		}
 	}
-
-	//log.Infof("Number of side chain to be loaded :%v", len(readyToLoadChains))
-	//log.Infof("Start to load side chain: %v", readyToLoadChains)
 
 	for chainId := range readyToLoadChains {
 		chain := LoadSideChain(cm.ctx, chainId)
@@ -143,7 +136,7 @@ func (cm *ChainManager) InitCrossChainHelper() {
 	cm.cch.mainChainId = chainId
 
 	if cm.ctx.GlobalBool(utils.RPCEnabledFlag.Name) {
-		host := "127.0.0.1" //cm.ctx.GlobalString(utils.RPCListenAddrFlag.Name)
+		host := "127.0.0.1"
 		port := cm.ctx.GlobalInt(utils.RPCPortFlag.Name)
 		url := net.JoinHostPort(host, strconv.Itoa(port))
 		url = "http://" + url + "/" + chainId
@@ -158,18 +151,14 @@ func (cm *ChainManager) InitCrossChainHelper() {
 
 func (cm *ChainManager) StartP2PServer() error {
 	srv := cm.server.Server()
-	// Append Main Chain Protocols
+
 	srv.Protocols = append(srv.Protocols, cm.mainChain.NeatNode.GatherProtocols()...)
-	// Append Side Chain Protocols
-	//for _, chain := range cm.sideChains {
-	//	srv.Protocols = append(srv.Protocols, chain.EthNode.GatherProtocols()...)
-	//}
-	// Start the server
+
 	return srv.Start()
 }
 
 func (cm *ChainManager) StartMainChain() error {
-	// Start the Main Chain
+
 	cm.mainStartDone = make(chan struct{})
 
 	cm.mainChain.NeatNode.SetP2PServer(cm.server.Server())
@@ -180,7 +169,6 @@ func (cm *ChainManager) StartMainChain() error {
 
 	err := StartChain(cm.ctx, cm.mainChain, cm.mainStartDone)
 
-	// Wait for Main Chain Start Complete
 	<-cm.mainStartDone
 	cm.mainQuit = cm.mainChain.NeatNode.StopChan()
 
@@ -190,12 +178,12 @@ func (cm *ChainManager) StartMainChain() error {
 func (cm *ChainManager) StartChains() error {
 
 	for _, chain := range cm.sideChains {
-		// Start each Chain
+
 		srv := cm.server.Server()
 		sideProtocols := chain.NeatNode.GatherProtocols()
-		// Add Side Protocols to P2P Server Protocols
+
 		srv.Protocols = append(srv.Protocols, sideProtocols...)
-		// Add Side Protocols to P2P Server Caps
+
 		srv.AddChildProtocolCaps(sideProtocols)
 
 		chain.NeatNode.SetP2PServer(srv)
@@ -210,7 +198,6 @@ func (cm *ChainManager) StartChains() error {
 
 		cm.sideQuits[chain.Id] = chain.NeatNode.StopChan()
 
-		// Tell other peers that we have added into a new side chain
 		cm.server.BroadcastNewSideChainMsg(chain.Id)
 	}
 
@@ -219,7 +206,6 @@ func (cm *ChainManager) StartChains() error {
 
 func (cm *ChainManager) StartRPC() error {
 
-	// Start NeatIO RPC
 	err := utils.StartRPC(cm.ctx)
 	if err != nil {
 		return err
@@ -286,7 +272,6 @@ func (cm *ChainManager) StartInspectEvent() {
 
 func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 
-	// Load Side Chain data from pending data
 	cci := core.GetPendingSideChainData(cm.cch.chainInfoDB, chainId)
 	if cci == nil {
 		log.Errorf("side chain: %s does not exist, can't load", chainId)
@@ -310,12 +295,10 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 			validator = true
 		}
 
-		// dereference the PubKey
 		if pubkey, ok := v.PubKey.(*crypto.BLSPubKey); ok {
 			v.PubKey = *pubkey
 		}
 
-		// append the Validator
 		validators = append(validators, types.GenesisValidator{
 			EthAccount: v.Address,
 			PubKey:     v.PubKey,
@@ -323,23 +306,20 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 		})
 	}
 
-	// Write down the genesis into chain info db when exit the routine
 	defer writeGenesisIntoChainInfoDB(cm.cch.chainInfoDB, chainId, validators)
 
 	if !validator {
 		log.Warnf("You are not in the validators of side chain %v, no need to start the side chain", chainId)
-		// Update Side Chain to formal
+
 		cm.formalizeSideChain(chainId, *cci, nil)
 		return
 	}
 
-	// if side chain already loaded, just return (For catch-up case)
 	if _, ok := cm.sideChains[chainId]; ok {
 		log.Infof("Side Chain [%v] has been already loaded.", chainId)
 		return
 	}
 
-	// Load the KeyStore file from MainChain (Optional)
 	var keyJson []byte
 	wallet, walletErr := cm.mainChain.NeatNode.AccountManager().Find(accounts.Account{Address: localEtherbase})
 	if walletErr == nil {
@@ -350,7 +330,6 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 		}
 	}
 
-	// side chain uses the same validator with the main chain.
 	privValidatorFile := cm.mainChain.Config.GetString("priv_validator_file")
 	self := types.LoadPrivValidator(privValidatorFile)
 
@@ -366,13 +345,11 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 		return
 	}
 
-	//StartSideChain to attach intp2p and intrpc
-	//TODO Hookup new Created Side Chain to P2P server
 	srv := cm.server.Server()
 	sideProtocols := chain.NeatNode.GatherProtocols()
-	// Add Side Protocols to P2P Server Protocols
+
 	srv.Protocols = append(srv.Protocols, sideProtocols...)
-	// Add Side Protocols to P2P Server Caps
+
 	srv.AddChildProtocolCaps(sideProtocols)
 
 	chain.NeatNode.SetP2PServer(srv)
@@ -381,7 +358,6 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 		srv.AddLocalValidator(chain.Id, address)
 	}
 
-	// Start the new Side Chain, and it will start side chain reactors as well
 	startDone := make(chan struct{})
 	err = StartChain(cm.ctx, chain, startDone)
 	<-startDone
@@ -394,16 +370,13 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 	var sideEthereum *neatptc.NeatIO
 	chain.NeatNode.Service(&sideEthereum)
 	firstEpoch := sideEthereum.Engine().(consensus.NeatCon).GetEpoch()
-	// Side Chain start success, then delete the pending data in chain info db
+
 	cm.formalizeSideChain(chainId, *cci, firstEpoch)
 
-	// Add Side Chain Id into Chain Manager
 	cm.sideChains[chainId] = chain
 
-	//TODO Broadcast Side ID to all Main Chain peers
 	go cm.server.BroadcastNewSideChainMsg(chainId)
 
-	//hookup utils
 	if utils.IsHTTPRunning() {
 		if h, err := chain.NeatNode.GetHTTPHandler(); err == nil {
 			utils.HookupHTTP(chain.Id, h)
@@ -422,9 +395,9 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 }
 
 func (cm *ChainManager) formalizeSideChain(chainId string, cci core.CoreChainInfo, ep *epoch.Epoch) {
-	// Side Chain start success, then delete the pending data in chain info db
+
 	core.DeletePendingSideChainData(cm.cch.chainInfoDB, chainId)
-	// Convert the Chain Info from Pending to Formal
+
 	core.SaveChainInfo(cm.cch.chainInfoDB, &core.ChainInfo{CoreChainInfo: cci, Epoch: ep})
 }
 
@@ -472,7 +445,6 @@ func (cm *ChainManager) Stop() {
 	cm.cch.localTX3CacheDB.Close()
 	cm.cch.chainInfoDB.Close()
 
-	// Release the main routine
 	close(cm.stop)
 }
 

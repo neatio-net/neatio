@@ -57,7 +57,6 @@ func LoadSideChain(ctx *cli.Context, chainId string) *Chain {
 
 func StartChain(ctx *cli.Context, chain *Chain, startDone chan<- struct{}) error {
 
-	//log.Infof("Starting Chain: %s", chain.Id)
 	go func() {
 		utils.StartNode(ctx, chain.NeatNode)
 

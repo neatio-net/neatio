@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of go-neatio.
-//
-// go-ethereum is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// go-ethereum is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with go-neatio. If not, see <http://www.gnu.org/licenses/>.
-
 package main
 
 import (
@@ -53,7 +37,6 @@ var (
 	}
 )
 
-// These settings ensure that TOML keys use the same names as Go struct fields.
 var tomlSettings = toml.Config{
 	NormFieldName: func(rt reflect.Type, key string) string {
 		return key
@@ -64,7 +47,7 @@ var tomlSettings = toml.Config{
 	MissingField: func(rt reflect.Type, field string) error {
 		link := ""
 		if unicode.IsUpper(rune(rt.Name()[0])) && rt.PkgPath() != "main" {
-			link = fmt.Sprintf(", see https://godoc.org/%s#%s for available fields", rt.PkgPath(), rt.Name())
+			link = fmt.Sprintf(", see https:godoc.org/%s#%s for available fields", rt.PkgPath(), rt.Name())
 		}
 		return fmt.Errorf("field '%s' is not defined in %s%s", field, rt.String(), link)
 	},
@@ -88,7 +71,7 @@ func loadConfig(file string, cfg *gethConfig) error {
 	defer f.Close()
 
 	err = tomlSettings.NewDecoder(bufio.NewReader(f)).Decode(cfg)
-	// Add file name to errors that have a line number.
+
 	if _, ok := err.(*toml.LineError); ok {
 		err = errors.New(file + ", " + err.Error())
 	}
@@ -106,24 +89,20 @@ func defaultNodeConfig() node.Config {
 }
 
 func makeConfigNode(ctx *cli.Context, chainId string) (*node.Node, gethConfig) {
-	// Load defaults.
+
 	cfg := gethConfig{
 		Eth:  neatptc.DefaultConfig,
 		Node: defaultNodeConfig(),
 	}
 
-	// Load config file.
 	if file := ctx.GlobalString(configFileFlag.Name); file != "" {
 		if err := loadConfig(file, &cfg); err != nil {
 			utils.Fatalf("%v", err)
 		}
 	}
 
-	// Apply flags.
 	cfg.Node.ChainId = chainId
 
-	// Setup Log
-	//logDir := path.Join(ctx.GlobalString("datadir"), ctx.GlobalString("logDir"), chainId)
 	cfg.Node.Logger = log.NewLogger(chainId, "", ctx.GlobalInt("verbosity"), ctx.GlobalBool("debug"), ctx.GlobalString("vmodule"), ctx.GlobalString("backtrace"))
 
 	utils.SetNodeConfig(ctx, &cfg.Node)
@@ -136,7 +115,6 @@ func makeConfigNode(ctx *cli.Context, chainId string) (*node.Node, gethConfig) {
 		cfg.Ethstats.URL = ctx.GlobalString(utils.EthStatsURLFlag.Name)
 	}
 
-	//utils.SetShhConfig(ctx, stack, &cfg.Shh)
 	utils.SetGeneralConfig(ctx)
 
 	return stack, cfg
@@ -147,23 +125,6 @@ func makeFullNode(ctx *cli.Context, cch core.CrossChainHelper, chainId string) *
 
 	utils.RegisterIntService(stack, &cfg.Eth, ctx, cch)
 
-	// Whisper must be explicitly enabled by specifying at least 1 whisper flag or in dev mode
-	//shhEnabled := enableWhisper(ctx)
-	//shhAutoEnabled := !ctx.GlobalIsSet(utils.WhisperEnabledFlag.Name) && ctx.GlobalIsSet(utils.DeveloperFlag.Name)
-	//if shhEnabled || shhAutoEnabled {
-	//	if ctx.GlobalIsSet(utils.WhisperMaxMessageSizeFlag.Name) {
-	//		cfg.Shh.MaxMessageSize = uint32(ctx.Int(utils.WhisperMaxMessageSizeFlag.Name))
-	//	}
-	//	if ctx.GlobalIsSet(utils.WhisperMinPOWFlag.Name) {
-	//		cfg.Shh.MinimumAcceptedPOW = ctx.Float64(utils.WhisperMinPOWFlag.Name)
-	//	}
-	//	utils.RegisterShhService(stack, &cfg.Shh)
-	//}
-
-	// Add the Ethereum Stats daemon if requested.
-	//if cfg.Ethstats.URL != "" {
-	//	utils.RegisterEthStatsService(stack, cfg.Ethstats.URL)
-	//}
 	if err := stack.GatherServices(); err != nil {
 		return nil
 	} else {
@@ -171,7 +132,6 @@ func makeFullNode(ctx *cli.Context, cch core.CrossChainHelper, chainId string) *
 	}
 }
 
-// dumpConfig is the dumpconfig command.
 func dumpConfig(ctx *cli.Context) error {
 	_, cfg := makeConfigNode(ctx, clientIdentifier)
 	comment := ""
