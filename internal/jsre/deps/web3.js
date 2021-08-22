@@ -1885,7 +1885,7 @@ var utf8 = require('utf8');
 
 var unitMap = {
     'noether':      '0',
-    'tean':          '1',
+    'wei':          '1',
     'kwei':         '1000',
     'Kwei':         '1000',
     'babbage':      '1000',
