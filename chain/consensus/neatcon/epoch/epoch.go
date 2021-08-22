@@ -811,7 +811,7 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"NEAT Reward per block: %v,\n"+
+			"NEAT Reward per block: 0.0"+"%v,\n"+
 			"Epoch starts at block: %v,\n"+
 			"Epoch ending at block: %v,\n",
 		epoch.Number,
