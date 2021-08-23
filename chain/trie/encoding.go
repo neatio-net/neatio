@@ -16,24 +16,6 @@
 
 package trie
 
-// Trie keys are dealt with in three distinct encodings:
-//
-// KEYBYTES encoding contains the actual key and nothing else. This encoding is the
-// input to most API functions.
-//
-// HEX encoding contains one byte for each nibble of the key and an optional trailing
-// 'terminator' byte of value 0x10 which indicates whether or not the node at the key
-// contains a value. Hex key encoding is used for nodes loaded in memory because it's
-// convenient to access.
-//
-// COMPACT encoding is defined by the Ethereum Yellow Paper (it's called "hex prefix
-// encoding" there) and contains the bytes of the key and a flag. The high nibble of the
-// first byte contains the flag; the lowest bit encoding the oddness of the length and
-// the second-lowest encoding whether the node at the key is a value node. The low nibble
-// of the first byte is zero in the case of an even number of nibbles and the first nibble
-// in the case of an odd number. All remaining nibbles (now an even number) fit properly
-// into the remaining bytes. Compact encoding is used for nodes stored on disk.
-
 func hexToCompact(hex []byte) []byte {
 	terminator := byte(0)
 	if hasTerm(hex) {
@@ -41,10 +23,10 @@ func hexToCompact(hex []byte) []byte {
 		hex = hex[:len(hex)-1]
 	}
 	buf := make([]byte, len(hex)/2+1)
-	buf[0] = terminator << 5 // the flag byte
+	buf[0] = terminator << 5
 	if len(hex)&1 == 1 {
-		buf[0] |= 1 << 4 // odd flag
-		buf[0] |= hex[0] // first nibble is contained in the first byte
+		buf[0] |= 1 << 4
+		buf[0] |= hex[0]
 		hex = hex[1:]
 	}
 	decodeNibbles(hex, buf[1:])
@@ -56,11 +38,11 @@ func compactToHex(compact []byte) []byte {
 		return compact
 	}
 	base := keybytesToHex(compact)
-	// delete terminator flag
+
 	if base[0] < 2 {
 		base = base[:len(base)-1]
 	}
-	// apply odd flag
+
 	chop := 2 - base[0]&1
 	return base[chop:]
 }
@@ -76,8 +58,6 @@ func keybytesToHex(str []byte) []byte {
 	return nibbles
 }
 
-// hexToKeybytes turns hex nibbles into key bytes.
-// This can only be used for keys of even length.
 func hexToKeybytes(hex []byte) []byte {
 	if hasTerm(hex) {
 		hex = hex[:len(hex)-1]
@@ -96,7 +76,6 @@ func decodeNibbles(nibbles []byte, bytes []byte) {
 	}
 }
 
-// prefixLen returns the length of the common prefix of a and b.
 func prefixLen(a, b []byte) int {
 	var i, length = 0, len(a)
 	if len(b) < length {
@@ -110,7 +89,6 @@ func prefixLen(a, b []byte) int {
 	return i
 }
 
-// hasTerm returns whether a hex key has the terminator flag.
 func hasTerm(s []byte) bool {
 	return len(s) > 0 && s[len(s)-1] == 16
 }

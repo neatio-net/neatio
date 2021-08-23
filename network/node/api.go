@@ -30,27 +30,21 @@ import (
 	"github.com/neatlab/neatio/utilities/metrics"
 )
 
-// PrivateAdminAPI is the collection of administrative API methods exposed only
-// over a secure RPC channel.
 type PrivateAdminAPI struct {
-	node *Node // Node interfaced by this API
+	node *Node
 }
 
-// NewPrivateAdminAPI creates a new API definition for the private admin methods
-// of the node itself.
 func NewPrivateAdminAPI(node *Node) *PrivateAdminAPI {
 	return &PrivateAdminAPI{node: node}
 }
 
-// AddPeer requests connecting to a remote node, and also maintaining the new
-// connection at all times, even reconnecting if it is lost.
 func (api *PrivateAdminAPI) AddPeer(url string) (bool, error) {
-	// Make sure the server is running, fail otherwise
+
 	server := api.node.Server()
 	if server == nil {
 		return false, ErrNodeStopped
 	}
-	// Try to add the url as a static peer and return
+
 	node, err := discover.ParseNode(url)
 	if err != nil {
 		return false, fmt.Errorf("invalid enode: %v", err)
@@ -59,14 +53,13 @@ func (api *PrivateAdminAPI) AddPeer(url string) (bool, error) {
 	return true, nil
 }
 
-// RemovePeer disconnects from a a remote node if the connection exists
 func (api *PrivateAdminAPI) RemovePeer(url string) (bool, error) {
-	// Make sure the server is running, fail otherwise
+
 	server := api.node.Server()
 	if server == nil {
 		return false, ErrNodeStopped
 	}
-	// Try to remove the url as a static peer and return
+
 	node, err := discover.ParseNode(url)
 	if err != nil {
 		return false, fmt.Errorf("invalid enode: %v", err)
@@ -75,16 +68,13 @@ func (api *PrivateAdminAPI) RemovePeer(url string) (bool, error) {
 	return true, nil
 }
 
-// PeerEvents creates an RPC subscription which receives peer events from the
-// node's p2p.Server
 func (api *PrivateAdminAPI) PeerEvents(ctx context.Context) (*rpc.Subscription, error) {
-	// Make sure the server is running, fail otherwise
+
 	server := api.node.Server()
 	if server == nil {
 		return nil, ErrNodeStopped
 	}
 
-	// Create the subscription
 	notifier, supported := rpc.NotifierFromContext(ctx)
 	if !supported {
 		return nil, rpc.ErrNotificationsUnsupported
@@ -113,7 +103,6 @@ func (api *PrivateAdminAPI) PeerEvents(ctx context.Context) (*rpc.Subscription, 
 	return rpcSub, nil
 }
 
-// StartRPC starts the HTTP RPC API server.
 func (api *PrivateAdminAPI) StartRPC(host *string, port *int, cors *string, apis *string, vhosts *string) (bool, error) {
 	api.node.lock.Lock()
 	defer api.node.lock.Unlock()
@@ -163,7 +152,6 @@ func (api *PrivateAdminAPI) StartRPC(host *string, port *int, cors *string, apis
 	return true, nil
 }
 
-// StopRPC terminates an already running HTTP RPC API endpoint.
 func (api *PrivateAdminAPI) StopRPC() (bool, error) {
 	api.node.lock.Lock()
 	defer api.node.lock.Unlock()
@@ -175,7 +163,6 @@ func (api *PrivateAdminAPI) StopRPC() (bool, error) {
 	return true, nil
 }
 
-// StartWS starts the websocket RPC API server.
 func (api *PrivateAdminAPI) StartWS(host *string, port *int, allowedOrigins *string, apis *string) (bool, error) {
 	api.node.lock.Lock()
 	defer api.node.lock.Unlock()
@@ -217,7 +204,6 @@ func (api *PrivateAdminAPI) StartWS(host *string, port *int, allowedOrigins *str
 	return true, nil
 }
 
-// StopRPC terminates an already running websocket RPC API endpoint.
 func (api *PrivateAdminAPI) StopWS() (bool, error) {
 	api.node.lock.Lock()
 	defer api.node.lock.Unlock()
@@ -229,20 +215,14 @@ func (api *PrivateAdminAPI) StopWS() (bool, error) {
 	return true, nil
 }
 
-// PublicAdminAPI is the collection of administrative API methods exposed over
-// both secure and unsecure RPC channels.
 type PublicAdminAPI struct {
-	node *Node // Node interfaced by this API
+	node *Node
 }
 
-// NewPublicAdminAPI creates a new API definition for the public admin methods
-// of the node itself.
 func NewPublicAdminAPI(node *Node) *PublicAdminAPI {
 	return &PublicAdminAPI{node: node}
 }
 
-// Peers retrieves all the information we know about each individual peer at the
-// protocol granularity.
 func (api *PublicAdminAPI) Peers() ([]*p2p.PeerInfo, error) {
 	server := api.node.Server()
 	if server == nil {
@@ -251,8 +231,6 @@ func (api *PublicAdminAPI) Peers() ([]*p2p.PeerInfo, error) {
 	return server.PeersInfo(), nil
 }
 
-// NodeInfo retrieves all the information we know about the host node at the
-// protocol granularity.
 func (api *PublicAdminAPI) NodeInfo() (*p2p.NodeInfo, error) {
 	server := api.node.Server()
 	if server == nil {
@@ -261,26 +239,20 @@ func (api *PublicAdminAPI) NodeInfo() (*p2p.NodeInfo, error) {
 	return server.NodeInfo(), nil
 }
 
-// Datadir retrieves the current data directory the node is using.
 func (api *PublicAdminAPI) Datadir() string {
 	return api.node.DataDir()
 }
 
-// PublicDebugAPI is the collection of debugging related API methods exposed over
-// both secure and unsecure RPC channels.
 type PublicDebugAPI struct {
-	node *Node // Node interfaced by this API
+	node *Node
 }
 
-// NewPublicDebugAPI creates a new API definition for the public debug methods
-// of the node itself.
 func NewPublicDebugAPI(node *Node) *PublicDebugAPI {
 	return &PublicDebugAPI{node: node}
 }
 
-// Metrics retrieves all the known system metric collected by the node.
 func (api *PublicDebugAPI) Metrics(raw bool) (map[string]interface{}, error) {
-	// Create a rate formatter
+
 	units := []string{"", "K", "M", "G", "T", "E", "P"}
 	round := func(value float64, prec int) string {
 		unit := 0
@@ -292,10 +264,10 @@ func (api *PublicDebugAPI) Metrics(raw bool) (map[string]interface{}, error) {
 	format := func(total float64, rate float64) string {
 		return fmt.Sprintf("%s (%s/s)", round(total, 0), round(rate, 2))
 	}
-	// Iterate over all the metrics, and just dump for now
+
 	counters := make(map[string]interface{})
 	metrics.DefaultRegistry.Each(func(name string, metric interface{}) {
-		// Create or retrieve the counter hierarchy for this metric
+
 		root, parts := counters, strings.Split(name, "/")
 		for _, part := range parts[:len(parts)-1] {
 			if _, ok := root[part]; !ok {
@@ -305,7 +277,6 @@ func (api *PublicDebugAPI) Metrics(raw bool) (map[string]interface{}, error) {
 		}
 		name = parts[len(parts)-1]
 
-		// Fill the counter with the metric details, formatting if requested
 		if raw {
 			switch metric := metric.(type) {
 			case metrics.Counter:
@@ -381,23 +352,18 @@ func (api *PublicDebugAPI) Metrics(raw bool) (map[string]interface{}, error) {
 	return counters, nil
 }
 
-// PublicWeb3API offers helper utils
 type PublicWeb3API struct {
 	stack *Node
 }
 
-// NewPublicWeb3API creates a new Web3Service instance
 func NewPublicWeb3API(stack *Node) *PublicWeb3API {
 	return &PublicWeb3API{stack}
 }
 
-// ClientVersion returns the node name
 func (s *PublicWeb3API) ClientVersion() string {
 	return s.stack.Server().Name
 }
 
-// Sha3 applies the ethereum sha3 implementation on the input.
-// It assumes the input is hex encoded.
 func (s *PublicWeb3API) Sha3(input hexutil.Bytes) hexutil.Bytes {
 	return crypto.Keccak256(input)
 }

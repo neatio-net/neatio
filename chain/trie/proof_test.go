@@ -32,18 +32,15 @@ func init() {
 	mrand.Seed(time.Now().Unix())
 }
 
-// makeProvers creates Merkle trie provers based on different implementations to
-// test all variations.
 func makeProvers(trie *Trie) []func(key []byte) *memorydb.Database {
 	var provers []func(key []byte) *memorydb.Database
 
-	// Create a direct trie based Merkle prover
 	provers = append(provers, func(key []byte) *memorydb.Database {
 		proof := memorydb.New()
 		trie.Prove(key, 0, proof)
 		return proof
 	})
-	// Create a leaf iterator based Merkle prover
+
 	provers = append(provers, func(key []byte) *memorydb.Database {
 		proof := memorydb.New()
 		if it := NewIterator(trie.NodeIterator(key)); it.Next() && bytes.Equal(key, it.Key) {
@@ -125,8 +122,6 @@ func TestBadProof(t *testing.T) {
 	}
 }
 
-// Tests that missing keys can also be proven. The test explicitly uses a single
-// entry trie and checks for missing keys both before and after the single entry.
 func TestMissingKeyProof(t *testing.T) {
 	trie := new(Trie)
 	updateString(trie, "k", "v")
@@ -148,7 +143,6 @@ func TestMissingKeyProof(t *testing.T) {
 	}
 }
 
-// mutateByte changes one byte in b.
 func mutateByte(b []byte) {
 	for r := mrand.Intn(len(b)); ; {
 		new := byte(mrand.Intn(255))

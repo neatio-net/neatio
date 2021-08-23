@@ -31,9 +31,6 @@ type hasher struct {
 	onleaf LeafCallback
 }
 
-// keccakState wraps sha3.state. In addition to the usual hash methods, it also supports
-// Read to get a variable amount of data from the hash state. Read is faster than Sum
-// because it doesn't copy the internal state, but also modifies the internal state.
 type keccakState interface {
 	hash.Hash
 	Read([]byte) (int, error)
@@ -50,11 +47,10 @@ func (b *sliceBuffer) Reset() {
 	*b = (*b)[:0]
 }
 
-// hashers live in a global db.
 var hasherPool = sync.Pool{
 	New: func() interface{} {
 		return &hasher{
-			tmp: make(sliceBuffer, 0, 550), // cap is as large as a full fullNode.
+			tmp: make(sliceBuffer, 0, 550),
 			sha: sha3.NewLegacyKeccak256().(keccakState),
 		}
 	},
@@ -70,10 +66,8 @@ func returnHasherToPool(h *hasher) {
 	hasherPool.Put(h)
 }
 
-// hash collapses a node down into a hash node, also returning a copy of the
-// original node initialized with the computed hash to replace the original one.
 func (h *hasher) hash(n node, db *Database, force bool) (node, node, error) {
-	// If we're not storing the node, just hashing, use available cached data
+
 	if hash, dirty := n.cache(); hash != nil {
 		if db == nil {
 			return hash, n, nil
@@ -87,7 +81,7 @@ func (h *hasher) hash(n node, db *Database, force bool) (node, node, error) {
 			}
 		}
 	}
-	// Trie not processed yet or needs storage, walk the sideren
+
 	collapsed, cached, err := h.hashChildren(n, db)
 	if err != nil {
 		return hashNode{}, n, err
@@ -96,9 +90,7 @@ func (h *hasher) hash(n node, db *Database, force bool) (node, node, error) {
 	if err != nil {
 		return hashNode{}, n, err
 	}
-	// Cache the hash of the node for later reuse and remove
-	// the dirty flag in commit mode. It's fine to assign these values directly
-	// without copying the node first because hashChildren copies it.
+
 	cachedHash, _ := hashed.(hashNode)
 	switch cn := cached.(type) {
 	case *shortNode:
@@ -115,15 +107,12 @@ func (h *hasher) hash(n node, db *Database, force bool) (node, node, error) {
 	return hashed, cached, nil
 }
 
-// hashChildren replaces the sideren of a node with their hashes if the encoded
-// size of the side is larger than a hash, returning the collapsed node as well
-// as a replacement for the original node with the side hashes cached in.
 func (h *hasher) hashChildren(original node, db *Database) (node, node, error) {
 	var err error
 
 	switch n := original.(type) {
 	case *shortNode:
-		// Hash the short node's side, caching the newly hashed subtree
+
 		collapsed, cached := n.copy(), n.copy()
 		collapsed.Key = hexToCompact(n.Key)
 		cached.Key = common.CopyBytes(n.Key)
@@ -137,7 +126,7 @@ func (h *hasher) hashChildren(original node, db *Database) (node, node, error) {
 		return collapsed, cached, nil
 
 	case *fullNode:
-		// Hash the full node's sideren, caching the newly hashed subtrees
+
 		collapsed, cached := n.copy(), n.copy()
 
 		for i := 0; i < 16; i++ {
@@ -152,42 +141,38 @@ func (h *hasher) hashChildren(original node, db *Database) (node, node, error) {
 		return collapsed, cached, nil
 
 	default:
-		// Value and hash nodes don't have sideren so they're left as were
+
 		return n, original, nil
 	}
 }
 
-// store hashes the node n and if we have a storage layer specified, it writes
-// the key/value pair to it and tracks any node->side references as well as any
-// node->external trie references.
 func (h *hasher) store(n node, db *Database, force bool) (node, error) {
-	// Don't store hashes or empty nodes.
+
 	if _, isHash := n.(hashNode); n == nil || isHash {
 		return n, nil
 	}
-	// Generate the RLP encoding of the node
+
 	h.tmp.Reset()
 	if err := rlp.Encode(&h.tmp, n); err != nil {
 		panic("encode error: " + err.Error())
 	}
 	if len(h.tmp) < 32 && !force {
-		return n, nil // Nodes smaller than 32 bytes are stored inside their parent
+		return n, nil
 	}
-	// Larger nodes are replaced by their hash and stored in the database.
+
 	hash, _ := n.cache()
 	if hash == nil {
 		hash = h.makeHashNode(h.tmp)
 	}
 
 	if db != nil {
-		// We are pooling the trie nodes into an intermediate memory cache
+
 		hash := common.BytesToHash(hash)
 
 		db.lock.Lock()
 		db.insert(hash, h.tmp, n)
 		db.lock.Unlock()
 
-		// Track external references from account->storage trie
 		if h.onleaf != nil {
 			switch n := n.(type) {
 			case *shortNode:

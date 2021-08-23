@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package trie
 
 import (
@@ -23,8 +22,6 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 )
 
-// Tests that the trie database returns a missing trie node error if attempting
-// to retrieve the meta root.
 func TestDatabaseMetarootFetch(t *testing.T) {
 	db := NewDatabase(memorydb.New())
 	if _, err := db.Node(common.Hash{}); err == nil {

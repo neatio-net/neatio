@@ -42,7 +42,6 @@ func init() {
 	spew.Config.DisableMethods = false
 }
 
-// Used for testing
 func newEmpty() *Trie {
 	trie, _ := New(common.Hash{}, NewDatabase(memorydb.New()))
 	return trie
@@ -272,7 +271,6 @@ func TestReplication(t *testing.T) {
 		t.Fatalf("commit error: %v", err)
 	}
 
-	// create a new trie on top of the database and check that lookups work.
 	trie2, err := New(exp, trie.db)
 	if err != nil {
 		t.Fatalf("can't recreate trie at %x: %v", exp, err)
@@ -290,17 +288,10 @@ func TestReplication(t *testing.T) {
 		t.Errorf("root failure. expected %x got %x", exp, hash)
 	}
 
-	// perform some insertions on the new trie.
 	vals2 := []struct{ k, v string }{
 		{"do", "verb"},
 		{"ether", "wookiedoo"},
 		{"horse", "stallion"},
-		// {"shaman", "horse"},
-		// {"doge", "coin"},
-		// {"ether", ""},
-		// {"dog", "puppy"},
-		// {"somethingveryoddindeedthis is", "myothernodedata"},
-		// {"shaman", ""},
 	}
 	for _, val := range vals2 {
 		updateString(trie2, val.k, val.v)
@@ -327,15 +318,13 @@ func (db *countingDB) Get(key []byte) ([]byte, error) {
 	return db.KeyValueStore.Get(key)
 }
 
-// randTest performs random trie operations.
-// Instances of this test are created by Generate.
 type randTest []randTestStep
 
 type randTestStep struct {
 	op    int
-	key   []byte // for opUpdate, opDelete, opGet
-	value []byte // for opUpdate
-	err   error  // for debugging
+	key   []byte
+	value []byte
+	err   error
 }
 
 const (
@@ -346,20 +335,20 @@ const (
 	opHash
 	opReset
 	opItercheckhash
-	opMax // boundary value, not an actual op
+	opMax
 )
 
 func (randTest) Generate(r *rand.Rand, size int) reflect.Value {
 	var allKeys [][]byte
 	genKey := func() []byte {
 		if len(allKeys) < 2 || r.Intn(100) < 10 {
-			// new key
+
 			key := make([]byte, r.Intn(50))
 			r.Read(key)
 			allKeys = append(allKeys, key)
 			return key
 		}
-		// use existing key
+
 		return allKeys[r.Intn(len(allKeys))]
 	}
 
@@ -383,7 +372,7 @@ func runRandTest(rt randTest) bool {
 	triedb := NewDatabase(memorydb.New())
 
 	tr, _ := New(common.Hash{}, triedb)
-	values := make(map[string]string) // tracks content of the trie
+	values := make(map[string]string)
 
 	for i, step := range rt {
 		switch step.op {
@@ -425,7 +414,7 @@ func runRandTest(rt randTest) bool {
 				rt[i].err = fmt.Errorf("hash mismatch in opItercheckhash")
 			}
 		}
-		// Abort the test on error.
+
 		if rt[i].err != nil {
 			return false
 		}
@@ -488,15 +477,10 @@ func benchUpdate(b *testing.B, e binary.ByteOrder) *Trie {
 	return trie
 }
 
-// Benchmarks the trie hashing. Since the trie caches the result of any operation,
-// we cannot use b.N as the number of hashing rouns, since all rounds apart from
-// the first one will be NOOP. As such, we'll use b.N as the number of account to
-// insert into the trie before measuring the hashing.
 func BenchmarkHash(b *testing.B) {
-	// Make the random benchmark deterministic
+
 	random := rand.New(rand.NewSource(0))
 
-	// Create a realistic account trie to hash
 	addresses := make([][20]byte, b.N)
 	for i := 0; i < len(addresses); i++ {
 		for j := 0; j < len(addresses[i]); j++ {
@@ -513,7 +497,7 @@ func BenchmarkHash(b *testing.B) {
 		)
 		accounts[i], _ = rlp.EncodeToBytes([]interface{}{nonce, balance, root, code})
 	}
-	// Insert the accounts into the trie and hash it
+
 	trie := newEmpty()
 	for i := 0; i < len(addresses); i++ {
 		trie.Update(crypto.Keccak256(addresses[i][:]), accounts[i])
