@@ -17,6 +17,7 @@
 package params
 
 const (
-	Opoh = 1
-	NEAT = 100
+	Wei  = 1
+	GWei = 1e9
+	NEAT = 1e18
 )

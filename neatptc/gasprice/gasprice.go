@@ -29,7 +29,7 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 )
 
-var maxPrice = big.NewInt(1 * params.Opoh)
+var maxPrice = big.NewInt(500 * params.GWei)
 
 type Config struct {
 	Blocks     int

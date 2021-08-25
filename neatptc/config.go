@@ -21,6 +21,7 @@ import (
 	"os"
 	"os/user"
 
+	//"path/filepath"
 	"runtime"
 	"time"
 
@@ -43,9 +44,9 @@ var DefaultConfig = Config{
 	TrieCleanCache: 256,
 	TrieDirtyCache: 256,
 	TrieTimeout:    60 * time.Minute,
-	MinerGasFloor:  1,
-	MinerGasCeil:   1,
-	MinerGasPrice:  big.NewInt(params.Opoh),
+	MinerGasFloor:  120000000,
+	MinerGasCeil:   120000000,
+	MinerGasPrice:  big.NewInt(params.GWei),
 
 	TxPool: core.DefaultTxPoolConfig,
 	GPO: gasprice.Config{

@@ -809,18 +809,13 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 
 func (epoch *Epoch) String() string {
 
-	a := epoch.RewardPerBlock
-	b := new(big.Float).SetInt(a)
-	c := new(big.Float).SetFloat64(100.00)
-	var blockReward = new(big.Float).Quo(b, c)
-
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Reward per block is: %v"+" NEAT"+",\n"+
+			"NEAT Reward per block: 0.0"+"%v,\n"+
 			"Epoch starts at block: %v,\n"+
 			"Epoch ending at block: %v,\n",
 		epoch.Number,
-		blockReward,
+		epoch.RewardPerBlock,
 		epoch.StartBlock,
 		epoch.EndBlock,
 	)

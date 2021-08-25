@@ -5,7 +5,7 @@ import "./mortal.sol";
 /// @title Chequebook for Ethereum micropayments
 /// @author Daniel A. Nagy <daniel@neatio.org>
 contract chequebook is mortal {
-    // Cumulative paid amount in opoh to each beneficiary
+    // Cumulative paid amount in wei to each beneficiary
     mapping (address => uint256) public sent;
 
     /// @notice Overdraft event
@@ -17,7 +17,7 @@ contract chequebook is mortal {
     /// @notice Cash cheque
     ///
     /// @param beneficiary beneficiary address
-    /// @param amount cumulative amount in opoh
+    /// @param amount cumulative amount in wei
     /// @param sig_v signature parameter v
     /// @param sig_r signature parameter r
     /// @param sig_s signature parameter s

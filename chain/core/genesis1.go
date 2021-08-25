@@ -250,14 +250,14 @@ var DefaultMainnetGenesisJSON = `{
 		"eip158Block": 0,
 		"byzantiumBlock": 0,
 		"neatcon": {
-			"epoch": 3600,
+			"epoch": 30000,
 			"policy": 0
 		}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
 	"timestamp": "0x61096a54",
 	"extraData": "0x",
-	"gasLimit": "0x1",
+	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -283,14 +283,14 @@ var DefaultTestnetGenesisJSON = `{
 		"eip158Block": 0,
 		"byzantiumBlock": 0,
 		"neatcon": {
-			"epoch": 3600,
+			"epoch": 30000,
 			"policy": 0
 		}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
 	"timestamp": "0x5fa278cc",
 	"extraData": "0x",
-	"gasLimit": "0x1",
+	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
