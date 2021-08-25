@@ -1762,10 +1762,10 @@ if (typeof XMLHttpRequest === 'undefined') {
 var BigNumber = require('bignumber.js');
 
 var ETH_UNITS = [
-    'wei',
-    'kwei',
-    'Mwei',
-    'Gwei',
+    'opoh',
+    'kopoh',
+    'Mopoh',
+    'Gopoh',
     'szabo',
     'finney',
     'femtoether',
@@ -1884,18 +1884,20 @@ var sha3 = require('./sha3.js');
 var utf8 = require('utf8');
 
 var unitMap = {
-    'noether':      '0',
-    'wei':          '1',
-    'kwei':         '1000',
-    'Kwei':         '1000',
+    'noneat':       '0',
+    'opoh':          '1',
+    'tean':         '10',
+    'neat':         '100',
+    'kopoh':         '1000',
+    'Kopoh':         '1000',
     'babbage':      '1000',
     'femtoether':   '1000',
-    'mwei':         '1000000',
-    'Mwei':         '1000000',
+    'mopoh':         '1000000',
+    'Mopoh':         '1000000',
     'lovelace':     '1000000',
     'picoether':    '1000000',
-    'gwei':         '1000000000',
-    'Gwei':         '1000000000',
+    'gopoh':         '1000000000',
+    'Gopoh':         '1000000000',
     'shannon':      '1000000000',
     'nanoether':    '1000000000',
     'nano':         '1000000000',
@@ -1906,7 +1908,7 @@ var unitMap = {
     'milliether':   '1000000000000000',
     'milli':        '1000000000000000',
     'ether':        '1000000000000000000',
-    'neat':         '1000000000000000000',
+    'neatio':       '1000000000000000000',
     'kether':       '1000000000000000000000',
     'kneat':        '1000000000000000000000',
     'grand':        '1000000000000000000000',
@@ -2126,11 +2128,11 @@ var toHex = function (val) {
 };
 
 /**
- * Returns value of unit in Wei
+ * Returns value of unit in Opoh
  *
  * @method getValueOfUnit
  * @param {String} unit the unit to convert to, default ether
- * @returns {BigNumber} value of the unit (in Wei)
+ * @returns {BigNumber} value of the unit (in Opoh)
  * @throws error if the unit is not correct:w
  */
 var getValueOfUnit = function (unit) {
@@ -2143,13 +2145,13 @@ var getValueOfUnit = function (unit) {
 };
 
 /**
- * Takes a number of wei and converts it to any other ether unit.
+ * Takes a number of opoh and converts it to any other ether unit.
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
+ * - kopoh       femtoether     babbage
+ * - mopoh       picoether      lovelace
+ * - gopoh       nanoether      shannon      nano
  * - --         microether     szabo        micro
  * - --         milliether     finney       milli
  * - ether      --             --
@@ -2158,25 +2160,25 @@ var getValueOfUnit = function (unit) {
  * - gether
  * - tether
  *
- * @method fromWei
+ * @method fromOpoh
  * @param {Number|String} number can be a number, number string or a HEX of a decimal
  * @param {String} unit the unit to convert to, default ether
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
-var fromWei = function(number, unit) {
+var fromOpoh = function(number, unit) {
     var returnValue = toBigNumber(number).dividedBy(getValueOfUnit(unit));
 
     return isBigNumber(number) ? returnValue : returnValue.toString(10);
 };
 
 /**
- * Takes a number of a unit and converts it to wei.
+ * Takes a number of a unit and converts it to opoh.
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     babbage
- * - mwei       picoether      lovelace
- * - gwei       nanoether      shannon      nano
+ * - kopoh       femtoether     babbage
+ * - mopoh       picoether      lovelace
+ * - gopoh       nanoether      shannon      nano
  * - --         microether     szabo        micro
  * - --         microether     szabo        micro
  * - --         milliether     finney       milli
@@ -2186,12 +2188,12 @@ var fromWei = function(number, unit) {
  * - gether
  * - tether
  *
- * @method toWei
+ * @method toOpoh
  * @param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
  * @param {String} unit the unit to convert from, default ether
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
-var toWei = function(number, unit) {
+var toOpoh = function(number, unit) {
     var returnValue = toBigNumber(number).times(getValueOfUnit(unit));
 
     return isBigNumber(number) ? returnValue : returnValue.toString(10);
@@ -2466,8 +2468,8 @@ module.exports = {
     transformToFullName: transformToFullName,
     extractDisplayName: extractDisplayName,
     extractTypeName: extractTypeName,
-    toWei: toWei,
-    fromWei: fromWei,
+    toOpoh: toOpoh,
+    fromOpoh: fromOpoh,
     toBigNumber: toBigNumber,
     toTwosComplement: toTwosComplement,
     toAddress: toAddress,
@@ -2589,8 +2591,8 @@ Web3.prototype.fromUtf8 = utils.fromUtf8;
 Web3.prototype.toDecimal = utils.toDecimal;
 Web3.prototype.fromDecimal = utils.fromDecimal;
 Web3.prototype.toBigNumber = utils.toBigNumber;
-Web3.prototype.toWei = utils.toWei;
-Web3.prototype.fromWei = utils.fromWei;
+Web3.prototype.toOpoh = utils.toOpoh;
+Web3.prototype.fromOpoh = utils.fromOpoh;
 Web3.prototype.isAddress = utils.isAddress;
 Web3.prototype.isChecksumAddress = utils.isChecksumAddress;
 Web3.prototype.toChecksumAddress = utils.toChecksumAddress;
