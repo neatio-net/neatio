@@ -34,9 +34,9 @@ import (
 )
 
 const (
-	POSReward = "44150400000000000000000000" // 44.1504 M
+	POSReward = "948665952000" // 9.49 Billion
 
-	TotalYear = 28
+	TotalYear = 26
 
 	DefaultAccountPassword = "neatio"
 )
@@ -98,7 +98,7 @@ func init_neat_genesis(config cfg.Config, balanceStr string, isMainnet bool) err
 		Timestamp:  uint64(time.Now().Unix()),
 		ParentHash: common.Hash{},
 		ExtraData:  extraData,
-		GasLimit:   0x7270e00,
+		GasLimit:   0x1,
 		Difficulty: new(big.Int).SetUint64(0x01),
 		Mixhash:    common.Hash{},
 		Coinbase:   "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -304,7 +304,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(50000000000000000) // 0.05 NEAT per block
+			rewardPerBlock = big.NewInt(1157) // 0.05 NEAT per block
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
@@ -470,7 +470,7 @@ func generateETHGenesis(sideChainID string, validators []types.GenesisValidator)
 		Timestamp:  0x0,
 		ParentHash: common.Hash{},
 		ExtraData:  []byte("0x0"),
-		GasLimit:   0x8000000,
+		GasLimit:   0x1,
 		Difficulty: new(big.Int).SetUint64(0x400),
 		Mixhash:    common.Hash{},
 		Coinbase:   common.Address{},

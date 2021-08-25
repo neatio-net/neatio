@@ -648,10 +648,10 @@ message TxAck {
 message EthereumSignTx {
 	repeated uint32 address_n = 1;			// BIP-32 path to derive the key from master node
 	optional bytes nonce = 2;			// <=256 bit unsigned big endian
-	optional bytes gas_price = 3;			// <=256 bit unsigned big endian (in wei)
+	optional bytes gas_price = 3;			// <=256 bit unsigned big endian (in opoh)
 	optional bytes gas_limit = 4;			// <=256 bit unsigned big endian
 	optional bytes to = 5;				// 160 bit address hash
-	optional bytes value = 6;			// <=256 bit unsigned big endian (in wei)
+	optional bytes value = 6;			// <=256 bit unsigned big endian (in opoh)
 	optional bytes data_initial_chunk = 7;		// The initial data chunk (<= 1024 bytes)
 	optional uint32 data_length = 8;		// Length of transaction payload
 	optional uint32 chain_id = 9;			// Chain Id for EIP 155

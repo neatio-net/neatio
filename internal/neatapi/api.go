@@ -50,7 +50,7 @@ import (
 )
 
 const (
-	defaultGasPrice          = params.GWei
+	defaultGasPrice          = params.Opoh
 	updateValidatorThreshold = 100
 )
 
@@ -160,10 +160,10 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 	// Define a formatter to flatten a transaction into a string
 	var format = func(tx *types.Transaction) string {
 		if to := tx.To(); to != nil {
-			//return fmt.Sprintf("%s: %v wei + %v gas × %v wei", tx.To().Hex(), tx.Value(), tx.Gas(), tx.GasPrice())
-			return fmt.Sprintf("%s: %v wei + %v gas × %v wei", tx.To().String(), tx.Value(), tx.Gas(), tx.GasPrice())
+			//return fmt.Sprintf("%s: %v opoh + %v gas × %v opoh", tx.To().Hex(), tx.Value(), tx.Gas(), tx.GasPrice())
+			return fmt.Sprintf("%s: %v opoh + %v gas × %v opoh", tx.To().String(), tx.Value(), tx.Gas(), tx.GasPrice())
 		}
-		return fmt.Sprintf("contract creation: %v wei + %v gas × %v wei", tx.Value(), tx.Gas(), tx.GasPrice())
+		return fmt.Sprintf("contract creation: %v opoh + %v gas × %v opoh", tx.Value(), tx.Gas(), tx.GasPrice())
 	}
 	// Flatten the pending transactions
 	for account, txs := range pending {
@@ -507,7 +507,7 @@ func (s *PublicBlockChainAPI) BlockNumber() hexutil.Uint64 {
 	return hexutil.Uint64(header.Number.Uint64())
 }
 
-// GetBalance returns the amount of wei for the given address in the state of the
+// GetBalance returns the amount of opoh for the given address in the state of the
 // given block number. The rpc.LatestBlockNumber and rpc.PendingBlockNumber meta
 // block numbers are also allowed.
 func (s *PublicBlockChainAPI) GetBalance(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (*hexutil.Big, error) {
@@ -533,7 +533,7 @@ func (s *PublicBlockChainAPI) GetCandidateSetByBlockNumber(ctx context.Context, 
 	return candidateList, nil
 }
 
-// GetBalanceDetail returns the amount of wei for the given address in the state of the
+// GetBalanceDetail returns the amount of opoh for the given address in the state of the
 // given block number. The rpc.LatestBlockNumber and rpc.PendingBlockNumber meta
 // block numbers are also allowed.
 func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address common.Address, blockNr rpc.BlockNumber, fullDetail bool) (map[string]interface{}, error) {
@@ -1678,13 +1678,13 @@ func (s *PublicNetAPI) Version() string {
 }
 
 var (
-	minimumRegisterAmount = math.MustParseBig256("1000000000000000000") // 1 * e18
+	minimumRegisterAmount = math.MustParseBig256("100000000") // 1 Million
 
 	maxCandidateNumber = 1000
 
 	maxDelegationAddresses = 1000
 
-	maxEditValidatorLength = 100
+	maxEditValidatorLength = 1000
 )
 
 type PublicNEATAPI struct {
