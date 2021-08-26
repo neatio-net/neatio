@@ -51,7 +51,7 @@ import (
 
 const (
 	defaultGasPrice          = params.GWei
-	updateValidatorThreshold = 100
+	updateValidatorThreshold = 1000
 )
 
 // PublicNEATChainAPI provides an API to access neatio related information.
@@ -227,7 +227,6 @@ func NewPrivateAccountAPI(b Backend, nonceLock *AddrLocker) *PrivateAccountAPI {
 }
 
 // ListAccounts will return a list of addresses for accounts this node manages.
-//修改帐户列表返回地址类型为 string
 func (s *PrivateAccountAPI) ListAccounts() []string {
 	addresses := make([]string, 0) // return [] instead of nil if empty
 	for _, wallet := range s.am.Wallets() {
@@ -1678,13 +1677,13 @@ func (s *PublicNetAPI) Version() string {
 }
 
 var (
-	minimumRegisterAmount = math.MustParseBig256("1000000000000000000") // 1 * e18
+	minimumRegisterAmount = math.MustParseBig256("77000000000000000000000") // 77 000 NEAT
 
 	maxCandidateNumber = 1000
 
 	maxDelegationAddresses = 1000
 
-	maxEditValidatorLength = 100
+	maxEditValidatorLength = 1000
 )
 
 type PublicNEATAPI struct {

@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	POSReward = "72248976000000000000000000" // 44.1504 M
+	POSReward = "72248976000000000000000000" // 72 248 976 NEAT
 
 	TotalYear = 29
 
