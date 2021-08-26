@@ -62,7 +62,6 @@ type Genesis struct {
 	ParentHash common.Hash `json:"parentHash"`
 }
 
-// 写入时使用
 type GenesisWrite struct {
 	Config     *params.ChainConfig `json:"config"`
 	Nonce      uint64              `json:"nonce"`
@@ -84,7 +83,6 @@ type GenesisWrite struct {
 // GenesisAlloc specifies the initial state that is part of the genesis block.
 type GenesisAlloc map[common.Address]GenesisAccount
 
-// 写入时使用
 type GenesisAllocWrite map[string]GenesisAccount
 
 func (ga *GenesisAlloc) UnmarshalJSON(data []byte) error {

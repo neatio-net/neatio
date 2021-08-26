@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package core
 
 import (
@@ -113,20 +97,7 @@ func TestSetupGenesis(t *testing.T) {
 		},
 		{
 			name: "incompatible config in DB",
-			//fn: func(db neatdb.Database) (*params.ChainConfig, common.Hash, error) {
-			//	// Commit the 'old' genesis block with Homestead transition at #2.
-			//	// Advance to block #4, past the homestead transition block of customg.
-			//	genesis := oldcustomg.MustCommit(db)
-			//
-			//	bc, _ := NewBlockChain(db, nil, oldcustomg.Config, ethash.NewFullFaker(), vm.Config{}, nil)
-			//	defer bc.Stop()
-			//
-			//	blocks, _ := GenerateChain(oldcustomg.Config, genesis, nil, db, 4, nil)
-			//	bc.InsertChain(blocks)
-			//	bc.CurrentBlock()
-			//	// This should return a compatibility error.
-			//	return SetupGenesisBlock(db, &customg)
-			//},
+
 			wantHash:   customghash,
 			wantConfig: customg.Config,
 			wantErr: &params.ConfigCompatError{
@@ -141,7 +112,7 @@ func TestSetupGenesis(t *testing.T) {
 	for _, test := range tests {
 		db := rawdb.NewMemoryDatabase()
 		config, hash, err := test.fn(db)
-		// Check the return values.
+
 		if !reflect.DeepEqual(err, test.wantErr) {
 			spew := spew.ConfigState{}
 			t.Errorf("%s: returned error %#v, want %#v", test.name, spew.NewFormatter(err), spew.NewFormatter(test.wantErr))
@@ -152,7 +123,7 @@ func TestSetupGenesis(t *testing.T) {
 		if hash != test.wantHash {
 			t.Errorf("%s: returned hash %s, want %s", test.name, hash.Hex(), test.wantHash.Hex())
 		} else if err == nil {
-			// Check database content.
+
 			stored := rawdb.ReadBlock(db, test.wantHash, 0)
 			if stored.Hash() != test.wantHash {
 				t.Errorf("%s: block in DB has hash %s, want %s", test.name, stored.Hash(), test.wantHash)
