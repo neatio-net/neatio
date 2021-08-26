@@ -809,16 +809,32 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 
 func (epoch *Epoch) String() string {
 
+	erpb := epoch.RewardPerBlock
+	intToFloat := new(big.Float).SetInt(erpb)
+	floatToBigFloat := new(big.Float).SetFloat64(1e18)
+	var blockReward = new(big.Float).Quo(intToFloat, floatToBigFloat)
+
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"NEAT Reward per block: 0.0"+"%v,\n"+
+			"Reward per block is: %v"+" NEAT"+",\n"+
 			"Epoch starts at block: %v,\n"+
 			"Epoch ending at block: %v,\n",
 		epoch.Number,
-		epoch.RewardPerBlock,
+		blockReward,
 		epoch.StartBlock,
 		epoch.EndBlock,
 	)
+
+	// return fmt.Sprintf(
+	// 	"Number %v,\n"+
+	// 		"NEAT Reward per block: 0.0"+"%v,\n"+
+	// 		"Epoch starts at block: %v,\n"+
+	// 		"Epoch ending at block: %v,\n",
+	// 	epoch.Number,
+	// 	epoch.RewardPerBlock,
+	// 	epoch.StartBlock,
+	// 	epoch.EndBlock,
+	// )
 }
 
 func UpdateEpochEndTime(db dbm.DB, epNumber uint64, endTime time.Time) {

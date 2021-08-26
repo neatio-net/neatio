@@ -34,9 +34,9 @@ import (
 )
 
 const (
-	POSReward = "44150400000000000000000000" // 44.1504 M
+	POSReward = "72248976000000000000000000" // 44.1504 M
 
-	TotalYear = 28
+	TotalYear = 29
 
 	DefaultAccountPassword = "neatio"
 )
@@ -101,7 +101,7 @@ func init_neat_genesis(config cfg.Config, balanceStr string, isMainnet bool) err
 		GasLimit:   0x7270e00,
 		Difficulty: new(big.Int).SetUint64(0x01),
 		Mixhash:    common.Hash{},
-		Coinbase:   "NEATAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+		Coinbase:   "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
 		Alloc:      core.GenesisAllocWrite{},
 	}
 	for i, validator := range validators {
@@ -304,7 +304,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(50000000000000000) // 0.05 NEAT per block
+			rewardPerBlock = big.NewInt(79000000000000000) // 0.05 NEAT per block
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
