@@ -304,7 +304,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(7900000000000000) // 0.079 NEAT per block
+			rewardPerBlock = big.NewInt(7900000000000000) // 0.079 NEAT
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
