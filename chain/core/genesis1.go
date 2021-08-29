@@ -241,31 +241,31 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{
 	"config": {
-		"NeatChainId": "neatio",
-		"chainId": 1,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatcon": {
-			"epoch": 30000,
-			"policy": 0
-		}
+			"NeatChainId": "neatio",
+			"chainId": 1,
+			"homesteadBlock": 0,
+			"eip150Block": 0,
+			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+			"eip155Block": 0,
+			"eip158Block": 0,
+			"byzantiumBlock": 0,
+			"neatcon": {
+					"epoch": 30000,
+					"policy": 0
+			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x61096a54",
+	"timestamp": "0x6127cacf",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
 	"alloc": {
-		"NEATbtF9SRcvbnZJbK6QFmSL4aw8fZd1": {
-			"balance": "0x1027e72f1f12813088000000",
-			"amount": "0x69e10de76676d0800000"
-		}
+			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
+					"balance": "0x3ee1186f11c064cc00000",
+					"amount": "0x104e2da94483f6200000"
+			}
 	},
 	"number": "0x0",
 	"gasUsed": "0x0",
@@ -274,34 +274,33 @@ var DefaultMainnetGenesisJSON = `{
 
 var DefaultTestnetGenesisJSON = `{
 	"config": {
-		"NeatChainId": "testnet",
-		"chainId": 2,
-		"homesteadBlock": 0,
-		"eip150Block": 0,
-		"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-		"eip155Block": 0,
-		"eip158Block": 0,
-		"byzantiumBlock": 0,
-		"neatcon": {
-			"epoch": 30000,
-			"policy": 0
-		}
+			"NeatChainId": "neatio",
+			"chainId": 1,
+			"homesteadBlock": 0,
+			"eip150Block": 0,
+			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+			"eip155Block": 0,
+			"eip158Block": 0,
+			"byzantiumBlock": 0,
+			"neatcon": {
+					"epoch": 30000,
+					"policy": 0
+			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x5fa278cc",
+	"timestamp": "0x6127cacf",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
 	"alloc": {
-		"NEATcfoFiNW3i5pBxPpjSs6m1YJzjQMU": {
-			"balance": "0x29569e2db20e16b46000000",
-			"amount": "0x54b40b1f852bda000000"
-		}
+			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
+					"balance": "0x3ee1186f11c064cc00000",
+					"amount": "0x104e2da94483f6200000"
+			}
 	},
 	"number": "0x0",
 	"gasUsed": "0x0",
 	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
-}
-`
+}`

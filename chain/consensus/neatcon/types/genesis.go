@@ -148,57 +148,54 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatcon",
-	"genesis_time": "2021-08-03T18:10:19.799011921+02:00",
+	"genesis_time": "2021-08-26T19:09:39.051941298+02:00",
 	"reward_scheme": {
-		"total_reward": "0xa56fa5b99019a5c8000000",
-		"reward_first_year": "0x108b2a2c28029094000000",
-		"epoch_no_per_year": "0x3026ed",
-		"total_year": "0xab"
+			"total_reward": "0x3bc350d642877320400000",
+			"reward_first_year": "0x20f90076365c62d400000",
+			"epoch_no_per_year": "0x2238",
+			"total_year": "0x1d"
 	},
 	"current_epoch": {
-		"number": "0x0",
-		"reward_per_block": "0x1b3069329c6f800",
-		"start_block": "0x0",
-		"end_block": "0xa",
-		"validators": [
-			{
-				"address": "NEATbtF9SRcvbnZJbK6QFmSL4aw8fZd1",
-				"pub_key": "0x7EBBBAEAEFAAEBA419BB6AC18F0B2620DF14C535D80B19FE47827086C5300B9335247E71E4D14475FD7D15AAD4A7CDA9E30A6D9B6B90027C0E98EFA320D8DE5A2A003568C83FD1959A2F7FB219725F67EC8B9938A94B5082A85A6CDACD60A657458256CD99EEE50329CAEA086B6266CA0A86FE114043A1DB5BF9F00B998FBBD1",
-				"amount": "0x69e10de76676d0800000",
-				"name": "",
-				"epoch": "0x0"
-			}
-		]
-	}
-}`
+			"number": "0x0",
+			"reward_per_block": "0x1c110215b9c000",
+			"start_block": "0x0",
+			"end_block": "0xe10",
+			"validators": [
+					{
+							"address": "NEATjQoTmRNypoWaTpMebKmED8bbA32b",
+							"pub_key": "0x30653D32B5B178DB35136A42BE09DF26F3AF7CCD427DF2B8BBFE3962C31C1381860EBA56140762C4475F25E51BE2D3A4EBBC144D770C7F5641291E1F74BEFBFF5699C2F06A7ED92F7930BC46973C09C948F05506DDE406E7CCAD8D434F871CF14E9FA013336F96DAB872E764B127E6268F1354C0170D027D646E292AC174253F",
+							"amount": "0x104e2da94483f6200000",
+							"name": "",
+							"epoch": "0x0"
+					}
+			]
+	}`
 
 var TestnetGenesisJSON string = `{
-	"chain_id": "testnet",
+	"chain_id": "neatio",
 	"consensus": "neatcon",
-	"genesis_time": "2020-11-04T17:47:57.097366+08:00",
+	"genesis_time": "2021-08-26T19:09:39.051941298+02:00",
 	"reward_scheme": {
-		"total_reward": "0xa56fa5b99019a5c8000000",
-		"reward_first_year": "0x108b2a2c28029094000000",
-		"epoch_no_per_year": "0x111c",
-		"total_year": "0xa"
+			"total_reward": "0x3bc350d642877320400000",
+			"reward_first_year": "0x20f90076365c62d400000",
+			"epoch_no_per_year": "0x2238",
+			"total_year": "0x1d"
 	},
 	"current_epoch": {
-		"number": "0x0",
-		"reward_per_block": "0x8cd1dc18de05834",
-		"start_block": "0x0",
-		"end_block": "0x1c20",
-		"validators": [
-			{
-				"address": "NEAThptdM1qWpbREMNyi5G6tAqcTAedc",
-				"pub_key": "0x4C93012A158FEDAB46C48724F3A651E39EA9767B717E30A6403CFC9FD7B78DD664272CBD1570CD08522459DE96C6753B4D605C6FABFAB47B4E4A6BF4A71AD8DD2550F1C9B5088BCA0EE808322BF553C6C974B15D9128C3DDEB949D770C9A76448DC9E306A7DC10BEC28A19762E024B6B4284D08A7D7A52C6C6EFF6FC44496986",
-				"amount": "0x54b40b1f852bda000000",
-				"name": "",
-				"epoch": "0x0"
-			}
-		]
-	}
-}
-`
+			"number": "0x0",
+			"reward_per_block": "0x1c110215b9c000",
+			"start_block": "0x0",
+			"end_block": "0xe10",
+			"validators": [
+					{
+							"address": "NEATjQoTmRNypoWaTpMebKmED8bbA32b",
+							"pub_key": "0x30653D32B5B178DB35136A42BE09DF26F3AF7CCD427DF2B8BBFE3962C31C1381860EBA56140762C4475F25E51BE2D3A4EBBC144D770C7F5641291E1F74BEFBFF5699C2F06A7ED92F7930BC46973C09C948F05506DDE406E7CCAD8D434F871CF14E9FA013336F96DAB872E764B127E6268F1354C0170D027D646E292AC174253F",
+							"amount": "0x104e2da94483f6200000",
+							"name": "",
+							"epoch": "0x0"
+					}
+			]
+	}`
 
 func (ep OneEpochDoc) MarshalJSON() ([]byte, error) {
 	type hexEpoch struct {
