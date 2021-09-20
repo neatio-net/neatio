@@ -14,22 +14,6 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 )
 
-// WriteGenesisBlock writes the genesis block to the database as block number 0
-//func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block, error) {
-//	contents, err := ioutil.ReadAll(reader)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var genesis = Genesis{}
-//
-//	if err := json.Unmarshal(contents, &genesis); err != nil {
-//		return nil, err
-//	}
-//
-//	return SetupGenesisBlockEx(chainDb, &genesis)
-//}
-
 func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block, error) {
 	contents, err := ioutil.ReadAll(reader)
 	if err != nil {
@@ -76,7 +60,6 @@ func SetupGenesisBlockEx(db neatdb.Database, genesis *Genesis) (*types.Block, er
 	var block *types.Block = nil
 	var err error = nil
 
-	// Just commit the new block if there is no stored genesis block.
 	stored := rawdb.ReadCanonicalHash(db, 0)
 	if (stored == common.Hash{}) {
 		if genesis == nil {
@@ -89,7 +72,6 @@ func SetupGenesisBlockEx(db neatdb.Database, genesis *Genesis) (*types.Block, er
 		return block, err
 	}
 
-	// Check whether the genesis block is already written.
 	if genesis != nil {
 		block = genesis.ToBlock(nil)
 		hash := block.Hash()
@@ -98,7 +80,6 @@ func SetupGenesisBlockEx(db neatdb.Database, genesis *Genesis) (*types.Block, er
 		}
 	}
 
-	// Get the existing chain configuration.
 	newcfg := genesis.configOrDefault(stored)
 	storedcfg := rawdb.ReadChainConfig(db, stored)
 	if storedcfg == nil {
@@ -106,15 +87,11 @@ func SetupGenesisBlockEx(db neatdb.Database, genesis *Genesis) (*types.Block, er
 		rawdb.WriteChainConfig(db, stored, newcfg)
 		return block, err
 	}
-	// Special case: don't change the existing config of a non-mainnet chain if no new
-	// config is supplied. These chains would get AllProtocolChanges (and a compat error)
-	// if we just continued here.
+
 	if genesis == nil && stored != params.MainnetGenesisHash {
 		return block, nil
 	}
 
-	// Check config compatibility and write the config. Compatibility errors
-	// are returned to the caller unless we're already at block zero.
 	height := rawdb.ReadHeaderNumber(db, rawdb.ReadHeadHeaderHash(db))
 	if height == nil {
 		return nil, fmt.Errorf("missing block number for head header hash")
@@ -126,26 +103,12 @@ func SetupGenesisBlockEx(db neatdb.Database, genesis *Genesis) (*types.Block, er
 	return block, err
 }
 
-// SetupGenesisBlock writes or updates the genesis block in db.
-// The block that will be used is:
-//
-//                          genesis == nil       genesis != nil
-//                       +------------------------------------------
-//     db has no genesis |  main-net default  |  genesis
-//     db has genesis    |  from DB           |  genesis (if compatible)
-//
-// The stored chain configuration will be updated if it is compatible (i.e. does not
-// specify a fork block below the local head block). In case of a conflict, the
-// error is a *params.ConfigCompatError and the new, unwritten config is returned.
-//
-// The returned chain configuration is never nil.
 func SetupGenesisBlockWithDefault(db neatdb.Database, genesis *Genesis, isMainChain, isTestnet bool) (*params.ChainConfig, common.Hash, error) {
 	if genesis != nil && genesis.Config == nil {
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 1\n")
+
 		return nil, common.Hash{}, errGenesisNoConfig
 	}
 
-	// Just commit the new block if there is no stored genesis block.
 	stored := rawdb.ReadCanonicalHash(db, 0)
 	if (stored == common.Hash{} && isMainChain) {
 		if genesis == nil {
@@ -159,54 +122,47 @@ func SetupGenesisBlockWithDefault(db neatdb.Database, genesis *Genesis, isMainCh
 			log.Info("Writing custom genesis block")
 		}
 		block, err := genesis.Commit(db)
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 2\n")
+
 		return genesis.Config, block.Hash(), err
 	}
 
-	// Check whether the genesis block is already written.
 	if genesis != nil {
 		hash := genesis.ToBlock(nil).Hash()
 		if hash != stored {
-			//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 3\n")
+
 			return genesis.Config, hash, &GenesisMismatchError{stored, hash}
 		}
 	}
 
-	// Get the existing chain configuration.
 	newcfg := genesis.configOrDefault(stored)
 	storedcfg := rawdb.ReadChainConfig(db, stored)
 	if storedcfg == nil {
 		log.Warn("Found genesis block without chain config")
 		rawdb.WriteChainConfig(db, stored, newcfg)
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 4\n")
+
 		return newcfg, stored, nil
 	}
-	// Special case: don't change the existing config of a non-mainnet chain if no new
-	// config is supplied. These chains would get AllProtocolChanges (and a compat error)
-	// if we just continued here.
+
 	if genesis == nil && stored != params.MainnetGenesisHash {
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 5\n")
+
 		return storedcfg, stored, nil
 	}
 
-	// Check config compatibility and write the config. Compatibility errors
-	// are returned to the caller unless we're already at block zero.
 	height := rawdb.ReadHeaderNumber(db, rawdb.ReadHeadHeaderHash(db))
 	if height == nil {
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 6\n")
+
 		return newcfg, stored, fmt.Errorf("missing block number for head header hash")
 	}
 	compatErr := storedcfg.CheckCompatible(newcfg, *height)
 	if compatErr != nil && *height != 0 && compatErr.RewindTo != 0 {
-		//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 7\n")
+
 		return newcfg, stored, compatErr
 	}
 	rawdb.WriteChainConfig(db, stored, newcfg)
-	//fmt.Printf("core genesis1 SetupGenesisBlockWithDefault 8\n")
+
 	return newcfg, stored, nil
 }
 
-// DefaultGenesisBlock returns the Ethereum main net genesis block.
 func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 	var (
@@ -255,14 +211,14 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x613303f9",
+	"timestamp": "0x6140f828",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
 	"alloc": {
-			"NEAThckhHAoQoGzeDcZMxZJ4wVqa95DM": {
+			"NEATdvewugY7qWYzgmtKxK93ijtdwrnj": {
 					"balance": "0x3ee1186f11c064cc00000",
 					"amount": "0x104e2da94483f6200000"
 			}
