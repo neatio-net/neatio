@@ -1,4 +1,4 @@
-// Copyright 2015 The go-ethereum Authors
+// Copyright 2017 The go-ethereum Authors
 // This file is part of the go-ethereum library.
 //
 // The go-ethereum library is free software: you can redistribute it and/or modify
@@ -42,36 +42,28 @@ import (
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
-// PublicEthereumAPI provides an API to access Ethereum full node-related
-// information.
 type PublicEthereumAPI struct {
 	e *NeatIO
 }
 
-// NewPublicEthereumAPI creates a new Ethereum protocol API for full nodes.
 func NewPublicEthereumAPI(e *NeatIO) *PublicEthereumAPI {
 	return &PublicEthereumAPI{e}
 }
 
-// Etherbase is the address that mining rewards will be send to
 func (api *PublicEthereumAPI) Etherbase() (string, error) {
 	eb, err := api.e.Coinbase()
 	return eb.String(), err
 }
 
-// Coinbase is the address that mining rewards will be send to (alias for Etherbase)
 func (api *PublicEthereumAPI) Coinbase() (string, error) {
 	return api.Etherbase()
 }
 
-// PublicMinerAPI provides an API to control the miner.
-// It offers only methods that operate on data that pose no security risk when it is publicly accessible.
 type PublicMinerAPI struct {
 	e     *NeatIO
 	agent *miner.RemoteAgent
 }
 
-// NewPublicMinerAPI create a new PublicMinerAPI instance.
 func NewPublicMinerAPI(e *NeatIO) *PublicMinerAPI {
 	agent := miner.NewRemoteAgent(e.BlockChain(), e.Engine())
 	if e.Miner() != nil {
@@ -81,7 +73,6 @@ func NewPublicMinerAPI(e *NeatIO) *PublicMinerAPI {
 	return &PublicMinerAPI{e, agent}
 }
 
-// Mining returns an indication if this node is currently mining.
 func (api *PublicMinerAPI) Mining() bool {
 	if api.e.Miner() != nil {
 		return api.e.IsMining()
@@ -89,16 +80,10 @@ func (api *PublicMinerAPI) Mining() bool {
 	return false
 }
 
-// SubmitWork can be used by external miner to submit their POW solution. It returns an indication if the work was
-// accepted. Note, this is not an indication if the provided work was valid!
 func (api *PublicMinerAPI) SubmitWork(nonce types.BlockNonce, solution, digest common.Hash) bool {
 	return api.agent.SubmitWork(nonce, digest, solution)
 }
 
-// GetWork returns a work package for external miner. The work package consists of 3 strings
-// result[0], 32 bytes hex encoded current block header pow-hash
-// result[1], 32 bytes hex encoded seed hash used for DAG
-// result[2], 32 bytes hex encoded boundary condition ("target"), 2^256/difficulty
 func (api *PublicMinerAPI) GetWork() ([3]string, error) {
 	if !api.e.IsMining() {
 		if err := api.e.StartMining(false); err != nil {
@@ -112,35 +97,25 @@ func (api *PublicMinerAPI) GetWork() ([3]string, error) {
 	return work, nil
 }
 
-// SubmitHashrate can be used for remote miners to submit their hash rate. This enables the node to report the combined
-// hash rate of all miners which submit work through this node. It accepts the miner hash rate and an identifier which
-// must be unique between nodes.
 func (api *PublicMinerAPI) SubmitHashrate(hashrate hexutil.Uint64, id common.Hash) bool {
 	api.agent.SubmitHashrate(id, uint64(hashrate))
 	return true
 }
 
-// PrivateMinerAPI provides private RPC methods to control the miner.
-// These methods can be abused by external users and must be considered insecure for use by untrusted users.
 type PrivateMinerAPI struct {
 	e *NeatIO
 }
 
-// NewPrivateMinerAPI create a new RPC service which controls the miner of this node.
 func NewPrivateMinerAPI(e *NeatIO) *PrivateMinerAPI {
 	return &PrivateMinerAPI{e: e}
 }
 
-// Start the miner with the given number of threads. If threads is nil the number
-// of workers started is equal to the number of logical CPUs that are usable by
-// this process. If mining is already running, this method adjust the number of
-// threads allowed to use.
 func (api *PrivateMinerAPI) Start(threads *int) error {
-	// Set the number of threads if the seal engine supports it
+
 	if threads == nil {
 		threads = new(int)
 	} else if *threads == 0 {
-		*threads = -1 // Disable the miner from within
+		*threads = -1
 	}
 	type threaded interface {
 		SetThreads(threads int)
@@ -149,9 +124,9 @@ func (api *PrivateMinerAPI) Start(threads *int) error {
 		log.Info("Updated mining threads", "threads", *threads)
 		th.SetThreads(*threads)
 	}
-	// Start the miner and return
+
 	if !api.e.IsMining() {
-		// Propagate the initial price point to the transaction pool
+
 		api.e.lock.RLock()
 		price := api.e.gasPrice
 		api.e.lock.RUnlock()
@@ -162,7 +137,6 @@ func (api *PrivateMinerAPI) Start(threads *int) error {
 	return nil
 }
 
-// Stop the miner
 func (api *PrivateMinerAPI) Stop() bool {
 	type threaded interface {
 		SetThreads(threads int)
@@ -174,7 +148,6 @@ func (api *PrivateMinerAPI) Stop() bool {
 	return true
 }
 
-// SetExtra sets the extra data string that is included when this miner mines a block.
 func (api *PrivateMinerAPI) SetExtra(extra string) (bool, error) {
 	if err := api.e.Miner().SetExtra([]byte(extra)); err != nil {
 		return false, err
@@ -182,7 +155,6 @@ func (api *PrivateMinerAPI) SetExtra(extra string) (bool, error) {
 	return true, nil
 }
 
-// SetGasPrice sets the minimum accepted gas price for the miner.
 func (api *PrivateMinerAPI) SetGasPrice(gasPrice hexutil.Big) bool {
 	api.e.lock.Lock()
 	api.e.gasPrice = (*big.Int)(&gasPrice)
@@ -192,27 +164,21 @@ func (api *PrivateMinerAPI) SetGasPrice(gasPrice hexutil.Big) bool {
 	return true
 }
 
-// SetEtherbase sets the etherbase of the miner
 func (api *PrivateMinerAPI) SetCoinbase(coinbase common.Address) bool {
 	api.e.SetCoinbase(coinbase)
 	return true
 }
 
-// PrivateAdminAPI is the collection of NeatIO full node-related APIs
-// exposed over the private admin endpoint.
 type PrivateAdminAPI struct {
 	eth *NeatIO
 }
 
-// NewPrivateAdminAPI creates a new API definition for the full node private
-// admin methods of the NeatIO service.
 func NewPrivateAdminAPI(eth *NeatIO) *PrivateAdminAPI {
 	return &PrivateAdminAPI{eth: eth}
 }
 
-// ExportChain exports the current blockchain into a local file.
 func (api *PrivateAdminAPI) ExportChain(file string) (bool, error) {
-	// Make sure we can create the file to export into
+
 	out, err := os.OpenFile(file, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		return false, err
@@ -225,7 +191,6 @@ func (api *PrivateAdminAPI) ExportChain(file string) (bool, error) {
 		defer writer.(*gzip.Writer).Close()
 	}
 
-	// Export the blockchain
 	if err := api.eth.BlockChain().Export(writer); err != nil {
 		return false, err
 	}
@@ -242,9 +207,8 @@ func hasAllBlocks(chain *core.BlockChain, bs []*types.Block) bool {
 	return true
 }
 
-// ImportChain imports a blockchain from a local file.
 func (api *PrivateAdminAPI) ImportChain(file string) (bool, error) {
-	// Make sure the can access the file to import
+
 	in, err := os.Open(file)
 	if err != nil {
 		return false, err
@@ -258,12 +222,11 @@ func (api *PrivateAdminAPI) ImportChain(file string) (bool, error) {
 		}
 	}
 
-	// Run actual the import in pre-configured batches
 	stream := rlp.NewStream(reader, 0)
 
 	blocks, index := make([]*types.Block, 0, 2500), 0
 	for batch := 0; ; batch++ {
-		// Load a batch of blocks from the input file
+
 		for len(blocks) < cap(blocks) {
 			block := new(types.Block)
 			if err := stream.Decode(block); err == io.EOF {
@@ -282,7 +245,7 @@ func (api *PrivateAdminAPI) ImportChain(file string) (bool, error) {
 			blocks = blocks[:0]
 			continue
 		}
-		// Import the batch and reset the buffer
+
 		if _, err := api.eth.BlockChain().InsertChain(blocks); err != nil {
 			return false, fmt.Errorf("batch %d: failed to insert: %v", batch, err)
 		}
@@ -307,24 +270,17 @@ func (api *PrivateAdminAPI) LatestPruneState() (*datareduction.PruneStatus, erro
 	return status, nil
 }
 
-// PublicDebugAPI is the collection of NeatIO full node APIs exposed
-// over the public debugging endpoint.
 type PublicDebugAPI struct {
 	eth *NeatIO
 }
 
-// NewPublicDebugAPI creates a new API definition for the full node-
-// related public debug methods of the NeatIO service.
 func NewPublicDebugAPI(eth *NeatIO) *PublicDebugAPI {
 	return &PublicDebugAPI{eth: eth}
 }
 
-// DumpBlock retrieves the entire state of the database at a given block.
 func (api *PublicDebugAPI) DumpBlock(blockNr rpc.BlockNumber) (state.Dump, error) {
 	if blockNr == rpc.PendingBlockNumber {
-		// If we're dumping the pending state, we need to request
-		// both the pending block as well as the pending state from
-		// the miner and operate on those
+
 		_, stateDb := api.eth.miner.Pending()
 		return stateDb.RawDump(), nil
 	}
@@ -344,20 +300,15 @@ func (api *PublicDebugAPI) DumpBlock(blockNr rpc.BlockNumber) (state.Dump, error
 	return stateDb.RawDump(), nil
 }
 
-// PrivateDebugAPI is the collection of NeatIO full node APIs exposed over
-// the private debugging endpoint.
 type PrivateDebugAPI struct {
 	config *params.ChainConfig
 	eth    *NeatIO
 }
 
-// NewPrivateDebugAPI creates a new API definition for the full node-related
-// private debug methods of the NeatIO service.
 func NewPrivateDebugAPI(config *params.ChainConfig, eth *NeatIO) *PrivateDebugAPI {
 	return &PrivateDebugAPI{config: config, eth: eth}
 }
 
-// Preimage is a debug API function that returns the preimage for a sha3 hash, if known.
 func (api *PrivateDebugAPI) Preimage(ctx context.Context, hash common.Hash) (hexutil.Bytes, error) {
 	if preimage := rawdb.ReadPreimage(api.eth.ChainDb(), hash); preimage != nil {
 		return preimage, nil
@@ -365,7 +316,6 @@ func (api *PrivateDebugAPI) Preimage(ctx context.Context, hash common.Hash) (hex
 	return nil, errors.New("unknown preimage")
 }
 
-// RemotePreimage is a debug API function that start to sync the preimage for a sha3 hash from the best remote peer.
 func (api *PrivateDebugAPI) RemotePreimage(ctx context.Context, hash common.Hash) (hexutil.Bytes, error) {
 	peer := api.eth.protocolManager.peers.BestPeer()
 
@@ -373,17 +323,15 @@ func (api *PrivateDebugAPI) RemotePreimage(ctx context.Context, hash common.Hash
 	return nil, peer.RequestPreimages(append(hashes, hash))
 }
 
-// RemovePreimage is a debug API function that remove the preimage for a sha3 hash, if known.
 func (api *PrivateDebugAPI) RemovePreimage(ctx context.Context, hash common.Hash) (hexutil.Bytes, error) {
 	rawdb.DeletePreimage(api.eth.ChainDb(), hash)
 	return nil, nil
 }
 
-// Testing method
 func (api *PrivateDebugAPI) BrokenPreimage(ctx context.Context, hash common.Hash, preimage hexutil.Bytes) (hexutil.Bytes, error) {
-	// Broken the preimage
+
 	rawdb.WritePreimages(api.eth.ChainDb(), map[common.Hash][]byte{hash: preimage})
-	// try to read it from db
+
 	if read_preimage := rawdb.ReadPreimage(api.eth.ChainDb(), hash); read_preimage != nil {
 		return read_preimage, nil
 	}
@@ -394,14 +342,13 @@ func (api *PrivateDebugAPI) FindBadPreimage(ctx context.Context) (interface{}, e
 
 	images := make(map[common.Hash]string)
 
-	// Iterate the entire sha3 preimages for checking
-	db := api.eth.ChainDb() //.blockchain.StateCache().TrieDB().DiskDB().(ethdb.Database)
+	db := api.eth.ChainDb()
 	it := db.NewIteratorWithPrefix([]byte("secure-key-"))
 	for it.Next() {
 		keyHash := common.BytesToHash(it.Key())
 		valueHash := crypto.Keccak256Hash(it.Value())
 		if keyHash != valueHash {
-			// Add bad preimages
+
 			images[keyHash] = common.Bytes2Hex(it.Value())
 		}
 	}
@@ -410,16 +357,13 @@ func (api *PrivateDebugAPI) FindBadPreimage(ctx context.Context) (interface{}, e
 	return images, nil
 }
 
-// GetBadBLocks returns a list of the last 'bad blocks' that the client has seen on the network
-// and returns them as a JSON list of block-hashes
 func (api *PrivateDebugAPI) GetBadBlocks(ctx context.Context) ([]core.BadBlockArgs, error) {
 	return api.eth.BlockChain().BadBlocks()
 }
 
-// StorageRangeResult is the result of a debug_storageRangeAt API call.
 type StorageRangeResult struct {
 	Storage storageMap   `json:"storage"`
-	NextKey *common.Hash `json:"nextKey"` // nil if Storage includes the last key in the trie.
+	NextKey *common.Hash `json:"nextKey"`
 }
 
 type storageMap map[common.Hash]storageEntry
@@ -429,7 +373,6 @@ type storageEntry struct {
 	Value common.Hash  `json:"value"`
 }
 
-// StorageRangeAt returns the storage at the given block height and transaction index.
 func (api *PrivateDebugAPI) StorageRangeAt(ctx context.Context, blockHash common.Hash, txIndex int, contractAddress common.Address, keyStart hexutil.Bytes, maxResult int) (StorageRangeResult, error) {
 	_, _, statedb, err := api.computeTxEnv(blockHash, txIndex, 0)
 	if err != nil {
@@ -457,7 +400,7 @@ func storageRangeAt(st state.Trie, start []byte, maxResult int) (StorageRangeRes
 		}
 		result.Storage[common.BytesToHash(it.Key)] = e
 	}
-	// Add the 'next key' so clients can continue downloading.
+
 	if it.Next() {
 		next := common.BytesToHash(it.Key)
 		result.NextKey = &next
@@ -465,11 +408,6 @@ func storageRangeAt(st state.Trie, start []byte, maxResult int) (StorageRangeRes
 	return result, nil
 }
 
-// GetModifiedAccountsByumber returns all accounts that have changed between the
-// two blocks specified. A change is defined as a difference in nonce, balance,
-// code hash, or storage hash.
-//
-// With one parameter, returns the list of accounts modified in the specified block.
 func (api *PrivateDebugAPI) GetModifiedAccountsByNumber(startNum uint64, endNum *uint64) ([]common.Address, error) {
 	var startBlock, endBlock *types.Block
 
@@ -493,11 +431,6 @@ func (api *PrivateDebugAPI) GetModifiedAccountsByNumber(startNum uint64, endNum 
 	return api.getModifiedAccounts(startBlock, endBlock)
 }
 
-// GetModifiedAccountsByHash returns all accounts that have changed between the
-// two blocks specified. A change is defined as a difference in nonce, balance,
-// code hash, or storage hash.
-//
-// With one parameter, returns the list of accounts modified in the specified block.
 func (api *PrivateDebugAPI) GetModifiedAccountsByHash(startHash common.Hash, endHash *common.Hash) ([]common.Address, error) {
 	var startBlock, endBlock *types.Block
 	startBlock = api.eth.blockchain.GetBlockByHash(startHash)
@@ -549,7 +482,6 @@ func (api *PrivateDebugAPI) getModifiedAccounts(startBlock, endBlock *types.Bloc
 	return dirty, nil
 }
 
-// ReadRawDBNode is a debug API function that returns the node rlp data for a hash key, if known.
 func (api *PrivateDebugAPI) ReadRawDBNode(ctx context.Context, hash common.Hash) (hexutil.Bytes, error) {
 	if exist, _ := api.eth.ChainDb().Has(hash.Bytes()); exist {
 		return api.eth.ChainDb().Get(hash.Bytes())
@@ -561,7 +493,7 @@ func (api *PrivateDebugAPI) BroadcastRawDBNode(ctx context.Context, hash common.
 	result := make(map[string]error)
 	if exist, _ := api.eth.ChainDb().Has(hash.Bytes()); exist {
 		data, _ := api.eth.chainDb.Get(hash.Bytes())
-		// Broadcast the node to other peers
+
 		for _, peer := range api.eth.protocolManager.peers.Peers() {
 			result[peer.id] = peer.SendTrieNodeData([][]byte{data})
 		}

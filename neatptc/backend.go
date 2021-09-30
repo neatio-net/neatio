@@ -60,29 +60,25 @@ type LesServer interface {
 	SetBloomBitsIndexer(bbIndexer *core.ChainIndexer)
 }
 
-// NeatIO implements the NEAT Blockchain full node service.
 type NeatIO struct {
 	config      *Config
 	chainConfig *params.ChainConfig
 
-	// Channel for shutting down the service
-	shutdownChan chan bool // Channel for shutting down the neatChain
+	shutdownChan chan bool
 
-	// Handlers
 	txPool          *core.TxPool
 	blockchain      *core.BlockChain
 	protocolManager *ProtocolManager
 
-	// DB interfaces
-	chainDb neatdb.Database // Block chain database
-	pruneDb neatdb.Database // Prune data database
+	chainDb neatdb.Database
+	pruneDb neatdb.Database
 
 	eventMux       *event.TypeMux
 	engine         consensus.NeatCon
 	accountManager *accounts.Manager
 
-	bloomRequests chan chan *bloombits.Retrieval // Channel receiving bloom data retrieval requests
-	bloomIndexer  *core.ChainIndexer             // Bloom indexer operating during block imports
+	bloomRequests chan chan *bloombits.Retrieval
+	bloomIndexer  *core.ChainIndexer
 
 	ApiBackend *EthApiBackend
 
@@ -94,11 +90,9 @@ type NeatIO struct {
 	networkId     uint64
 	netRPCService *neatapi.PublicNetAPI
 
-	lock sync.RWMutex // Protects the variadic fields (e.g. gas price and etherbase)
+	lock sync.RWMutex
 }
 
-// New creates a new NEAT Blockchain object (including the
-// initialisation of the common NEAT Blockchain object)
 func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	cch core.CrossChainHelper, logger log.Logger, isTestnet bool) (*NeatIO, error) {
 
@@ -121,7 +115,6 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 		return nil, genesisErr
 	}
 	chainConfig.ChainLogger = logger
-	//logger.Info("Initialised chain configuration", "config", chainConfig)
 
 	neatChain := &NeatIO{
 		config:         config,
@@ -171,7 +164,6 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 		return nil, err
 	}
 
-	// Rewind the chain in case of an incompatible config upgrade.
 	if compat, ok := genesisErr.(*params.ConfigCompatError); ok {
 		logger.Warn("Rewinding chain to upgrade configuration", "err", compat)
 		neatChain.blockchain.SetHead(compat.RewindTo)
@@ -202,7 +194,7 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 
 func makeExtraData(extra []byte) []byte {
 	if len(extra) == 0 {
-		// create default extradata
+
 		extra, _ = rlp.EncodeToBytes([]interface{}{
 			uint(params.VersionMajor<<16 | params.VersionMinor<<8 | params.VersionPatch),
 			"neatio",
@@ -217,10 +209,9 @@ func makeExtraData(extra []byte) []byte {
 	return extra
 }
 
-// CreateConsensusEngine creates the required type of consensus engine instance for an NeatIO service
 func CreateConsensusEngine(ctx *node.ServiceContext, config *Config, chainConfig *params.ChainConfig, db neatdb.Database,
 	cliCtx *cli.Context, cch core.CrossChainHelper) consensus.NeatCon {
-	// If NeatCon is requested, set it up
+
 	if chainConfig.NeatCon.Epoch != 0 {
 		config.NeatCon.Epoch = chainConfig.NeatCon.Epoch
 	}
@@ -228,14 +219,12 @@ func CreateConsensusEngine(ctx *node.ServiceContext, config *Config, chainConfig
 	return ntcBackend.New(chainConfig, cliCtx, ctx.NodeKey(), cch)
 }
 
-// APIs returns the collection of RPC services the NeatIO package offers.
-// NOTE, some of these services probably need to be moved to somewhere else.
 func (s *NeatIO) APIs() []rpc.API {
 
 	apis := neatapi.GetAPIs(s.ApiBackend, s.solcPath)
-	// Append any APIs exposed explicitly by the consensus engine
+
 	apis = append(apis, s.engine.APIs(s.BlockChain())...)
-	// Append all the local APIs and return
+
 	apis = append(apis, []rpc.API{
 		{
 			Namespace: "eth",
@@ -341,7 +330,6 @@ func (s *NeatIO) Coinbase() (eb common.Address, err error) {
 	return common.Address{}, fmt.Errorf("Base address must be explicitly specified")
 }
 
-// set in js console via admin interface or wrapper from cli flags
 func (self *NeatIO) SetCoinbase(coinbase common.Address) {
 
 	self.lock.Lock()
@@ -368,10 +356,7 @@ func (s *NeatIO) StartMining(local bool) error {
 	}
 
 	if local {
-		// If local (CPU) mining is started, we can disable the transaction rejection
-		// mechanism introduced to speed sync times. CPU mining on mainnet is ludicrous
-		// so noone will ever hit this path, whereas marking sync done on CPU mining
-		// will ensure that private networks work in single miner mode too.
+
 		atomic.StoreUint32(&s.protocolManager.acceptTxs, 1)
 	}
 	go s.miner.Start(eb)
@@ -389,36 +374,27 @@ func (s *NeatIO) TxPool() *core.TxPool               { return s.txPool }
 func (s *NeatIO) EventMux() *event.TypeMux           { return s.eventMux }
 func (s *NeatIO) Engine() consensus.NeatCon          { return s.engine }
 func (s *NeatIO) ChainDb() neatdb.Database           { return s.chainDb }
-func (s *NeatIO) IsListening() bool                  { return true } // Always listening
+func (s *NeatIO) IsListening() bool                  { return true }
 func (s *NeatIO) EthVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
 func (s *NeatIO) NetVersion() uint64                 { return s.networkId }
 func (s *NeatIO) Downloader() *downloader.Downloader { return s.protocolManager.downloader }
 
-// Protocols implements node.Service, returning all the currently configured
-// network protocols to start.
 func (s *NeatIO) Protocols() []p2p.Protocol {
 	return s.protocolManager.SubProtocols
 }
 
-// Start implements node.Service, starting all internal goroutines needed by the
-// NeatIO protocol implementation.
 func (s *NeatIO) Start(srvr *p2p.Server) error {
-	// Start the bloom bits servicing goroutines
+
 	s.startBloomHandlers()
 
-	// Start the RPC service
 	s.netRPCService = neatapi.NewPublicNetAPI(srvr, s.NetVersion())
 
-	// Figure out a max peers count based on the server limits
 	maxPeers := srvr.MaxPeers
 
-	// Start the networking layer and the light server if requested
 	s.protocolManager.Start(maxPeers)
 
-	// Start the Auto Mining Loop
 	go s.loopForMiningEvent()
 
-	// Start the Data Reduction
 	if s.config.PruneStateData && s.chainConfig.NeatChainId == "side_0" {
 		go s.StartScanAndPrune(0)
 	}
@@ -426,8 +402,6 @@ func (s *NeatIO) Start(srvr *p2p.Server) error {
 	return nil
 }
 
-// Stop implements node.Service, terminating all internal goroutines used by the
-// NeatIO protocol.
 func (s *NeatIO) Stop() error {
 	s.bloomIndexer.Close()
 	s.blockchain.Stop()
@@ -446,7 +420,7 @@ func (s *NeatIO) Stop() error {
 }
 
 func (s *NeatIO) loopForMiningEvent() {
-	// Start/Stop mining Feed
+
 	startMiningCh := make(chan core.StartMiningEvent, 1)
 	startMiningSub := s.blockchain.SubscribeStartMiningEvent(startMiningCh)
 

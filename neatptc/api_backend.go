@@ -37,11 +37,10 @@ import (
 	"github.com/neatlab/neatio/utilities/event"
 )
 
-// EthApiBackend implements neatapi.Backend for full nodes
 type EthApiBackend struct {
 	eth *NeatIO
 	gpo *gasprice.Oracle
-	//apiBridge        neatapi.InnerAPIBridge
+
 	crossChainHelper core.CrossChainHelper
 }
 
@@ -59,12 +58,12 @@ func (b *EthApiBackend) SetHead(number uint64) {
 }
 
 func (b *EthApiBackend) HeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Header, error) {
-	// Pending block is only known by the miner
+
 	if blockNr == rpc.PendingBlockNumber {
 		block := b.eth.miner.PendingBlock()
 		return block.Header(), nil
 	}
-	// Otherwise resolve and return the block
+
 	if blockNr == rpc.LatestBlockNumber {
 		return b.eth.blockchain.CurrentBlock().Header(), nil
 	}
@@ -72,12 +71,12 @@ func (b *EthApiBackend) HeaderByNumber(ctx context.Context, blockNr rpc.BlockNum
 }
 
 func (b *EthApiBackend) BlockByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Block, error) {
-	// Pending block is only known by the miner
+
 	if blockNr == rpc.PendingBlockNumber {
 		block := b.eth.miner.PendingBlock()
 		return block, nil
 	}
-	// Otherwise resolve and return the block
+
 	if blockNr == rpc.LatestBlockNumber {
 		return b.eth.blockchain.CurrentBlock(), nil
 	}
@@ -85,12 +84,12 @@ func (b *EthApiBackend) BlockByNumber(ctx context.Context, blockNr rpc.BlockNumb
 }
 
 func (b *EthApiBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*state.StateDB, *types.Header, error) {
-	// Pending state is only known by the miner
+
 	if blockNr == rpc.PendingBlockNumber {
 		block, state := b.eth.miner.Pending()
 		return state, block.Header(), nil
 	}
-	// Otherwise resolve the block number and return its state
+
 	header, err := b.HeaderByNumber(ctx, blockNr)
 	if header == nil || err != nil {
 		return nil, nil, err
@@ -221,14 +220,6 @@ func (b *EthApiBackend) ServiceFilter(ctx context.Context, session *bloombits.Ma
 		go session.Multiplex(bloomRetrievalBatch, bloomRetrievalWait, b.eth.bloomRequests)
 	}
 }
-
-//func (b *EthApiBackend) SetInnerAPIBridge(inBridge neatapi.InnerAPIBridge) {
-//	b.apiBridge = inBridge
-//}
-//
-//func (b *EthApiBackend) GetInnerAPIBridge() neatapi.InnerAPIBridge {
-//	return b.apiBridge
-//}
 
 func (b *EthApiBackend) GetCrossChainHelper() core.CrossChainHelper {
 	return b.crossChainHelper
