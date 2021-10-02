@@ -179,7 +179,7 @@ func (epoch *Epoch) SetRewardScheme(rs *RewardScheme) {
 func (epoch *Epoch) Save() {
 	epoch.mtx.Lock()
 	defer epoch.mtx.Unlock()
-	fmt.Printf("(epoch *Epoch) Save(), (EPOCH, ts.Bytes()) are: (%s,%v\n", calcEpochKeyWithHeight(epoch.Number), epoch.Bytes())
+	//fmt.Printf("(epoch *Epoch) Save(), (EPOCH, ts.Bytes()) are: (%s,%v\n", calcEpochKeyWithHeight(epoch.Number), epoch.Bytes())
 	epoch.db.SetSync(calcEpochKeyWithHeight(epoch.Number), epoch.Bytes())
 	epoch.db.SetSync([]byte(latestEpochKey), []byte(strconv.FormatUint(epoch.Number, 10)))
 
@@ -477,7 +477,7 @@ func DryRunUpdateEpochValidatorSet(state *state.StateDB, validators *ncTypes.Val
 	}
 
 	if voteSet == nil {
-		fmt.Printf("DryRunUpdateEpochValidatorSet, voteSet is nil %v\n", voteSet)
+		//fmt.Printf("DryRunUpdateEpochValidatorSet, voteSet is nil %v\n", voteSet)
 		voteSet = NewEpochValidatorVoteSet()
 	}
 
@@ -490,7 +490,7 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 	// Refund List will be validators contain from Vote (exit validator or less amount than previous amount) and Knockout after sort by amount
 	var refund []*ncTypes.RefundValidatorAmount
 	oldValSize, newValSize := validators.Size(), 0
-	fmt.Printf("updateEpochValidatorSet, validators: %v\n, voteSet: %v\n", validators, voteSet)
+	//fmt.Printf("updateEpochValidatorSet, validators: %v\n, voteSet: %v\n", validators, voteSet)
 
 	// TODO: if need hasVoteOut
 	// if there is no vote set, but should vote out validator
@@ -592,7 +592,7 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 				// Add the new validator
 				added := validators.Add(ncTypes.NewValidator(v.Address[:], v.PubKey, v.Amount))
 				if !added {
-					fmt.Print(fmt.Errorf("Failed to add new validator %v with voting power %d", v.Address, v.Amount))
+					//fmt.Print(fmt.Errorf("Failed to add new validator %v with voting power %d", v.Address, v.Amount))
 				} else {
 					newValSize++
 				}
@@ -610,18 +610,18 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 				//} else
 
 				if v.Amount.Sign() == 0 {
-					fmt.Printf("updateEpochValidatorSet amount is zero\n")
+					//fmt.Printf("updateEpochValidatorSet amount is zero\n")
 					// Remove the Validator
 					_, removed := validators.Remove(validator.Address)
 					if !removed {
-						fmt.Print(fmt.Errorf("Failed to remove validator %v", validator.Address))
+						//fmt.Print(fmt.Errorf("Failed to remove validator %v", validator.Address))
 					} else {
 						refund = append(refund, &ncTypes.RefundValidatorAmount{Address: v.Address, Amount: validator.VotingPower, Voteout: false})
 					}
 				} else {
 					//refund if new amount less than the voting power
 					if v.Amount.Cmp(validator.VotingPower) == -1 {
-						fmt.Printf("updateEpochValidatorSet amount less than the voting power, amount: %v, votingPower: %v\n", v.Amount, validator.VotingPower)
+						//fmt.Printf("updateEpochValidatorSet amount less than the voting power, amount: %v, votingPower: %v\n", v.Amount, validator.VotingPower)
 						refundAmount := new(big.Int).Sub(validator.VotingPower, v.Amount)
 						refund = append(refund, &ncTypes.RefundValidatorAmount{Address: v.Address, Amount: refundAmount, Voteout: false})
 					}
@@ -630,7 +630,7 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 					validator.VotingPower = v.Amount
 					updated := validators.Update(validator)
 					if !updated {
-						fmt.Print(fmt.Errorf("Failed to update validator %v with voting power %d", validator.Address, v.Amount))
+						//fmt.Print(fmt.Errorf("Failed to update validator %v with voting power %d", validator.Address, v.Amount))
 					}
 				}
 			}
@@ -746,10 +746,10 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	thisYear := epoch.Number / epochNumberPerYear
 	nextYear := thisYear + 1
 
-	log.Infof("estimateForNextEpoch, previous epoch %v, current epoch %v, last block height %v, epoch start block %v", epoch.previousEpoch, epoch, lastBlockHeight, epoch.StartBlock)
+	//log.Infof("estimateForNextEpoch, previous epoch %v, current epoch %v, last block height %v, epoch start block %v", epoch.previousEpoch, epoch, lastBlockHeight, epoch.StartBlock)
 
 	if epoch.previousEpoch != nil {
-		log.Infof("estimateForNextEpoch previous epoch, start time %v, end time %v", epoch.previousEpoch.StartTime.UnixNano(), epoch.previousEpoch.EndTime.UnixNano())
+		//log.Infof("estimateForNextEpoch previous epoch, start time %v, end time %v", epoch.previousEpoch.StartTime.UnixNano(), epoch.previousEpoch.EndTime.UnixNano())
 		prevEpoch := epoch.previousEpoch
 		timePerBlockOfEpoch = prevEpoch.EndTime.Sub(prevEpoch.StartTime).Nanoseconds() / int64(prevEpoch.EndBlock-prevEpoch.StartBlock)
 	} else {
@@ -764,9 +764,9 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 	blocksOfNextEpoch = 0
 
-	log.Info("estimateForNextEpoch",
-		"epochLeftThisYear", epochLeftThisYear,
-		"timePerBlockOfEpoch", timePerBlockOfEpoch)
+	//log.Info("estimateForNextEpoch",
+	//"epochLeftThisYear", epochLeftThisYear,
+	//"timePerBlockOfEpoch", timePerBlockOfEpoch)
 
 	if epochLeftThisYear == 0 {
 
