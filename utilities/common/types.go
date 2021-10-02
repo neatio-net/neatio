@@ -262,7 +262,7 @@ func (a *Address) UnmarshalText(input []byte) error {
 
 // New UnmarshalJSON parses a hash in hex syntax.
 func (a *Address) UnmarshalJSON(input []byte) error {
-	fmt.Printf("types Address UnmarshalJSON address=%v, input=%v\n", a, input)
+	//fmt.Printf("types Address UnmarshalJSON address=%v, input=%v\n", a, input)
 	return hexutil.UnmarshalAddrFixedJSON(addressT, input, a[:])
 }
 

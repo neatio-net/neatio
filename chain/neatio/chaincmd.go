@@ -97,8 +97,8 @@ It expects the genesis file as argument.`,
 	createValidatorCmd = cli.Command{
 		//Action: GeneratePrivateValidatorCmd,
 		Action: utils.MigrateFlags(CreatePrivateValidatorCmd),
-		Name:   "create-validator",
-		Usage:  "create-validator address", //create priv_validator.json for address
+		Name:   "cvf",
+		Usage:  "cvf address", //create priv_validator.json for address
 		Flags: []cli.Flag{
 			utils.DataDirFlag,
 		},
