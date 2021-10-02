@@ -20,7 +20,7 @@ package params
 // NEAT Blockchain main network.
 var MainnetBootnodes = []string{
 
-	"enode://8f4e613b97453ebcc21cd0df31c23bf82c92ca2afda1ecb54f0c63de64ddf0bbffbd1d7104c353fcbd50838e7d06fd2a56ed0338809a1eb8682d223228898c0a@135.181.195.79:9910",
+	"enode://c97602ae458d92d2be28d58f6ed82ffd11245edbce8d1e78171135ca598eac2bf1853423971ac2bec0856e590a0f041211343a3906dc62031deeaa85b8d05e1a@135.181.195.79:9910",
 }
 
 // TestnetBootnodes are the enode URLs of the P2P bootstrap nodes running on the
