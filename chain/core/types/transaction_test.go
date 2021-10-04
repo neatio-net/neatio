@@ -323,10 +323,10 @@ func TestDelegateTx(t *testing.T) {
 		t.Fatalf("could not decode key: %v", err)
 	}
 	signer := NewEIP155Signer(common.Big2) // mainnet 1，testnet 2
-	//address := common.StringToAddress("NEATtWX5FxpBddhwxzde47H7dWorB6AA")
-	address := common.StringToAddress("NEATBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
+	//address := common.StringToAddress("NEATioMiningSmartContractAddress")
+	address := common.StringToAddress("NEATioMiningSmartContractAddress")
 
-	input, err := neatAbi.ChainABI.Pack(neatAbi.Delegate.String(), common.StringToAddress("NEATfxRkRYDgG5gjaJSTpwZz9cZQsMEr"))
+	input, err := neatAbi.ChainABI.Pack(neatAbi.Delegate.String(), common.StringToAddress("NEATioMiningSmartContractAddress"))
 	fmt.Printf("delegate input %v\n", hexutil.Encode(input))
 	if err != nil {
 		t.Errorf("could not pack data, err %v\n", err)

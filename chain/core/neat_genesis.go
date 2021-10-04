@@ -216,7 +216,7 @@ var DefaultMainnetGenesisJSON = `{
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+	"coinbase": "NEATioBlockchainsGenesisCoinbase",
 	"alloc": {
 			"NEAThqiY535HtJxfD84ixftPijPqormo": {
 					"balance": "0x3ee1186f11c064cc00000",
@@ -249,7 +249,7 @@ var DefaultTestnetGenesisJSON = `{
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+	"coinbase": "NEATioBlockchainsGenesisCoinbase",
 	"alloc": {
 			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
 					"balance": "0x3ee1186f11c064cc00000",

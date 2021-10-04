@@ -101,7 +101,7 @@ func init_neat_genesis(config cfg.Config, balanceStr string, isMainnet bool) err
 		GasLimit:   0x7270e00,
 		Difficulty: new(big.Int).SetUint64(0x01),
 		Mixhash:    common.Hash{},
-		Coinbase:   "NEATTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+		Coinbase:   "NEATioBlockchainsGenesisCoinbase",
 		Alloc:      core.GenesisAllocWrite{},
 	}
 	for i, validator := range validators {

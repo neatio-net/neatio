@@ -526,10 +526,10 @@ const jsonChainABI = `
 ]`
 
 // NeatIO Side Chain Token Incentive Address
-var SideChainTokenIncentiveAddr = common.StringToAddress("NEATCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
+var SideChainTokenIncentiveAddr = common.StringToAddress("NEATioSideChainsTokenDepositAddy")
 
 // NeatIO Internal Contract Address
-var ChainContractMagicAddr = common.StringToAddress("NEATBBBBBBBBBBBBBBBBBBBBBBBBBBBB") // don't conflict with neatio/core/vm/contracts.go
+var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress") // don't conflict with neatio/core/vm/contracts.go
 
 var ChainABI abi.ABI
 

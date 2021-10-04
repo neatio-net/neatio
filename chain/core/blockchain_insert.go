@@ -69,7 +69,7 @@ func (st *insertStats) report(chain []*types.Block, index int, dirty common.Stor
 		if st.ignored > 0 {
 			context = append(context, []interface{}{"ignored", st.ignored}...)
 		}
-		log.Info("Imported new blockchain segment:", context...)
+		log.Info("Imported new blockchain segment:", context...) // <---
 
 		// Bump the stats reported to the next section
 		*st = insertStats{startTime: now, lastIndex: index + 1}
