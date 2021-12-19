@@ -10,13 +10,12 @@ import (
 
 type FunctionType struct {
 	id    int
-	cross bool // Tx type, cross chain / non cross chain
-	main  bool // allow to be execute on main chain or not
-	side  bool // allow to be execute on side chain or not
+	cross bool
+	main  bool
+	side  bool
 }
 
 var (
-	// Cross Chain Function
 	CreateSideChain       = FunctionType{0, true, true, false}
 	JoinSideChain         = FunctionType{1, true, true, false}
 	DepositInMainChain    = FunctionType{2, true, true, false}
@@ -25,7 +24,7 @@ var (
 	WithdrawFromMainChain = FunctionType{5, true, true, false}
 	SaveDataToMainChain   = FunctionType{6, true, true, false}
 	SetBlockReward        = FunctionType{7, true, false, true}
-	// Non-Cross Chain Function
+
 	VoteNextEpoch  = FunctionType{10, false, true, true}
 	RevealVote     = FunctionType{11, false, true, true}
 	Delegate       = FunctionType{12, false, true, true}
@@ -36,7 +35,7 @@ var (
 	WithdrawReward = FunctionType{17, false, true, true}
 	UnBanned       = FunctionType{18, false, true, true}
 	SetCommission  = FunctionType{19, false, true, true}
-	// Unknown
+
 	Unknown = FunctionType{-1, false, false, false}
 )
 
@@ -525,11 +524,9 @@ const jsonChainABI = `
 	}
 ]`
 
-// NeatIO Side Chain Token Incentive Address
 var SideChainTokenIncentiveAddr = common.StringToAddress("NEATioSideChainsTokenDepositAddy")
 
-// NeatIO Internal Contract Address
-var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress") // don't conflict with neatio/core/vm/contracts.go
+var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress")
 
 var ChainABI abi.ABI
 
