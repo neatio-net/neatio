@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package params
 
 import (
@@ -27,12 +11,11 @@ import (
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xbcd26f35349581ccf289591f2a47cca2fe78b0d81fb9aa1619866545d6df7c7c") // Mainnet genesis hash to enforce below configs on
-	TestnetGenesisHash = common.HexToHash("0x4acbb93c3033234cc2c659ccfd2b4f7e835743296e874f23778cb06aa9836060") // Testnet genesis hash to enforce below configs on
+	MainnetGenesisHash = common.HexToHash("0xbcd26f35349581ccf289591f2a47cca2fe78b0d81fb9aa1619866545d6df7c7c")
+	TestnetGenesisHash = common.HexToHash("0x4acbb93c3033234cc2c659ccfd2b4f7e835743296e874f23778cb06aa9836060")
 )
 
 var (
-	// MainnetChainConfig is the chain parameters to run a node on the main network.
 	MainnetChainConfig = &ChainConfig{
 		NeatChainId:         "neatio",
 		ChainId:             big.NewInt(1),
@@ -41,7 +24,7 @@ var (
 		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(0), //let's start from 1 block
+		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
 			Epoch:          30000,
@@ -49,7 +32,6 @@ var (
 		},
 	}
 
-	// TestnetChainConfig contains the chain parameters to run a node on the test network.
 	TestnetChainConfig = &ChainConfig{
 		NeatChainId:         "testnet",
 		ChainId:             big.NewInt(2),
@@ -71,50 +53,38 @@ var (
 )
 
 func init() {
-	//digest := crypto.Keccak256([]byte(MainnetChainConfig.NeatChainId))
-	//MainnetChainConfig.ChainId = new(big.Int).SetBytes(digest[:])
-	//MainnetChainConfig.ChainId = new(big.Int).SetUint64(1)
+
 }
 
-// ChainConfig is the core config which determines the blockchain settings.
-//
-// ChainConfig is stored in the database on a per block basis. This means
-// that any network, identified by its genesis block, can have its own
-// set of configuration options.
 type ChainConfig struct {
-	NeatChainId string   `json:"NeatChainId"` //NeatIO id identifies the current chain
-	ChainId     *big.Int `json:"chainId"`     // Chain id identifies the current chain and is used for replay protection
+	NeatChainId string   `json:"NeatChainId"`
+	ChainId     *big.Int `json:"chainId"`
 
-	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
+	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"`
 
-	// EIP150 implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)
-	EIP150Block *big.Int    `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
-	EIP150Hash  common.Hash `json:"eip150Hash,omitempty"`  // EIP150 HF hash (needed for header only clients as only gas pricing changed)
+	EIP150Block *big.Int    `json:"eip150Block,omitempty"`
+	EIP150Hash  common.Hash `json:"eip150Hash,omitempty"`
 
-	EIP155Block *big.Int `json:"eip155Block,omitempty"` // EIP155 HF block
-	EIP158Block *big.Int `json:"eip158Block,omitempty"` // EIP158 HF block
+	EIP155Block *big.Int `json:"eip155Block,omitempty"`
+	EIP158Block *big.Int `json:"eip158Block,omitempty"`
 
-	ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`      // Byzantium switch block (nil = no fork, 0 = already on byzantium)
-	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
+	ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`
+	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"`
 
-	// Various consensus engines
 	NeatCon *NeatConConfig `json:"neatcon,omitempty"`
 
 	ChainLogger log.Logger `json:"-"`
 }
 
-// NeatConConfig is the consensus engine configs for Istanbul based sealing.
 type NeatConConfig struct {
-	Epoch          uint64 `json:"epoch"`  // Epoch length to reset votes and checkpoint
-	ProposerPolicy uint64 `json:"policy"` // The policy for proposer selection
+	Epoch          uint64 `json:"epoch"`
+	ProposerPolicy uint64 `json:"policy"`
 }
 
-// String implements the stringer interface, returning the consensus engine details.
 func (c *NeatConConfig) String() string {
 	return "neatcon"
 }
 
-// Create a new Chain Config based on the Chain ID, for side chain creation purpose
 func NewSideChainConfig(sideChainID string) *ChainConfig {
 	config := &ChainConfig{
 		NeatChainId:    sideChainID,
@@ -123,8 +93,8 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 		EIP150Hash:     common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
-		//ByzantiumBlock:      big.NewInt(4370000),
-		ByzantiumBlock:      big.NewInt(0), //let's start from 1 block
+
+		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
 			Epoch:          30000,
@@ -138,7 +108,6 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 	return config
 }
 
-// String implements the fmt.Stringer interface.
 func (c *ChainConfig) String() string {
 	var engine interface{}
 	switch {
@@ -160,7 +129,6 @@ func (c *ChainConfig) String() string {
 	)
 }
 
-// IsHomestead returns whether num is either equal to the homestead block or greater.
 func (c *ChainConfig) IsHomestead(num *big.Int) bool {
 	return isForked(c.HomesteadBlock, num)
 }
@@ -189,19 +157,14 @@ func (c *ChainConfig) IsEWASM(num *big.Int) bool {
 	return false
 }
 
-// Check whether is on main chain or not
 func (c *ChainConfig) IsMainChain() bool {
 	return c.NeatChainId == MainnetChainConfig.NeatChainId || c.NeatChainId == TestnetChainConfig.NeatChainId
 }
 
-// Check provided chain id is on main chain or not
 func IsMainChain(chainId string) bool {
 	return chainId == MainnetChainConfig.NeatChainId || chainId == TestnetChainConfig.NeatChainId
 }
 
-// GasTable returns the gas table corresponding to the current phase (homestead or homestead reprice).
-//
-// The returned GasTable's fields shouldn't, under any circumstances, be changed.
 func (c *ChainConfig) GasTable(num *big.Int) GasTable {
 	if num == nil {
 		return GasTableHomestead
@@ -216,12 +179,9 @@ func (c *ChainConfig) GasTable(num *big.Int) GasTable {
 	}
 }
 
-// CheckCompatible checks whether scheduled fork transitions have been imported
-// with a mismatching chain configuration.
 func (c *ChainConfig) CheckCompatible(newcfg *ChainConfig, height uint64) *ConfigCompatError {
 	bhead := new(big.Int).SetUint64(height)
 
-	// Iterate checkCompatible to find the lowest conflict.
 	var lasterr *ConfigCompatError
 	for {
 		err := c.checkCompatible(newcfg, bhead)
@@ -259,13 +219,10 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, head *big.Int) *Confi
 	return nil
 }
 
-// isForkIncompatible returns true if a fork scheduled at s1 cannot be rescheduled to
-// block s2 because head is already past the fork.
 func isForkIncompatible(s1, s2, head *big.Int) bool {
 	return (isForked(s1, head) || isForked(s2, head)) && !configNumEqual(s1, s2)
 }
 
-// isForked returns whether a fork scheduled at block s is active at the given head block.
 func isForked(s, head *big.Int) bool {
 	if s == nil || head == nil {
 		return false
@@ -283,13 +240,11 @@ func configNumEqual(x, y *big.Int) bool {
 	return x.Cmp(y) == 0
 }
 
-// ConfigCompatError is raised if the locally-stored blockchain is initialised with a
-// ChainConfig that would alter the past.
 type ConfigCompatError struct {
 	What string
-	// block numbers of the stored and new configurations
+
 	StoredConfig, NewConfig *big.Int
-	// the block number to which the local chain must be rewound to correct the error
+
 	RewindTo uint64
 }
 
@@ -314,11 +269,6 @@ func (err *ConfigCompatError) Error() string {
 	return fmt.Sprintf("mismatching %s in database (have %d, want %d, rewindto %d)", err.What, err.StoredConfig, err.NewConfig, err.RewindTo)
 }
 
-// Rules wraps ChainConfig and is merely syntatic sugar or can be used for functions
-// that do not have or require information about the block.
-//
-// Rules is a one time interface meaning that it shouldn't be used in between transition
-// phases.
 type Rules struct {
 	ChainId                                                 *big.Int
 	IsHomestead, IsEIP150, IsEIP155, IsEIP158               bool

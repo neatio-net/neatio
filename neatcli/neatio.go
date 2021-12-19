@@ -28,10 +28,8 @@ func (ec *Client) BlockNumber(ctx context.Context) (*big.Int, error) {
 	return (*big.Int)(&hex), nil
 }
 
-// SendDataToMainChain send epoch data to main chain through eth_sendRawTransaction
 func (ec *Client) SendDataToMainChain(ctx context.Context, data []byte, prv *ecdsa.PrivateKey, mainChainId string) (common.Hash, error) {
 
-	// data
 	bs, err := neatAbi.ChainABI.Pack(neatAbi.SaveDataToMainChain.String(), data)
 	if err != nil {
 		return common.Hash{}, err
@@ -39,36 +37,32 @@ func (ec *Client) SendDataToMainChain(ctx context.Context, data []byte, prv *ecd
 
 	account := crypto.PubkeyToAddress(prv.PublicKey)
 
-	// nonce, fetch the nonce first, if we get nonce too low error, we will manually add the value until the error gone
 	nonce, err := ec.NonceAt(ctx, account, nil)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	// tx signer for the main chain
 	digest := crypto.Keccak256([]byte(mainChainId))
 	signer := types.NewEIP155Signer(new(big.Int).SetBytes(digest[:]))
 
 	var hash = common.Hash{}
-	//should send successfully, let's wait longer time
+
 	err = retry(30, time.Second*3, func() error {
-		// gasPrice
+
 		gasPrice, err := ec.SuggestGasPrice(ctx)
 		if err != nil {
 			return err
 		}
 
 	SendTX:
-		// tx
+
 		tx := types.NewTransaction(nonce, neatAbi.ChainContractMagicAddr, nil, 0, gasPrice, bs)
 
-		// sign the tx
 		signedTx, err := types.SignTx(tx, signer, prv)
 		if err != nil {
 			return err
 		}
 
-		// eth_sendRawTransaction
 		err = ec.SendTransaction(ctx, signedTx)
 		if err != nil {
 			if err.Error() == "nonce too low" {
@@ -87,7 +81,6 @@ func (ec *Client) SendDataToMainChain(ctx context.Context, data []byte, prv *ecd
 	return hash, err
 }
 
-// BroadcastDataToMainChain send tx3 proof data to MainChain via rpc call, then broadcast it via p2p network
 func (ec *Client) BroadcastDataToMainChain(ctx context.Context, chainId string, data []byte) error {
 	if chainId == "" || chainId == params.MainnetChainConfig.NeatChainId || chainId == params.TestnetChainConfig.NeatChainId {
 		return errors.New("invalid side chainId")
@@ -104,7 +97,7 @@ func retry(attemps int, sleep time.Duration, fn func() error) error {
 
 	if err := fn(); err != nil {
 		if attemps--; attemps >= 0 {
-			// Add some randomness to prevent creating a Thundering Herd
+
 			jitter := time.Duration(rand.Int63n(int64(sleep)))
 			sleep = sleep + jitter/2
 
