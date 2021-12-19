@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package abi
 
 import (
@@ -25,11 +9,8 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 )
 
-// typeWithoutStringer is a alias for the Type type which simply doesn't implement
-// the stringer interface to allow printing type details in the tests below.
 type typeWithoutStringer Type
 
-// Tests that all allowed types get recognized by the type parser.
 func TestTypeRegexp(t *testing.T) {
 	tests := []struct {
 		blob       string
@@ -88,13 +69,7 @@ func TestTypeRegexp(t *testing.T) {
 		{"address", nil, Type{Kind: reflect.Array, Type: addressT, Size: 20, T: AddressTy, stringKind: "address"}},
 		{"address[]", nil, Type{T: SliceTy, Kind: reflect.Slice, Type: reflect.TypeOf([]common.Address{}), Elem: &Type{Kind: reflect.Array, Type: addressT, Size: 20, T: AddressTy, stringKind: "address"}, stringKind: "address[]"}},
 		{"address[2]", nil, Type{Kind: reflect.Array, T: ArrayTy, Size: 2, Type: reflect.TypeOf([2]common.Address{}), Elem: &Type{Kind: reflect.Array, Type: addressT, Size: 20, T: AddressTy, stringKind: "address"}, stringKind: "address[2]"}},
-		// TODO when fixed types are implemented properly
-		// {"fixed", nil, Type{}},
-		// {"fixed128x128", nil, Type{}},
-		// {"fixed[]", nil, Type{}},
-		// {"fixed[2]", nil, Type{}},
-		// {"fixed128x128[]", nil, Type{}},
-		// {"fixed128x128[2]", nil, Type{}},
+
 		{"tuple", []ArgumentMarshaling{{Name: "a", Type: "int64"}}, Type{Kind: reflect.Struct, T: TupleTy, Type: reflect.TypeOf(struct {
 			A int64 `json:"a"`
 		}{}), stringKind: "(int64)",
@@ -265,17 +240,17 @@ func TestTypeCheck(t *testing.T) {
 		{"bytes32[]]", nil, "", "invalid arg type in abi"},
 		{"invalidType", nil, "", "unsupported arg type: invalidType"},
 		{"invalidSlice[]", nil, "", "unsupported arg type: invalidSlice"},
-		// simple tuple
+
 		{"tuple", []ArgumentMarshaling{{Name: "a", Type: "uint256"}, {Name: "b", Type: "uint256"}}, struct {
 			A *big.Int
 			B *big.Int
 		}{}, ""},
-		// tuple slice
+
 		{"tuple[]", []ArgumentMarshaling{{Name: "a", Type: "uint256"}, {Name: "b", Type: "uint256"}}, []struct {
 			A *big.Int
 			B *big.Int
 		}{}, ""},
-		// tuple array
+
 		{"tuple[2]", []ArgumentMarshaling{{Name: "a", Type: "uint256"}, {Name: "b", Type: "uint256"}}, []struct {
 			A *big.Int
 			B *big.Int

@@ -1,19 +1,3 @@
-// Copyright 2018 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package bind
 
 import (
@@ -28,14 +12,12 @@ import (
 	"github.com/neatlab/neatio/utilities/crypto"
 )
 
-// makeTopics converts a filter query argument list into a filter topic set.
 func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {
 	topics := make([][]common.Hash, len(query))
 	for i, filter := range query {
 		for _, rule := range filter {
 			var topic common.Hash
 
-			// Try to generate the topic based on simple types
 			switch rule := rule.(type) {
 			case common.Hash:
 				copy(topic[:], rule[:])
@@ -80,17 +62,10 @@ func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {
 				copy(topic[:], hash[:])
 
 			default:
-				// todo(rjl493456442) according solidity documentation, indexed event
-				// parameters that are not value types i.e. arrays and structs are not
-				// stored directly but instead a keccak256-hash of an encoding is stored.
-				//
-				// We only convert stringS and bytes to hash, still need to deal with
-				// array(both fixed-size and dynamic-size) and struct.
 
-				// Attempt to generate the topic from funky types
 				val := reflect.ValueOf(rule)
 				switch {
-				// static byte array
+
 				case val.Kind() == reflect.Array && reflect.TypeOf(rule).Elem().Kind() == reflect.Uint8:
 					reflect.Copy(reflect.ValueOf(topic[:val.Len()]), val)
 				default:
@@ -103,30 +78,24 @@ func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {
 	return topics, nil
 }
 
-// Big batch of reflect types for topic reconstruction.
 var (
 	reflectHash    = reflect.TypeOf(common.Hash{})
 	reflectAddress = reflect.TypeOf(common.Address{})
 	reflectBigInt  = reflect.TypeOf(new(big.Int))
 )
 
-// parseTopics converts the indexed topic fields into actual log field values.
-//
-// Note, dynamic types cannot be reconstructed since they get mapped to Keccak256
-// hashes as the topic value!
 func parseTopics(out interface{}, fields abi.Arguments, topics []common.Hash) error {
-	// Sanity check that the fields and topics match up
+
 	if len(fields) != len(topics) {
 		return errors.New("topic/field count mismatch")
 	}
-	// Iterate over all the fields and reconstruct them from topics
+
 	for _, arg := range fields {
 		if !arg.Indexed {
 			return errors.New("non-indexed field in topic reconstruction")
 		}
 		field := reflect.ValueOf(out).Elem().FieldByName(capitalise(arg.Name))
 
-		// Try to parse the topic back into the fields based on primitive types
 		switch field.Kind() {
 		case reflect.Bool:
 			if topics[0][common.HashLength-1] == 1 {
@@ -165,10 +134,9 @@ func parseTopics(out interface{}, fields abi.Arguments, topics []common.Hash) er
 			field.Set(reflect.ValueOf(num.Uint64()))
 
 		default:
-			// Ran out of plain primitive types, try custom types
 
 			switch field.Type() {
-			case reflectHash: // Also covers all dynamic types
+			case reflectHash:
 				field.Set(reflect.ValueOf(topics[0]))
 
 			case reflectAddress:
@@ -188,9 +156,9 @@ func parseTopics(out interface{}, fields abi.Arguments, topics []common.Hash) er
 				field.Set(reflect.ValueOf(num))
 
 			default:
-				// Ran out of custom types, try the crazies
+
 				switch {
-				// static byte array
+
 				case arg.Type.T == abi.FixedBytesTy:
 					reflect.Copy(field, reflect.ValueOf(topics[0][:arg.Type.Size]))
 				default:
@@ -203,13 +171,12 @@ func parseTopics(out interface{}, fields abi.Arguments, topics []common.Hash) er
 	return nil
 }
 
-// parseTopicsIntoMap converts the indexed topic field-value pairs into map key-value pairs
 func parseTopicsIntoMap(out map[string]interface{}, fields abi.Arguments, topics []common.Hash) error {
-	// Sanity check that the fields and topics match up
+
 	if len(fields) != len(topics) {
 		return errors.New("topic/field count mismatch")
 	}
-	// Iterate over all the fields and reconstruct them from topics
+
 	for _, arg := range fields {
 		if !arg.Indexed {
 			return errors.New("non-indexed field in topic reconstruction")
@@ -233,8 +200,7 @@ func parseTopicsIntoMap(out map[string]interface{}, fields abi.Arguments, topics
 			}
 			out[arg.Name] = array
 		case abi.StringTy, abi.BytesTy, abi.SliceTy, abi.ArrayTy:
-			// Array types (including strings and bytes) have their keccak256 hashes stored in the topic- not a hash
-			// whose bytes can be decoded to the actual value- so the best we can do is retrieve that hash
+
 			out[arg.Name] = topics[0]
 		case abi.FunctionTy:
 			if garbage := binary.BigEndian.Uint64(topics[0][0:8]); garbage != 0 {
@@ -243,7 +209,7 @@ func parseTopicsIntoMap(out map[string]interface{}, fields abi.Arguments, topics
 			var tmp [24]byte
 			copy(tmp[:], topics[0][8:32])
 			out[arg.Name] = tmp
-		default: // Not handling tuples
+		default:
 			return fmt.Errorf("unsupported indexed type: %v", arg.Type)
 		}
 

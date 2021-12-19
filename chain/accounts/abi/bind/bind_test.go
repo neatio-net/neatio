@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package bind
 
 import (
@@ -41,7 +25,6 @@ var bindTests = []struct {
 	aliases  map[string]string
 	types    []string
 }{
-	// Test that the binding is available in combined and separate forms too
 	{
 		`Empty`,
 		`contract NilContract {}`,
@@ -64,7 +47,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Test that all the official sample contracts bind correctly
 	{
 		`Token`,
 		`https://neatio.org/token`,
@@ -113,7 +95,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Test that named and anonymous inputs are handled correctly
 	{
 		`InputChecker`, ``, []string{``},
 		[]string{`
@@ -150,7 +131,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Test that named and anonymous outputs are handled correctly
 	{
 		`OutputChecker`, ``, []string{``},
 		[]string{`
@@ -190,7 +170,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that named, anonymous and indexed events are handled correctly
 	{
 		`EventChecker`, ``, []string{``},
 		[]string{`
@@ -259,7 +238,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Test that contract interactions (deploy, transact and call) generate working code
 	{
 		`Interactor`,
 		`
@@ -320,7 +298,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that plain values can be properly returned and deserialized
 	{
 		`Getter`,
 		`
@@ -365,7 +342,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that tuples can be properly returned and deserialized
 	{
 		`Tupler`,
 		`
@@ -410,8 +386,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that arrays/slices can be properly returned and deserialized.
-	// Only addresses are tested, remainder just compiled to keep the test small.
 	{
 		`Slicer`,
 		`
@@ -467,7 +441,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that anonymous default methods can be correctly invoked
 	{
 		`Defaulter`,
 		`
@@ -517,7 +490,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that non-existent contracts are reported as such (though only simulator test)
 	{
 		`NonExistent`,
 		`
@@ -556,7 +528,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that gas estimation works for contracts with weird gas mechanics too.
 	{
 		`FunkyGasPattern`,
 		`
@@ -611,7 +582,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Test that constant functions can be called from an (optional) specified address
 	{
 		`CallFrom`,
 		`
@@ -664,7 +634,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that methods and returns with underscores inside work correctly.
 	{
 		`Underscorer`,
 		`
@@ -743,7 +712,6 @@ var bindTests = []struct {
 		nil,
 		nil,
 	},
-	// Tests that logs can be successfully filtered and decoded.
 	{
 		`Eventer`,
 		`
@@ -1245,9 +1213,7 @@ var bindTests = []struct {
 		}
 		`,
 		[]string{
-			// Bytecode for the UseLibrary contract
 			`608060405234801561001057600080fd5b5061011d806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063771602f714602d575b600080fd5b604d60048036036040811015604157600080fd5b5080359060200135605f565b60408051918252519081900360200190f35b600073__$b98c933f0a6ececcd167bd4f9d3299b1a0$__63771602f784846040518363ffffffff1660e01b8152600401808381526020018281526020019250505060206040518083038186803b15801560b757600080fd5b505af415801560ca573d6000803e3d6000fd5b505050506040513d602081101560df57600080fd5b5051939250505056fea265627a7a72305820eb5c38f42445604cfa43d85e3aa5ecc48b0a646456c902dd48420ae7241d06f664736f6c63430005090032`,
-			// Bytecode for the Math contract
 			`60a3610024600b82828239805160001a607314601757fe5b30600052607381538281f3fe730000000000000000000000000000000000000000301460806040526004361060335760003560e01c8063771602f7146038575b600080fd5b605860048036036040811015604c57600080fd5b5080359060200135606a565b60408051918252519081900360200190f35b019056fea265627a7a723058206fc6c05f3078327f9c763edffdb5ab5f8bd212e293a1306c7d0ad05af3ad35f464736f6c63430005090032`,
 		},
 		[]string{
@@ -1430,7 +1396,7 @@ var bindTests = []struct {
 		`,
 		nil,
 		nil,
-		map[string]string{"_myVar": "pubVar"}, // alias MyVar to PubVar
+		map[string]string{"_myVar": "pubVar"},
 		nil,
 	},
 	{
@@ -1514,7 +1480,6 @@ var bindTests = []struct {
 		nil,
 		[]string{"ContractOne", "ContractTwo", "ExternalLib"},
 	},
-	// Test the existence of the free retrieval calls
 	{
 		`PureAndView`,
 		`pragma solidity >=0.6.0;
@@ -1570,15 +1535,11 @@ var bindTests = []struct {
 	},
 }
 
-// Tests that packages generated by the binder can be successfully compiled and
-// the requested tester run against it.
 func TestGolangBindings(t *testing.T) {
-	// Skip the test if no Go command can be found
 	gocmd := runtime.GOROOT() + "/bin/go"
 	if !common.FileExist(gocmd) {
 		t.Skip("go sdk not found for testing")
 	}
-	// Create a temporary workspace for the test suite
 	ws, err := ioutil.TempDir("", "")
 	if err != nil {
 		t.Fatalf("failed to create temporary workspace: %v", err)
@@ -1589,7 +1550,6 @@ func TestGolangBindings(t *testing.T) {
 	if err = os.MkdirAll(pkg, 0700); err != nil {
 		t.Fatalf("failed to create package: %v", err)
 	}
-	// Generate the test suite for all the contracts
 	for i, tt := range bindTests {
 		var types []string
 		if tt.types != nil {
@@ -1597,7 +1557,6 @@ func TestGolangBindings(t *testing.T) {
 		} else {
 			types = []string{tt.name}
 		}
-		// Generate the binding and create a Go source file in the workspace
 		bind, err := Bind(types, tt.abi, tt.bytecode, tt.fsigs, "bindtest", LangGo, tt.libs, tt.aliases)
 		if err != nil {
 			t.Fatalf("test %d: failed to generate binding: %v", i, err)
@@ -1605,7 +1564,6 @@ func TestGolangBindings(t *testing.T) {
 		if err = ioutil.WriteFile(filepath.Join(pkg, strings.ToLower(tt.name)+".go"), []byte(bind), 0600); err != nil {
 			t.Fatalf("test %d: failed to write binding: %v", i, err)
 		}
-		// Generate the test file with the injected test code
 		code := fmt.Sprintf(`
 			package bindtest
 
@@ -1622,7 +1580,6 @@ func TestGolangBindings(t *testing.T) {
 			t.Fatalf("test %d: failed to write tests: %v", i, err)
 		}
 	}
-	// Convert the package to go modules and use the current source for go-ethereum
 	moder := exec.Command(gocmd, "mod", "init", "bindtest")
 	moder.Dir = pkg
 	if out, err := moder.CombinedOutput(); err != nil {
@@ -1634,7 +1591,6 @@ func TestGolangBindings(t *testing.T) {
 	if out, err := replacer.CombinedOutput(); err != nil {
 		t.Fatalf("failed to replace binding test dependency to current source tree: %v\n%s", err, out)
 	}
-	// Test the entire package and report any failures
 	cmd := exec.Command(gocmd, "test", "-v", "-count", "1")
 	cmd.Dir = pkg
 	if out, err := cmd.CombinedOutput(); err != nil {
@@ -1642,7 +1598,6 @@ func TestGolangBindings(t *testing.T) {
 	}
 }
 
-// Tests that java binding generated by the binder is exactly matched.
 func TestJavaBindings(t *testing.T) {
 	var cases = []struct {
 		name     string

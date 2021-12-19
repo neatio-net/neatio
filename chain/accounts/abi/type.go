@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package abi
 
 import (
@@ -25,7 +9,6 @@ import (
 	"strings"
 )
 
-// Type enumerator
 const (
 	IntTy byte = iota
 	UintTy
@@ -42,64 +25,58 @@ const (
 	FunctionTy
 )
 
-// Type is the reflection of the supported argument type
 type Type struct {
 	Elem *Type
 	Kind reflect.Kind
 	Type reflect.Type
 	Size int
-	T    byte // Our own type checking
+	T    byte
 
-	stringKind string // holds the unparsed string for deriving signatures
+	stringKind string
 
-	// Tuple relative fields
-	TupleRawName  string   // Raw struct name defined in source code, may be empty.
-	TupleElems    []*Type  // Type information of all tuple fields
-	TupleRawNames []string // Raw field name of all tuple fields
+	TupleRawName  string
+	TupleElems    []*Type
+	TupleRawNames []string
 }
 
 var (
-	// typeRegex parses the abi sub types
 	typeRegex = regexp.MustCompile("([a-zA-Z]+)(([0-9]+)(x([0-9]+))?)?")
 )
 
-// NewType creates a new reflection type of abi type given in t.
 func NewType(t string, internalType string, components []ArgumentMarshaling) (typ Type, err error) {
-	// check that array brackets are equal if they exist
+
 	if strings.Count(t, "[") != strings.Count(t, "]") {
 		return Type{}, fmt.Errorf("invalid arg type in abi")
 	}
 	typ.stringKind = t
 
-	// if there are brackets, get ready to go into slice/array mode and
-	// recursively create the type
 	if strings.Count(t, "[") != 0 {
-		// Note internalType can be empty here.
+
 		subInternal := internalType
 		if i := strings.LastIndex(internalType, "["); i != -1 {
 			subInternal = subInternal[:i]
 		}
-		// recursively embed the type
+
 		i := strings.LastIndex(t, "[")
 		embeddedType, err := NewType(t[:i], subInternal, components)
 		if err != nil {
 			return Type{}, err
 		}
-		// grab the last cell and create a type from there
+
 		sliced := t[i:]
-		// grab the slice size with regexp
+
 		re := regexp.MustCompile("[0-9]+")
 		intz := re.FindAllString(sliced, -1)
 
 		if len(intz) == 0 {
-			// is a slice
+
 			typ.T = SliceTy
 			typ.Kind = reflect.Slice
 			typ.Elem = &embeddedType
 			typ.Type = reflect.SliceOf(embeddedType.Type)
 			typ.stringKind = embeddedType.stringKind + sliced
 		} else if len(intz) == 1 {
-			// is a array
+
 			typ.T = ArrayTy
 			typ.Kind = reflect.Array
 			typ.Elem = &embeddedType
@@ -114,14 +91,13 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 		}
 		return typ, err
 	}
-	// parse the type and size of the abi-type.
+
 	matches := typeRegex.FindAllStringSubmatch(t, -1)
 	if len(matches) == 0 {
 		return Type{}, fmt.Errorf("invalid type '%v'", t)
 	}
 	parsedType := matches[0]
 
-	// varSize is the size of the variable
 	var varSize int
 	if len(parsedType[3]) > 0 {
 		var err error
@@ -131,12 +107,11 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 		}
 	} else {
 		if parsedType[0] == "uint" || parsedType[0] == "int" {
-			// this should fail because it means that there's something wrong with
-			// the abi type (the compiler should always format it to the size...always)
+
 			return Type{}, fmt.Errorf("unsupported arg type: %s", t)
 		}
 	}
-	// varType is the parsed abi type
+
 	switch varType := parsedType[1]; varType {
 	case "int":
 		typ.Kind, typ.Type = reflectIntKindAndType(false, varSize)
@@ -175,7 +150,7 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 			fields     []reflect.StructField
 			elems      []*Type
 			names      []string
-			expression string // canonical parameter expression
+			expression string
 		)
 		expression += "("
 		for idx, c := range components {
@@ -187,7 +162,7 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 				return Type{}, errors.New("abi: purely anonymous or underscored field is not supported")
 			}
 			fields = append(fields, reflect.StructField{
-				Name: ToCamelCase(c.Name), // reflect.StructOf will panic for any exported field.
+				Name: ToCamelCase(c.Name),
 				Type: cType.Type,
 				Tag:  reflect.StructTag("json:\"" + c.Name + "\""),
 			})
@@ -207,12 +182,9 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 		typ.stringKind = expression
 
 		const structPrefix = "struct "
-		// After solidity 0.5.10, a new field of abi "internalType"
-		// is introduced. From that we can obtain the struct name
-		// user defined in the source code.
+
 		if internalType != "" && strings.HasPrefix(internalType, structPrefix) {
-			// Foo.Bar type definition is not allowed in golang,
-			// convert the format to FooBar
+
 			typ.TupleRawName = strings.Replace(internalType[len(structPrefix):], ".", "", -1)
 		}
 
@@ -228,13 +200,12 @@ func NewType(t string, internalType string, components []ArgumentMarshaling) (ty
 	return
 }
 
-// String implements Stringer
 func (t Type) String() (out string) {
 	return t.stringKind
 }
 
 func (t Type) pack(v reflect.Value) ([]byte, error) {
-	// dereference pointer first if it's a pointer
+
 	v = indirect(v)
 	if err := typeCheck(t, v); err != nil {
 		return nil, err
@@ -245,11 +216,10 @@ func (t Type) pack(v reflect.Value) ([]byte, error) {
 		var ret []byte
 
 		if t.requiresLengthPrefix() {
-			// append length
+
 			ret = append(ret, packNum(reflect.ValueOf(v.Len()))...)
 		}
 
-		// calculate offset if any
 		offset := 0
 		offsetReq := isDynamicType(*t.Elem)
 		if offsetReq {
@@ -271,20 +241,12 @@ func (t Type) pack(v reflect.Value) ([]byte, error) {
 		}
 		return append(ret, tail...), nil
 	case TupleTy:
-		// (T1,...,Tk) for k >= 0 and any types T1, …, Tk
-		// enc(X) = head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(k))
-		// where X = (X(1), ..., X(k)) and head and tail are defined for Ti being a static
-		// type as
-		//     head(X(i)) = enc(X(i)) and tail(X(i)) = "" (the empty string)
-		// and as
-		//     head(X(i)) = enc(len(head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(i-1))))
-		//     tail(X(i)) = enc(X(i))
-		// otherwise, i.e. if Ti is a dynamic type.
+
 		fieldmap, err := mapArgNamesToStructFields(t.TupleRawNames, v)
 		if err != nil {
 			return nil, err
 		}
-		// Calculate prefix occupied size.
+
 		offset := 0
 		for _, elem := range t.TupleElems {
 			offset += getTypeSize(*elem)
@@ -314,19 +276,10 @@ func (t Type) pack(v reflect.Value) ([]byte, error) {
 	}
 }
 
-// requireLengthPrefix returns whether the type requires any sort of length
-// prefixing.
 func (t Type) requiresLengthPrefix() bool {
 	return t.T == StringTy || t.T == BytesTy || t.T == SliceTy
 }
 
-// isDynamicType returns true if the type is dynamic.
-// The following types are called “dynamic”:
-// * bytes
-// * string
-// * T[] for any T
-// * T[k] for any dynamic T and any k >= 0
-// * (T1,...,Tk) if Ti is dynamic for some 1 <= i <= k
 func isDynamicType(t Type) bool {
 	if t.T == TupleTy {
 		for _, elem := range t.TupleElems {
@@ -339,17 +292,9 @@ func isDynamicType(t Type) bool {
 	return t.T == StringTy || t.T == BytesTy || t.T == SliceTy || (t.T == ArrayTy && isDynamicType(*t.Elem))
 }
 
-// getTypeSize returns the size that this type needs to occupy.
-// We distinguish static and dynamic types. Static types are encoded in-place
-// and dynamic types are encoded at a separately allocated location after the
-// current block.
-// So for a static variable, the size returned represents the size that the
-// variable actually occupies.
-// For a dynamic variable, the returned size is fixed 32 bytes, which is used
-// to store the location reference for actual value storage.
 func getTypeSize(t Type) int {
 	if t.T == ArrayTy && !isDynamicType(*t.Elem) {
-		// Recursively calculate type size if it is a nested array
+
 		if t.Elem.T == ArrayTy {
 			return t.Size * getTypeSize(*t.Elem)
 		}
