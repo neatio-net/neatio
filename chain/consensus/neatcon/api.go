@@ -14,18 +14,15 @@ import (
 	"github.com/neatlib/crypto-go"
 )
 
-// API is a user facing RPC API of NeatCon
 type API struct {
 	chain   consensus.ChainReader
 	neatcon *backend
 }
 
-// GetCurrentEpochNumber retrieves the current epoch number.
 func (api *API) GetCurrentEpochNumber() (hexutil.Uint64, error) {
 	return hexutil.Uint64(api.neatcon.core.consensusState.Epoch.Number), nil
 }
 
-// GetEpoch retrieves the Epoch Detail by Number
 func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApiForConsole, error) {
 
 	number := uint64(num)
@@ -62,7 +59,6 @@ func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApiForConsole, erro
 	}, nil
 }
 
-// GetEpochVote
 func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApiForConsole, error) {
 
 	ep := api.neatcon.core.consensusState.Epoch

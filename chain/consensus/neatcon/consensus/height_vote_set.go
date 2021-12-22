@@ -16,31 +16,16 @@ type RoundVoteSet struct {
 	Precommits *types.VoteSet
 }
 
-/*
-Keeps track of all VoteSets from round 0 to round 'round'.
-
-Also keeps track of up to one RoundVoteSet greater than
-'round' from each peer, to facilitate catchup syncing of commits.
-
-A commit is +2/3 precommits for a block at a round,
-but which round is not known in advance, so when a peer
-provides a precommit for a round greater than mtx.round,
-we create a new entry in roundVoteSets but also remember the
-peer to prevent abuse.
-We let each peer provide us with up to 2 unexpected "catchup" rounds.
-One for their LastCommit round, and another for the official commit round.
-*/
 type HeightVoteSet struct {
 	chainID string
 	height  uint64
 	valSet  *types.ValidatorSet
 
 	mtx               sync.Mutex
-	round             int                  // max tracked round
-	roundVoteSets     map[int]RoundVoteSet // keys: [0...round]
-	peerCatchupRounds map[string][]int     // keys: peer.Key; values: at most 2 rounds
-
-	logger log.Logger
+	round             int
+	roundVoteSets     map[int]RoundVoteSet
+	peerCatchupRounds map[string][]int
+	logger            log.Logger
 }
 
 func NewHeightVoteSet(chainID string, height uint64, valSet *types.ValidatorSet, logger log.Logger) *HeightVoteSet {
@@ -77,7 +62,6 @@ func (hvs *HeightVoteSet) Round() int {
 	return hvs.round
 }
 
-// Create more RoundVoteSets up to round.
 func (hvs *HeightVoteSet) SetRound(round int) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -86,14 +70,13 @@ func (hvs *HeightVoteSet) SetRound(round int) {
 	}
 	for r := hvs.round + 1; r <= round; r++ {
 		if _, ok := hvs.roundVoteSets[r]; ok {
-			continue // Already exists because peerCatchupRounds.
+			continue
 		}
 		hvs.addRound(r)
 	}
 	hvs.round = round
 }
 
-// Create more RoundVoteSets up to round.
 func (hvs *HeightVoteSet) ResetTop2Round(round int) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -124,8 +107,6 @@ func (hvs *HeightVoteSet) addRound(round int) {
 	}
 }
 
-// Duplicate votes return added=false, err=nil.
-// By convention, peerKey is "" if origin is self.
 func (hvs *HeightVoteSet) AddVote(vote *types.Vote, peerKey string) (added bool, err error) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -139,9 +120,6 @@ func (hvs *HeightVoteSet) AddVote(vote *types.Vote, peerKey string) (added bool,
 			voteSet = hvs.getVoteSet(int(vote.Round), vote.Type)
 			hvs.peerCatchupRounds[peerKey] = append(rndz, int(vote.Round))
 		} else {
-			// Peer has sent a vote that does not match our round,
-			// for more than one round.  Bad peer!
-			// TODO punish peer.
 			hvs.logger.Warn("Deal with peer giving votes from unwanted rounds")
 			return false, errors.New("Deal with peer giving votes from unwanted rounds")
 		}
@@ -162,8 +140,6 @@ func (hvs *HeightVoteSet) Precommits(round int) *types.VoteSet {
 	return hvs.getVoteSet(round, types.VoteTypePrecommit)
 }
 
-// Last round and blockID that has +2/3 prevotes for a particular block or nil.
-// Returns -1 if no such round exists.
 func (hvs *HeightVoteSet) POLInfo() (polRound int, polBlockID types.BlockID) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -201,14 +177,12 @@ func (hvs *HeightVoteSet) StringIndented(indent string) string {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
 	vsStrings := make([]string, 0, (len(hvs.roundVoteSets)+1)*2)
-	// rounds 0 ~ hvs.round inclusive
 	for round := 0; round <= hvs.round; round++ {
 		voteSetString := hvs.roundVoteSets[round].Prevotes.StringShort()
 		vsStrings = append(vsStrings, voteSetString)
 		voteSetString = hvs.roundVoteSets[round].Precommits.StringShort()
 		vsStrings = append(vsStrings, voteSetString)
 	}
-	// all other peer catchup rounds
 	for round, roundVoteSet := range hvs.roundVoteSets {
 		if round <= hvs.round {
 			continue
@@ -226,10 +200,6 @@ func (hvs *HeightVoteSet) StringIndented(indent string) string {
 		indent)
 }
 
-// If a peer claims that it has 2/3 majority for given blockKey, call this.
-// NOTE: if there are too many peers, or too much peer churn,
-// this can cause memory issues.
-// TODO: implement ability to remove peers too
 func (hvs *HeightVoteSet) SetPeerMaj23(round int, type_ byte, peerID string, blockID types.BlockID) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()

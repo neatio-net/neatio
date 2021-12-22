@@ -4,10 +4,9 @@ import (
 	. "github.com/neatlib/common-go"
 )
 
-// kind of arbitrary
-var Spec = "1"     // async
-var Major = "0"    //
-var Minor = "2"    // replay refactor
-var Revision = "2" // validation -> commit
+var Spec = "1"
+var Major = "6"
+var Minor = "5"
+var Revision = "1"
 
 var Version = Fmt("v%s/%s.%s.%s", Spec, Major, Minor, Revision)

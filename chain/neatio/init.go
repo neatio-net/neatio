@@ -296,7 +296,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        big.NewInt(0),
 				RewardFirstYear:    big.NewInt(0),
-				EpochNumberPerYear: 365,
+				EpochNumberPerYear: 1,
 				TotalYear:          0,
 			}
 		}

@@ -14,31 +14,15 @@ type RoundVoteSignAggr struct {
 	Precommits *types.SignAggr
 }
 
-/*
-Keeps track of all signature aggregations from round 0 to round 'round'.
-
-Also keeps track of up to one RoundVoteSignAggr greater than
-'round' from each peer, to facilitate catchup syncing of commits.
-
-A commit is +2/3 precommits for a block at a round,
-but which round is not known in advance, so when a peer
-provides a precommit for a round greater than mtx.round,
-we create a new entry in roundVoteSets but also remember the
-peer to prevent abuse.
-We let each peer provide us with up to 2 unexpected "catchup" rounds.
-One for their LastCommit round, and another for the official commit round.
-*/
 type HeightVoteSignAggr struct {
 	chainID string
 	height  uint64
 	valSet  *types.ValidatorSet
 
 	mtx                sync.Mutex
-	round              int                        // max tracked round
-	roundVoteSignAggrs map[int]*RoundVoteSignAggr // keys: [0...round]
+	round              int
+	roundVoteSignAggrs map[int]*RoundVoteSignAggr
 	logger             log.Logger
-
-	// peerCatchupRounds	map[string][]int          // keys: peer.Key; values: at most 2 rounds
 }
 
 func NewHeightVoteSignAggr(chainID string, height uint64, valSet *types.ValidatorSet, logger log.Logger) *HeightVoteSignAggr {
@@ -57,7 +41,6 @@ func (hvs *HeightVoteSignAggr) Reset(height uint64, valSet *types.ValidatorSet) 
 	hvs.height = height
 	hvs.valSet = valSet
 	hvs.roundVoteSignAggrs = make(map[int]*RoundVoteSignAggr)
-	//	hvs.peerCatchupRounds = make(map[string][]int)
 
 	hvs.addRound(0)
 	hvs.round = 0
@@ -75,7 +58,6 @@ func (hvs *HeightVoteSignAggr) Round() int {
 	return hvs.round
 }
 
-// Create more RoundVoteSignAggr up to round.
 func (hvs *HeightVoteSignAggr) SetRound(round int) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -84,14 +66,13 @@ func (hvs *HeightVoteSignAggr) SetRound(round int) {
 	}
 	for r := hvs.round + 1; r <= round; r++ {
 		if _, ok := hvs.roundVoteSignAggrs[r]; ok {
-			continue // Already exists because peerCatchupRounds.
+			continue
 		}
 		hvs.addRound(r)
 	}
 	hvs.round = round
 }
 
-// Create more RoundVoteSets up to round.
 func (hvs *HeightVoteSignAggr) ResetTop2Round(round int) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -121,7 +102,6 @@ func (hvs *HeightVoteSignAggr) addRound(round int) {
 	}
 }
 
-// Duplicate votes return added=false, err=nil.
 func (hvs *HeightVoteSignAggr) AddSignAggr(signAggr *types.SignAggr) (added bool, err error) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -167,8 +147,6 @@ func (hvs *HeightVoteSignAggr) Precommits(round int) *types.SignAggr {
 	return hvs.getSignAggr(round, types.VoteTypePrecommit)
 }
 
-// Last round and blockID that has +2/3 prevotes for a particular block or nil.
-// Returns -1 if no such round exists.
 func (hvs *HeightVoteSignAggr) POLInfo() (polRound int, polBlockID types.BlockID) {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
@@ -198,26 +176,6 @@ func (hvs *HeightVoteSignAggr) getSignAggr(round int, type_ byte) *types.SignAgg
 	}
 }
 
-/*
-
-// If a peer claims that it has 2/3 majority for given blockKey, call this.
-// NOTE: if there are too many peers, or too much peer churn,
-// this can cause memory issues.
-// TODO: implement ability to remove peers too
-func (hvs *HeightVoteSignAggr) SetPeerMaj23(round int, type_ byte, peerID string, blockID types.BlockID) {
-	hvs.mtx.Lock()
-	defer hvs.mtx.Unlock()
-	if !types.IsVoteTypeValid(type_) {
-		return
-	}
-	signAggr := hvs.getSignAggr(round, type_)
-	if signAggr == nil {
-		return
-	}
-	signAggr.SetPeerMaj23(peerID, blockID)
-}
-*/
-
 func (hvs *HeightVoteSignAggr) String() string {
 	return hvs.StringIndented("")
 }
@@ -226,7 +184,6 @@ func (hvs *HeightVoteSignAggr) StringIndented(indent string) string {
 	hvs.mtx.Lock()
 	defer hvs.mtx.Unlock()
 	vsStrings := make([]string, 0, (len(hvs.roundVoteSignAggrs)+1)*2)
-	// rounds 0 ~ hvs.round inclusive
 	for round := 0; round <= hvs.round; round++ {
 		voteSetString := hvs.roundVoteSignAggrs[round].Prevotes.String()
 		vsStrings = append(vsStrings, voteSetString)
@@ -234,7 +191,6 @@ func (hvs *HeightVoteSignAggr) StringIndented(indent string) string {
 		vsStrings = append(vsStrings, voteSetString)
 	}
 
-	// all other peer catchup rounds
 	for round, roundVoteSignAggr := range hvs.roundVoteSignAggrs {
 		if round <= hvs.round {
 			continue

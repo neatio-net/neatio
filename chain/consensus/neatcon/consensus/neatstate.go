@@ -12,32 +12,20 @@ import (
 	cmn "github.com/neatlib/common-go"
 )
 
-// The +2/3 and other Precommit-votes for block at `height`.
-// This Commit comes from block.LastCommit for `height+1`.
 func (bs *ConsensusState) GetChainReader() consss.ChainReader {
 	return bs.backend.ChainReader()
 }
 
-//this function is called when the system starts or a block has been inserted into
-//the insert could be self/other triggered
-//anyway, we start/restart a new height with the latest block update
 func (cs *ConsensusState) StartNewHeight() {
 
-	//start locking
 	cs.mtx.Lock()
 	defer cs.mtx.Unlock()
-
-	//reload the block
-	//cr := cs.backend.ChainReader()
-	//curEthBlock := cr.CurrentBlock()
-	//curHeight := curEthBlock.NumberU64()
-	//cs.logger.Infof("StartNewHeight. current block height is %v", curHeight)
 
 	state := cs.InitState(cs.Epoch)
 	cs.UpdateToState(state)
 
 	cs.newStep()
-	cs.scheduleRound0(cs.getRoundState()) //not use cs.GetRoundState to avoid dead-lock
+	cs.scheduleRound0(cs.getRoundState())
 }
 
 func (cs *ConsensusState) InitState(epoch *ep.Epoch) *sm.State {
@@ -45,22 +33,19 @@ func (cs *ConsensusState) InitState(epoch *ep.Epoch) *sm.State {
 	state := sm.NewState(cs.logger)
 
 	state.NTCExtra, _ = cs.LoadLastNeatConExtra()
-	if state.NTCExtra == nil { //means it it the first block
+	if state.NTCExtra == nil {
 
-		state = sm.MakeGenesisState( /*stateDB, */ cs.chainConfig.NeatChainId, cs.logger)
-		//state.Save()
+		state = sm.MakeGenesisState(cs.chainConfig.NeatChainId, cs.logger)
 
 		if state.NTCExtra.EpochNumber != uint64(epoch.Number) {
 			cmn.Exit(cmn.Fmt("InitStateAndEpoch(), initial state error"))
 		}
 		state.Epoch = epoch
 
-		//cs.logger.Infof("InitStateAndEpoch. genesis state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
 	} else {
 		state.Epoch = epoch
 		cs.ReconstructLastCommit(state)
 
-		//cs.logger.Infof("InitStateAndEpoch. state extra: %#v, epoch validators: %v", state.NTCExtra, epoch.Validators)
 	}
 
 	return state
@@ -68,10 +53,8 @@ func (cs *ConsensusState) InitState(epoch *ep.Epoch) *sm.State {
 
 func (cs *ConsensusState) Initialize() {
 
-	//initialize state
 	cs.Height = 0
 
-	//initialize round state
 	cs.proposer = nil
 	cs.isProposer = false
 	cs.ProposerPeerKey = ""
@@ -90,14 +73,12 @@ func (cs *ConsensusState) Initialize() {
 	cs.state = nil
 }
 
-// Updates ConsensusState and increments height to match thatRewardScheme of state.
-// The round becomes 0 and cs.Step becomes RoundStepNewHeight.
 func (cs *ConsensusState) UpdateToState(state *sm.State) {
 
 	cs.Initialize()
 
 	height := state.NTCExtra.Height + 1
-	// Next desired block height
+
 	cs.Height = height
 
 	if cs.blockFromMiner != nil && cs.blockFromMiner.NumberU64() >= cs.Height {
@@ -106,27 +87,20 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 		cs.blockFromMiner = nil
 	}
 
-	// RoundState fields
 	cs.updateRoundStep(0, RoundStepNewHeight)
-	//cs.StartTime = cs.timeoutParams.Commit(cs.CommitTime)
 
 	if state.NTCExtra.ChainID == params.MainnetChainConfig.NeatChainId ||
 		state.NTCExtra.ChainID == params.TestnetChainConfig.NeatChainId {
 		cs.StartTime = cs.timeoutParams.Commit(time.Now())
 	} else {
 		if cs.CommitTime.IsZero() {
-			// "Now" makes it easier to sync up dev nodes.
-			// We add timeoutCommit to allow transactions
-			// to be gathered for the first block.
-			// And alternative solution that relies on clocks:
-			//  cs.StartTime = state.LastBlockTime.Add(timeoutCommit)
+
 			cs.StartTime = cs.timeoutParams.Commit(time.Now())
 		} else {
 			cs.StartTime = cs.timeoutParams.Commit(cs.CommitTime)
 		}
 	}
 
-	// Reset fields based on state.
 	_, validators, _ := state.GetValidators()
 	cs.Validators = validators
 	cs.Votes = NewHeightVoteSet(cs.chainConfig.NeatChainId, height, validators, cs.logger)
@@ -140,8 +114,6 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 	cs.newStep()
 }
 
-// The +2/3 and other Precommit-votes for block at `height`.
-// This Commit comes from block.LastCommit for `height+1`.
 func (cs *ConsensusState) LoadBlock(height uint64) *types.NCBlock {
 
 	cr := cs.GetChainReader()

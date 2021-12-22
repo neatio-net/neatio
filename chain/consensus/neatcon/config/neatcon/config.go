@@ -50,36 +50,29 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 		Exit(Fmt("Could not read config: %v", err))
 	}
 
-	// Set defaults or panic
 	if mapConfig.IsSet("chain_id") {
 		Exit("Cannot set 'chain_id' via config.toml")
 	}
 	if mapConfig.IsSet("revision_file") {
 		Exit("Cannot set 'revision_file' via config.toml. It must match what's in the Makefile")
 	}
-	mapConfig.SetRequired("chain_id") // blows up if you try to use it before setting.
+	mapConfig.SetRequired("chain_id")
 	mapConfig.SetDefault("chain_id", chainId)
 	mapConfig.SetDefault("genesis_file", filepath.Join(rootDir, chainId, "genesis.json"))
 	mapConfig.SetDefault("neat_genesis_file", filepath.Join(rootDir, chainId, "neat_genesis.json"))
 	mapConfig.SetDefault("keystore", filepath.Join(rootDir, chainId, "keystore"))
-	//mapConfig.SetDefault("proxy_app", "tcp://127.0.0.1:46658")
-	//mapConfig.SetDefault("abci", "socket")
-	//mapConfig.Set("proxy_app", calcAppAddr())
-	//mapConfig.Set("abci", defaultAbci())
 	mapConfig.SetDefault("moniker", "anonymous")
 	mapConfig.SetDefault("node_laddr", "tcp://0.0.0.0:46656")
 	mapConfig.SetDefault("seeds", "")
 	mapConfig.SetDefault("fast_sync", true)
 	mapConfig.SetDefault("skip_upnp", false)
 	mapConfig.SetDefault("addrbook_file", filepath.Join(rootDir, chainId, "addrbook.json"))
-	mapConfig.SetDefault("addrbook_strict", true) // disable to allow connections locally
-	mapConfig.SetDefault("pex_reactor", false)    // enable for peer exchange
+	mapConfig.SetDefault("addrbook_strict", true)
+	mapConfig.SetDefault("pex_reactor", false)
 	mapConfig.SetDefault("priv_validator_file", filepath.Join(rootDir, chainId, "priv_validator.json"))
 	mapConfig.SetDefault("priv_validator_file_root", filepath.Join(rootDir, chainId, "priv_validator"))
 	mapConfig.SetDefault("db_backend", "leveldb")
 	mapConfig.SetDefault("db_dir", filepath.Join(rootDir, chainId, defaultDataDir))
-	//mapConfig.SetDefault("rpc_laddr", "tcp://0.0.0.0:46657")
-	//mapConfig.SetDefault("rpc_laddr", calcRpcAddr())
 	mapConfig.SetDefault("grpc_laddr", "")
 	mapConfig.SetDefault("prof_laddr", "")
 	mapConfig.SetDefault("revision_file", filepath.Join(rootDir, chainId, "revision"))
@@ -87,11 +80,10 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("cs_wal_light", false)
 	mapConfig.SetDefault("filter_peers", false)
 
-	mapConfig.SetDefault("block_size", 10000)      // max number of txs
-	mapConfig.SetDefault("block_part_size", 65536) // part size 64K
+	mapConfig.SetDefault("block_size", 10000)
+	mapConfig.SetDefault("block_part_size", 65536)
 	mapConfig.SetDefault("disable_data_hash", false)
 
-	// all timeouts are in ms
 	mapConfig.SetDefault("timeout_handshake", 10000)
 	mapConfig.SetDefault("timeout_wait_for_miner_block", 2000)
 	mapConfig.SetDefault("timeout_propose", 1500)
@@ -102,18 +94,11 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("timeout_precommit_delta", 500)
 	mapConfig.SetDefault("timeout_commit", 1000)
 
-	// make progress asap (no `timeout_commit`) on full precommit votes
 	mapConfig.SetDefault("skip_timeout_commit", false)
 	mapConfig.SetDefault("mempool_recheck", true)
 	mapConfig.SetDefault("mempool_recheck_empty", true)
 	mapConfig.SetDefault("mempool_broadcast", true)
 	mapConfig.SetDefault("mempool_wal_dir", filepath.Join(rootDir, chainId, defaultDataDir, "mempool.wal"))
-
-	//mapConfig.SetDefault("tx_index", "kv")
-
-	// EmptyBlocks mode and possible interval between empty blocks
-	//mapConfig.SetDefault("create_empty_blocks", true)
-	//mapConfig.SetDefault("create_empty_blocks_interval", 0)
 
 	return mapConfig
 }
