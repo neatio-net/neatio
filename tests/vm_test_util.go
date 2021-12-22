@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package tests
 
 import (
@@ -33,8 +17,6 @@ import (
 	"github.com/neatlab/neatio/utilities/crypto"
 )
 
-// VMTest checks EVM execution without block or transaction context.
-// See https://github.com/ethereum/tests/wiki/VM-Tests for the test format specification.
 type VMTest struct {
 	json vmJSON
 }
@@ -53,8 +35,6 @@ type vmJSON struct {
 	Post          core.GenesisAlloc     `json:"post"`
 	PostStateRoot common.Hash           `json:"postStateRoot"`
 }
-
-//go:generate gencodec -type vmExec -field-override vmExecMarshaling -out gen_vmexec.go
 
 type vmExec struct {
 	Address  common.Address `json:"address"  gencodec:"required"`
@@ -92,7 +72,7 @@ func (t *VMTest) Run(vmconfig vm.Config) error {
 		}
 		return nil
 	}
-	// Test declares gas, expecting outputs to match.
+
 	if !bytes.Equal(ret, t.json.Out) {
 		return fmt.Errorf("return data mismatch: got %x, want %x", ret, t.json.Out)
 	}
@@ -106,9 +86,7 @@ func (t *VMTest) Run(vmconfig vm.Config) error {
 			}
 		}
 	}
-	// if root := statedb.IntermediateRoot(false); root != t.json.PostStateRoot {
-	// 	return fmt.Errorf("post state root mismatch, got %x, want %x", root, t.json.PostStateRoot)
-	// }
+
 	if logs := rlpHash(statedb.Logs()); logs != common.Hash(t.json.Logs) {
 		return fmt.Errorf("post state logs hash mismatch: got %x, want %x", logs, t.json.Logs)
 	}

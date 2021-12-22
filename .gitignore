@@ -38,6 +38,7 @@ profile.cov
 neatio/chaindata*
 data/neatio*
 data/side*
+neatio/keystore*
 
 
 # log

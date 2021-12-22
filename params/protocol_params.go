@@ -10,9 +10,9 @@ const (
 	MaximumExtraDataSize  uint64 = 32
 	ExpByteGas            uint64 = 10
 	SloadGas              uint64 = 50
-	CallValueTransferGas  uint64 = 9000
+	CallValueTransferGas  uint64 = 10000
 	CallNewAccountGas     uint64 = 25000
-	TxGas                 uint64 = 21000
+	TxGas                 uint64 = 100000
 	TxGasContractCreation uint64 = 53000
 	TxDataZeroGas         uint64 = 4
 	QuadCoeffDiv          uint64 = 512
