@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package state
 
 import (
@@ -74,8 +58,6 @@ func (self *StateDB) RawDump() Dump {
 	dump := Dump{
 		Root:     fmt.Sprintf("%x", self.trie.Hash()),
 		Accounts: make(map[string]DumpAccount),
-		//RewardAccounts: make([]string, 0),
-		//RefundAccounts: make([]string, 0),
 	}
 
 	it := trie.NewIterator(self.trie.NodeIterator(nil))
@@ -163,7 +145,7 @@ func (self *StateDB) RawDump() Dump {
 					panic(err)
 				}
 				for _, rewardAddr := range data {
-					//dump.RewardAccounts = append(dump.RewardAccounts, rewardAddr.Hex())
+
 					dump.RewardAccounts = append(dump.RewardAccounts, rewardAddr.String())
 				}
 			} else if bytes.Equal(addr, refundSetKey) {
@@ -172,7 +154,7 @@ func (self *StateDB) RawDump() Dump {
 					panic(err)
 				}
 				for _, refundAddr := range data {
-					//dump.RefundAccounts = append(dump.RefundAccounts, refundAddr.Hex())
+
 					dump.RefundAccounts = append(dump.RefundAccounts, refundAddr.String())
 				}
 			}

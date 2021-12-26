@@ -8,8 +8,7 @@ import (
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
-// ----- Type
-type Reward map[common.Address]*big.Int // key = Delegate Address, value = Reward Amount   TODO: whether the key of reward need to be point
+type Reward map[common.Address]*big.Int
 
 func (p Reward) String() (str string) {
 	for key, value := range p {
@@ -29,12 +28,8 @@ func (p Reward) Copy() Reward {
 	return cpy
 }
 
-// ----- RewardBalance
-
-// AddRewardBalance add amount to c's RewardBalance.
 func (c *stateObject) AddRewardBalance(amount *big.Int) {
-	// EIP158: We must check emptiness for the objects such that the account
-	// clearing (0,0,0 objects) can take effect.
+
 	if amount.Sign() == 0 {
 		if c.empty() {
 			c.touch()
@@ -44,7 +39,6 @@ func (c *stateObject) AddRewardBalance(amount *big.Int) {
 	c.SetRewardBalance(new(big.Int).Add(c.RewardBalance(), amount))
 }
 
-// SubRewardBalance removes amount from c's RewardBalance.
 func (c *stateObject) SubRewardBalance(amount *big.Int) {
 	if amount.Sign() == 0 {
 		return
@@ -71,8 +65,6 @@ func (self *stateObject) setRewardBalance(amount *big.Int) {
 func (self *stateObject) RewardBalance() *big.Int {
 	return self.data.RewardBalance
 }
-
-//  AvailableRewardBalance
 
 func (self *stateObject) AddAvailableRewardBalance(amount *big.Int) {
 	if amount.Sign() == 0 {
@@ -112,8 +104,6 @@ func (self *stateObject) AvailableRewardBalance() *big.Int {
 	return self.data.AvailableRewardBalance
 }
 
-// ----- Reward Trie
-
 func (c *stateObject) getRewardTrie(db Database) Trie {
 	if c.rewardTrie == nil {
 		var err error
@@ -126,37 +116,18 @@ func (c *stateObject) getRewardTrie(db Database) Trie {
 	return c.rewardTrie
 }
 
-//func (self *stateObject) GetDelegateRewardAddress(db Database) []common.Address {
-//	var deleAddr []common.Address
-//	reward := Reward{}
-//	if len(self.dirtyReward) > len(self.originReward) {
-//		reward = self.dirtyReward
-//	} else {
-//		reward = self.originReward
-//	}
-//
-//	it := self.getRewardTrie(db).NodeIterator(nil)
-//	for it.Next() {
-//		var key common.Address
-//		rlp.DecodeBytes(db.trie.GetKey(it.Key), &key)
-//	}
-//
-//	return deleAddr
-//}
-
-// GetDelegateRewardBalance returns a value in Reward trie
 func (self *stateObject) GetDelegateRewardBalance(db Database, key common.Address) *big.Int {
-	// If we have a dirty value for this state entry, return it
+
 	value, dirty := self.dirtyReward[key]
 	if dirty {
 		return value
 	}
-	// If we have the original value cached, return that
+
 	value, cached := self.originReward[key]
 	if cached {
 		return value
 	}
-	// Otherwise load the value from the database
+
 	k, _ := rlp.EncodeToBytes(key)
 	enc, err := self.getRewardTrie(db).TryGet(k)
 	if err != nil {
@@ -174,7 +145,6 @@ func (self *stateObject) GetDelegateRewardBalance(db Database, key common.Addres
 	return value
 }
 
-// SetDelegateRewardBalance updates a value in Epoch Reward.
 func (self *stateObject) SetDelegateRewardBalance(db Database, key common.Address, rewardAmount *big.Int) {
 	self.db.journal = append(self.db.journal, delegateRewardBalanceChange{
 		account:  &self.address,
@@ -193,13 +163,11 @@ func (self *stateObject) setDelegateRewardBalance(key common.Address, rewardAmou
 	}
 }
 
-// updateRewardTrie writes cached reward modifications into the object's reward trie.
 func (self *stateObject) updateRewardTrie(db Database) Trie {
 	tr := self.getRewardTrie(db)
 	for key, value := range self.dirtyReward {
 		delete(self.dirtyReward, key)
 
-		// Skip noop changes, persist actual changes
 		if self.originReward[key] != nil && value.Cmp(self.originReward[key]) == 0 {
 			continue
 		}
@@ -210,21 +178,18 @@ func (self *stateObject) updateRewardTrie(db Database) Trie {
 			self.setError(tr.TryDelete(k))
 			continue
 		}
-		// Encoding []byte cannot fail, ok to ignore the error.
+
 		v, _ := rlp.EncodeToBytes(value)
 		self.setError(tr.TryUpdate(k, v))
 	}
 	return tr
 }
 
-// updateRewardRoot sets the rewardTrie root to the current root hash of
 func (self *stateObject) updateRewardRoot(db Database) {
 	self.updateRewardTrie(db)
 	self.data.RewardRoot = self.rewardTrie.Hash()
 }
 
-// CommitRewardTrie the reward trie of the object to dwb.
-// This updates the reward trie root.
 func (self *stateObject) CommitRewardTrie(db Database) error {
 	self.updateRewardTrie(db)
 	if self.dbErr != nil {

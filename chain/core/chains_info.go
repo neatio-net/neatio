@@ -20,36 +20,28 @@ import (
 
 const (
 	OFFICIAL_MINIMUM_VALIDATORS = 1
-	OFFICIAL_MINIMUM_DEPOSIT    = "77000000000000000000000" // 77000 NEAT
+	OFFICIAL_MINIMUM_DEPOSIT    = "77000000000000000000000"
 )
 
 type CoreChainInfo struct {
 	db dbm.DB
 
-	// Common Info
 	Owner   common.Address
 	ChainId string
 
-	// Setup Info
 	MinValidators    uint16
 	MinDepositAmount *big.Int
 	StartBlock       *big.Int
 	EndBlock         *big.Int
 
-	//joined - during creation phase
 	JoinedValidators []JoinedValidator
 
-	//validators - for stable phase; should be Epoch information
 	EpochNumber uint64
 
-	//the statitics for balance in & out
-	//depositInMainChain >= depositInSideChain
-	//withdrawFromSideChain >= withdrawFromMainChain
-	//depositInMainChain >= withdrawFromSideChain
-	DepositInMainChain    *big.Int //total deposit by users from main
-	DepositInSideChain    *big.Int //total deposit allocated to users in side chain
-	WithdrawFromSideChain *big.Int //total withdraw by users from side chain
-	WithdrawFromMainChain *big.Int //total withdraw refund to users in main chain
+	DepositInMainChain    *big.Int
+	DepositInSideChain    *big.Int
+	WithdrawFromSideChain *big.Int
+	WithdrawFromMainChain *big.Int
 }
 
 type JoinedValidator struct {
@@ -61,8 +53,6 @@ type JoinedValidator struct {
 type ChainInfo struct {
 	CoreChainInfo
 
-	//be careful, this Epoch could be different with the current epoch in the side chain
-	//it is just for cache
 	Epoch *ep.Epoch
 }
 
@@ -163,7 +153,7 @@ func loadCoreChainInfo(db dbm.DB, chainId string) *CoreChainInfo {
 		r, n, err := bytes.NewReader(buf), new(int), new(error)
 		wire.ReadBinaryPtr(&cci, r, 0, n, err)
 		if *err != nil {
-			// DATA HAS BEEN CORRUPTED OR THE SPEC HAS CHANGED
+
 			log.Debugf("LoadChainInfo: Data has been corrupted or its spec has changed: %v", *err)
 			os.Exit(1)
 		}
@@ -211,13 +201,11 @@ func (ci *ChainInfo) GetEpochByBlockNumber(blockNumber uint64) *ep.Epoch {
 			return epoch
 		}
 
-		// If blockNumber > epoch EndBlock, find future epoch
 		if blockNumber > epoch.EndBlock {
 			ep := loadEpoch(ci.db, epoch.Number+1, ci.ChainId)
 			return ep
 		}
 
-		// If blockNumber < epoch StartBlock, find history epoch
 		number := epoch.Number
 		for {
 			if number == 0 {
@@ -294,19 +282,15 @@ func CheckSideChainRunning(db dbm.DB, chainId string) bool {
 	return false
 }
 
-// SaveChainGenesis save the genesis file for side chain
 func SaveChainGenesis(db dbm.DB, chainId string, ethGenesis, ntcGenesis []byte) {
 	mtx.Lock()
 	defer mtx.Unlock()
 
-	// Save the neatptc genesis
 	db.SetSync(calcETHGenesisKey(chainId), ethGenesis)
 
-	// Save the ntc genesis
 	db.SetSync(calcNTCGenesisKey(chainId), ntcGenesis)
 }
 
-// LoadChainGenesis load the genesis file for side chain
 func LoadChainGenesis(db dbm.DB, chainId string) (ethGenesis, ntcGenesis []byte) {
 	mtx.RLock()
 	defer mtx.RUnlock()
@@ -316,8 +300,6 @@ func LoadChainGenesis(db dbm.DB, chainId string) (ethGenesis, ntcGenesis []byte)
 	return
 }
 
-// ---------------------
-// Pending Chain
 var pendingChainMtx sync.Mutex
 
 var pendingChainIndexKey = []byte("PENDING_CHAIN_IDX")
@@ -332,7 +314,6 @@ type pendingIdxData struct {
 	End     *big.Int
 }
 
-// GetPendingSideChainData get the pending side chain data from db with key pending chain
 func GetPendingSideChainData(db dbm.DB, chainId string) *CoreChainInfo {
 
 	pendingChainByteSlice := db.Get(calcPendingChainInfoKey(chainId))
@@ -345,44 +326,39 @@ func GetPendingSideChainData(db dbm.DB, chainId string) *CoreChainInfo {
 	return nil
 }
 
-// CreatePendingSideChainData create the pending side chain data with index
 func CreatePendingSideChainData(db dbm.DB, cci *CoreChainInfo) {
 	storePendingSideChainData(db, cci, true)
 }
 
-// UpdatePendingSideChainData update the pending side chain data without index
 func UpdatePendingSideChainData(db dbm.DB, cci *CoreChainInfo) {
 	storePendingSideChainData(db, cci, false)
 }
 
-// storePendingSideChainData save the pending side chain data into db with key pending chain
 func storePendingSideChainData(db dbm.DB, cci *CoreChainInfo, create bool) {
 	pendingChainMtx.Lock()
 	defer pendingChainMtx.Unlock()
 
-	// store the data
 	db.SetSync(calcPendingChainInfoKey(cci.ChainId), wire.BinaryBytes(*cci))
 
 	if create {
-		// index the data
+
 		var idx []pendingIdxData
 		pendingIdxByteSlice := db.Get(pendingChainIndexKey)
 		if pendingIdxByteSlice != nil {
 			wire.ReadBinaryBytes(pendingIdxByteSlice, &idx)
 		}
-		// Check if chain id has been added already
+
 		for _, v := range idx {
 			if v.ChainID == cci.ChainId {
 				return
 			}
 		}
-		// Pass the check, add the key to idx
+
 		idx = append(idx, pendingIdxData{cci.ChainId, cci.StartBlock, cci.EndBlock})
 		db.SetSync(pendingChainIndexKey, wire.BinaryBytes(idx))
 	}
 }
 
-// DeletePendingSideChainData delete the pending side chain data from db with chain id
 func DeletePendingSideChainData(db dbm.DB, chainId string) {
 	pendingChainMtx.Lock()
 	defer pendingChainMtx.Unlock()
@@ -390,12 +366,10 @@ func DeletePendingSideChainData(db dbm.DB, chainId string) {
 	db.DeleteSync(calcPendingChainInfoKey(chainId))
 }
 
-// GetSideChainForLaunch get the side chain for pending db for launch
 func GetSideChainForLaunch(db dbm.DB, height *big.Int, stateDB *state.StateDB) (readyForLaunch []string, newPendingIdxBytes []byte, deleteSideChainIds []string) {
 	pendingChainMtx.Lock()
 	defer pendingChainMtx.Unlock()
 
-	// Get the Pending Index from db
 	var idx []pendingIdxData
 	pendingIdxByteSlice := db.Get(pendingChainIndexKey)
 	if pendingIdxByteSlice != nil {
@@ -410,10 +384,10 @@ func GetSideChainForLaunch(db dbm.DB, height *big.Int, stateDB *state.StateDB) (
 
 	for _, v := range idx {
 		if v.Start.Cmp(height) > 0 {
-			// skip it
+
 			newPendingIdx = append(newPendingIdx, v)
 		} else if v.End.Cmp(height) < 0 {
-			// Refund the Lock Balance
+
 			cci := GetPendingSideChainData(db, v.ChainID)
 			for _, jv := range cci.JoinedValidators {
 				stateDB.SubSideChainDepositBalance(jv.Address, v.ChainID, jv.DepositAmount)
@@ -427,20 +401,19 @@ func GetSideChainForLaunch(db dbm.DB, height *big.Int, stateDB *state.StateDB) (
 				log.Error("the chain balance is not 0 when create chain failed, watch out!!!")
 			}
 
-			// Add the Side Chain Id to Remove List, to be removed after the consensus
 			deleteSideChainIds = append(deleteSideChainIds, v.ChainID)
-			//db.DeleteSync(calcPendingChainInfoKey(v.ChainID))
+
 		} else {
-			// check condition
+
 			cci := GetPendingSideChainData(db, v.ChainID)
 			if len(cci.JoinedValidators) >= int(cci.MinValidators) && cci.TotalDeposit().Cmp(cci.MinDepositAmount) >= 0 {
-				// Deduct the Deposit
+
 				for _, jv := range cci.JoinedValidators {
-					// Deposit will move to the Side Chain Account
+
 					stateDB.SubSideChainDepositBalance(jv.Address, v.ChainID, jv.DepositAmount)
 					stateDB.AddChainBalance(cci.Owner, jv.DepositAmount)
 				}
-				// Append the Chain ID to Ready Launch List
+
 				readyForLaunch = append(readyForLaunch, v.ChainID)
 			} else {
 				newPendingIdx = append(newPendingIdx, v)
@@ -449,12 +422,11 @@ func GetSideChainForLaunch(db dbm.DB, height *big.Int, stateDB *state.StateDB) (
 	}
 
 	if len(newPendingIdx) != len(idx) {
-		// Set the Bytes to Update the Pending Idx
+
 		newPendingIdxBytes = wire.BinaryBytes(newPendingIdx)
-		//db.SetSync(pendingChainIndexKey, wire.BinaryBytes(newPendingIdx))
+
 	}
 
-	// Return the ready for launch Side Chain
 	return
 }
 
@@ -462,12 +434,10 @@ func ProcessPostPendingData(db dbm.DB, newPendingIdxBytes []byte, deleteSideChai
 	pendingChainMtx.Lock()
 	defer pendingChainMtx.Unlock()
 
-	// Remove the Side Chain
 	for _, id := range deleteSideChainIds {
 		db.DeleteSync(calcPendingChainInfoKey(id))
 	}
 
-	// Update the Idx Bytes
 	if newPendingIdxBytes != nil {
 		db.SetSync(pendingChainIndexKey, newPendingIdxBytes)
 	}

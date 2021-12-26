@@ -14,16 +14,11 @@ import (
 	"github.com/neatlib/wire-go"
 )
 
-// Volatile state for each Validator
-// TODO: make non-volatile identity
 type Validator struct {
 	Address        []byte        `json:"address"`
 	PubKey         crypto.PubKey `json:"pub_key"`
 	VotingPower    *big.Int      `json:"voting_power"`
 	RemainingEpoch uint64        `json:"remain_epoch"`
-
-	//LastBlockTime *big.Int `json:"last_block_time"`
-	//IsBanned   bool     `json:"is_banned"`
 }
 
 func NewValidator(address []byte, pubKey crypto.PubKey, votingPower *big.Int) *Validator {
@@ -34,8 +29,6 @@ func NewValidator(address []byte, pubKey crypto.PubKey, votingPower *big.Int) *V
 	}
 }
 
-// Creates a new copy of the validator so we can mutate accum.
-// Panics if the validator is nil.
 func (v *Validator) Copy() *Validator {
 	vCopy := *v
 	vCopy.VotingPower = new(big.Int).Set(v.VotingPower)
@@ -64,8 +57,6 @@ func (v *Validator) Hash() []byte {
 	return wire.BinaryRipemd160(v)
 }
 
-//-------------------------------------
-
 var ValidatorCodec = validatorCodec{}
 
 type validatorCodec struct{}
@@ -83,15 +74,12 @@ func (vc validatorCodec) Compare(o1 interface{}, o2 interface{}) int {
 	return 0
 }
 
-//-------------------------------------
-
 type RefundValidatorAmount struct {
 	Address common.Address
-	Amount  *big.Int // Amount will be nil when Voteout is true
-	Voteout bool     // Voteout means refund all the amount (self deposit + delegate)
+	Amount  *big.Int
+	Voteout bool
 }
 
-// SwitchEpoch op
 type SwitchEpochOp struct {
 	ChainId       string
 	NewValidators *ValidatorSet
@@ -99,7 +87,7 @@ type SwitchEpochOp struct {
 
 func (op *SwitchEpochOp) Conflict(op1 neatTypes.PendingOp) bool {
 	if _, ok := op1.(*SwitchEpochOp); ok {
-		// Only one SwitchEpochOp is allowed in each block
+
 		return true
 	}
 	return false

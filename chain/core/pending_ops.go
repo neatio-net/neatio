@@ -8,7 +8,6 @@ import (
 	"github.com/neatlab/neatio/chain/core/types"
 )
 
-// Consider moving the apply logic to each op (how to avoid import circular reference?)
 func ApplyOp(op types.PendingOp, bc *BlockChain, cch CrossChainHelper) error {
 	switch op := op.(type) {
 	case *types.CreateSideChainOp:
@@ -45,18 +44,17 @@ func ApplyOp(op types.PendingOp, bc *BlockChain, cch CrossChainHelper) error {
 		eng := bc.engine.(consensus.NeatCon)
 		nextEp, err := eng.GetEpoch().EnterNewEpoch(op.NewValidators)
 		if err == nil {
-			// Stop the Engine if we are not in the new validators
+
 			if !op.NewValidators.HasAddress(eng.PrivateValidator().Bytes()) && eng.IsStarted() {
 				bc.PostChainEvents([]interface{}{StopMiningEvent{}}, nil)
 			}
 
-			//Start the Engine if we are in the new validators
 			if op.NewValidators.HasAddress(eng.PrivateValidator().Bytes()) && !eng.IsStarted() {
 				bc.PostChainEvents([]interface{}{StartMiningEvent{}}, nil)
 			}
 
 			eng.SetEpoch(nextEp)
-			cch.ChangeValidators(op.ChainId) //must after eng.SetEpoch(nextEp), it uses epoch just set
+			cch.ChangeValidators(op.ChainId)
 		}
 		return err
 	default:

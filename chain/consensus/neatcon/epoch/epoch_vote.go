@@ -14,19 +14,13 @@ import (
 
 var voteRWMutex sync.RWMutex
 
-// Epoch Validator Vote Set
-// Store in the Level DB will be Key + EpochValidatorVoteSet
-// Key   = string EpochValidatorVoteKey
-// Value = []byte EpochValidatorVoteSet
-// eg. Key: EpochValidatorVote_1, EpochValidatorVote_2
 func calcEpochValidatorVoteKey(epochNumber uint64) []byte {
 	return []byte(fmt.Sprintf("EpochValidatorVote_%v", epochNumber))
 }
 
 type EpochValidatorVoteSet struct {
-	// Store the Votes
 	Votes []*EpochValidatorVote
-	// For fast searching, key = Address Hex (not export)
+
 	votesByAddress map[common.Address]*EpochValidatorVote
 }
 
@@ -35,7 +29,7 @@ type EpochValidatorVote struct {
 	PubKey   crypto.PubKey
 	Amount   *big.Int
 	Salt     string
-	VoteHash common.Hash // VoteHash = Sha3(Address + PubKey + Amount + Salt)
+	VoteHash common.Hash
 	TxHash   common.Hash
 }
 
@@ -46,7 +40,6 @@ func NewEpochValidatorVoteSet() *EpochValidatorVoteSet {
 	}
 }
 
-// GetVoteByAddress get the Vote from VoteSet by Address Hex Key
 func (voteSet *EpochValidatorVoteSet) GetVoteByAddress(address common.Address) (vote *EpochValidatorVote, exist bool) {
 	voteRWMutex.RLock()
 	defer voteRWMutex.RUnlock()
@@ -55,14 +48,13 @@ func (voteSet *EpochValidatorVoteSet) GetVoteByAddress(address common.Address) (
 	return
 }
 
-// StoreVote insert or update the Vote into VoteSet by Address Hex Key
 func (voteSet *EpochValidatorVoteSet) StoreVote(vote *EpochValidatorVote) {
 	voteRWMutex.Lock()
 	defer voteRWMutex.Unlock()
 
 	oldVote, exist := voteSet.votesByAddress[vote.Address]
 	if exist {
-		// Exist, remove it
+
 		index := -1
 		for i := 0; i < len(voteSet.Votes); i++ {
 			if voteSet.Votes[i] == oldVote {
@@ -97,7 +89,7 @@ func LoadEpochVoteSet(epochDB db.DB, epochNumber uint64) *EpochValidatorVoteSet 
 			log.Error("Load Epoch Vote Set failed", "error", err)
 			return nil
 		}
-		// Fulfill the Vote Map
+
 		voteSet.votesByAddress = make(map[common.Address]*EpochValidatorVote)
 		for _, v := range voteSet.Votes {
 			voteSet.votesByAddress[v.Address] = v

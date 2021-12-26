@@ -17,7 +17,8 @@ import (
 	"github.com/neatlib/wire-go"
 )
 
-const MaxBlockSize = 22020096 // 22 Mb
+const MaxBlockSize = 22020096
+
 type IntermediateBlockResult struct {
 	Block    *types.Block
 	State    *state.StateDB

@@ -27,7 +27,7 @@ var (
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          30000,
+			Epoch:          86457,
 			ProposerPolicy: 0,
 		},
 	}
@@ -43,7 +43,7 @@ var (
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          30000,
+			Epoch:          86457,
 			ProposerPolicy: 0,
 		},
 	}
@@ -97,7 +97,7 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          30000,
+			Epoch:          86457,
 			ProposerPolicy: 0,
 		},
 	}
