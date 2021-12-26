@@ -28,7 +28,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
-	github.com/naoina/toml v0.1.1 // indirect
+	github.com/naoina/toml v0.1.1
 	github.com/neatlib/bls-go v1.1.0
 	github.com/neatlib/common-go v1.1.0
 	github.com/neatlib/config-go v1.1.0
