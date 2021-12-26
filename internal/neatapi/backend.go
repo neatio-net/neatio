@@ -1,20 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
-// Package neatapi implements the general NEAT Blockchain API functions.
 package neatapi
 
 import (
@@ -34,10 +17,7 @@ import (
 	"github.com/neatlab/neatio/utilities/event"
 )
 
-// Backend interface provides the common API services (that are provided by
-// both full and light clients) with access to necessary functions.
 type Backend interface {
-	// General Ethereum API
 	Downloader() *downloader.Downloader
 	ProtocolVersion() int
 	SuggestPrice(ctx context.Context) (*big.Int, error)
@@ -45,7 +25,6 @@ type Backend interface {
 	EventMux() *event.TypeMux
 	AccountManager() *accounts.Manager
 
-	// BlockChain API
 	SetHead(number uint64)
 	HeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Header, error)
 	BlockByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Block, error)
@@ -58,7 +37,6 @@ type Backend interface {
 	SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent) event.Subscription
 	SubscribeChainSideEvent(ch chan<- core.ChainSideEvent) event.Subscription
 
-	// TxPool API
 	SendTx(ctx context.Context, signedTx *types.Transaction) error
 	GetPoolTransactions() (types.Transactions, error)
 	GetPoolTransaction(txHash common.Hash) *types.Transaction
@@ -70,8 +48,6 @@ type Backend interface {
 	ChainConfig() *params.ChainConfig
 	CurrentBlock() *types.Block
 
-	//SetInnerAPIBridge(inBridge InnerAPIBridge)
-	//GetInnerAPIBridge() InnerAPIBridge
 	GetCrossChainHelper() core.CrossChainHelper
 
 	BroadcastTX3ProofData(proofData *types.TX3ProofData)
@@ -81,7 +57,6 @@ func GetAPIs(apiBackend Backend, solcPath string) []rpc.API {
 	compiler := makeCompilerAPIs(solcPath)
 	nonceLock := new(AddrLocker)
 	txapi := NewPublicTransactionPoolAPI(apiBackend, nonceLock)
-	//apiBackend.SetInnerAPIBridge(&APIBridge{txapi: txapi})
 
 	all := []rpc.API{
 		{

@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package jsre
 
 import (
@@ -40,7 +24,6 @@ var (
 	ErrorColor    = color.New(color.FgHiRed).SprintfFunc()
 )
 
-// these fields are hidden when printing objects.
 var boringKeys = map[string]bool{
 	"valueOf":              true,
 	"toString":             true,
@@ -51,12 +34,10 @@ var boringKeys = map[string]bool{
 	"constructor":          true,
 }
 
-// prettyPrint writes value to standard output.
 func prettyPrint(vm *otto.Otto, value otto.Value, w io.Writer) {
 	ppctx{vm: vm, w: w}.printValue(value, 0, false)
 }
 
-// prettyError writes err to standard output.
 func prettyError(vm *otto.Otto, err error, w io.Writer) {
 	failure := err.Error()
 	if ottoErr, ok := err.(*otto.Error); ok {
@@ -132,12 +113,12 @@ func (ctx ppctx) printObject(obj *otto.Object, level int, inArray bool) {
 		fmt.Fprint(ctx.w, "]")
 
 	case "Object":
-		// Print values from bignumber.js as regular numbers.
+
 		if ctx.isBigNumber(obj) {
 			fmt.Fprint(ctx.w, NumberColor("%s", toString(obj)))
 			return
 		}
-		// Otherwise, print all fields indented, but stop if we're too deep.
+
 		keys := ctx.fields(obj)
 		if len(keys) == 0 {
 			fmt.Fprint(ctx.w, "{}")
@@ -163,7 +144,7 @@ func (ctx ppctx) printObject(obj *otto.Object, level int, inArray bool) {
 		fmt.Fprintf(ctx.w, "%s}", ctx.indent(level))
 
 	case "Function":
-		// Use toString() to display the argument list if possible.
+
 		if robj, err := obj.Call("toString"); err != nil {
 			fmt.Fprint(ctx.w, FunctionColor("function()"))
 		} else {
@@ -241,13 +222,13 @@ func iterOwnKeys(vm *otto.Otto, obj *otto.Object, f func(string)) {
 }
 
 func (ctx ppctx) isBigNumber(v *otto.Object) bool {
-	// Handle numbers with custom constructor.
+
 	if v, _ := v.Get("constructor"); v.Object() != nil {
 		if strings.HasPrefix(toString(v.Object()), "function BigNumber") {
 			return true
 		}
 	}
-	// Handle default constructor.
+
 	BigNumber, _ := ctx.vm.Object("BigNumber.prototype")
 	if BigNumber == nil {
 		return false
