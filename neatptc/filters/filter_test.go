@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package filters
 
 import (
@@ -49,7 +33,6 @@ func BenchmarkFilters(b *testing.B) {
 	defer os.RemoveAll(dir)
 
 	var (
-		//db, _      = neatdb.Database(dir, 0, 0)
 		mux        = new(event.TypeMux)
 		txFeed     = new(event.Feed)
 		rmLogsFeed = new(event.Feed)
@@ -62,7 +45,6 @@ func BenchmarkFilters(b *testing.B) {
 		addr3      = common.BytesToAddress([]byte("ethereum"))
 		addr4      = common.BytesToAddress([]byte("random addresses please"))
 	)
-	//defer db.Close()
 
 	genesis := core.GenesisBlockForTesting(nil, addr1, big.NewInt(1000000))
 	chain, receipts := core.GenerateChain(params.TestChainConfig, genesis, nil, nil, 100010, func(i int, gen *core.BlockGen) {
@@ -83,7 +65,7 @@ func BenchmarkFilters(b *testing.B) {
 		}
 	})
 	for i, block := range chain {
-		//core.WriteBlock(nil, block)
+
 		if err := core.WriteCanonicalHash(db, block.Hash(), block.NumberU64()); err != nil {
 			b.Fatalf("failed to insert block number: %v", err)
 		}

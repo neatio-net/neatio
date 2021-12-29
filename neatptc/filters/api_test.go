@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package filters
 
 import (
@@ -36,7 +20,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		topic2                    = common.HexToHash("6ccae1c4af4152f460ff510e573399795dfab5dcf1fa60d1f33ac8fdc1e480ce")
 	)
 
-	// default values
 	var test0 FilterCriteria
 	if err := json.Unmarshal([]byte("{}"), &test0); err != nil {
 		t.Fatal(err)
@@ -54,7 +37,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("expected 0 topics, got %d topics", len(test0.Topics))
 	}
 
-	// from, to block number
 	var test1 FilterCriteria
 	vector := fmt.Sprintf(`{"fromBlock":"0x%x","toBlock":"0x%x"}`, fromBlock, toBlock)
 	if err := json.Unmarshal([]byte(vector), &test1); err != nil {
@@ -67,9 +49,8 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("expected ToBlock %d, got %d", toBlock, test1.ToBlock)
 	}
 
-	// single address
 	var test2 FilterCriteria
-	//vector = fmt.Sprintf(`{"address": "%s"}`, address0.Hex())
+
 	vector = fmt.Sprintf(`{"address": "%s"}`, address0.String())
 	if err := json.Unmarshal([]byte(vector), &test2); err != nil {
 		t.Fatal(err)
@@ -81,9 +62,8 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("expected address %x, got %x", address0, test2.Addresses[0])
 	}
 
-	// multiple address
 	var test3 FilterCriteria
-	//vector = fmt.Sprintf(`{"address": ["%s", "%s"]}`, address0.Hex(), address1.Hex())
+
 	vector = fmt.Sprintf(`{"address": ["%s", "%s"]}`, address0.String(), address1.String())
 	if err := json.Unmarshal([]byte(vector), &test3); err != nil {
 		t.Fatal(err)
@@ -98,7 +78,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("expected address %x, got %x", address1, test3.Addresses[1])
 	}
 
-	// single topic
 	var test4 FilterCriteria
 	vector = fmt.Sprintf(`{"topics": ["%s"]}`, topic0.Hex())
 	if err := json.Unmarshal([]byte(vector), &test4); err != nil {
@@ -114,7 +93,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("got %x, expected %x", test4.Topics[0][0], topic0)
 	}
 
-	// test multiple "AND" topics
 	var test5 FilterCriteria
 	vector = fmt.Sprintf(`{"topics": ["%s", "%s"]}`, topic0.Hex(), topic1.Hex())
 	if err := json.Unmarshal([]byte(vector), &test5); err != nil {
@@ -136,7 +114,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("got %x, expected %x", test5.Topics[1][0], topic1)
 	}
 
-	// test optional topic
 	var test6 FilterCriteria
 	vector = fmt.Sprintf(`{"topics": ["%s", null, "%s"]}`, topic0.Hex(), topic2.Hex())
 	if err := json.Unmarshal([]byte(vector), &test6); err != nil {
@@ -161,7 +138,6 @@ func TestUnmarshalJSONNewFilterArgs(t *testing.T) {
 		t.Fatalf("got %x, expected %x", test6.Topics[2][0], topic2)
 	}
 
-	// test OR topics
 	var test7 FilterCriteria
 	vector = fmt.Sprintf(`{"topics": [["%s", "%s"], null, ["%s", null]]}`, topic0.Hex(), topic1.Hex(), topic2.Hex())
 	if err := json.Unmarshal([]byte(vector), &test7); err != nil {

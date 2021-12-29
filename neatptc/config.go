@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package neatptc
 
 import (
@@ -21,7 +5,6 @@ import (
 	"os"
 	"os/user"
 
-	//"path/filepath"
 	"runtime"
 	"time"
 
@@ -34,11 +17,10 @@ import (
 	"github.com/neatlab/neatio/utilities/common/hexutil"
 )
 
-// DefaultConfig contains default settings for use on the NEATIO main net.
 var DefaultConfig = Config{
-	//SyncMode: downloader.FastSync,
+
 	SyncMode: downloader.FullSync,
-	//NetworkId:      1,
+
 	NetworkId:      9910,
 	DatabaseCache:  512,
 	TrieCleanCache: 256,
@@ -63,26 +45,20 @@ func init() {
 		}
 	}
 	if runtime.GOOS == "windows" {
-		//DefaultConfig.DatasetDir = filepath.Join(home, "AppData", "Ethash")
+
 	} else {
-		//DefaultConfig.Ethash.DatasetDir = filepath.Join(home, ".ethash")
+
 	}
 }
 
-//go:generate gencodec -type Config -field-override configMarshaling -formats toml -out gen_config.go
-
 type Config struct {
-	// The genesis block, which is inserted if the database is empty.
-	// If nil, the Ethereum main net block is used.
 	Genesis *core.Genesis `toml:",omitempty"`
 
-	// Protocol options
-	NetworkId uint64 // Network ID to use for selecting peers to connect to
+	NetworkId uint64
 	SyncMode  downloader.SyncMode
 
-	NoPruning bool // Whether to disable pruning and flush everything to disk
+	NoPruning bool
 
-	// Database options
 	SkipBcVersionCheck bool `toml:"-"`
 	DatabaseHandles    int  `toml:"-"`
 	DatabaseCache      int
@@ -91,32 +67,24 @@ type Config struct {
 	TrieDirtyCache int
 	TrieTimeout    time.Duration
 
-	// Mining-related options
 	Coinbase      common.Address `toml:",omitempty"`
 	ExtraData     []byte         `toml:",omitempty"`
 	MinerGasFloor uint64
 	MinerGasCeil  uint64
 	MinerGasPrice *big.Int
 
-	// Solidity compiler path
 	SolcPath string
 
-	// Transaction pool options
 	TxPool core.TxPoolConfig
 
-	// Gas Price Oracle options
 	GPO gasprice.Config
 
-	// Enables tracking of SHA3 preimages in the VM
 	EnablePreimageRecording bool
 
-	// NeatCon options
 	NeatCon neatcon.Config
 
-	// Miscellaneous options
 	DocRoot string `toml:"-"`
 
-	// Data Reduction options
 	PruneStateData bool
 	PruneBlockData bool
 }
