@@ -1,22 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
-// +build !js
-
-// Package leveldb implements the key-value database layer based on LevelDB.
 package leveldb
 
 import (
@@ -37,48 +18,35 @@ import (
 )
 
 const (
-	// degradationWarnInterval specifies how often warning should be printed if the
-	// leveldb database cannot keep up with requested writes.
 	degradationWarnInterval = time.Minute
 
-	// minCache is the minimum amount of memory in megabytes to allocate to leveldb
-	// read and write caching, split half and half.
 	minCache = 16
 
-	// minHandles is the minimum number of files handles to allocate to the open
-	// database files.
 	minHandles = 16
 
-	// metricsGatheringInterval specifies the interval to retrieve leveldb database
-	// compaction, io and pause stats to report to the user.
 	metricsGatheringInterval = 3 * time.Second
 )
 
-// Database is a persistent key-value store. Apart from basic data storage
-// functionality it also supports batch writes and iterating over the keyspace in
-// binary-alphabetical order.
 type Database struct {
-	fn string      // filename for reporting
-	db *leveldb.DB // LevelDB instance
+	fn string
+	db *leveldb.DB
 
-	compTimeMeter    metrics.Meter // Meter for measuring the total time spent in database compaction
-	compReadMeter    metrics.Meter // Meter for measuring the data read during compaction
-	compWriteMeter   metrics.Meter // Meter for measuring the data written during compaction
-	writeDelayNMeter metrics.Meter // Meter for measuring the write delay number due to database compaction
-	writeDelayMeter  metrics.Meter // Meter for measuring the write delay duration due to database compaction
-	diskReadMeter    metrics.Meter // Meter for measuring the effective amount of data read
-	diskWriteMeter   metrics.Meter // Meter for measuring the effective amount of data written
+	compTimeMeter    metrics.Meter
+	compReadMeter    metrics.Meter
+	compWriteMeter   metrics.Meter
+	writeDelayNMeter metrics.Meter
+	writeDelayMeter  metrics.Meter
+	diskReadMeter    metrics.Meter
+	diskWriteMeter   metrics.Meter
 
-	quitLock sync.Mutex      // Mutex protecting the quit channel access
-	quitChan chan chan error // Quit channel to stop the metrics collection before closing the database
+	quitLock sync.Mutex
+	quitChan chan chan error
 
-	log log.Logger // Contextual logger tracking the database path
+	log log.Logger
 }
 
-// New returns a wrapped LevelDB object. The namespace is the prefix that the
-// metrics reporting should use for surfacing internal stats.
 func New(file string, cache int, handles int, namespace string) (*Database, error) {
-	// Ensure we have some minimal caching and file guarantees
+
 	if cache < minCache {
 		cache = minCache
 	}
@@ -86,13 +54,11 @@ func New(file string, cache int, handles int, namespace string) (*Database, erro
 		handles = minHandles
 	}
 	logger := log.New("database", file)
-	//logger.Info("Allocated cache and file handles", "cache", common.StorageSize(cache*1024*1024), "handles", handles)
 
-	// Open the db and recover any potential corruptions
 	db, err := leveldb.OpenFile(file, &opt.Options{
 		OpenFilesCacheCapacity: handles,
 		BlockCacheCapacity:     cache / 2 * opt.MiB,
-		WriteBuffer:            cache / 4 * opt.MiB, // Two of these are used internally
+		WriteBuffer:            cache / 4 * opt.MiB,
 		Filter:                 filter.NewBloomFilter(10),
 	})
 	if _, corrupted := err.(*errors.ErrCorrupted); corrupted {
@@ -101,7 +67,7 @@ func New(file string, cache int, handles int, namespace string) (*Database, erro
 	if err != nil {
 		return nil, err
 	}
-	// Assemble the wrapper with all the registered metrics
+
 	ldb := &Database{
 		fn:       file,
 		db:       db,
@@ -116,13 +82,10 @@ func New(file string, cache int, handles int, namespace string) (*Database, erro
 	ldb.writeDelayMeter = metrics.NewRegisteredMeter(namespace+"compact/writedelay/duration", nil)
 	ldb.writeDelayNMeter = metrics.NewRegisteredMeter(namespace+"compact/writedelay/counter", nil)
 
-	// Start up the metrics gathering and return
 	go ldb.meter(metricsGatheringInterval)
 	return ldb, nil
 }
 
-// Close stops the metrics collection, flushes any pending data to disk and closes
-// all io accesses to the underlying key-value store.
 func (db *Database) Close() error {
 	db.quitLock.Lock()
 	defer db.quitLock.Unlock()
@@ -144,12 +107,10 @@ func (db *Database) Close() error {
 	return err
 }
 
-// Has retrieves if a key is present in the key-value store.
 func (db *Database) Has(key []byte) (bool, error) {
 	return db.db.Has(key, nil)
 }
 
-// Get retrieves the given key if it's present in the key-value store.
 func (db *Database) Get(key []byte) ([]byte, error) {
 	dat, err := db.db.Get(key, nil)
 	if err != nil {
@@ -158,18 +119,14 @@ func (db *Database) Get(key []byte) ([]byte, error) {
 	return dat, nil
 }
 
-// Put inserts the given value into the key-value store.
 func (db *Database) Put(key []byte, value []byte) error {
 	return db.db.Put(key, value, nil)
 }
 
-// Delete removes the key from the key-value store.
 func (db *Database) Delete(key []byte) error {
 	return db.db.Delete(key, nil)
 }
 
-// NewBatch creates a write-only key-value store that buffers changes to its host
-// database until a final write is called.
 func (db *Database) NewBatch() neatdb.Batch {
 	return &batch{
 		db: db.db,
@@ -177,66 +134,35 @@ func (db *Database) NewBatch() neatdb.Batch {
 	}
 }
 
-// NewIterator creates a binary-alphabetical iterator over the entire keyspace
-// contained within the leveldb database.
 func (db *Database) NewIterator() neatdb.Iterator {
 	return db.NewIteratorWithPrefix(nil)
 }
 
-// NewIteratorWithPrefix creates a binary-alphabetical iterator over a subset
-// of database content with a particular key prefix.
 func (db *Database) NewIteratorWithPrefix(prefix []byte) neatdb.Iterator {
 	return db.db.NewIterator(util.BytesPrefix(prefix), nil)
 }
 
-// Stat returns a particular internal stat of the database.
 func (db *Database) Stat(property string) (string, error) {
 	return db.db.GetProperty(property)
 }
 
-// Compact flattens the underlying data store for the given key range. In essence,
-// deleted and overwritten versions are discarded, and the data is rearranged to
-// reduce the cost of operations needed to access them.
-//
-// A nil start is treated as a key before all keys in the data store; a nil limit
-// is treated as a key after all keys in the data store. If both is nil then it
-// will compact entire data store.
 func (db *Database) Compact(start []byte, limit []byte) error {
 	return db.db.CompactRange(util.Range{Start: start, Limit: limit})
 }
 
-// Path returns the path to the database directory.
 func (db *Database) Path() string {
 	return db.fn
 }
 
-// meter periodically retrieves internal leveldb counters and reports them to
-// the metrics subsystem.
-//
-// This is how a LevelDB stats table looks like (currently):
-//   Compactions
-//    Level |   Tables   |    Size(MB)   |    Time(sec)  |    Read(MB)   |   Write(MB)
-//   -------+------------+---------------+---------------+---------------+---------------
-//      0   |          0 |       0.00000 |       1.27969 |       0.00000 |      12.31098
-//      1   |         85 |     109.27913 |      28.09293 |     213.92493 |     214.26294
-//      2   |        523 |    1000.37159 |       7.26059 |      66.86342 |      66.77884
-//      3   |        570 |    1113.18458 |       0.00000 |       0.00000 |       0.00000
-//
-// This is how the write delay look like (currently):
-// DelayN:5 Delay:406.604657ms Paused: false
-//
-// This is how the iostats look like (currently):
-// Read(MB):3895.04860 Write(MB):3654.64712
 func (db *Database) meter(refresh time.Duration) {
-	// Create the counters to store current and previous compaction values
+
 	compactions := make([][]float64, 2)
 	for i := 0; i < 2; i++ {
 		compactions[i] = make([]float64, 3)
 	}
-	// Create storage for iostats.
+
 	var iostats [2]float64
 
-	// Create storage and warning log tracer for write delay.
 	var (
 		delaystats      [2]int64
 		lastWritePaused time.Time
@@ -247,16 +173,15 @@ func (db *Database) meter(refresh time.Duration) {
 		merr error
 	)
 
-	// Iterate ad infinitum and collect the stats
 	for i := 1; errc == nil && merr == nil; i++ {
-		// Retrieve the database stats
+
 		stats, err := db.db.GetProperty("leveldb.stats")
 		if err != nil {
 			db.log.Error("Failed to read database stats", "err", err)
 			merr = err
 			continue
 		}
-		// Find the compaction table, skip the header
+
 		lines := strings.Split(stats, "\n")
 		for len(lines) > 0 && strings.TrimSpace(lines[0]) != "Compactions" {
 			lines = lines[1:]
@@ -268,7 +193,6 @@ func (db *Database) meter(refresh time.Duration) {
 		}
 		lines = lines[3:]
 
-		// Iterate over all the leveldbTable rows, and accumulate the entries
 		for j := 0; j < len(compactions[i%2]); j++ {
 			compactions[i%2][j] = 0
 		}
@@ -287,7 +211,7 @@ func (db *Database) meter(refresh time.Duration) {
 				compactions[i%2][idx] += value
 			}
 		}
-		// Update all the requested meters
+
 		if db.compTimeMeter != nil {
 			db.compTimeMeter.Mark(int64((compactions[i%2][0] - compactions[(i-1)%2][0]) * 1000 * 1000 * 1000))
 		}
@@ -298,7 +222,6 @@ func (db *Database) meter(refresh time.Duration) {
 			db.compWriteMeter.Mark(int64((compactions[i%2][2] - compactions[(i-1)%2][2]) * 1024 * 1024))
 		}
 
-		// Retrieve the write delay statistic
 		writedelay, err := db.db.GetProperty("leveldb.writedelay")
 		if err != nil {
 			db.log.Error("Failed to read database write delay statistic", "err", err)
@@ -328,8 +251,7 @@ func (db *Database) meter(refresh time.Duration) {
 		if db.writeDelayMeter != nil {
 			db.writeDelayMeter.Mark(duration.Nanoseconds() - delaystats[1])
 		}
-		// If a warning that db is performing compaction has been displayed, any subsequent
-		// warnings will be withheld for one minute not to overwhelm the user.
+
 		if paused && delayN-delaystats[0] == 0 && duration.Nanoseconds()-delaystats[1] == 0 &&
 			time.Now().After(lastWritePaused.Add(degradationWarnInterval)) {
 			db.log.Warn("Database compacting, degraded performance")
@@ -337,7 +259,6 @@ func (db *Database) meter(refresh time.Duration) {
 		}
 		delaystats[0], delaystats[1] = delayN, duration.Nanoseconds()
 
-		// Retrieve the database iostats.
 		ioStats, err := db.db.GetProperty("leveldb.iostats")
 		if err != nil {
 			db.log.Error("Failed to read database iostats", "err", err)
@@ -369,12 +290,11 @@ func (db *Database) meter(refresh time.Duration) {
 		}
 		iostats[0], iostats[1] = nRead, nWrite
 
-		// Sleep a bit, then repeat the stats collection
 		select {
 		case errc = <-db.quitChan:
-			// Quit requesting, stop hammering the database
+
 		case <-time.After(refresh):
-			// Timeout, gather a new set of stats
+
 		}
 	}
 
@@ -384,67 +304,56 @@ func (db *Database) meter(refresh time.Duration) {
 	errc <- merr
 }
 
-// batch is a write-only leveldb batch that commits changes to its host database
-// when Write is called. A batch cannot be used concurrently.
 type batch struct {
 	db   *leveldb.DB
 	b    *leveldb.Batch
 	size int
 }
 
-// Put inserts the given value into the batch for later committing.
 func (b *batch) Put(key, value []byte) error {
 	b.b.Put(key, value)
 	b.size += len(value)
 	return nil
 }
 
-// Delete inserts the a key removal into the batch for later committing.
 func (b *batch) Delete(key []byte) error {
 	b.b.Delete(key)
 	b.size++
 	return nil
 }
 
-// ValueSize retrieves the amount of data queued up for writing.
 func (b *batch) ValueSize() int {
 	return b.size
 }
 
-// Write flushes any accumulated data to disk.
 func (b *batch) Write() error {
 	return b.db.Write(b.b, nil)
 }
 
-// Reset resets the batch for reuse.
 func (b *batch) Reset() {
 	b.b.Reset()
 	b.size = 0
 }
 
-// Replay replays the batch contents.
 func (b *batch) Replay(w neatdb.Writer) error {
 	return b.b.Replay(&replayer{writer: w})
 }
 
-// replayer is a small wrapper to implement the correct replay methods.
 type replayer struct {
 	writer  neatdb.Writer
 	failure error
 }
 
-// Put inserts the given value into the key-value data store.
 func (r *replayer) Put(key, value []byte) {
-	// If the replay already failed, stop executing ops
+
 	if r.failure != nil {
 		return
 	}
 	r.failure = r.writer.Put(key, value)
 }
 
-// Delete removes the key from the key-value data store.
 func (r *replayer) Delete(key []byte) {
-	// If the replay already failed, stop executing ops
+
 	if r.failure != nil {
 		return
 	}

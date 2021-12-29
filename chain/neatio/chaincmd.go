@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of go-neatio.
-//
-// go-ethereum is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// go-ethereum is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with go-neatio. If not, see <http://www.gnu.org/licenses/>.
-
 package main
 
 import (
@@ -77,28 +61,12 @@ It expects the genesis file as argument.`,
 		Usage:       "neatio --sideChain=side_0,side_1,side_2 init-side-chain",
 		Description: "Initialize side chain genesis from chain info db",
 	}
-	//	initCommand = cli.Command{
-	//		Action:    utils.MigrateFlags(initGenesis),
-	//		Name:      "init",
-	//		Usage:     "Bootstrap and initialize a new genesis block",
-	//		ArgsUsage: "<genesisPath>",
-	//		Flags: []cli.Flag{
-	//			utils.DataDirFlag,
-	//		},
-	//		Category: "BLOCKCHAIN COMMANDS",
-	//		Description: `
-	//The init command initializes a new genesis block and definition for the network.
-	//This is a destructive action and changes the network in which you will be
-	//participating.
-
-	//It expects the genesis file as argument.`,
-	//	}
 
 	createValidatorCmd = cli.Command{
-		//Action: GeneratePrivateValidatorCmd,
+
 		Action: utils.MigrateFlags(CreatePrivateValidatorCmd),
 		Name:   "cvf",
-		Usage:  "cvf address", //create priv_validator.json for address
+		Usage:  "cvf address",
 		Flags: []cli.Flag{
 			utils.DataDirFlag,
 		},
@@ -239,40 +207,6 @@ The output of this command is supposed to be machine-readable.
 	}
 )
 
-// initGenesis will initialise the given JSON format genesis file and writes it as
-// the zero'd block (i.e. genesis) or will fail hard if it can't succeed.
-//func initGenesis(ctx *cli.Context) error {
-//	// Make sure we have a valid genesis JSON
-//	genesisPath := ctx.Args().First()
-//	if len(genesisPath) == 0 {
-//		utils.Fatalf("Must supply path to genesis JSON file")
-//	}
-//	file, err := os.Open(genesisPath)
-//	if err != nil {
-//		utils.Fatalf("Failed to read genesis file: %v", err)
-//	}
-//	defer file.Close()
-//
-//	genesis := new(core.Genesis)
-//	if err := json.NewDecoder(file).Decode(genesis); err != nil {
-//		utils.Fatalf("invalid genesis file: %v", err)
-//	}
-//	// Open an initialise both full and light databases
-//	stack := makeFullNode(ctx)
-//	for _, name := range []string{"chaindata", "lightchaindata"} {
-//		chaindb, err := stack.OpenDatabase(name, 0, 0, "")
-//		if err != nil {
-//			utils.Fatalf("Failed to open database: %v", err)
-//		}
-//		_, hash, err := core.SetupGenesisBlock(chaindb, genesis)
-//		if err != nil {
-//			utils.Fatalf("Failed to write genesis block: %v", err)
-//		}
-//		log.Info("Successfully wrote genesis state", "database", name, "hash", hash)
-//	}
-//	return nil
-//}
-
 func importChain(ctx *cli.Context) error {
 	if len(ctx.Args()) < 1 {
 		utils.Fatalf("This command requires an argument.")
@@ -286,13 +220,12 @@ func importChain(ctx *cli.Context) error {
 	stack, cfg := makeConfigNode(ctx, chainName)
 	cch := GetCMInstance(ctx).cch
 	utils.RegisterIntService(stack, &cfg.Eth, ctx, cch)
-	//stack := makeFullNode(ctx)
+
 	defer stack.Close()
 
 	chain, db := utils.MakeChain(ctx, stack)
 	defer db.Close()
 
-	// Start periodically gathering memory profiles
 	var peakMemAlloc, peakMemSys uint64
 	go func() {
 		stats := new(runtime.MemStats)
@@ -307,7 +240,7 @@ func importChain(ctx *cli.Context) error {
 			time.Sleep(5 * time.Second)
 		}
 	}()
-	// Import the chain
+
 	start := time.Now()
 
 	if len(ctx.Args()) == 2 {
@@ -317,7 +250,7 @@ func importChain(ctx *cli.Context) error {
 	} else {
 		for i, arg := range ctx.Args() {
 			if i == 0 {
-				continue // skip the chain name
+				continue
 			}
 			if err := utils.ImportChain(chain, arg); err != nil {
 				log.Error("Import error", "file", arg, "err", err)
@@ -327,7 +260,6 @@ func importChain(ctx *cli.Context) error {
 	chain.Stop()
 	fmt.Printf("Import done in %v.\n\n", time.Since(start))
 
-	// Output pre-compaction stats mostly to see the import trashing
 	stats, err := db.Stat("leveldb.stats")
 	if err != nil {
 		utils.Fatalf("Failed to read database stats: %v", err)
@@ -340,7 +272,6 @@ func importChain(ctx *cli.Context) error {
 	}
 	fmt.Println(ioStats)
 
-	// Print the memory statistics used by the importing
 	mem := new(runtime.MemStats)
 	runtime.ReadMemStats(mem)
 
@@ -353,7 +284,6 @@ func importChain(ctx *cli.Context) error {
 		return nil
 	}
 
-	// Compact the entire database to more accurately measure disk io and print the stats
 	start = time.Now()
 	fmt.Println("Compacting entire database...")
 	if err = db.Compact(nil, nil); err != nil {
@@ -388,7 +318,7 @@ func exportChain(ctx *cli.Context) error {
 
 	stack, cfg := makeConfigNode(ctx, chainName)
 	utils.RegisterIntService(stack, &cfg.Eth, ctx, GetCMInstance(ctx).cch)
-	//stack := makeFullNode(ctx)
+
 	defer stack.Close()
 
 	chain, _ := utils.MakeChain(ctx, stack)
@@ -399,7 +329,7 @@ func exportChain(ctx *cli.Context) error {
 	if len(ctx.Args()) < 4 {
 		err = utils.ExportChain(chain, fp)
 	} else {
-		// This can be improved to allow for numbers larger than 9223372036854775807
+
 		first, ferr := strconv.ParseInt(ctx.Args().Get(2), 10, 64)
 		last, lerr := strconv.ParseInt(ctx.Args().Get(3), 10, 64)
 		if ferr != nil || lerr != nil {
@@ -418,7 +348,6 @@ func exportChain(ctx *cli.Context) error {
 	return nil
 }
 
-// importPreimages imports preimage data from the specified file.
 func importPreimages(ctx *cli.Context) error {
 	if len(ctx.Args()) < 1 {
 		utils.Fatalf("This command requires an argument.")
@@ -443,7 +372,6 @@ func importPreimages(ctx *cli.Context) error {
 	return nil
 }
 
-// exportPreimages dumps the preimage data to specified json file in streaming way.
 func exportPreimages(ctx *cli.Context) error {
 	if len(ctx.Args()) < 1 {
 		utils.Fatalf("This command requires an argument.")
@@ -468,7 +396,7 @@ func exportPreimages(ctx *cli.Context) error {
 	return nil
 }
 func copyDb(ctx *cli.Context) error {
-	// Ensure we have a source chain directory to copy
+
 	if len(ctx.Args()) != 1 {
 		utils.Fatalf("Source chaindata directory path argument missing")
 	}
@@ -478,14 +406,12 @@ func copyDb(ctx *cli.Context) error {
 		utils.Fatalf("This command requires chain name specified.")
 	}
 
-	// Initialize a new chain for the running node to sync into
 	stack, _ := makeConfigNode(ctx, chainName)
 	chain, chainDb := utils.MakeChain(ctx, stack)
 
 	syncmode := *utils.GlobalTextMarshaler(ctx, utils.SyncModeFlag.Name).(*downloader.SyncMode)
 	dl := downloader.New(syncmode, chainDb, new(event.TypeMux), chain, nil, nil, nil)
 
-	// Create a source peer to satisfy downloader requests from
 	db, err := rawdb.NewLevelDBDatabase(ctx.Args().First(), ctx.GlobalInt(utils.CacheFlag.Name), 256, "")
 	if err != nil {
 		return err
@@ -498,7 +424,7 @@ func copyDb(ctx *cli.Context) error {
 	if err = dl.RegisterPeer("local", 63, peer); err != nil {
 		return err
 	}
-	// Synchronise with the simulated peer
+
 	start := time.Now()
 
 	currentHeader := hc.CurrentHeader()
@@ -510,7 +436,6 @@ func copyDb(ctx *cli.Context) error {
 	}
 	fmt.Printf("Database copy done in %v\n", time.Since(start))
 
-	// Compact the entire database to remove any sync overhead
 	start = time.Now()
 	fmt.Println("Compacting entire database...")
 	if err = db.Compact(nil, nil); err != nil {
@@ -530,7 +455,7 @@ func removeDB(ctx *cli.Context) error {
 	stack, _ := makeConfigNode(ctx, chainName)
 
 	for _, name := range []string{"chaindata", "lightchaindata"} {
-		// Ensure the database exists in the first place
+
 		logger := log.New("database", name)
 
 		dbdir := stack.ResolvePath(name)
@@ -538,7 +463,7 @@ func removeDB(ctx *cli.Context) error {
 			logger.Info("Database doesn't exist, skipping", "path", dbdir)
 			continue
 		}
-		// Confirm removal and execute
+
 		fmt.Println(dbdir)
 		confirm, err := console.Stdin.PromptConfirm("Remove this database?")
 		switch {
@@ -586,7 +511,6 @@ func dump(ctx *cli.Context) error {
 	return nil
 }
 
-// hashish returns true for strings that look like hashes.
 func hashish(x string) bool {
 	_, err := strconv.Atoi(x)
 	return err != nil
@@ -646,14 +570,12 @@ func countBlockState(ctx *cli.Context) error {
 		}
 	})
 
-	// Open the file handle and potentially wrap with a gzip stream
 	fh, err := os.OpenFile("blockstate_nodedump", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.ModePerm)
 	if err != nil {
 		return err
 	}
 	defer fh.Close()
 
-	// Write Node Data into file
 	for _, data := range count.Data {
 		fh.WriteString(data.key + " " + data.value + "\n")
 	}
@@ -678,13 +600,13 @@ var emptyRoot = common.HexToHash("56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cad
 func countTrie(db neatdb.Database, t state.Trie, count *CountSize, processLeaf processLeafTrie) {
 	for it := t.NodeIterator(nil); it.Next(true); {
 		if !it.Leaf() {
-			// non leaf node -> count += value
+
 			node, _ := db.Get(it.Hash().Bytes())
 			count.Totalnodevaluesize += len(node)
 			count.Totalnode++
 			count.Data = append(count.Data, nodeData{it.Hash().String(), common.Bytes2Hex(node)})
 		} else {
-			// Process the Account -> Inner Trie
+
 			if processLeaf != nil {
 				addr := t.GetKey(it.LeafKey())
 				if len(addr) == 20 {

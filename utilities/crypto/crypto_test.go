@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package crypto
 
 import (
@@ -81,7 +65,6 @@ func TestSign(t *testing.T) {
 		t.Errorf("Address mismatch: want: %x have: %x", addr, recoveredAddr)
 	}
 
-	// should be equal to SigToPub
 	recoveredPub2, err := SigToPub(msg, sig)
 	if err != nil {
 		t.Errorf("ECRecover error: %s", err)
@@ -189,20 +172,17 @@ func TestValidateSignatureValues(t *testing.T) {
 	zero := common.Big0
 	secp256k1nMinus1 := new(big.Int).Sub(secp256k1N, common.Big1)
 
-	// correct v,r,s
 	check(true, 0, one, one)
 	check(true, 1, one, one)
-	// incorrect v, correct r,s,
+
 	check(false, 2, one, one)
 	check(false, 3, one, one)
 
-	// incorrect v, combinations of incorrect/correct r,s at lower limit
 	check(false, 2, zero, zero)
 	check(false, 2, zero, one)
 	check(false, 2, one, zero)
 	check(false, 2, one, one)
 
-	// correct v for any combination of incorrect r,s
 	check(false, 0, zero, zero)
 	check(false, 0, zero, one)
 	check(false, 0, one, zero)
@@ -211,15 +191,12 @@ func TestValidateSignatureValues(t *testing.T) {
 	check(false, 1, zero, one)
 	check(false, 1, one, zero)
 
-	// correct sig with max r,s
 	check(true, 0, secp256k1nMinus1, secp256k1nMinus1)
-	// correct v, combinations of incorrect r,s at upper limit
+
 	check(false, 0, secp256k1N, secp256k1nMinus1)
 	check(false, 0, secp256k1nMinus1, secp256k1N)
 	check(false, 0, secp256k1N, secp256k1N)
 
-	// current callers ensures r,s cannot be negative, but let's test for that too
-	// as crypto package could be used stand-alone
 	check(false, 0, minusOne, one)
 	check(false, 0, one, minusOne)
 }
@@ -402,9 +379,7 @@ func CheckDecode(input string) (result []byte, version byte, err error) {
 	version = decoded[0]
 	var cksum [4]byte
 	copy(cksum[:], decoded[len(decoded)-4:])
-	//if checksum(decoded[:len(decoded)-4]) != cksum {
-	//	return nil, 0, ErrChecksum
-	//}
+
 	payload := decoded[1 : len(decoded)-4]
 	result = append(result, payload...)
 	return

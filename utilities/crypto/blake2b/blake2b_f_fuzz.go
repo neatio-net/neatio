@@ -1,3 +1,4 @@
+//go:build gofuzz
 // +build gofuzz
 
 package blake2b
@@ -7,11 +8,11 @@ import (
 )
 
 func Fuzz(data []byte) int {
-	// Make sure the data confirms to the input model
+
 	if len(data) != 211 {
 		return 0
 	}
-	// Parse everything and call all the implementations
+
 	var (
 		rounds = binary.BigEndian.Uint16(data[0:2])
 
@@ -31,10 +32,10 @@ func Fuzz(data []byte) int {
 	t[0] = binary.LittleEndian.Uint64(data[194:202])
 	t[1] = binary.LittleEndian.Uint64(data[202:210])
 
-	if data[210]%2 == 1 { // Avoid spinning the fuzzer to hit 0/1
+	if data[210]%2 == 1 {
 		f = 0xFFFFFFFFFFFFFFFF
 	}
-	// Run the blake2b compression on all instruction sets and cross reference
+
 	want := h
 	fGeneric(&want, &m, t[0], t[1], f, uint64(rounds))
 

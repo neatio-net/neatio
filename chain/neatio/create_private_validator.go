@@ -16,12 +16,10 @@ import (
 )
 
 type PrivValidatorForConsole struct {
-	// NeatIO Account Address
 	Address string `json:"address"`
-	// NeatIO Consensus Public Key, in BLS format
+
 	PubKey crypto.PubKey `json:"consensus_pub_key"`
-	// NeatIO Consensus Private Key, in BLS format
-	// PrivKey should be empty if a Signer other than the default is being used.
+
 	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
 }
 

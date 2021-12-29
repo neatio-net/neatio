@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package crypto
 
 import (
@@ -45,7 +29,7 @@ func TestEcrecover(t *testing.T) {
 }
 
 func TestVerifySignature(t *testing.T) {
-	sig := testsig[:len(testsig)-1] // remove recovery id
+	sig := testsig[:len(testsig)-1]
 	if !VerifySignature(testpubkey, testmsg, sig) {
 		t.Errorf("can't verify signature with uncompressed key")
 	}
@@ -75,7 +59,6 @@ func TestVerifySignature(t *testing.T) {
 	}
 }
 
-// This test checks that VerifySignature rejects malleable signatures with s > N/2.
 func TestVerifySignatureMalleable(t *testing.T) {
 	sig := hexutil.MustDecode("0x638a54215d80a6713c8d523a6adc4e6e73652d859103a36b700851cb0e61b66b8ebfc1a610c57d732ec6e0a8f06a9a7a28df5051ece514702ff9cdff0b11f454")
 	key := hexutil.MustDecode("0x03ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd3138")
@@ -143,7 +126,7 @@ func BenchmarkEcrecoverSignature(b *testing.B) {
 }
 
 func BenchmarkVerifySignature(b *testing.B) {
-	sig := testsig[:len(testsig)-1] // remove recovery id
+	sig := testsig[:len(testsig)-1]
 	for i := 0; i < b.N; i++ {
 		if !VerifySignature(testpubkey, testmsg, sig) {
 			b.Fatal("verify error")
