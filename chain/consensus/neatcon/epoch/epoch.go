@@ -222,7 +222,7 @@ func (epoch *Epoch) ValidateNextEpoch(next *Epoch, lastHeight uint64, lastBlockT
 func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 
 	fmt.Printf("\n")
-	fmt.Printf("✨✨✨✨✨ Epoch NEAT Info ✨✨✨✨✨\n")
+	fmt.Printf("✨✨✨✨✨ NEAT Epoch Info ✨✨✨✨✨\n")
 	fmt.Printf("Next epoch proposed: %v", epoch.nextEpoch)
 
 	if epoch.nextEpoch != nil {
@@ -715,9 +715,9 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Reward per block is: %v"+" NEAT"+",\n"+
-			"Epoch starts at block: %v,\n"+
-			"Epoch ending at block: %v,\n",
+			"Reward: %v"+" NEAT"+",\n"+
+			"Next epoch is starting at block: %v,\n"+
+			"The epoch will last until block: %v,\n",
 		epoch.Number,
 		blockReward,
 		epoch.StartBlock,
