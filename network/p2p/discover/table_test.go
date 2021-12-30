@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package discover
 
 import (
@@ -52,27 +36,20 @@ func testPingReplace(t *testing.T, newNodeIsResponding, lastInBucketIsResponding
 	tab, _ := newTable(transport, NodeID{}, &net.UDPAddr{}, "", nil)
 	defer tab.Close()
 
-	// Wait for init so bond is accepted.
 	<-tab.initDone
 
-	// fill up the sender's bucket.
 	pingSender := NewNode(MustHexID("a502af0f59b2aab7746995408c79e9ca312d2793cc997e44fc55eda62f0150bbb8c59a6f9269ba3a081518b62699ee807c7c19c20125ddfccca872608af9e370"), net.IP{}, 99, 99)
 	last := fillBucket(tab, pingSender)
 
-	// this call to bond should replace the last node
-	// in its bucket if the node is not responding.
 	transport.dead[last.ID] = !lastInBucketIsResponding
 	transport.dead[pingSender.ID] = !newNodeIsResponding
 	tab.bond(true, pingSender.ID, &net.UDPAddr{}, 0)
 	tab.doRevalidate(make(chan struct{}, 1))
 
-	// first ping goes to sender (bonding pingback)
 	if !transport.pinged[pingSender.ID] {
 		t.Error("table did not ping back sender")
 	}
 	if !transport.pinged[last.ID] {
-		// second ping goes to oldest node in bucket
-		// to see whether it is still alive.
 		t.Error("table did not ping last node in bucket")
 	}
 
@@ -100,14 +77,12 @@ func TestBucket_bumpNoDuplicates(t *testing.T) {
 		MaxCount: 1000,
 		Rand:     rand.New(rand.NewSource(time.Now().Unix())),
 		Values: func(args []reflect.Value, rand *rand.Rand) {
-			// generate a random list of nodes. this will be the content of the bucket.
 			n := rand.Intn(bucketSize-1) + 1
 			nodes := make([]*Node, n)
 			for i := range nodes {
 				nodes[i] = nodeAtDistance(common.Hash{}, 200)
 			}
 			args[0] = reflect.ValueOf(nodes)
-			// generate random bump positions.
 			bumps := make([]int, rand.Intn(100))
 			for i := range bumps {
 				bumps[i] = rand.Intn(len(nodes))
@@ -136,7 +111,6 @@ func TestBucket_bumpNoDuplicates(t *testing.T) {
 	}
 }
 
-// This checks that the table-wide IP limit is applied correctly.
 func TestTable_IPLimit(t *testing.T) {
 	transport := newPingRecorder()
 	tab, _ := newTable(transport, NodeID{}, &net.UDPAddr{}, "", nil)
@@ -152,7 +126,6 @@ func TestTable_IPLimit(t *testing.T) {
 	}
 }
 
-// This checks that the table-wide IP limit is applied correctly.
 func TestTable_BucketIPLimit(t *testing.T) {
 	transport := newPingRecorder()
 	tab, _ := newTable(transport, NodeID{}, &net.UDPAddr{}, "", nil)
@@ -169,9 +142,6 @@ func TestTable_BucketIPLimit(t *testing.T) {
 	}
 }
 
-// fillBucket inserts nodes into the given bucket until
-// it is full. The node's IDs dont correspond to their
-// hashes.
 func fillBucket(tab *Table, n *Node) (last *Node) {
 	ld := logdist(tab.self.sha, n.sha)
 	b := tab.bucket(n.sha)
@@ -181,13 +151,11 @@ func fillBucket(tab *Table, n *Node) (last *Node) {
 	return b.entries[bucketSize-1]
 }
 
-// nodeAtDistance creates a node for which logdist(base, n.sha) == ld.
-// The node's ID does not correspond to n.sha.
 func nodeAtDistance(base common.Hash, ld int) (n *Node) {
 	n = new(Node)
 	n.sha = hashAtDistance(base, ld)
 	n.IP = net.IP{byte(ld), 0, 2, byte(ld)}
-	copy(n.ID[:], n.sha[:]) // ensure the node still has a unique ID
+	copy(n.ID[:], n.sha[:])
 	return n
 }
 
@@ -208,7 +176,7 @@ func (t *pingRecorder) findnode(toid NodeID, toaddr *net.UDPAddr, target NodeID)
 }
 func (t *pingRecorder) close() {}
 func (t *pingRecorder) waitping(from NodeID) error {
-	return nil // remote always pings
+	return nil
 }
 func (t *pingRecorder) ping(toid NodeID, toaddr *net.UDPAddr) error {
 	t.mu.Lock()
@@ -226,13 +194,11 @@ func TestTable_closest(t *testing.T) {
 	t.Parallel()
 
 	test := func(test *closeTest) bool {
-		// for any node table, Target and N
 		transport := newPingRecorder()
 		tab, _ := newTable(transport, test.Self, &net.UDPAddr{}, "", nil)
 		defer tab.Close()
 		tab.stuff(test.All)
 
-		// check that doClosest(Target, N) returns nodes
 		result := tab.closest(test.Target, test.N).entries
 		if hasDuplicates(result) {
 			t.Errorf("result contains duplicates")
@@ -243,7 +209,6 @@ func TestTable_closest(t *testing.T) {
 			return false
 		}
 
-		// check that the number of results is min(N, tablen)
 		wantN := test.N
 		if tlen := tab.len(); tlen < test.N {
 			wantN = tlen
@@ -252,14 +217,13 @@ func TestTable_closest(t *testing.T) {
 			t.Errorf("wrong number of nodes: got %d, want %d", len(result), wantN)
 			return false
 		} else if len(result) == 0 {
-			return true // no need to check distance
+			return true
 		}
 
-		// check that the result nodes have minimum distance to target.
 		for _, b := range tab.buckets {
 			for _, n := range b.entries {
 				if contains(result, n.ID) {
-					continue // don't run the check below for nodes in result
+					continue
 				}
 				farthestResult := result[len(result)-1].sha
 				if distcmp(test.Target, n.sha, farthestResult) < 0 {
@@ -336,11 +300,9 @@ func TestTable_Lookup(t *testing.T) {
 	tab, _ := newTable(lookupTestnet, self.ID, &net.UDPAddr{}, "", nil)
 	defer tab.Close()
 
-	// lookup on empty table returns no nodes
 	if results := tab.Lookup(lookupTestnet.target); len(results) > 0 {
 		t.Fatalf("lookup on empty table returned %d results: %#v", len(results), results)
 	}
-	// seed table with initial node (otherwise lookup will terminate immediately)
 	seed := NewNode(lookupTestnet.dists[256][0], net.IP{}, 256, 0)
 	tab.stuff([]*Node{seed})
 
@@ -358,11 +320,8 @@ func TestTable_Lookup(t *testing.T) {
 	if !sortedByDistanceTo(lookupTestnet.targetSha, results) {
 		t.Errorf("result set not sorted by distance to target")
 	}
-	// TODO: check result nodes are actually closest
 }
 
-// This is the test network for the Lookup test.
-// The nodes were obtained by running testnet.mine with a random NodeID as target.
 var lookupTestnet = &preminedTestnet{
 	target:    MustHexID("166aea4f556532c6d34e8b740e5d314af7e9ac0ca79833bd751d6b665f12dfd38ec563c363b32f02aef4a80b44fd3def94612d497b99cb5f17fd24de454927ec"),
 	targetSha: common.Hash{0x5c, 0x94, 0x4e, 0xe5, 0x1c, 0x5a, 0xe9, 0xf7, 0x2a, 0x95, 0xec, 0xcb, 0x8a, 0xed, 0x3, 0x74, 0xee, 0xcb, 0x51, 0x19, 0xd7, 0x20, 0xcb, 0xea, 0x68, 0x13, 0xe8, 0xe0, 0xd6, 0xad, 0x92, 0x61},
@@ -558,13 +517,11 @@ var lookupTestnet = &preminedTestnet{
 
 type preminedTestnet struct {
 	target    NodeID
-	targetSha common.Hash // sha3(target)
+	targetSha common.Hash
 	dists     [hashBits + 1][]NodeID
 }
 
 func (tn *preminedTestnet) findnode(toid NodeID, toaddr *net.UDPAddr, target NodeID) ([]*Node, error) {
-	// current log distance is encoded in port number
-	// fmt.Println("findnode query at dist", toaddr.Port)
 	if toaddr.Port == 0 {
 		panic("query to node at distance 0")
 	}
@@ -580,8 +537,6 @@ func (*preminedTestnet) close()                                      {}
 func (*preminedTestnet) waitping(from NodeID) error                  { return nil }
 func (*preminedTestnet) ping(toid NodeID, toaddr *net.UDPAddr) error { return nil }
 
-// mine generates a testnet struct literal with nodes at
-// various distances to the given target.
 func (n *preminedTestnet) mine(target NodeID) {
 	n.target = target
 	n.targetSha = crypto.Keccak256Hash(n.target[:])
@@ -649,8 +604,6 @@ func contains(ns []*Node, id NodeID) bool {
 	return false
 }
 
-// gen wraps quick.Value so it's easier to use.
-// it generates a random value of the given value's type.
 func gen(typ interface{}, rand *rand.Rand) interface{} {
 	v, ok := quick.Value(reflect.TypeOf(typ), rand)
 	if !ok {

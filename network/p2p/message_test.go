@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package p2p
 
 import (
@@ -44,9 +28,7 @@ func ExampleMsgPipe() {
 		msg.Decode(&data)
 		fmt.Printf("msg: %d, %x\n", msg.Code, data[0])
 	}
-	// Output:
-	// msg: 8, 0000
-	// msg: 5, 0101
+
 }
 
 func TestMsgPipeUnblockWrite(t *testing.T) {
@@ -63,10 +45,6 @@ loop:
 			close(done)
 		}()
 
-		// this call should ensure that EncodeMsg is waiting to
-		// deliver sometimes. if this isn't done, Close is likely to
-		// be executed before EncodeMsg starts and then we won't test
-		// all the cases.
 		runtime.Gosched()
 
 		rw2.Close()
@@ -79,7 +57,6 @@ loop:
 	}
 }
 
-// This test should panic if concurrent close isn't implemented correctly.
 func TestMsgPipeConcurrentClose(t *testing.T) {
 	rw1, _ := MsgPipe()
 	for i := 0; i < 10; i++ {
@@ -90,7 +67,6 @@ func TestMsgPipeConcurrentClose(t *testing.T) {
 func TestEOFSignal(t *testing.T) {
 	rb := make([]byte, 10)
 
-	// empty reader
 	eof := make(chan struct{}, 1)
 	sig := &eofSignal{new(bytes.Buffer), 0, eof}
 	if n, err := sig.Read(rb); n != 0 || err != io.EOF {
@@ -102,7 +78,6 @@ func TestEOFSignal(t *testing.T) {
 		t.Error("EOF chan not signaled")
 	}
 
-	// count before error
 	eof = make(chan struct{}, 1)
 	sig = &eofSignal{bytes.NewBufferString("aaaaaaaa"), 4, eof}
 	if n, err := sig.Read(rb); n != 4 || err != nil {
@@ -114,7 +89,6 @@ func TestEOFSignal(t *testing.T) {
 		t.Error("EOF chan not signaled")
 	}
 
-	// error before count
 	eof = make(chan struct{}, 1)
 	sig = &eofSignal{bytes.NewBufferString("aaaa"), 999, eof}
 	if n, err := sig.Read(rb); n != 4 || err != nil {
@@ -129,7 +103,6 @@ func TestEOFSignal(t *testing.T) {
 		t.Error("EOF chan not signaled")
 	}
 
-	// no signal if neither occurs
 	eof = make(chan struct{}, 1)
 	sig = &eofSignal{bytes.NewBufferString("aaaaaaaaaaaaaaaaaaaaa"), 999, eof}
 	if n, err := sig.Read(rb); n != 10 || err != nil {

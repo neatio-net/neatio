@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package p2p
 
 import (
@@ -147,8 +131,6 @@ func TestPeerDisconnect(t *testing.T) {
 	}
 }
 
-// This test is supposed to verify that Peer can reliably handle
-// multiple causes of disconnection occurring at the same time.
 func TestPeerDisconnectRace(t *testing.T) {
 	maybe := func() bool { return rand.Intn(1) == 1 }
 
@@ -168,20 +150,19 @@ func TestPeerDisconnectRace(t *testing.T) {
 			},
 		})
 
-		// Simulate incoming messages.
 		go SendItems(rw, baseProtocolLength+1)
 		go SendItems(rw, baseProtocolLength+2)
-		// Close the network connection.
+
 		go closer()
-		// Make protocol "closereq" return.
+
 		protoclose <- errors.New("protocol closed")
-		// Make protocol "disconnect" call peer.Disconnect
+
 		protodisc <- DiscAlreadyConnected
-		// In some cases, simulate something else calling peer.Disconnect.
+
 		if maybe() {
 			go p.Disconnect(DiscInvalidIdentity)
 		}
-		// In some cases, simulate remote requesting a disconnect.
+
 		if maybe() {
 			go SendItems(rw, discMsg, DiscQuitting)
 		}
@@ -189,9 +170,7 @@ func TestPeerDisconnectRace(t *testing.T) {
 		select {
 		case <-disc:
 		case <-time.After(2 * time.Second):
-			// Peer.run should return quickly. If it doesn't the Peer
-			// goroutines are probably deadlocked. Call panic in order to
-			// show the stacks.
+
 			panic("Peer.run took to long to return.")
 		}
 	}
@@ -212,7 +191,7 @@ func TestNewPeer(t *testing.T) {
 		t.Errorf("Caps mismatch: got %v, expected %v", p.Caps(), caps)
 	}
 
-	p.Disconnect(DiscAlreadyConnected) // Should not hang
+	p.Disconnect(DiscAlreadyConnected)
 }
 
 func TestMatchProtocols(t *testing.T) {
@@ -222,55 +201,55 @@ func TestMatchProtocols(t *testing.T) {
 		Match  map[string]protoRW
 	}{
 		{
-			// No remote capabilities
+
 			Local: []Protocol{{Name: "a"}},
 		},
 		{
-			// No local protocols
+
 			Remote: []Cap{{Name: "a"}},
 		},
 		{
-			// No mutual protocols
+
 			Remote: []Cap{{Name: "a"}},
 			Local:  []Protocol{{Name: "b"}},
 		},
 		{
-			// Some matches, some differences
+
 			Remote: []Cap{{Name: "local"}, {Name: "match1"}, {Name: "match2"}},
 			Local:  []Protocol{{Name: "match1"}, {Name: "match2"}, {Name: "remote"}},
 			Match:  map[string]protoRW{"match1": {Protocol: Protocol{Name: "match1"}}, "match2": {Protocol: Protocol{Name: "match2"}}},
 		},
 		{
-			// Various alphabetical ordering
+
 			Remote: []Cap{{Name: "aa"}, {Name: "ab"}, {Name: "bb"}, {Name: "ba"}},
 			Local:  []Protocol{{Name: "ba"}, {Name: "bb"}, {Name: "ab"}, {Name: "aa"}},
 			Match:  map[string]protoRW{"aa": {Protocol: Protocol{Name: "aa"}}, "ab": {Protocol: Protocol{Name: "ab"}}, "ba": {Protocol: Protocol{Name: "ba"}}, "bb": {Protocol: Protocol{Name: "bb"}}},
 		},
 		{
-			// No mutual versions
+
 			Remote: []Cap{{Version: 1}},
 			Local:  []Protocol{{Version: 2}},
 		},
 		{
-			// Multiple versions, single common
+
 			Remote: []Cap{{Version: 1}, {Version: 2}},
 			Local:  []Protocol{{Version: 2}, {Version: 3}},
 			Match:  map[string]protoRW{"": {Protocol: Protocol{Version: 2}}},
 		},
 		{
-			// Multiple versions, multiple common
+
 			Remote: []Cap{{Version: 1}, {Version: 2}, {Version: 3}, {Version: 4}},
 			Local:  []Protocol{{Version: 2}, {Version: 3}},
 			Match:  map[string]protoRW{"": {Protocol: Protocol{Version: 3}}},
 		},
 		{
-			// Various version orderings
+
 			Remote: []Cap{{Version: 4}, {Version: 1}, {Version: 3}, {Version: 2}},
 			Local:  []Protocol{{Version: 2}, {Version: 3}, {Version: 1}},
 			Match:  map[string]protoRW{"": {Protocol: Protocol{Version: 3}}},
 		},
 		{
-			// Versions overriding sub-protocol lengths
+
 			Remote: []Cap{{Version: 1}, {Version: 2}, {Version: 3}, {Name: "a"}},
 			Local:  []Protocol{{Version: 1, Length: 1}, {Version: 2, Length: 2}, {Version: 3, Length: 3}, {Name: "a"}},
 			Match:  map[string]protoRW{"": {Protocol: Protocol{Version: 3}}, "a": {Protocol: Protocol{Name: "a"}, offset: 3}},
@@ -283,7 +262,7 @@ func TestMatchProtocols(t *testing.T) {
 			t.Errorf("test %d: negotiation mismatch: have %v, want %v", i, len(result), len(tt.Match))
 			continue
 		}
-		// Make sure all negotiated protocols are needed and correct
+
 		for name, proto := range result {
 			match, ok := tt.Match[name]
 			if !ok {
@@ -300,7 +279,7 @@ func TestMatchProtocols(t *testing.T) {
 				t.Errorf("test %d, proto '%s': offset mismatch: have %v, want %v", i, name, proto.offset-baseProtocolLength, match.offset)
 			}
 		}
-		// Make sure no protocols missed negotiation
+
 		for name := range tt.Match {
 			if _, ok := result[name]; !ok {
 				t.Errorf("test %d, proto '%s': not negotiated, should have", i, name)
