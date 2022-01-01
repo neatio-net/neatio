@@ -27,7 +27,7 @@ var (
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
@@ -43,7 +43,7 @@ var (
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
@@ -57,7 +57,7 @@ func init() {
 }
 
 type ChainConfig struct {
-	NeatChainId string   `json:"NeatChainId"`
+	NeatChainId string   `json:"neatChainId"`
 	ChainId     *big.Int `json:"chainId"`
 
 	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"`
@@ -97,7 +97,7 @@ func NewSideChainConfig(sideChainID string) *ChainConfig {
 		ByzantiumBlock:      big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}

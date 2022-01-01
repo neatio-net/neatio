@@ -163,13 +163,13 @@ var MainnetGenesisJSON string = `{
 			"validators": [
 					{
 							"address": "NEATxdFbo7zsqQqr829U9p7rFja1ZGyk",
-							"pub_key": "0x1F100176AA1DA63BEDD72FA0463162DDB78D9E90AAB36A6E90B6CA1B7196C29F0CF878BCB9DDD78135BD551891B5B8D3B248264BB72DE7F64D17EEC6EE091E9958B0B9C5C3646D>
+							"pub_key": "0x1F100176AA1DA63BEDD72FA0463162DDB78D9E90AAB36A6E90B6CA1B7196C29F0CF878BCB9DDD78135BD551891B5B8D3B248264BB72DE7F64D17EEC6EE091E9958B0B9C5C3646D5363E4BCEB5472AF8D47E7CA49121225922D79E7F07331EC0C26B1A17CC12C7C73024AFED28E7C53497EE5E14EE00BD0293EF52F7834114E74",
 							"amount": "0x104e2da94483f6200000",
 							"name": "",
 							"epoch": "0x0"
 					}
 			]
-	}
+	}                                                                                                                                                                                    
 }`
 
 var TestnetGenesisJSON string = `{
