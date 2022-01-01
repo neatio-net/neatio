@@ -2,7 +2,7 @@ package params
 
 var MainnetBootnodes = []string{
 
-	// TODO: new genesis bootnodes for mainnet to be added later
+	"enode://9b1908913619ab593d64e681a9c79547c469eb39f8520a6fa175ff07284c672102865d6da69fd39b115c7990a82e41988122ba15154fb7f953c553e25caf2462@135.181.195.79:9910",
 }
 
 var TestnetBootnodes = []string{
