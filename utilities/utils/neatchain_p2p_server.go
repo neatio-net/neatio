@@ -14,18 +14,14 @@ type NeatChainP2PServer struct {
 
 func NewP2PServer(ctx *cli.Context) *NeatChainP2PServer {
 
-	// Load Default P2P config
 	config := &node.Config{
 		GeneralDataDir: MakeDataDir(ctx),
-		DataDir:        MakeDataDir(ctx), // Just for pass the check, P2P always use GeneralDataDir
+		DataDir:        MakeDataDir(ctx),
 		P2P:            node.DefaultConfig.P2P,
 	}
 
-	// Setup the config from context
 	SetP2PConfig(ctx, &config.P2P)
 
-	// Initialize the intp2p server. This creates the node key and
-	// discovery databases.
 	serverConfig := config.P2P
 	serverConfig.PrivateKey = config.NodeKey()
 	serverConfig.Name = config.NodeName()
@@ -44,7 +40,6 @@ func NewP2PServer(ctx *cli.Context) *NeatChainP2PServer {
 	serverConfig.Validators = make(map[p2p.P2PValidator]*p2p.P2PValidatorNodeInfo)
 
 	running := &p2p.Server{Config: serverConfig}
-	//log.Info("Creating peer-to-peer neatnode", "instance", serverConfig.Name)
 
 	return &NeatChainP2PServer{
 		serverConfig: serverConfig,

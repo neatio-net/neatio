@@ -25,10 +25,8 @@ var (
 
 func StartRPC(ctx *cli.Context) error {
 
-	// Use Default Config
 	rpcConfig := node.DefaultConfig
 
-	// Setup the config from context
 	SetHTTP(ctx, &rpcConfig)
 	SetWS(ctx, &rpcConfig)
 	wsOrigins = rpcConfig.WSOrigins
@@ -47,7 +45,6 @@ func StartRPC(ctx *cli.Context) error {
 }
 
 func StopRPC() {
-	// Stop HTTP Listener
 	if httpListener != nil {
 		httpAddr := httpListener.Addr().String()
 		httpListener.Close()
@@ -60,7 +57,6 @@ func StopRPC() {
 		}
 	}
 
-	// Stop WS Listener
 	if wsListener != nil {
 		wsAddr := wsListener.Addr().String()
 		wsListener.Close()
@@ -105,7 +101,6 @@ func HookupWS(chainId string, wsHandler *rpc.Server) error {
 }
 
 func startHTTP(endpoint string, cors []string, vhosts []string, timeouts rpc.HTTPTimeouts) error {
-	// Short circuit if the HTTP endpoint isn't being exposed
 	if endpoint == "" {
 		return nil
 	}
@@ -135,7 +130,6 @@ func startNeatChainHTTPEndpoint(endpoint string, cors []string, vhosts []string,
 }
 
 func startWS(endpoint string) error {
-	// Short circuit if the WS endpoint isn't being exposed
 	if endpoint == "" {
 		return nil
 	}
