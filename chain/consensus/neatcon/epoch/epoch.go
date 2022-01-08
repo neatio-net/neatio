@@ -222,7 +222,7 @@ func (epoch *Epoch) ValidateNextEpoch(next *Epoch, lastHeight uint64, lastBlockT
 func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 
 	fmt.Printf("\n")
-	fmt.Printf("✨✨✨✨✨ NEAT Epoch Info ✨✨✨✨✨\n")
+	fmt.Printf("-------- Next Epoch Info --------\n")
 	fmt.Printf("Next epoch proposed: %v", epoch.nextEpoch)
 
 	if epoch.nextEpoch != nil {
