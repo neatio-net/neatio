@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package core
 
 import (
@@ -32,66 +16,43 @@ import (
 	"github.com/neatlab/neatio/utilities/event"
 )
 
-// ChainIndexerBackend defines the methods needed to process chain segments in
-// the background and write the segment results into the database. These can be
-// used to create filter blooms or CHTs.
 type ChainIndexerBackend interface {
-	// Reset initiates the processing of a new chain segment, potentially terminating
-	// any partially completed operations (in case of a reorg).
 	Reset(section uint64, prevHead common.Hash) error
 
-	// Process crunches through the next header in the chain segment. The caller
-	// will ensure a sequential order of headers.
 	Process(header *types.Header)
 
-	// Commit finalizes the section metadata and stores it into the database.
 	Commit() error
 }
 
-// ChainIndexerChain interface is used for connecting the indexer to a blockchain
 type ChainIndexerChain interface {
-	// CurrentHeader retrieves the latest locally known header.
 	CurrentHeader() *types.Header
 
-	// SubscribeChainEvent subscribes to new head header notifications.
 	SubscribeChainEvent(ch chan<- ChainEvent) event.Subscription
 }
 
-// ChainIndexer does a post-processing job for equally sized sections of the
-// canonical chain (like BlooomBits and CHT structures). A ChainIndexer is
-// connected to the blockchain through the event system by starting a
-// ChainEventLoop in a goroutine.
-//
-// Further side ChainIndexers can be added which use the output of the parent
-// section indexer. These side indexers receive new head notifications only
-// after an entire section has been finished or in case of rollbacks that might
-// affect already finished sections.
 type ChainIndexer struct {
-	chainDb neatdb.Database     // Chain database to index the data from
-	indexDb neatdb.Database     // Prefixed table-view of the db to write index metadata into
-	backend ChainIndexerBackend // Background processor generating the index data content
-	sideren []*ChainIndexer     // Side indexers to cascade chain updates to
+	chainDb neatdb.Database
+	indexDb neatdb.Database
+	backend ChainIndexerBackend
+	sideren []*ChainIndexer
 
-	active uint32          // Flag whether the event loop was started
-	update chan struct{}   // Notification channel that headers should be processed
-	quit   chan chan error // Quit channel to tear down running goroutines
+	active uint32
+	update chan struct{}
+	quit   chan chan error
 
-	sectionSize uint64 // Number of blocks in a single chain segment to process
-	confirmsReq uint64 // Number of confirmations before processing a completed segment
+	sectionSize uint64
+	confirmsReq uint64
 
-	storedSections uint64 // Number of sections successfully indexed into the database
-	knownSections  uint64 // Number of sections known to be complete (block wise)
-	cascadedHead   uint64 // Block number of the last completed section cascaded to subindexers
+	storedSections uint64
+	knownSections  uint64
+	cascadedHead   uint64
 
-	throttling time.Duration // Disk throttling to prevent a heavy upgrade from hogging resources
+	throttling time.Duration
 
 	log  log.Logger
 	lock sync.RWMutex
 }
 
-// NewChainIndexer creates a new chain indexer to do background processing on
-// chain segments of a given size after certain number of confirmations passed.
-// The throttling parameter might be used to prevent database thrashing.
 func NewChainIndexer(chainDb, indexDb neatdb.Database, backend ChainIndexerBackend, section, confirm uint64, throttling time.Duration, kind string) *ChainIndexer {
 	c := &ChainIndexer{
 		chainDb:     chainDb,
@@ -104,15 +65,13 @@ func NewChainIndexer(chainDb, indexDb neatdb.Database, backend ChainIndexerBacke
 		throttling:  throttling,
 		log:         log.New("type", kind),
 	}
-	// Initialize database dependent fields and start the updater
+
 	c.loadValidSections()
 	go c.updateLoop()
 
 	return c
 }
 
-// AddKnownSectionHead marks a new section head as known/processed if it is newer
-// than the already known best section head
 func (c *ChainIndexer) AddKnownSectionHead(section uint64, shead common.Hash) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -124,9 +83,6 @@ func (c *ChainIndexer) AddKnownSectionHead(section uint64, shead common.Hash) {
 	c.setValidSections(section + 1)
 }
 
-// Start creates a goroutine to feed chain head events into the indexer for
-// cascading background processing. Children do not need to be started, they
-// are notified about new events by their parents.
 func (c *ChainIndexer) Start(chain ChainIndexerChain) {
 	events := make(chan ChainEvent, 10)
 	sub := chain.SubscribeChainEvent(events)
@@ -134,31 +90,28 @@ func (c *ChainIndexer) Start(chain ChainIndexerChain) {
 	go c.eventLoop(chain.CurrentHeader(), events, sub)
 }
 
-// Close tears down all goroutines belonging to the indexer and returns any error
-// that might have occurred internally.
 func (c *ChainIndexer) Close() error {
 	var errs []error
 
-	// Tear down the primary update loop
 	errc := make(chan error)
 	c.quit <- errc
 	if err := <-errc; err != nil {
 		errs = append(errs, err)
 	}
-	// If needed, tear down the secondary event loop
+
 	if atomic.LoadUint32(&c.active) != 0 {
 		c.quit <- errc
 		if err := <-errc; err != nil {
 			errs = append(errs, err)
 		}
 	}
-	// Close all sideren
+
 	for _, side := range c.sideren {
 		if err := side.Close(); err != nil {
 			errs = append(errs, err)
 		}
 	}
-	// Return any failures
+
 	switch {
 	case len(errs) == 0:
 		return nil
@@ -171,16 +124,12 @@ func (c *ChainIndexer) Close() error {
 	}
 }
 
-// eventLoop is a secondary - optional - event loop of the indexer which is only
-// started for the outermost indexer to push chain head events into a processing
-// queue.
 func (c *ChainIndexer) eventLoop(currentHeader *types.Header, events chan ChainEvent, sub event.Subscription) {
-	// Mark the chain indexer as active, requiring an additional teardown
+
 	atomic.StoreUint32(&c.active, 1)
 
 	defer sub.Unsubscribe()
 
-	// Fire the initial new head event to start any outstanding processing
 	c.newHead(currentHeader.Number.Uint64(), false)
 
 	var (
@@ -190,12 +139,12 @@ func (c *ChainIndexer) eventLoop(currentHeader *types.Header, events chan ChainE
 	for {
 		select {
 		case errc := <-c.quit:
-			// Chain indexer terminating, report no failure and abort
+
 			errc <- nil
 			return
 
 		case ev, ok := <-events:
-			// Received a new event, ensure it's not nil (closing) and update
+
 			if !ok {
 				errc := <-c.quit
 				errc <- nil
@@ -203,8 +152,6 @@ func (c *ChainIndexer) eventLoop(currentHeader *types.Header, events chan ChainE
 			}
 			header := ev.Block.Header()
 			if header.ParentHash != prevHash {
-				// Reorg to the common ancestor (might not exist in light sync mode, skip reorg then)
-				// TODO(karalabe, zsfelfoldi): This seems a bit brittle, can we detect this case explicitly?
 
 				if rawdb.ReadCanonicalHash(c.chainDb, prevHeader.Number.Uint64()) != prevHash {
 					if h := rawdb.FindCommonAncestor(c.chainDb, prevHeader, header); h != nil {
@@ -219,23 +166,21 @@ func (c *ChainIndexer) eventLoop(currentHeader *types.Header, events chan ChainE
 	}
 }
 
-// newHead notifies the indexer about new chain heads and/or reorgs.
 func (c *ChainIndexer) newHead(head uint64, reorg bool) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	// If a reorg happened, invalidate all sections until that point
 	if reorg {
-		// Revert the known section number to the reorg point
+
 		changed := head / c.sectionSize
 		if changed < c.knownSections {
 			c.knownSections = changed
 		}
-		// Revert the stored sections from the database to the reorg point
+
 		if changed < c.storedSections {
 			c.setValidSections(changed)
 		}
-		// Update the new head number to the finalized section end and notify sideren
+
 		head = changed * c.sectionSize
 
 		if head < c.cascadedHead {
@@ -246,7 +191,7 @@ func (c *ChainIndexer) newHead(head uint64, reorg bool) {
 		}
 		return
 	}
-	// No reorg, calculate the number of newly known sections and update if high enough
+
 	var sections uint64
 	if head >= c.confirmsReq {
 		sections = (head + 1 - c.confirmsReq) / c.sectionSize
@@ -261,8 +206,6 @@ func (c *ChainIndexer) newHead(head uint64, reorg bool) {
 	}
 }
 
-// updateLoop is the main event loop of the indexer which pushes chain segments
-// down into the processing backend.
 func (c *ChainIndexer) updateLoop() {
 	var (
 		updating bool
@@ -272,15 +215,15 @@ func (c *ChainIndexer) updateLoop() {
 	for {
 		select {
 		case errc := <-c.quit:
-			// Chain indexer terminating, report no failure and abort
+
 			errc <- nil
 			return
 
 		case <-c.update:
-			// Section headers completed (or rolled back), update the index
+
 			c.lock.Lock()
 			if c.knownSections > c.storedSections {
-				// Periodically print an upgrade log message to the user
+
 				if time.Since(updated) > 8*time.Second {
 					if c.knownSections > c.storedSections+1 {
 						updating = true
@@ -288,13 +231,13 @@ func (c *ChainIndexer) updateLoop() {
 					}
 					updated = time.Now()
 				}
-				// Cache the current section count and head to allow unlocking the mutex
+
 				section := c.storedSections
 				var oldHead common.Hash
 				if section > 0 {
 					oldHead = c.SectionHead(section - 1)
 				}
-				// Process the newly defined section in the background
+
 				c.lock.Unlock()
 				newHead, err := c.processSection(section, oldHead)
 				if err != nil {
@@ -302,7 +245,6 @@ func (c *ChainIndexer) updateLoop() {
 				}
 				c.lock.Lock()
 
-				// If processing succeeded and no reorgs occcurred, mark the section completed
 				if err == nil && oldHead == c.SectionHead(section-1) {
 					c.setSectionHead(section, newHead)
 					c.setValidSections(section + 1)
@@ -317,12 +259,12 @@ func (c *ChainIndexer) updateLoop() {
 						side.newHead(c.cascadedHead, false)
 					}
 				} else {
-					// If processing failed, don't retry until further notification
+
 					c.log.Debug("Chain index processing failed", "section", section, "err", err)
 					c.knownSections = c.storedSections
 				}
 			}
-			// If there are still further sections to process, reschedule
+
 			if c.knownSections > c.storedSections {
 				time.AfterFunc(c.throttling, func() {
 					select {
@@ -336,14 +278,8 @@ func (c *ChainIndexer) updateLoop() {
 	}
 }
 
-// processSection processes an entire section by calling backend functions while
-// ensuring the continuity of the passed headers. Since the chain mutex is not
-// held while processing, the continuity can be broken by a long reorg, in which
-// case the function returns with an error.
 func (c *ChainIndexer) processSection(section uint64, lastHead common.Hash) (common.Hash, error) {
 	c.log.Trace("Processing new chain section", "section", section)
-
-	// Reset and partial processing
 
 	if err := c.backend.Reset(section, lastHead); err != nil {
 		c.setValidSections(0)
@@ -371,9 +307,6 @@ func (c *ChainIndexer) processSection(section uint64, lastHead common.Hash) (com
 	return lastHead, nil
 }
 
-// Sections returns the number of processed sections maintained by the indexer
-// and also the information about the last header indexed for potential canonical
-// verifications.
 func (c *ChainIndexer) Sections() (uint64, uint64, common.Hash) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
@@ -381,21 +314,17 @@ func (c *ChainIndexer) Sections() (uint64, uint64, common.Hash) {
 	return c.storedSections, c.storedSections*c.sectionSize - 1, c.SectionHead(c.storedSections - 1)
 }
 
-// AddChildIndexer adds a side ChainIndexer that can use the output of this one
 func (c *ChainIndexer) AddChildIndexer(indexer *ChainIndexer) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
 	c.sideren = append(c.sideren, indexer)
 
-	// Cascade any pending updates to new sideren too
 	if c.storedSections > 0 {
 		indexer.newHead(c.storedSections*c.sectionSize-1, false)
 	}
 }
 
-// loadValidSections reads the number of valid sections from the index database
-// and caches is into the local state.
 func (c *ChainIndexer) loadValidSections() {
 	data, _ := c.indexDb.Get([]byte("count"))
 	if len(data) == 8 {
@@ -403,23 +332,19 @@ func (c *ChainIndexer) loadValidSections() {
 	}
 }
 
-// setValidSections writes the number of valid sections to the index database
 func (c *ChainIndexer) setValidSections(sections uint64) {
-	// Set the current number of valid sections in the database
+
 	var data [8]byte
 	binary.BigEndian.PutUint64(data[:], sections)
 	c.indexDb.Put([]byte("count"), data[:])
 
-	// Remove any reorged sections, caching the valids in the mean time
 	for c.storedSections > sections {
 		c.storedSections--
 		c.removeSectionHead(c.storedSections)
 	}
-	c.storedSections = sections // needed if new > old
+	c.storedSections = sections
 }
 
-// SectionHead retrieves the last block hash of a processed section from the
-// index database.
 func (c *ChainIndexer) SectionHead(section uint64) common.Hash {
 	var data [8]byte
 	binary.BigEndian.PutUint64(data[:], section)
@@ -431,8 +356,6 @@ func (c *ChainIndexer) SectionHead(section uint64) common.Hash {
 	return common.Hash{}
 }
 
-// setSectionHead writes the last block hash of a processed section to the index
-// database.
 func (c *ChainIndexer) setSectionHead(section uint64, hash common.Hash) {
 	var data [8]byte
 	binary.BigEndian.PutUint64(data[:], section)
@@ -440,8 +363,6 @@ func (c *ChainIndexer) setSectionHead(section uint64, hash common.Hash) {
 	c.indexDb.Put(append([]byte("shead"), data[:]...), hash.Bytes())
 }
 
-// removeSectionHead removes the reference to a processed section from the index
-// database.
 func (c *ChainIndexer) removeSectionHead(section uint64) {
 	var data [8]byte
 	binary.BigEndian.PutUint64(data[:], section)
