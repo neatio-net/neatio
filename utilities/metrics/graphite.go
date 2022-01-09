@@ -10,20 +10,15 @@ import (
 	"time"
 )
 
-// GraphiteConfig provides a container with configuration parameters for
-// the Graphite exporter
 type GraphiteConfig struct {
-	Addr          *net.TCPAddr  // Network address to connect to
-	Registry      Registry      // Registry to be exported
-	FlushInterval time.Duration // Flush interval
-	DurationUnit  time.Duration // Time conversion unit for durations
-	Prefix        string        // Prefix to be prepended to metric names
-	Percentiles   []float64     // Percentiles to export from timers and histograms
+	Addr          *net.TCPAddr
+	Registry      Registry
+	FlushInterval time.Duration
+	DurationUnit  time.Duration
+	Prefix        string
+	Percentiles   []float64
 }
 
-// Graphite is a blocking exporter function which reports metrics in r
-// to a graphite server located at addr, flushing them every d duration
-// and prepending metric names with prefix.
 func Graphite(r Registry, d time.Duration, prefix string, addr *net.TCPAddr) {
 	GraphiteWithConfig(GraphiteConfig{
 		Addr:          addr,
@@ -35,10 +30,8 @@ func Graphite(r Registry, d time.Duration, prefix string, addr *net.TCPAddr) {
 	})
 }
 
-// GraphiteWithConfig is a blocking exporter function just like Graphite,
-// but it takes a GraphiteConfig instead.
 func GraphiteWithConfig(c GraphiteConfig) {
-	log.Printf("WARNING: This go-metrics client has been DEPRECATED! It has been moved to https://github.com/cyberdelia/go-metrics-graphite and will be removed from rcrowley/go-metrics on August 12th 2015")
+
 	for range time.Tick(c.FlushInterval) {
 		if err := graphite(&c); nil != err {
 			log.Println(err)
@@ -46,11 +39,8 @@ func GraphiteWithConfig(c GraphiteConfig) {
 	}
 }
 
-// GraphiteOnce performs a single submission to Graphite, returning a
-// non-nil error on failed connections. This can be used in a loop
-// similar to GraphiteWithConfig for custom error handling.
 func GraphiteOnce(c GraphiteConfig) error {
-	log.Printf("WARNING: This go-metrics client has been DEPRECATED! It has been moved to https://github.com/cyberdelia/go-metrics-graphite and will be removed from rcrowley/go-metrics on August 12th 2015")
+
 	return graphite(&c)
 }
 

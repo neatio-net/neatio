@@ -1,20 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
-// Package compiler wraps the Solidity and Vyper compiler executables (solc; vyper).
 package compiler
 
 import (
@@ -27,13 +10,11 @@ import (
 	"strings"
 )
 
-// Solidity contains information about the solidity compiler.
 type Solidity struct {
 	Path, Version, FullVersion string
 	Major, Minor, Patch        int
 }
 
-// --combined-output format
 type solcOutput struct {
 	Contracts map[string]struct {
 		BinRuntime                                  string `json:"bin-runtime"`
@@ -47,8 +28,8 @@ type solcOutput struct {
 func (s *Solidity) makeArgs() []string {
 	p := []string{
 		"--combined-json", "bin,bin-runtime,srcmap,srcmap-runtime,abi,userdoc,devdoc",
-		"--optimize",                  // code optimizer switched on
-		"--allow-paths", "., ./, ../", // default to support relative paths
+		"--optimize",
+		"--allow-paths", "., ./, ../",
 	}
 	if s.Major > 0 || s.Minor > 4 || s.Patch > 6 {
 		p[1] += ",metadata,hashes"
@@ -56,7 +37,6 @@ func (s *Solidity) makeArgs() []string {
 	return p
 }
 
-// SolidityVersion runs solc and parses its version output.
 func SolidityVersion(solc string) (*Solidity, error) {
 	if solc == "" {
 		solc = "solc"
@@ -85,7 +65,6 @@ func SolidityVersion(solc string) (*Solidity, error) {
 	return s, nil
 }
 
-// CompileSolidityString builds and returns all the contracts contained within a source string.
 func CompileSolidityString(solc, source string) (map[string]*Contract, error) {
 	if len(source) == 0 {
 		return nil, errors.New("solc: empty source string")
@@ -100,7 +79,6 @@ func CompileSolidityString(solc, source string) (map[string]*Contract, error) {
 	return s.run(cmd, source)
 }
 
-// CompileSolidity compiles all given Solidity source files.
 func CompileSolidity(solc string, sourcefiles ...string) (map[string]*Contract, error) {
 	if len(sourcefiles) == 0 {
 		return nil, errors.New("solc: no source files")
@@ -129,24 +107,15 @@ func (s *Solidity) run(cmd *exec.Cmd, source string) (map[string]*Contract, erro
 	return ParseCombinedJSON(stdout.Bytes(), source, s.Version, s.Version, strings.Join(s.makeArgs(), " "))
 }
 
-// ParseCombinedJSON takes the direct output of a solc --combined-output run and
-// parses it into a map of string contract name to Contract structs. The
-// provided source, language and compiler version, and compiler options are all
-// passed through into the Contract structs.
-//
-// The solc output is expected to contain ABI, source mapping, user docs, and dev docs.
-//
-// Returns an error if the JSON is malformed or missing data, or if the JSON
-// embedded within the JSON is malformed.
 func ParseCombinedJSON(combinedJSON []byte, source string, languageVersion string, compilerVersion string, compilerOptions string) (map[string]*Contract, error) {
 	var output solcOutput
 	if err := json.Unmarshal(combinedJSON, &output); err != nil {
 		return nil, err
 	}
-	// Compilation succeeded, assemble and return the contracts.
+
 	contracts := make(map[string]*Contract)
 	for name, info := range output.Contracts {
-		// Parse the individual compilation results.
+
 		var abi interface{}
 		if err := json.Unmarshal([]byte(info.Abi), &abi); err != nil {
 			return nil, fmt.Errorf("solc: error reading abi definition (%v)", err)

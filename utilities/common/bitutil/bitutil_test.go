@@ -1,9 +1,3 @@
-// Copyright 2013 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-// Adapted from: https://golang.org/src/crypto/cipher/xor_test.go
-
 package bitutil
 
 import (
@@ -11,7 +5,6 @@ import (
 	"testing"
 )
 
-// Tests that bitwise XOR works for various alignments.
 func TestXOR(t *testing.T) {
 	for alignP := 0; alignP < 2; alignP++ {
 		for alignQ := 0; alignQ < 2; alignQ++ {
@@ -38,7 +31,6 @@ func TestXOR(t *testing.T) {
 	}
 }
 
-// Tests that bitwise AND works for various alignments.
 func TestAND(t *testing.T) {
 	for alignP := 0; alignP < 2; alignP++ {
 		for alignQ := 0; alignQ < 2; alignQ++ {
@@ -65,7 +57,6 @@ func TestAND(t *testing.T) {
 	}
 }
 
-// Tests that bitwise OR works for various alignments.
 func TestOR(t *testing.T) {
 	for alignP := 0; alignP < 2; alignP++ {
 		for alignQ := 0; alignQ < 2; alignQ++ {
@@ -92,17 +83,16 @@ func TestOR(t *testing.T) {
 	}
 }
 
-// Tests that bit testing works for various alignments.
 func TestTest(t *testing.T) {
 	for align := 0; align < 2; align++ {
-		// Test for bits set in the bulk part
+
 		p := make([]byte, 1023)[align:]
 		p[100] = 1
 
 		if TestBytes(p) != safeTestBytes(p) {
 			t.Error("not equal")
 		}
-		// Test for bits set in the tail part
+
 		q := make([]byte, 1023)[align:]
 		q[len(q)-1] = 1
 
@@ -112,7 +102,6 @@ func TestTest(t *testing.T) {
 	}
 }
 
-// Benchmarks the potentially optimized XOR performance.
 func BenchmarkFastXOR1KB(b *testing.B) { benchmarkFastXOR(b, 1024) }
 func BenchmarkFastXOR2KB(b *testing.B) { benchmarkFastXOR(b, 2048) }
 func BenchmarkFastXOR4KB(b *testing.B) { benchmarkFastXOR(b, 4096) }
@@ -125,7 +114,6 @@ func benchmarkFastXOR(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the baseline XOR performance.
 func BenchmarkBaseXOR1KB(b *testing.B) { benchmarkBaseXOR(b, 1024) }
 func BenchmarkBaseXOR2KB(b *testing.B) { benchmarkBaseXOR(b, 2048) }
 func BenchmarkBaseXOR4KB(b *testing.B) { benchmarkBaseXOR(b, 4096) }
@@ -138,7 +126,6 @@ func benchmarkBaseXOR(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the potentially optimized AND performance.
 func BenchmarkFastAND1KB(b *testing.B) { benchmarkFastAND(b, 1024) }
 func BenchmarkFastAND2KB(b *testing.B) { benchmarkFastAND(b, 2048) }
 func BenchmarkFastAND4KB(b *testing.B) { benchmarkFastAND(b, 4096) }
@@ -151,7 +138,6 @@ func benchmarkFastAND(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the baseline AND performance.
 func BenchmarkBaseAND1KB(b *testing.B) { benchmarkBaseAND(b, 1024) }
 func BenchmarkBaseAND2KB(b *testing.B) { benchmarkBaseAND(b, 2048) }
 func BenchmarkBaseAND4KB(b *testing.B) { benchmarkBaseAND(b, 4096) }
@@ -164,7 +150,6 @@ func benchmarkBaseAND(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the potentially optimized OR performance.
 func BenchmarkFastOR1KB(b *testing.B) { benchmarkFastOR(b, 1024) }
 func BenchmarkFastOR2KB(b *testing.B) { benchmarkFastOR(b, 2048) }
 func BenchmarkFastOR4KB(b *testing.B) { benchmarkFastOR(b, 4096) }
@@ -177,7 +162,6 @@ func benchmarkFastOR(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the baseline OR performance.
 func BenchmarkBaseOR1KB(b *testing.B) { benchmarkBaseOR(b, 1024) }
 func BenchmarkBaseOR2KB(b *testing.B) { benchmarkBaseOR(b, 2048) }
 func BenchmarkBaseOR4KB(b *testing.B) { benchmarkBaseOR(b, 4096) }
@@ -190,7 +174,6 @@ func benchmarkBaseOR(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the potentially optimized bit testing performance.
 func BenchmarkFastTest1KB(b *testing.B) { benchmarkFastTest(b, 1024) }
 func BenchmarkFastTest2KB(b *testing.B) { benchmarkFastTest(b, 2048) }
 func BenchmarkFastTest4KB(b *testing.B) { benchmarkFastTest(b, 4096) }
@@ -202,7 +185,6 @@ func benchmarkFastTest(b *testing.B, size int) {
 	}
 }
 
-// Benchmarks the baseline bit testing performance.
 func BenchmarkBaseTest1KB(b *testing.B) { benchmarkBaseTest(b, 1024) }
 func BenchmarkBaseTest2KB(b *testing.B) { benchmarkBaseTest(b, 2048) }
 func BenchmarkBaseTest4KB(b *testing.B) { benchmarkBaseTest(b, 4096) }
