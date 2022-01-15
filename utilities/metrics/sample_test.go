@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-// Benchmark{Compute,Copy}{1000,1000000} demonstrate that, even for relatively
-// expensive computations like Variance, the cost of copying the Sample, as
-// approximated by a make and copy, is much greater than the cost of the
-// computation for small samples and only slightly less for large samples.
 func BenchmarkCompute1000(b *testing.B) {
 	s := make([]int64, 1000)
 	for i := 0; i < len(s); i++ {
@@ -144,10 +140,6 @@ func TestExpDecaySample1000(t *testing.T) {
 	}
 }
 
-// This test makes sure that the sample's priority is not amplified by using
-// nanosecond duration since start rather than second duration since start.
-// The priority becomes +Inf quickly after starting if this is done,
-// effectively freezing the set of samples until a rescale step happens.
 func TestExpDecaySampleNanosecondRegression(t *testing.T) {
 	rand.Seed(1)
 	s := NewExpDecaySample(100, 0.99)
@@ -331,9 +323,6 @@ func testUniformSampleStatistics(t *testing.T, s Sample) {
 	}
 }
 
-// TestUniformSampleConcurrentUpdateCount would expose data race problems with
-// concurrent Update and Count calls on Sample when test is called with -race
-// argument
 func TestUniformSampleConcurrentUpdateCount(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping in short mode")
