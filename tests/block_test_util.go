@@ -1,20 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
-// Package tests implements execution of NEAT Blockchain JSON tests.
 package tests
 
 import (
@@ -36,7 +19,6 @@ import (
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
-// A BlockTest checks handling of entire blocks.
 type BlockTest struct {
 	json btJSON
 }
@@ -96,7 +78,6 @@ func (t *BlockTest) Run() error {
 		return UnsupportedForkError{t.json.Network}
 	}
 
-	// import pre accounts & construct test genesis block & state root
 	db := rawdb.NewMemoryDatabase()
 	gblock, err := t.genesis(config).Commit(db)
 	if err != nil {
@@ -149,36 +130,22 @@ func (t *BlockTest) genesis(config *params.ChainConfig) *core.Genesis {
 	}
 }
 
-/* See https://github.com/ethereum/tests/wiki/Blockchain-Tests-II
-
-   Whether a block is valid or not is a bit subtle, it's defined by presence of
-   blockHeader, transactions and uncleHeaders fields. If they are missing, the block is
-   invalid and we must verify that we do not accept it.
-
-   Since some tests mix valid and invalid blocks we need to check this for every block.
-
-   If a block is invalid it does not necessarily fail the test, if it's invalidness is
-   expected we are expected to ignore it and continue processing and then validate the
-   post state.
-*/
 func (t *BlockTest) insertBlocks(blockchain *core.BlockChain) ([]btBlock, error) {
 	validBlocks := make([]btBlock, 0)
-	// insert the test blocks, which will execute all transactions
 	for _, b := range t.json.Blocks {
 		cb, err := b.decode()
 		if err != nil {
 			if b.BlockHeader == nil {
-				continue // OK - block is supposed to be invalid, continue with next block
+				continue
 			} else {
 				return nil, fmt.Errorf("Block RLP decoding failed when expected to succeed: %v", err)
 			}
 		}
-		// RLP decoding worked, try to insert into chain:
 		blocks := types.Blocks{cb}
 		i, err := blockchain.InsertChain(blocks)
 		if err != nil {
 			if b.BlockHeader == nil {
-				continue // OK - block is supposed to be invalid, continue with next block
+				continue
 			} else {
 				return nil, fmt.Errorf("Block #%v insertion into chain failed: %v", blocks[i].Number(), err)
 			}
@@ -187,7 +154,6 @@ func (t *BlockTest) insertBlocks(blockchain *core.BlockChain) ([]btBlock, error)
 			return nil, fmt.Errorf("Block insertion should have failed")
 		}
 
-		// validate RLP decoding by checking all values against test file JSON
 		if err = validateHeader(b.BlockHeader, cb.Header()); err != nil {
 			return nil, fmt.Errorf("Deserialised block header validation failed: %v", err)
 		}
@@ -246,9 +212,7 @@ func validateHeader(h *btHeader, h2 *types.Header) error {
 }
 
 func (t *BlockTest) validatePostState(statedb *state.StateDB) error {
-	// validate post state accounts in test file against what we have in state db
 	for addr, acct := range t.json.Post {
-		// address is indirectly verified by the other fields, as it's the db key
 		code2 := statedb.GetCode(addr)
 		balance2 := statedb.GetBalance(addr)
 		nonce2 := statedb.GetNonce(addr)
@@ -266,16 +230,10 @@ func (t *BlockTest) validatePostState(statedb *state.StateDB) error {
 }
 
 func (t *BlockTest) validateImportedHeaders(cm *core.BlockChain, validBlocks []btBlock) error {
-	// to get constant lookup when verifying block headers by hash (some tests have many blocks)
 	bmap := make(map[common.Hash]btBlock, len(t.json.Blocks))
 	for _, b := range validBlocks {
 		bmap[b.BlockHeader.Hash] = b
 	}
-	// iterate over blocks backwards from HEAD and validate imported
-	// headers vs test file. some tests have reorgs, and we import
-	// block-by-block, so we can only validate imported headers after
-	// all blocks have been processed by BlockChain, as they may not
-	// be part of the longest chain until last block is imported.
 	for b := cm.CurrentBlock(); b != nil && b.NumberU64() != 0; b = cm.GetBlockByHash(b.Header().ParentHash) {
 		if err := validateHeader(bmap[b.Hash()].BlockHeader, b.Header()); err != nil {
 			return fmt.Errorf("Imported block header validation failed: %v", err)

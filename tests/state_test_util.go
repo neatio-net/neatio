@@ -90,7 +90,6 @@ type stTransactionMarshaling struct {
 	PrivateKey hexutil.Bytes
 }
 
-// Subtests returns all valid subtests of the test.
 func (t *StateTest) Subtests() []StateSubtest {
 	var sub []StateSubtest
 	for fork, pss := range t.json.Post {
