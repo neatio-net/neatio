@@ -1581,12 +1581,12 @@ func (cs *ConsensusState) tryAddVote(vote *types.Vote, peerKey string) error {
 func (cs *ConsensusState) addVote(vote *types.Vote, peerKey string) (added bool, err error) {
 
 	if !cs.IsProposer() {
-		cs.logger.Warn("addVode should only happen if this node is proposer")
+		//cs.logger.Warn("addVode should only happen if this node is proposer")
 		return
 	}
 
 	if vote.Height != cs.Height || int(vote.Round) != cs.Round {
-		cs.logger.Warn("addVote, vote is for previous blocks or previous round, just ignore\n")
+		//cs.logger.Warn("addVote, vote is for previous blocks or previous round, just ignore\n")
 		return
 	}
 
