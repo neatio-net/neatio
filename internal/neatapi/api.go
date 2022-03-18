@@ -1134,8 +1134,6 @@ func (args *SendTxArgs) setDefaults(ctx context.Context, b Backend) error {
 		if len(input) == 0 {
 			return errors.New(`contract creation without any data provided`)
 		}
-	} else if !crypto.ValidateNEATAddr(string(args.To[:])) {
-		return errors.New(`invalid address`)
 	}
 
 	if args.Nonce == nil {

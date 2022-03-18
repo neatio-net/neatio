@@ -3,7 +3,6 @@ package crypto
 import (
 	"bytes"
 	"crypto/ecdsa"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
@@ -12,16 +11,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/btcsuite/btcutil/base58"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-
 	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
 )
 
 var testAddrHex = "970e8128ab834e8eac17ab8e3812f010678cf791"
-var testNEATAddrHex = "3334536a7873394177526a356d437978374166784a755a783566393142714a353333"
 
-var testNEATAddr = "NEATb437dSzaqRGxhTgW4qCq877ytYxb"
 var testPrivHex = "289c2857d4598e37fb9647507e47a309d6133539bf21a8b9cb6df88fd5232032"
 
 func TestKeccak256Hash(t *testing.T) {
@@ -48,7 +43,7 @@ func BenchmarkSha3(b *testing.B) {
 
 func TestSign(t *testing.T) {
 	key, _ := HexToECDSA(testPrivHex)
-	addr := common.HexToAddress(testNEATAddrHex)
+	addr := common.HexToAddress(testAddrHex)
 
 	msg := Keccak256([]byte("foo"))
 	sig, err := Sign(msg, key)
@@ -113,7 +108,7 @@ func TestInvalidSign(t *testing.T) {
 
 func TestNewContractAddress(t *testing.T) {
 	key, _ := HexToECDSA(testPrivHex)
-	addr := common.HexToAddress(testNEATAddrHex)
+	addr := common.HexToAddress(testAddrHex)
 	fmt.Printf("byte addr=%v\n", addr)
 	genAddr := PubkeyToAddress(key.PublicKey)
 	fmt.Printf("gen addr=%v\n", addr)
@@ -228,124 +223,6 @@ func TestPythonIntegration(t *testing.T) {
 	t.Logf("msg: %x, privkey: %s sig: %x\n", msg1, kh, sig1)
 }
 
-func TestNewNEATAddr(t *testing.T) {
-	key, _ := HexToECDSA(testPrivHex)
-	pubKeyBytes := FromECDSAPub(&key.PublicKey)
-	fmt.Printf("pubkeybytes=%v\n\n", pubKeyBytes)
-	fmt.Printf("pubkeyHex=%v\n\n", hexutil.Encode(pubKeyBytes))
-
-	pubkey := ToECDSAPub(pubKeyBytes)
-	fmt.Printf("toecdsapub pubkey=%v\n\n", pubkey)
-
-	fmt.Printf("pubKey=%v\n", key.PublicKey)
-	fmt.Printf("x=%v\n", key.PublicKey.X.Bytes())
-	fmt.Printf("y=%v\n\n", key.PublicKey.Y.Bytes())
-
-	addr := NewNEATScriptAddr(pubKeyBytes)
-	fmt.Printf("address=%v\n", addr)
-
-	pubByte, _ := hexutil.Decode("0x04ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff")
-	pubAddr := NewNEATPubkeyAddr(pubByte)
-	fmt.Printf("0x040000 address %v\n", pubAddr)
-
-	data, _ := hexutil.Decode("0x0095027ab391b1a5327c6e64548e9340f1212b0b5b")
-	fmt.Printf("data %v\n", data)
-	checkByte := calcHash(calcHash(data, sha256.New()), sha256.New())
-	fmt.Printf("checkByte %v\n", checkByte[:4])
-	preDataCheck := append(data[:], checkByte[:4]...)
-	fmt.Printf("preDataCheck %v\n", preDataCheck)
-	bs58checkAddress := base58.Encode(preDataCheck)
-	fmt.Printf("bs58checkAddress %v\n", bs58checkAddress)
-
-	inputStr := "1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
-	result, version, _ := CheckDecode(inputStr)
-	fmt.Printf("result %v, version %v\n", hexutil.Encode(result), version)
-
-	inputStr2 := "1EaterAddressDontSendAssetToFFFFFF"
-	result2, version2, _ := CheckDecode(inputStr2)
-	fmt.Printf("result %v, version %v\n", hexutil.Encode(result2), version2)
-
-	fffByte, _ := hexutil.Decode("0x00ffffffffffffffffffffffffffffffffffffffffffffffff")
-	fffStr := base58.Encode(fffByte)
-	fmt.Printf("fffStr %v\n", fffStr)
-
-	binAddr := common.StringToAddress(addr)
-	fmt.Printf("binary address=%v\n", binAddr)
-
-	hexAddr := common.BytesToAddress(binAddr[:]).Hex()
-	fmt.Printf("hex address=%v\n", hexAddr)
-
-	strAddr := binAddr.String()
-	fmt.Printf("string address=%v\n\n", strAddr)
-
-	checkNEATAddr(t, addr, testNEATAddr)
-}
-
-func BenchmarkCreateNEATAddress(b *testing.B) {
-	for i := 0; i < 100; i++ {
-		key, _ := GenerateKey()
-		addr := NewNEATScriptAddr(FromECDSAPub(&key.PublicKey))
-		fmt.Printf("NEAT address %v\n", addr)
-		addrLen := len([]byte(addr))
-		if addrLen != common.NEATAddressLength {
-			b.Errorf("NEAT address %v lenght mismatch want %v, but %v\n", addr, common.NEATAddressLength, addrLen)
-		}
-	}
-}
-
-type addressTest struct {
-	Address string
-	Valid   bool
-}
-
-var addressList = []*addressTest{
-	{Address: "NEATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: true},
-	{Address: "NEATb437dSzaqRGxhTgW4qCq877ytYx", Valid: false},
-	{Address: "NEAHb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nEATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NeATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "neaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "neATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NeaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nEAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NeAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEAT", Valid: false},
-	{Address: "NEATb43ldSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEATb43IdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEATb430dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEATb43OdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-}
-
-func TestValidateNEATAddress(t *testing.T) {
-	for _, v := range addressList {
-		b := ValidateNEATAddr(v.Address)
-		if b == v.Valid {
-			t.Log("pass")
-		} else {
-			t.Errorf("address %v invalid, want %v but %v", v.Address, v.Valid, b)
-		}
-	}
-
-}
-
-func TestHexToAddress(t *testing.T) {
-	addr := common.HexToAddress("0x494e5433437046756b32634a31746539575a563177385933776b51436341355a")
-	fmt.Printf("addr=%v\n", addr.String())
-	fmt.Printf("addr=%v\n", len(addr))
-	fmt.Printf("testNEATAddrHex=%v\n", []byte(testNEATAddrHex))
-}
-
-func checkNEATAddr(t *testing.T, addr0, addr1 string) {
-	if addr0 != addr1 {
-		t.Fatalf("address mismatch want: %s have: %s", addr0, addr1)
-	}
-}
-
 func TestEthAddress(t *testing.T) {
 	privateKeyHex := "c15c038a5a9f8f948a2ac0eb102c249e4ae1c4fa1e0971b50c63db46dc5fcf8b"
 	privateKey, err := HexToECDSA(privateKeyHex)
@@ -358,29 +235,13 @@ func TestEthAddress(t *testing.T) {
 	ethAddress := hexutil.Encode(Keccak256(publicKey[1:])[12:])
 
 	fmt.Printf("ethereum address %v\n", ethAddress)
-}
 
-func TestByte(t *testing.T) {
-	name := "LikeToken"
-	symbol := "LC"
+	addrHex := "0xc84e9eba34cfb0690ae607207a64d662686d17f7"
 
-	byte1 := hexutil.Encode([]byte(name))
-	byte2 := hexutil.Encode([]byte(symbol))
-	fmt.Printf("name %v, symbol %v\n", byte1, byte2)
-}
+	addrBytes := common.HexToAddress(addrHex).Big()
 
-var messageByte = []byte("")
+	b, _ := new(big.Int).SetString("862381068151338842291839054294319045153034925969", 10)
 
-func CheckDecode(input string) (result []byte, version byte, err error) {
-	decoded := base58.Decode(input)
-	if len(decoded) < 5 {
-		return nil, 0, nil
-	}
-	version = decoded[0]
-	var cksum [4]byte
-	copy(cksum[:], decoded[len(decoded)-4:])
+	addrBig := common.BigToAddress(b).String()
 
-	payload := decoded[1 : len(decoded)-4]
-	result = append(result, payload...)
-	return
-}
+	fmt.Printf("address bytes %v, address big %v\n", addrBytes, addrBig)
