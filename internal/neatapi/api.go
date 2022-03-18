@@ -1490,7 +1490,7 @@ func (api *PublicNEATAPI) WithdrawReward(ctx context.Context, from common.Addres
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1512,7 +1512,7 @@ func (api *PublicNEATAPI) Delegate(ctx context.Context, from, candidate common.A
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    amount,
@@ -1533,7 +1533,7 @@ func (api *PublicNEATAPI) UnDelegate(ctx context.Context, from, candidate common
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1555,7 +1555,7 @@ func (api *PublicNEATAPI) Register(ctx context.Context, from common.Address, reg
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    registerAmount,
@@ -1576,7 +1576,7 @@ func (api *PublicNEATAPI) UnRegister(ctx context.Context, from common.Address, g
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1623,7 +1623,7 @@ func (api *PublicNEATAPI) SetCommission(ctx context.Context, from common.Address
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1644,7 +1644,7 @@ func (api *PublicNEATAPI) EditValidator(ctx context.Context, from common.Address
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,
@@ -1665,7 +1665,7 @@ func (api *PublicNEATAPI) UnBanned(ctx context.Context, from common.Address, gas
 
 	args := SendTxArgs{
 		From:     from,
-		To:       &neatAbi.ChainContractMagicAddr,
+		To:       &neatAbi.NeatioSmartContractAddress,
 		Gas:      (*hexutil.Uint64)(&defaultGas),
 		GasPrice: gasPrice,
 		Value:    nil,

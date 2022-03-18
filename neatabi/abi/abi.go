@@ -122,8 +122,7 @@ func (t FunctionType) String() string {
 		return "EditValidator"
 	case WithdrawReward:
 		return "WithdrawReward"
-	case UnBanned:
-		return "UnBanned"
+
 	case SetCommission:
 		return "SetCommission"
 	default:
@@ -165,8 +164,7 @@ func StringToFunctionType(s string) FunctionType {
 		return EditValidator
 	case "WithdrawReward":
 		return WithdrawReward
-	case "UnBanned":
-		return UnBanned
+
 	case "SetCommission":
 		return SetCommission
 	default:
@@ -247,9 +245,6 @@ type EditValidatorArgs struct {
 
 type WithdrawRewardArgs struct {
 	DelegateAddress common.Address
-}
-
-type UnBannedArgs struct {
 }
 
 type SetCommissionArgs struct {
@@ -524,9 +519,9 @@ const jsonChainABI = `
 	}
 ]`
 
-var SideChainTokenIncentiveAddr = common.StringToAddress("NEATioSideChainsTokenDepositAddy")
+var NeatioSideChainsAddress = common.StringToAddress("0x0000000000000000000000000000000000000000")
 
-var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress")
+var NeatioSmartContractAddress = common.StringToAddress("0x0000000000000000000000000000000000000000")
 
 var ChainABI abi.ABI
 
@@ -539,7 +534,7 @@ func init() {
 }
 
 func IsNeatChainContractAddr(addr *common.Address) bool {
-	return addr != nil && *addr == ChainContractMagicAddr
+	return addr != nil && *addr == NeatioSmartContractAddress
 }
 
 func FunctionTypeFromId(sigdata []byte) (FunctionType, error) {

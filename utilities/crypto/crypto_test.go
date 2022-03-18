@@ -245,3 +245,4 @@ func TestEthAddress(t *testing.T) {
 	addrBig := common.BigToAddress(b).String()
 
 	fmt.Printf("address bytes %v, address big %v\n", addrBytes, addrBig)
+}

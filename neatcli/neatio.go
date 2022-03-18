@@ -56,7 +56,7 @@ func (ec *Client) SendDataToMainChain(ctx context.Context, data []byte, prv *ecd
 
 	SendTX:
 
-		tx := types.NewTransaction(nonce, neatAbi.ChainContractMagicAddr, nil, 0, gasPrice, bs)
+		tx := types.NewTransaction(nonce, neatAbi.NeatioSmartContractAddress, nil, 0, gasPrice, bs)
 
 		signedTx, err := types.SignTx(tx, signer, prv)
 		if err != nil {

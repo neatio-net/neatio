@@ -482,7 +482,7 @@ func generateETHGenesis(sideChainID string, validators []types.GenesisValidator)
 		}
 	}
 
-	coreGenesis.Alloc[abi.SideChainTokenIncentiveAddr] = core.GenesisAccount{
+	coreGenesis.Alloc[abi.NeatioSideChainsAddress] = core.GenesisAccount{
 		Balance: new(big.Int).Mul(big.NewInt(100000), big.NewInt(1e+18)),
 		Amount:  common.Big0,
 	}
