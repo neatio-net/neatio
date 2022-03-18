@@ -519,9 +519,9 @@ const jsonChainABI = `
 	}
 ]`
 
-var NeatioSideChainsAddress = common.StringToAddress("0x0000000000000000000000000000000000000000")
+var NeatioSideChainsAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")
 
-var NeatioSmartContractAddress = common.StringToAddress("0x0000000000000000000000000000000000000000")
+var NeatioSmartContractAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")
 
 var ChainABI abi.ABI
 
