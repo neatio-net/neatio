@@ -13,6 +13,7 @@ require (
 	github.com/docker/docker v20.10.7+incompatible
 	github.com/fatih/color v1.12.0
 	github.com/gizak/termui v2.3.0+incompatible
+	github.com/go-bindata/go-bindata v3.1.2+incompatible // indirect
 	github.com/go-stack/stack v1.8.0
 	github.com/golang/protobuf v1.5.2
 	github.com/golang/snappy v0.0.4
