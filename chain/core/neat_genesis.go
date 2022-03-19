@@ -40,12 +40,12 @@ func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block,
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.StringToAddress(genesisW.Coinbase),
+		Coinbase:   common.HexToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for k, v := range genesisW.Alloc {
-		genesis.Alloc[common.StringToAddress(k)] = v
+		genesis.Alloc[common.HexToAddress(k)] = v
 	}
 
 	return SetupGenesisBlockEx(chainDb, &genesis)
@@ -184,12 +184,12 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.StringToAddress(genesisW.Coinbase),
+		Coinbase:   common.HexToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for i, v := range genesisW.Alloc {
-		genesis.Alloc[common.StringToAddress(i)] = v
+		genesis.Alloc[common.HexToAddress(i)] = v
 	}
 
 	return &genesis
@@ -216,7 +216,7 @@ var DefaultMainnetGenesisJSON = `{
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATioBlockchainsGenesisCoinbase",
+	"coinbase": "common.Address{}",
 	"alloc": {
 			"NEATxdFbo7zsqQqr829U9p7rFja1ZGyk": {
 					"balance": "0x3ee1186f11c064cc00000",
@@ -249,7 +249,7 @@ var DefaultTestnetGenesisJSON = `{
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATioBlockchainsGenesisCoinbase",
+	"coinbase": "common.Address{}",
 	"alloc": {
 			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
 					"balance": "0x3ee1186f11c064cc00000",

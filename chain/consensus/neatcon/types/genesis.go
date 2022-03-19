@@ -134,7 +134,7 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 	}
 	for i, v := range genDocWrite.CurrentEpoch.Validators {
 		genDoc.CurrentEpoch.Validators[i] = GenesisValidator{
-			EthAccount:     common.StringToAddress(v.EthAccount),
+			EthAccount:     common.HexToAddress(v.EthAccount),
 			PubKey:         v.PubKey,
 			Amount:         v.Amount,
 			Name:           v.Name,

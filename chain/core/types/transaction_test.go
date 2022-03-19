@@ -223,7 +223,7 @@ func TestNewTransactionJSON(t *testing.T) {
 
 	var tx *Transaction
 
-	tx = NewTransaction(0, common.StringToAddress("NEATtWX5FxpBddhwxzde47H7dWorB6AA"), big.NewInt(1000000000000000000), 30000, big.NewInt(20000000000), []byte("0x"))
+	tx = NewTransaction(0, common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"), big.NewInt(1000000000000000000), 30000, big.NewInt(20000000000), []byte("0x"))
 
 	fmt.Printf("before sign tx %v\n", tx)
 	tx, err = SignTx(tx, signer, key)
@@ -257,7 +257,7 @@ func TestSignTx(t *testing.T) {
 		t.Fatalf("could not decode key: %v", err)
 	}
 	signer := NewEIP155Signer(common.Big2)
-	address := common.StringToAddress("NEATtWX5FxpBddhwxzde47H7dWorB6AA")
+	address := common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca")
 
 	d := txdata{
 		AccountNonce: 0,
@@ -294,9 +294,9 @@ func TestDelegateTx(t *testing.T) {
 	}
 	signer := NewEIP155Signer(common.Big2)
 
-	address := common.StringToAddress("NEATioMiningSmartContractAddress")
+	address := common.HexToAddress("0x1000000000000000000000000000000000000000")
 
-	input, err := neatAbi.ChainABI.Pack(neatAbi.Delegate.String(), common.StringToAddress("NEATioMiningSmartContractAddress"))
+	input, err := neatAbi.ChainABI.Pack(neatAbi.Delegate.String(), common.HexToAddress("0x1000000000000000000000000000000000000000"))
 	fmt.Printf("delegate input %v\n", hexutil.Encode(input))
 	if err != nil {
 		t.Errorf("could not pack data, err %v\n", err)

@@ -135,7 +135,7 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = format(tx)
 		}
 
-		content["pending"][account.String()] = dump
+		content["pending"][account.Hex()] = dump
 	}
 
 	for account, txs := range queue {
@@ -144,7 +144,7 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = format(tx)
 		}
 
-		content["queued"][account.String()] = dump
+		content["queued"][account.Hex()] = dump
 	}
 	return content
 }
@@ -157,11 +157,11 @@ func NewPublicAccountAPI(am *accounts.Manager) *PublicAccountAPI {
 	return &PublicAccountAPI{am: am}
 }
 
-func (s *PublicAccountAPI) Accounts() []string {
-	addresses := make([]string, 0)
+func (s *PublicAccountAPI) Accounts() []common.Address {
+	addresses := make([]common.Address, 0)
 	for _, wallet := range s.am.Wallets() {
 		for _, account := range wallet.Accounts() {
-			addresses = append(addresses, account.Address.String())
+			addresses = append(addresses, account.Address)
 		}
 	}
 	return addresses
@@ -181,11 +181,11 @@ func NewPrivateAccountAPI(b Backend, nonceLock *AddrLocker) *PrivateAccountAPI {
 	}
 }
 
-func (s *PrivateAccountAPI) ListAccounts() []string {
-	addresses := make([]string, 0)
+func (s *PrivateAccountAPI) ListAccounts() []common.Address {
+	addresses := make([]common.Address, 0)
 	for _, wallet := range s.am.Wallets() {
 		for _, account := range wallet.Accounts() {
-			addresses = append(addresses, account.Address.String())
+			addresses = append(addresses, account.Address)
 		}
 	}
 	return addresses
@@ -243,25 +243,25 @@ func (s *PrivateAccountAPI) DeriveAccount(url string, path string, pin *bool) (a
 	return wallet.Derive(derivPath, *pin)
 }
 
-func (s *PrivateAccountAPI) NewAccount(password string) (string, error) {
+func (s *PrivateAccountAPI) NewAccount(password string) (common.Address, error) {
 	acc, err := fetchKeystore(s.am).NewAccount(password)
 	if err == nil {
-		return acc.Address.String(), nil
+		return acc.Address, nil
 	}
-	return "", err
+	return common.Address{}, err
 }
 
 func fetchKeystore(am *accounts.Manager) *keystore.KeyStore {
 	return am.Backends(keystore.KeyStoreType)[0].(*keystore.KeyStore)
 }
 
-func (s *PrivateAccountAPI) ImportRawKey(privkey string, password string) (string, error) {
+func (s *PrivateAccountAPI) ImportRawKey(privkey string, password string) (common.Address, error) {
 	key, err := crypto.HexToECDSA(privkey)
 	if err != nil {
-		return "", err
+		return common.Address{}, err
 	}
 	acc, err := fetchKeystore(s.am).ImportECDSA(key, password)
-	return acc.Address.String(), err
+	return acc.Address, err
 }
 
 func (s *PrivateAccountAPI) UnlockAccount(addr common.Address, password string, duration *uint64) (bool, error) {
@@ -361,20 +361,20 @@ func (s *PrivateAccountAPI) Sign(ctx context.Context, data hexutil.Bytes, addr c
 	return signature, nil
 }
 
-func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Bytes) (string, error) {
+func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Bytes) (common.Address, error) {
 	if len(sig) != 65 {
-		return "", fmt.Errorf("signature must be 65 bytes long")
+		return common.Address{}, fmt.Errorf("signature must be 65 bytes long")
 	}
 	if sig[64] != 27 && sig[64] != 28 {
-		return "", fmt.Errorf("invalid NEAT Blockchain signature (V is not 27 or 28)")
+		return common.Address{}, fmt.Errorf("invalid NEAT Blockchain signature (V is not 27 or 28)")
 	}
 	sig[64] -= 27
 
 	rpk, err := crypto.SigToPub(signHash(data), sig)
 	if err != nil {
-		return "", err
+		return common.Address{}, err
 	}
-	return crypto.PubkeyToAddress(*rpk).String(), nil
+	return crypto.PubkeyToAddress(*rpk), nil
 }
 
 func (s *PrivateAccountAPI) SignAndSendTransaction(ctx context.Context, args SendTxArgs, passwd string) (common.Hash, error) {
@@ -406,21 +406,6 @@ func (s *PublicBlockChainAPI) GetBalance(ctx context.Context, address common.Add
 	return (*hexutil.Big)(state.GetBalance(address)), state.Error()
 }
 
-func (s *PublicBlockChainAPI) GetCandidateSetByBlockNumber(ctx context.Context, blockNr rpc.BlockNumber) ([]string, error) {
-	state, _, err := s.b.StateAndHeaderByNumber(ctx, blockNr)
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	var candidateList = make([]string, 0)
-
-	for addr := range state.GetCandidateSet() {
-		candidateList = append(candidateList, addr.String())
-	}
-
-	return candidateList, nil
-}
-
 func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address common.Address, blockNr rpc.BlockNumber, fullDetail bool) (map[string]interface{}, error) {
 	state, _, err := s.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
@@ -438,13 +423,13 @@ func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address comm
 	}
 
 	if fullDetail {
-		proxied_detail := make(map[string]struct {
+		proxied_detail := make(map[common.Address]struct {
 			ProxiedBalance        *hexutil.Big
 			DepositProxiedBalance *hexutil.Big
 			PendingRefundBalance  *hexutil.Big
 		})
 		state.ForEachProxied(address, func(key common.Address, proxiedBalance, depositProxiedBalance, pendingRefundBalance *big.Int) bool {
-			proxied_detail[key.String()] = struct {
+			proxied_detail[key] = struct {
 				ProxiedBalance        *hexutil.Big
 				DepositProxiedBalance *hexutil.Big
 				PendingRefundBalance  *hexutil.Big
@@ -458,9 +443,9 @@ func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address comm
 
 		fields["proxiedDetail"] = proxied_detail
 
-		reward_detail := make(map[string]*hexutil.Big)
+		reward_detail := make(map[common.Address]*hexutil.Big)
 		state.ForEachReward(address, func(key common.Address, rewardBalance *big.Int) bool {
-			reward_detail[key.String()] = (*hexutil.Big)(rewardBalance)
+			reward_detail[key] = (*hexutil.Big)(rewardBalance)
 			return true
 		})
 
@@ -743,7 +728,7 @@ func (s *PublicBlockChainAPI) rpcOutputBlock(b *types.Block, inclTx bool, fullTx
 		"sha3Uncles":       head.UncleHash,
 		"logsBloom":        head.Bloom,
 		"stateRoot":        head.Root,
-		"miner":            head.Coinbase.String(),
+		"miner":            head.Coinbase,
 		"difficulty":       (*hexutil.Big)(head.Difficulty),
 		"totalDifficulty":  (*hexutil.Big)(s.b.GetTd(b.Hash())),
 		"extraData":        hexutil.Bytes(head.Extra),
@@ -788,21 +773,20 @@ func (s *PublicBlockChainAPI) rpcOutputBlock(b *types.Block, inclTx bool, fullTx
 }
 
 type RPCTransaction struct {
-	BlockHash   common.Hash    `json:"blockHash"`
-	BlockNumber *hexutil.Big   `json:"blockNumber"`
-	From        string         `json:"from"`
-	Gas         hexutil.Uint64 `json:"gas"`
-	GasPrice    *hexutil.Big   `json:"gasPrice"`
-	Hash        common.Hash    `json:"hash"`
-	Input       hexutil.Bytes  `json:"input"`
-	Nonce       hexutil.Uint64 `json:"nonce"`
-
-	To               interface{}  `json:"to"`
-	TransactionIndex hexutil.Uint `json:"transactionIndex"`
-	Value            *hexutil.Big `json:"value"`
-	V                *hexutil.Big `json:"v"`
-	R                *hexutil.Big `json:"r"`
-	S                *hexutil.Big `json:"s"`
+	BlockHash        common.Hash     `json:"blockHash"`
+	BlockNumber      *hexutil.Big    `json:"blockNumber"`
+	From             common.Address  `json:"from"`
+	Gas              hexutil.Uint64  `json:"gas"`
+	GasPrice         *hexutil.Big    `json:"gasPrice"`
+	Hash             common.Hash     `json:"hash"`
+	Input            hexutil.Bytes   `json:"input"`
+	Nonce            hexutil.Uint64  `json:"nonce"`
+	To               *common.Address `json:"to"`
+	TransactionIndex hexutil.Uint    `json:"transactionIndex"`
+	Value            *hexutil.Big    `json:"value"`
+	V                *hexutil.Big    `json:"v"`
+	R                *hexutil.Big    `json:"r"`
+	S                *hexutil.Big    `json:"s"`
 }
 
 func newRPCTransaction(tx *types.Transaction, blockHash common.Hash, blockNumber uint64, index uint64) *RPCTransaction {
@@ -812,22 +796,15 @@ func newRPCTransaction(tx *types.Transaction, blockHash common.Hash, blockNumber
 	}
 	from, _ := types.Sender(signer, tx)
 
-	var to interface{}
-	if tx.To() == nil {
-		to = nil
-	} else {
-		to = tx.To().String()
-	}
-
 	v, r, s := tx.RawSignatureValues()
 	result := &RPCTransaction{
-		From:     from.String(),
+		From:     from,
 		Gas:      hexutil.Uint64(tx.Gas()),
 		GasPrice: (*hexutil.Big)(tx.GasPrice()),
 		Hash:     tx.Hash(),
 		Input:    hexutil.Bytes(tx.Data()),
 		Nonce:    hexutil.Uint64(tx.Nonce()),
-		To:       to,
+		To:       tx.To(),
 		Value:    (*hexutil.Big)(tx.Value()),
 		V:        (*hexutil.Big)(v),
 		R:        (*hexutil.Big)(r),
@@ -998,20 +975,14 @@ func (s *PublicTransactionPoolAPI) GetTransactionReceipt(ctx context.Context, ha
 		signer = types.NewEIP155Signer(tx.ChainId())
 	}
 	from, _ := types.Sender(signer, tx)
-	var to interface{}
-	if tx.To() == nil {
-		to = nil
-	} else {
-		to = tx.To().String()
-	}
 
 	fields := map[string]interface{}{
 		"blockHash":         blockHash,
 		"blockNumber":       hexutil.Uint64(blockNumber),
 		"transactionHash":   hash,
 		"transactionIndex":  hexutil.Uint64(index),
-		"from":              from.String(),
-		"to":                to,
+		"from":              from,
+		"to":                tx.To(),
 		"gasUsed":           hexutil.Uint64(receipt.GasUsed),
 		"cumulativeGasUsed": hexutil.Uint64(receipt.CumulativeGasUsed),
 		"contractAddress":   nil,
@@ -1026,27 +997,11 @@ func (s *PublicTransactionPoolAPI) GetTransactionReceipt(ctx context.Context, ha
 	}
 	if receipt.Logs == nil {
 		fields["logs"] = [][]*types.Log{}
-	} else {
-		var log []*Log
-		for _, l := range receipt.Logs {
-			newLog := &Log{
-				Address:     l.Address.String(),
-				Topics:      l.Topics,
-				Data:        hexutil.Encode(l.Data),
-				BlockNumber: l.BlockNumber,
-				TxHash:      l.TxHash,
-				TxIndex:     l.TxIndex,
-				BlockHash:   l.BlockHash,
-				Index:       l.Index,
-				Removed:     l.Removed,
-			}
-			log = append(log, newLog)
-		}
-		fields["logs"] = log
+
 	}
 
 	if receipt.ContractAddress != (common.Address{}) {
-		fields["contractAddress"] = receipt.ContractAddress.String()
+		fields["contractAddress"] = receipt.ContractAddress
 	}
 	return fields, nil
 }
@@ -1172,7 +1127,7 @@ func submitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 		}
 		addr := crypto.CreateAddress(from, tx.Nonce())
 
-		log.Info("Submitted contract creation", "fullhash", tx.Hash().Hex(), "contract", addr.String())
+		log.Info("Submitted contract creation", "fullhash", tx.Hash().Hex(), "contract", addr)
 	} else {
 		log.Info("Submitted transaction", "fullhash", tx.Hash().Hex(), "recipient", tx.To())
 	}
