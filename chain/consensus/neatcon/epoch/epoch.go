@@ -30,7 +30,7 @@ const (
 	EPOCH_SAVED
 
 	MinimumValidatorsSize = 1
-	MaximumValidatorsSize = 10
+	MaximumValidatorsSize = 100
 
 	epochKey       = "Epoch:%v"
 	latestEpochKey = "LatestEpoch"
@@ -596,7 +596,7 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	}
 
 	if timePerBlockOfEpoch == 0 {
-		timePerBlockOfEpoch = 1000000000
+		timePerBlockOfEpoch = 5000000000 // 5 seconds
 	}
 
 	epochLeftThisYear := epochNumberPerYear - epoch.Number%epochNumberPerYear - 1
