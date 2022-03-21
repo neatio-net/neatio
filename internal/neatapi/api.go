@@ -720,7 +720,6 @@ func (s *PublicBlockChainAPI) rpcOutputBlock(b *types.Block, inclTx bool, fullTx
 	head := b.Header()
 	fields := map[string]interface{}{
 		"number":           (*hexutil.Big)(head.Number),
-		"mainchainNumber":  (*hexutil.Big)(head.MainChainNumber),
 		"hash":             b.Hash(),
 		"parentHash":       head.ParentHash,
 		"nonce":            head.Nonce,
