@@ -197,8 +197,8 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{                                                                                                                                                                                            
 	"config": {                                                                                                                                                                          
-			"neatChainId": "neatio",                                                                                                                                                     
-			"chainId": 1,                                                                                                                                                                
+			"neatChainId": "mainnet",                                                                                                                                                     
+			"chainId": 9910,                                                                                                                                                                
 			"homesteadBlock": 0,                                                                                                                                                         
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -206,11 +206,11 @@ var DefaultMainnetGenesisJSON = `{
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
 			"neatcon": {
-					"epoch": 86457,
+					"epoch": 30000,
 					"policy": 0
 			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
+	"nonce": "0x0",
 	"timestamp": "0x61cf9982",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
@@ -218,7 +218,7 @@ var DefaultMainnetGenesisJSON = `{
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "common.Address{}",
 	"alloc": {
-			"NEATxdFbo7zsqQqr829U9p7rFja1ZGyk": {
+			"f26d305f1542d73c5c551d89e6ec33d951765188": {
 					"balance": "0x3ee1186f11c064cc00000",
 					"amount": "0x104e2da94483f6200000"
 			}
@@ -231,7 +231,7 @@ var DefaultMainnetGenesisJSON = `{
 var DefaultTestnetGenesisJSON = `{
 	"config": {
 			"neatChainId": "testnet",
-			"chainId": 2,
+			"chainId": 9911,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -243,7 +243,7 @@ var DefaultTestnetGenesisJSON = `{
 					"policy": 0
 			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
+	"nonce": "0x0",
 	"timestamp": "0x6127cacf",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
@@ -251,7 +251,7 @@ var DefaultTestnetGenesisJSON = `{
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "common.Address{}",
 	"alloc": {
-			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
+			"f26d305f1542d73c5c551d89e6ec33d951765188": {
 					"balance": "0x3ee1186f11c064cc00000",
 					"amount": "0x104e2da94483f6200000"
 			}
