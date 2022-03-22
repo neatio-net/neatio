@@ -21,7 +21,7 @@ var DefaultConfig = Config{
 
 	SyncMode: downloader.FullSync,
 
-	NetworkId:      9910,
+	NetworkId:      515,
 	DatabaseCache:  512,
 	TrieCleanCache: 256,
 	TrieDirtyCache: 256,

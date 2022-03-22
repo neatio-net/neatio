@@ -18,7 +18,7 @@ var (
 var (
 	MainnetChainConfig = &ChainConfig{
 		NeatChainId:         "neatio",
-		ChainId:             big.NewInt(1),
+		ChainId:             big.NewInt(515),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
 		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
@@ -34,7 +34,7 @@ var (
 
 	TestnetChainConfig = &ChainConfig{
 		NeatChainId:         "testnet",
-		ChainId:             big.NewInt(2),
+		ChainId:             big.NewInt(525),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
 		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
