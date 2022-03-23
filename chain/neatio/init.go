@@ -298,7 +298,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 				Number:         0,
 				RewardPerBlock: rewardPerBlock,
 				StartBlock:     0,
-				EndBlock:       86457,
+				EndBlock:       17280,
 				Status:         0,
 			},
 		}
@@ -327,7 +327,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 	var rewardScheme = types.RewardSchemeDoc{
 		TotalReward:        big.NewInt(0),
 		RewardFirstYear:    big.NewInt(0),
-		EpochNumberPerYear: 8760,
+		EpochNumberPerYear: 365,
 		TotalMintingYears:  0,
 	}
 
@@ -340,7 +340,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 			Number:         0,
 			RewardPerBlock: big.NewInt(0),
 			StartBlock:     0,
-			EndBlock:       3600,
+			EndBlock:       17280,
 			Status:         0,
 			Validators:     validators,
 		},
