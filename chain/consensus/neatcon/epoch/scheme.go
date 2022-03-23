@@ -20,7 +20,7 @@ type RewardScheme struct {
 	TotalReward        *big.Int
 	RewardFirstYear    *big.Int
 	EpochNumberPerYear uint64
-	TotalYear          uint64
+	TotalMintingYears  uint64
 }
 
 func LoadRewardScheme(db dbm.DB) *RewardScheme {
@@ -45,7 +45,7 @@ func MakeRewardScheme(db dbm.DB, rsDoc *ncTypes.RewardSchemeDoc) *RewardScheme {
 		TotalReward:        rsDoc.TotalReward,
 		RewardFirstYear:    rsDoc.RewardFirstYear,
 		EpochNumberPerYear: rsDoc.EpochNumberPerYear,
-		TotalYear:          rsDoc.TotalYear,
+		TotalMintingYears:  rsDoc.TotalMintingYears,
 	}
 
 	return rs

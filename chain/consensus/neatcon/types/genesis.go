@@ -41,7 +41,7 @@ type RewardSchemeDoc struct {
 	TotalReward        *big.Int `json:"total_reward"`
 	RewardFirstYear    *big.Int `json:"reward_first_year"`
 	EpochNumberPerYear uint64   `json:"epoch_no_per_year"`
-	TotalYear          uint64   `json:"total_year"`
+	TotalMintingYears  uint64   `json:"total_year"`
 }
 
 type GenesisDoc struct {
@@ -386,13 +386,13 @@ func (rs RewardSchemeDoc) MarshalJSON() ([]byte, error) {
 		TotalReward        *hexutil.Big   `json:"total_reward"`
 		RewardFirstYear    *hexutil.Big   `json:"reward_first_year"`
 		EpochNumberPerYear hexutil.Uint64 `json:"epoch_no_per_year"`
-		TotalYear          hexutil.Uint64 `json:"total_year"`
+		TotalMintingYears  hexutil.Uint64 `json:"total_year"`
 	}
 	var enc hexRewardScheme
 	enc.TotalReward = (*hexutil.Big)(rs.TotalReward)
 	enc.RewardFirstYear = (*hexutil.Big)(rs.RewardFirstYear)
 	enc.EpochNumberPerYear = hexutil.Uint64(rs.EpochNumberPerYear)
-	enc.TotalYear = hexutil.Uint64(rs.TotalYear)
+	enc.TotalMintingYears = hexutil.Uint64(rs.TotalMintingYears)
 
 	return json.Marshal(&enc)
 }
@@ -402,7 +402,7 @@ func (rs *RewardSchemeDoc) UnmarshalJSON(input []byte) error {
 		TotalReward        *hexutil.Big   `json:"total_reward"`
 		RewardFirstYear    *hexutil.Big   `json:"reward_first_year"`
 		EpochNumberPerYear hexutil.Uint64 `json:"epoch_no_per_year"`
-		TotalYear          hexutil.Uint64 `json:"total_year"`
+		TotalMintingYears  hexutil.Uint64 `json:"total_year"`
 	}
 	var dec hexRewardScheme
 	if err := json.Unmarshal(input, &dec); err != nil {
@@ -418,7 +418,7 @@ func (rs *RewardSchemeDoc) UnmarshalJSON(input []byte) error {
 	rs.RewardFirstYear = (*big.Int)(dec.RewardFirstYear)
 
 	rs.EpochNumberPerYear = uint64(dec.EpochNumberPerYear)
-	rs.TotalYear = uint64(dec.TotalYear)
+	rs.TotalMintingYears = uint64(dec.TotalMintingYears)
 
 	return nil
 }

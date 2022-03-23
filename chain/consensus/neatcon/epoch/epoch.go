@@ -577,7 +577,7 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 	var rewardFirstYear = epoch.rs.RewardFirstYear
 	var epochNumberPerYear = epoch.rs.EpochNumberPerYear
-	var totalYear = epoch.rs.TotalYear
+	var totalYear = epoch.rs.TotalMintingYears
 	var timePerBlockOfEpoch int64
 
 	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 17500

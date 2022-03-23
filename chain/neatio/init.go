@@ -34,8 +34,8 @@ import (
 )
 
 const (
-	POSReward = "72248976000000000000000000"
-	TotalYear = 29
+	TotalMintingReward = "72248976000000000000000000"
+	TotalMintingYears  = 17
 
 	DefaultAccountPassword = "neatio"
 )
@@ -260,8 +260,8 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 	genFile := config.GetString("genesis_file")
 	if _, err := os.Stat(genFile); os.IsNotExist(err) {
 
-		posReward, _ := new(big.Int).SetString(POSReward, 10)
-		totalYear := TotalYear
+		posReward, _ := new(big.Int).SetString(TotalMintingReward, 10)
+		totalYear := TotalMintingYears
 		rewardFirstYear := new(big.Int).Div(posReward, big.NewInt(int64(totalYear)))
 
 		var rewardScheme types.RewardSchemeDoc
@@ -270,14 +270,14 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 				TotalReward:        posReward,
 				RewardFirstYear:    rewardFirstYear,
 				EpochNumberPerYear: 365,
-				TotalYear:          uint64(totalYear),
+				TotalMintingYears:  uint64(totalYear),
 			}
 		} else {
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        big.NewInt(0),
 				RewardFirstYear:    big.NewInt(0),
 				EpochNumberPerYear: 1,
-				TotalYear:          0,
+				TotalMintingYears:  0,
 			}
 		}
 
@@ -328,7 +328,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 		TotalReward:        big.NewInt(0),
 		RewardFirstYear:    big.NewInt(0),
 		EpochNumberPerYear: 8760,
-		TotalYear:          0,
+		TotalMintingYears:  0,
 	}
 
 	genDoc := types.GenesisDoc{
