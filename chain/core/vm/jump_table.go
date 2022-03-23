@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package vm
 
 import (
@@ -25,7 +9,7 @@ import (
 
 type (
 	executionFunc       func(pc *uint64, interpreter *EVMInterpreter, contract *Contract, memory *Memory, stack *Stack) ([]byte, error)
-	gasFunc             func(params.GasTable, *EVM, *Contract, *Stack, *Memory, uint64) (uint64, error) // last parameter is the requested memory size as a uint64
+	gasFunc             func(params.GasTable, *EVM, *Contract, *Stack, *Memory, uint64) (uint64, error) 
 	stackValidationFunc func(*Stack) error
 	memorySizeFunc      func(*Stack) *big.Int
 )
@@ -33,21 +17,17 @@ type (
 var errGasUintOverflow = errors.New("gas uint64 overflow")
 
 type operation struct {
-	// execute is the operation function
 	execute executionFunc
-	// gasCost is the gas function and returns the gas required for execution
 	gasCost gasFunc
-	// validateStack validates the stack (size) for the operation
 	validateStack stackValidationFunc
-	// memorySize returns the memory size required for the operation
 	memorySize memorySizeFunc
 
-	halts   bool // indicates whether the operation should halt further execution
-	jumps   bool // indicates whether the program counter should not increment
-	writes  bool // determines whether this a state modifying operation
-	valid   bool // indication whether the retrieved operation is valid and known
-	reverts bool // determines whether the operation reverts state (implicitly halts)
-	returns bool // determines whether the operations sets the return data content
+	halts   bool 
+	jumps   bool 
+	writes  bool 
+	valid   bool 
+	reverts bool 
+	returns bool 
 }
 
 var (
@@ -57,10 +37,10 @@ var (
 	constantinopleInstructionSet = newConstantinopleInstructionSet()
 )
 
-// NewConstantinopleInstructionSet returns the frontier, homestead
-// byzantium and contantinople instructions.
+
+
 func newConstantinopleInstructionSet() [256]operation {
-	// instructions that can be executed during the byzantium phase.
+	
 	instructionSet := newByzantiumInstructionSet()
 	instructionSet[SHL] = operation{
 		execute:       opSHL,
@@ -98,10 +78,10 @@ func newConstantinopleInstructionSet() [256]operation {
 	return instructionSet
 }
 
-// NewByzantiumInstructionSet returns the frontier, homestead and
-// byzantium instructions.
+
+
 func newByzantiumInstructionSet() [256]operation {
-	// instructions that can be executed during the homestead phase.
+	
 	instructionSet := newHomesteadInstructionSet()
 	instructionSet[STATICCALL] = operation{
 		execute:       opStaticCall,
@@ -136,8 +116,8 @@ func newByzantiumInstructionSet() [256]operation {
 	return instructionSet
 }
 
-// NewHomesteadInstructionSet returns the frontier and homestead
-// instructions that can be executed during the homestead phase.
+
+
 func newHomesteadInstructionSet() [256]operation {
 	instructionSet := newFrontierInstructionSet()
 	instructionSet[DELEGATECALL] = operation{
@@ -151,8 +131,8 @@ func newHomesteadInstructionSet() [256]operation {
 	return instructionSet
 }
 
-// NewFrontierInstructionSet returns the frontier instructions
-// that can be executed during the frontier phase.
+
+
 func newFrontierInstructionSet() [256]operation {
 	return [256]operation{
 		STOP: {

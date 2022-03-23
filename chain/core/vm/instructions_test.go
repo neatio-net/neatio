@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package vm
 
 import (
@@ -51,9 +35,6 @@ func testTwoOperandOp(t *testing.T, tests []twoOperandTest, opFn func(pc *uint64
 		if actual.Cmp(expected) != 0 {
 			t.Errorf("Testcase %d, expected  %v, got %v", i, expected, actual)
 		}
-		// Check pool usage
-		// 1.pool is not allowed to contain anything on the stack
-		// 2.pool is not allowed to contain the same pointers twice
 		if evmInterpreter.intPool.pool.len() > 0 {
 
 			poolvals := make(map[*big.Int]struct{})
@@ -110,7 +91,6 @@ func TestByteOp(t *testing.T) {
 }
 
 func TestSHL(t *testing.T) {
-	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#shl-shift-left
 	tests := []twoOperandTest{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "00", "0000000000000000000000000000000000000000000000000000000000000001"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000002"},
@@ -128,7 +108,6 @@ func TestSHL(t *testing.T) {
 }
 
 func TestSHR(t *testing.T) {
-	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#shr-logical-shift-right
 	tests := []twoOperandTest{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "00", "0000000000000000000000000000000000000000000000000000000000000001"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000000"},
@@ -146,7 +125,6 @@ func TestSHR(t *testing.T) {
 }
 
 func TestSAR(t *testing.T) {
-	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#sar-arithmetic-shift-right
 	tests := []twoOperandTest{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "00", "0000000000000000000000000000000000000000000000000000000000000001"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000000"},
@@ -215,7 +193,6 @@ func opBenchmark(bench *testing.B, op func(pc *uint64, interpreter *EVMInterpret
 
 	env.interpreter = evmInterpreter
 	evmInterpreter.intPool = poolOfIntPools.get()
-	// convert args
 	byteArgs := make([][]byte, len(args))
 	for i, arg := range args {
 		byteArgs[i] = common.Hex2Bytes(arg)

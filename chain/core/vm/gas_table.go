@@ -1,19 +1,3 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package vm
 
 import (
@@ -22,20 +6,13 @@ import (
 	"github.com/neatlab/neatio/utilities/common/math"
 )
 
-// memoryGasCosts calculates the quadratic gas for memory expansion. It does so
-// only for the memory region that is expanded, not the total memory.
+
 func memoryGasCost(mem *Memory, newMemSize uint64) (uint64, error) {
 
 	if newMemSize == 0 {
 		return 0, nil
-	}
-	// The maximum that will fit in a uint64 is max_word_count - 1
-	// anything above that will result in an overflow.
-	// Additionally, a newMemSize which results in a
-	// newMemSizeWords larger than 0x7ffffffff will cause the square operation
-	// to overflow.
-	// The constant 0xffffffffe0 is the highest number that can be used without
-	// overflowing the gas calculation
+	}	
+	
 	if newMemSize > 0xffffffffe0 {
 		return 0, errGasUintOverflow
 	}
@@ -120,19 +97,19 @@ func gasSStore(gt params.GasTable, evm *EVM, contract *Contract, stack *Stack, m
 		y, x = stack.Back(1), stack.Back(0)
 		val  = evm.StateDB.GetState(contract.Address(), common.BigToHash(x))
 	)
-	// This checks for 3 scenario's and calculates gas accordingly
-	// 1. From a zero-value address to a non-zero value         (NEW VALUE)
-	// 2. From a non-zero value address to a zero-value address (DELETE)
-	// 3. From a non-zero to a non-zero                         (CHANGE)
+	
+	
+	
+	
 	if val == (common.Hash{}) && y.Sign() != 0 {
-		// 0 => non 0
+		
 		return params.SstoreSetGas, nil
 	} else if val != (common.Hash{}) && y.Sign() == 0 {
-		// non 0 => 0
+		
 		evm.StateDB.AddRefund(params.SstoreRefundGas)
 		return params.SstoreClearGas, nil
 	} else {
-		// non 0 => non 0 (or 0 => 0)
+		
 		return params.SstoreResetGas, nil
 	}
 }
@@ -321,7 +298,7 @@ func gasExp(gt params.GasTable, evm *EVM, contract *Contract, stack *Stack, mem 
 	expByteLen := uint64((stack.data[stack.len()-2].BitLen() + 7) / 8)
 
 	var (
-		gas      = expByteLen * gt.ExpByte // no overflow check required. Max is 256 * ExpByte gas
+		gas      = expByteLen * gt.ExpByte 
 		overflow bool
 	)
 	if gas, overflow = math.SafeAdd(gas, GasSlowStep); overflow {
@@ -400,7 +377,7 @@ func gasRevert(gt params.GasTable, evm *EVM, contract *Contract, stack *Stack, m
 
 func gasSuicide(gt params.GasTable, evm *EVM, contract *Contract, stack *Stack, mem *Memory, memorySize uint64) (uint64, error) {
 	var gas uint64
-	// EIP150 homestead gas reprice fork:
+	
 	if evm.ChainConfig().IsEIP150(evm.BlockNumber) {
 		gas = gt.Suicide
 		var (
@@ -409,7 +386,7 @@ func gasSuicide(gt params.GasTable, evm *EVM, contract *Contract, stack *Stack, 
 		)
 
 		if eip158 {
-			// if empty and transfers value
+			
 			if evm.StateDB.Empty(address) && evm.StateDB.GetBalance(contract.Address()).Sign() != 0 {
 				gas += gt.CreateBySuicide
 			}
