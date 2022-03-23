@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	TotalMintingReward = "72248976000000000000000000"
+	TotalMintingReward = "46150000000000000000000000"
 	TotalMintingYears  = 17
 
 	DefaultAccountPassword = "neatio"
