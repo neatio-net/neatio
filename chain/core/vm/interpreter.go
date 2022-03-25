@@ -9,36 +9,28 @@ import (
 )
 
 type Config struct {
-	
-	Debug bool	
-	Tracer Tracer
-	
-	NoRecursion bool
-	
+	Debug                   bool
+	Tracer                  Tracer
+	NoRecursion             bool
 	EnablePreimageRecording bool
-	JumpTable [256]operation
+	JumpTable               [256]operation
+}
 
 type Interpreter interface {
-	
-	
 	Run(contract *Contract, input []byte, static bool) ([]byte, error)
 	CanRun([]byte) bool
 }
 
-
 type EVMInterpreter struct {
-	evm      *EVM
-	cfg      Config
-	gasTable params.GasTable
-	intPool  *intPool
-
-	readOnly   bool   
-	returnData []byte 
+	evm        *EVM
+	cfg        Config
+	gasTable   params.GasTable
+	intPool    *intPool
+	readOnly   bool
+	returnData []byte
 }
 
-
 func NewEVMInterpreter(evm *EVM, cfg Config) *EVMInterpreter {
-	
 	if !cfg.JumpTable[STOP].valid {
 		switch {
 		case evm.ChainConfig().IsConstantinople(evm.BlockNumber):
@@ -61,10 +53,7 @@ func NewEVMInterpreter(evm *EVM, cfg Config) *EVMInterpreter {
 
 func (in *EVMInterpreter) enforceRestrictions(op OpCode, operation operation, stack *Stack) error {
 	if in.evm.chainRules.IsByzantium {
-		if in.readOnly {			
-			
-			
-			
+		if in.readOnly {
 			if operation.writes || (op == CALL && stack.Back(2).BitLen() > 0) {
 				return errWriteProtection
 			}
@@ -82,41 +71,31 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		}()
 	}
 
-	
 	in.evm.depth++
 	defer func() { in.evm.depth-- }()
 
-	
-	
 	if readOnly && !in.readOnly {
 		in.readOnly = true
 		defer func() { in.readOnly = false }()
 	}
-	
 	in.returnData = nil
 
-	
 	if len(contract.Code) == 0 {
 		return nil, nil
 	}
 
 	var (
-		op    OpCode        
-		mem   = NewMemory() 
-		stack = newstack()  
-		
-		
-		
-		pc   = uint64(0) 
-		cost uint64
-		
-		pcCopy  uint64 
-		gasCopy uint64 
-		logged  bool   
+		op      OpCode
+		mem     = NewMemory()
+		stack   = newstack()
+		pc      = uint64(0)
+		cost    uint64
+		pcCopy  uint64
+		gasCopy uint64
+		logged  bool
 	)
 	contract.Input = input
 
-	
 	defer func() { in.intPool.put(stack.data...) }()
 
 	if in.cfg.Debug {
@@ -130,13 +109,10 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 			}
 		}()
 	}
-	
 	for atomic.LoadInt32(&in.evm.abort) == 0 {
 		if in.cfg.Debug {
-			
 			logged, pcCopy, gasCopy = false, pc, contract.Gas
 		}
-	
 		op = contract.GetOp(pc)
 		operation := in.cfg.JumpTable[op]
 		if !operation.valid {
@@ -145,27 +121,20 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		if err := operation.validateStack(stack); err != nil {
 			return nil, err
 		}
-		
 		if err := in.enforceRestrictions(op, operation, stack); err != nil {
 			return nil, err
 		}
 
 		var memorySize uint64
-		
-		
 		if operation.memorySize != nil {
 			memSize, overflow := bigUint64(operation.memorySize(stack))
 			if overflow {
 				return nil, errGasUintOverflow
 			}
-			
-			
 			if memorySize, overflow = math.SafeMul(toWordSize(memSize), 32); overflow {
 				return nil, errGasUintOverflow
 			}
 		}
-		
-		
 		cost, err = operation.gasCost(in.gasTable, in.evm, contract, stack, mem, memorySize)
 		if err != nil || !contract.UseGas(cost) {
 			return nil, ErrOutOfGas
@@ -179,15 +148,10 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 			logged = true
 		}
 
-		
 		res, err := operation.execute(&pc, in, contract, mem, stack)
-		
-		
 		if verifyPool {
 			verifyIntegerPool(in.intPool)
 		}
-		
-		
 		if operation.returns {
 			in.returnData = res
 		}
@@ -204,6 +168,7 @@ func (in *EVMInterpreter) Run(contract *Contract, input []byte, readOnly bool) (
 		}
 	}
 	return nil, nil
+}
 
 func (in *EVMInterpreter) CanRun(code []byte) bool {
 	return true
