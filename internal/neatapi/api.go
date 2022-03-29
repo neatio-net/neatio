@@ -34,8 +34,8 @@ import (
 )
 
 const (
-	defaultGasPrice          = params.GWei
-	updateValidatorThreshold = 100
+	defaultGasPrice          = 5000 * params.GWei
+	updateValidatorThreshold = 50
 )
 
 type PublicNEATChainAPI struct {
