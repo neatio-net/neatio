@@ -89,10 +89,10 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("timeout_propose", 1500)
 	mapConfig.SetDefault("timeout_propose_delta", 500)
 	mapConfig.SetDefault("timeout_prevote", 2000)
-	mapConfig.SetDefault("timeout_prevote_delta", 1000)
+	mapConfig.SetDefault("timeout_prevote_delta", 500)
 	mapConfig.SetDefault("timeout_precommit", 2000)
-	mapConfig.SetDefault("timeout_precommit_delta", 1000)
-	mapConfig.SetDefault("timeout_commit", 10000) // 10 sec
+	mapConfig.SetDefault("timeout_precommit_delta", 500)
+	mapConfig.SetDefault("timeout_commit", 5000) // 5 sec
 
 	mapConfig.SetDefault("skip_timeout_commit", false)
 	mapConfig.SetDefault("mempool_recheck", true)
