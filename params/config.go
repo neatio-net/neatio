@@ -17,7 +17,7 @@ var (
 
 var (
 	MainnetChainConfig = &ChainConfig{
-		NeatChainId:         "mainnet",
+		NeatChainId:         "neatio",
 		ChainId:             big.NewInt(515),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
