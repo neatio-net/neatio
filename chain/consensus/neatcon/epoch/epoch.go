@@ -596,7 +596,7 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	}
 
 	if timePerBlockOfEpoch == 0 {
-		timePerBlockOfEpoch = 5000000000
+		timePerBlockOfEpoch = 1000000000
 	}
 
 	epochLeftThisYear := epochNumberPerYear - epoch.Number%epochNumberPerYear - 1
