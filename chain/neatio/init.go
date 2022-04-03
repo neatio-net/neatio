@@ -298,7 +298,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 				Number:         0,
 				RewardPerBlock: rewardPerBlock,
 				StartBlock:     0,
-				EndBlock:       86400,
+				EndBlock:       3600,
 				Status:         0,
 			},
 		}
@@ -340,7 +340,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 			Number:         0,
 			RewardPerBlock: big.NewInt(0),
 			StartBlock:     0,
-			EndBlock:       86400,
+			EndBlock:       3600,
 			Status:         0,
 			Validators:     validators,
 		},
