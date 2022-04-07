@@ -195,43 +195,10 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 	return &genesis
 }
 
-var DefaultMainnetGenesisJSON = `{                                                                                                                                                                                            
-	"config": {                                                                                                                                                                          
-			"neatChainId": "neatio",                                                                                                                                                     
-			"chainId": 515,                                                                                                                                                                
-			"homesteadBlock": 0,                                                                                                                                                         
-			"eip150Block": 0,
-			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-			"eip155Block": 0,
-			"eip158Block": 0,
-			"byzantiumBlock": 0,
-			"neatcon": {
-					"epoch": 30000,
-					"policy": 0
-			}
-	},
-	"nonce": "0x0",
-	"timestamp": "0x61cf9982",
-	"extraData": "0x",
-	"gasLimit": "0x7270e00",
-	"difficulty": "0x1",
-	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "common.Address{}",
-	"alloc": {
-			"f26d305f1542d73c5c551d89e6ec33d951765188": {
-					"balance": "0x3ee1186f11c064cc00000",
-					"amount": "0x104e2da94483f6200000"
-			}
-	},
-	"number": "0x0",
-	"gasUsed": "0x0",
-	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
-}`
-
-var DefaultTestnetGenesisJSON = `{
+var DefaultMainnetGenesisJSON = `{
 	"config": {
-			"neatChainId": "testnet",
-			"chainId": 525,
+			"neatChainId": "neatio",
+			"chainId": 515,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -244,16 +211,49 @@ var DefaultTestnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0x0",
-	"timestamp": "0x6127cacf",
+	"timestamp": "0x624c9d75",
 	"extraData": "0x",
-	"gasLimit": "0x7270e00",
+	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "common.Address{}",
+	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"f26d305f1542d73c5c551d89e6ec33d951765188": {
-					"balance": "0x3ee1186f11c064cc00000",
-					"amount": "0x104e2da94483f6200000"
+			"58ce08a1227b7fd1d5b4b626b29c96f31ab3b4d4": {
+					"balance": "0x31729b192e6a534e40000",
+					"amount": "0xa968163f0a57b400000"
+			}
+	},
+	"number": "0x0",
+	"gasUsed": "0x0",
+	"parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+}`
+
+var DefaultTestnetGenesisJSON = `{
+	"config": {
+			"neatChainId": "neatio",
+			"chainId": 515,
+			"homesteadBlock": 0,
+			"eip150Block": 0,
+			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+			"eip155Block": 0,
+			"eip158Block": 0,
+			"byzantiumBlock": 0,
+			"neatcon": {
+					"epoch": 30000,
+					"policy": 0
+			}
+	},
+	"nonce": "0x0",
+	"timestamp": "0x624c9d75",
+	"extraData": "0x",
+	"gasLimit": "0xe0000000",
+	"difficulty": "0x1",
+	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+	"coinbase": "0x0000000000000000000000000000000000000000",
+	"alloc": {
+			"58ce08a1227b7fd1d5b4b626b29c96f31ab3b4d4": {
+					"balance": "0x31729b192e6a534e40000",
+					"amount": "0xa968163f0a57b400000"
 			}
 	},
 	"number": "0x0",
