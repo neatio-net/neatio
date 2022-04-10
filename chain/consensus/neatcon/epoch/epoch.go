@@ -580,7 +580,7 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	var totalYear = epoch.rs.TotalMintingYears
 	var timePerBlockOfEpoch int64
 
-	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 10000
+	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 50000
 
 	zeroEpoch := loadOneEpoch(epoch.db, 0, epoch.logger)
 	initStartTime := zeroEpoch.StartTime
