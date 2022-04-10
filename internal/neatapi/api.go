@@ -1402,7 +1402,7 @@ func (s *PublicNetAPI) Version() string {
 }
 
 var (
-	minimumRegisterAmount = math.MustParseBig256("77000000000000000000000")
+	minimumRegisterAmount = math.MustParseBig256("50000000000000000000000")
 
 	maxCandidateNumber = 1000
 
