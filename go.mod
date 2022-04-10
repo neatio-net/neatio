@@ -33,7 +33,7 @@ require (
 	github.com/neatlib/bls-go v1.1.0
 	github.com/neatlib/common-go v1.1.0
 	github.com/neatlib/config-go v1.1.0
-	github.com/neatlib/crypto-go v1.1.0
+	github.com/neatlib/crypto-go v1.2.0
 	github.com/neatlib/data-go v1.1.0 // indirect
 	github.com/neatlib/db-go v1.1.0
 	github.com/neatlib/ed25519-go v1.1.0 // indirect
