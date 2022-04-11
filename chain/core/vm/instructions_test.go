@@ -30,6 +30,7 @@ var twoOpMethods map[string]executionFunc
 
 func init() {
 
+	// Params is a list of common edgecases that should be used for some common tests
 	params := []string{
 		"0000000000000000000000000000000000000000000000000000000000000000", // 0
 		"0000000000000000000000000000000000000000000000000000000000000001", // +1
@@ -41,6 +42,7 @@ func init() {
 		"fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb", // - 5
 		"ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", // - 1
 	}
+	// Params are combined so each param is used on each 'side'
 	commonParams = make([]*twoOperandParams, len(params)*len(params))
 	for i, x := range params {
 		for j, y := range params {
@@ -80,6 +82,7 @@ func testTwoOperandOp(t *testing.T, tests []TwoOperandTestcase, opFn executionFu
 		pc             = uint64(0)
 		evmInterpreter = env.interpreter.(*EVMInterpreter)
 	)
+	// Stuff a couple of nonzero bigints into pool, to ensure that ops do not rely on pooled integers to be zero
 	evmInterpreter.intPool = poolOfIntPools.get()
 	evmInterpreter.intPool.put(big.NewInt(-1337))
 	evmInterpreter.intPool.put(big.NewInt(-1337))
@@ -97,6 +100,9 @@ func testTwoOperandOp(t *testing.T, tests []TwoOperandTestcase, opFn executionFu
 		if actual.Cmp(expected) != 0 {
 			t.Errorf("Testcase %v %d, %v(%x, %x): expected  %x, got %x", name, i, name, x, y, expected, actual)
 		}
+		// Check pool usage
+		// 1.pool is not allowed to contain anything on the stack
+		// 2.pool is not allowed to contain the same pointers twice
 		if evmInterpreter.intPool.pool.len() > 0 {
 
 			poolvals := make(map[*big.Int]struct{})
@@ -129,6 +135,7 @@ func TestByteOp(t *testing.T) {
 }
 
 func TestSHL(t *testing.T) {
+	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#shl-shift-left
 	tests := []TwoOperandTestcase{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000002"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "ff", "8000000000000000000000000000000000000000000000000000000000000000"},
@@ -145,6 +152,7 @@ func TestSHL(t *testing.T) {
 }
 
 func TestSHR(t *testing.T) {
+	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#shr-logical-shift-right
 	tests := []TwoOperandTestcase{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "00", "0000000000000000000000000000000000000000000000000000000000000001"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000000"},
@@ -162,6 +170,7 @@ func TestSHR(t *testing.T) {
 }
 
 func TestSAR(t *testing.T) {
+	// Testcases from https://github.com/ethereum/EIPs/blob/master/EIPS/eip-145.md#sar-arithmetic-shift-right
 	tests := []TwoOperandTestcase{
 		{"0000000000000000000000000000000000000000000000000000000000000001", "00", "0000000000000000000000000000000000000000000000000000000000000001"},
 		{"0000000000000000000000000000000000000000000000000000000000000001", "01", "0000000000000000000000000000000000000000000000000000000000000000"},
@@ -184,6 +193,7 @@ func TestSAR(t *testing.T) {
 	testTwoOperandOp(t, tests, opSAR, "sar")
 }
 
+// getResult is a convenience function to generate the expected values
 func getResult(args []*twoOperandParams, opFn executionFunc) []TwoOperandTestcase {
 	var (
 		env         = NewEVM(Context{}, nil, params.TestChainConfig, Config{})
@@ -205,6 +215,8 @@ func getResult(args []*twoOperandParams, opFn executionFunc) []TwoOperandTestcas
 	return result
 }
 
+// utility function to fill the json-file with testcases
+// Enable this test to generate the 'testcases_xx.json' files
 func TestWriteExpectedValues(t *testing.T) {
 	t.Skip("Enable this test to create json test cases.")
 
@@ -220,6 +232,7 @@ func TestWriteExpectedValues(t *testing.T) {
 	}
 }
 
+// TestJsonTestcases runs through all the testcases defined as json-files
 func TestJsonTestcases(t *testing.T) {
 	for name := range twoOpMethods {
 		data, err := ioutil.ReadFile(fmt.Sprintf("testdata/testcases_%v.json", name))
@@ -241,6 +254,7 @@ func opBenchmark(bench *testing.B, op func(pc *uint64, interpreter *EVMInterpret
 
 	env.interpreter = evmInterpreter
 	evmInterpreter.intPool = poolOfIntPools.get()
+	// convert args
 	byteArgs := make([][]byte, len(args))
 	for i, arg := range args {
 		byteArgs[i] = common.Hex2Bytes(arg)
@@ -594,6 +608,15 @@ func TestCreate2Addreses(t *testing.T) {
 		code := common.FromHex(tt.code)
 		codeHash := crypto.Keccak256(code)
 		address := crypto.CreateAddress2(origin, salt, codeHash)
+		/*
+			stack          := newstack()
+			// salt, but we don't need that for this test
+			stack.push(big.NewInt(int64(len(code)))) //size
+			stack.push(big.NewInt(0)) // memstart
+			stack.push(big.NewInt(0)) // value
+			gas, _ := gasCreate2(params.GasTable{}, nil, nil, stack, nil, 0)
+			fmt.Printf("Example %d\n* address `0x%x`\n* salt `0x%x`\n* init_code `0x%x`\n* gas (assuming no mem expansion): `%v`\n* result: `%s`\n\n", i,origin, salt, code, gas, address.String())
+		*/
 		expected := common.BytesToAddress(common.FromHex(tt.expected))
 		if !bytes.Equal(expected.Bytes(), address.Bytes()) {
 			t.Errorf("test %d: expected %s, got %s", i, expected.String(), address.String())

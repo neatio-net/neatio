@@ -35,6 +35,7 @@ var (
 	WithdrawReward = FunctionType{17, false, true, true}
 	UnBanned       = FunctionType{18, false, true, true}
 	SetCommission  = FunctionType{19, false, true, true}
+	SetAddress     = FunctionType{20, false, true, true}
 
 	Unknown = FunctionType{-1, false, false, false}
 )
@@ -54,35 +55,37 @@ func (t FunctionType) AllowInSideChain() bool {
 func (t FunctionType) RequiredGas() uint64 {
 	switch t {
 	case CreateSideChain:
-		return 200000
+		return 42000
 	case JoinSideChain:
-		return 100000
+		return 21000
 	case DepositInMainChain:
-		return 200000
+		return 42000
 	case DepositInSideChain:
 		return 0
 	case WithdrawFromSideChain:
-		return 200000
+		return 42000
 	case WithdrawFromMainChain:
 		return 0
 	case SaveDataToMainChain:
 		return 0
 	case VoteNextEpoch:
-		return 100000
+		return 21000
 	case RevealVote:
-		return 100000
+		return 21000
 	case Delegate, UnDelegate, Register, UnRegister:
-		return 100000
+		return 21000
 	case SetBlockReward:
-		return 100000
+		return 21000
 	case EditValidator:
-		return 100000
+		return 21000
 	case WithdrawReward:
-		return 100000
+		return 21000
 	case UnBanned:
-		return 100000
+		return 21000
 	case SetCommission:
-		return 100000
+		return 21000
+	case SetAddress:
+		return 21000
 	default:
 		return 0
 	}
@@ -122,9 +125,12 @@ func (t FunctionType) String() string {
 		return "EditValidator"
 	case WithdrawReward:
 		return "WithdrawReward"
-
+	case UnBanned:
+		return "UnBanned"
 	case SetCommission:
 		return "SetCommission"
+	case SetAddress:
+		return "SetAddress"
 	default:
 		return "UnKnown"
 	}
@@ -164,9 +170,12 @@ func StringToFunctionType(s string) FunctionType {
 		return EditValidator
 	case "WithdrawReward":
 		return WithdrawReward
-
+	case "UnBanned":
+		return UnBanned
 	case "SetCommission":
 		return SetCommission
+	case "SetAddress":
+		return SetAddress
 	default:
 		return Unknown
 	}
@@ -245,10 +254,18 @@ type EditValidatorArgs struct {
 
 type WithdrawRewardArgs struct {
 	DelegateAddress common.Address
+	Amount          *big.Int
+}
+
+type UnBannedArgs struct {
 }
 
 type SetCommissionArgs struct {
 	Commission uint8
+}
+
+type SetAddressArgs struct {
+	FAddress common.Address
 }
 
 const jsonChainABI = `
@@ -497,6 +514,10 @@ const jsonChainABI = `
 			{
 				"name": "delegateAddress",
 				"type": "address"
+			},
+			{
+				"name": "amount",
+				"type": "uint256"
 			}
 		]
 	},
@@ -514,6 +535,17 @@ const jsonChainABI = `
 			{
 				"name": "commission",
 				"type": "uint8"
+			}
+		]
+	},
+	{
+		"type": "function",
+		"name": "SetAddress",
+		"constant": false,
+		"inputs": [
+			{
+				"name": "fAddress",
+				"type": "address"
 			}
 		]
 	}
