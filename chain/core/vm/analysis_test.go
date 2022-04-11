@@ -1,6 +1,10 @@
 package vm
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/neatlab/neatio/utilities/crypto"
+)
 
 func TestJumpDestAnalysis(t *testing.T) {
 	tests := []struct {
@@ -34,4 +38,23 @@ func TestJumpDestAnalysis(t *testing.T) {
 		}
 	}
 
+}
+
+func BenchmarkJumpdestAnalysis_1200k(bench *testing.B) {
+
+	code := make([]byte, 1200000)
+	bench.ResetTimer()
+	for i := 0; i < bench.N; i++ {
+		codeBitmap(code)
+	}
+	bench.StopTimer()
+}
+func BenchmarkJumpdestHashing_1200k(bench *testing.B) {
+
+	code := make([]byte, 1200000)
+	bench.ResetTimer()
+	for i := 0; i < bench.N; i++ {
+		crypto.Keccak256Hash(code)
+	}
+	bench.StopTimer()
 }
