@@ -7,7 +7,6 @@ import (
 	"github.com/neatlab/neatio/utilities/common"
 )
 
-
 type StateDB interface {
 	CreateAccount(common.Address)
 
@@ -24,19 +23,18 @@ type StateDB interface {
 	GetCodeSize(common.Address) int
 
 	AddRefund(uint64)
+	SubRefund(uint64)
 	GetRefund() uint64
 
+	GetCommittedState(common.Address, common.Hash) common.Hash
 	GetState(common.Address, common.Hash) common.Hash
 	SetState(common.Address, common.Hash, common.Hash)
 
 	Suicide(common.Address) bool
 	HasSuicided(common.Address) bool
 
-	
-	
 	Exist(common.Address) bool
-	
-	
+
 	Empty(common.Address) bool
 
 	RevertToSnapshot(int)
@@ -48,15 +46,12 @@ type StateDB interface {
 	ForEachStorage(common.Address, func(common.Hash, common.Hash) bool) error
 }
 
-
-
 type CallContext interface {
-	
 	Call(env *EVM, me ContractRef, addr common.Address, data []byte, gas, value *big.Int) ([]byte, error)
-	
+
 	CallCode(env *EVM, me ContractRef, addr common.Address, data []byte, gas, value *big.Int) ([]byte, error)
-	
+
 	DelegateCall(env *EVM, me ContractRef, addr common.Address, data []byte, gas *big.Int) ([]byte, error)
-	
+
 	Create(env *EVM, me ContractRef, data []byte, gas, value *big.Int) ([]byte, common.Address, error)
 }
