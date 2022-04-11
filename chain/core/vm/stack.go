@@ -5,9 +5,6 @@ import (
 	"math/big"
 )
 
-
-
-
 type Stack struct {
 	data []*big.Int
 }
@@ -16,15 +13,12 @@ func newstack() *Stack {
 	return &Stack{data: make([]*big.Int, 0, 1024)}
 }
 
-
 func (st *Stack) Data() []*big.Int {
 	return st.data
 }
 
 func (st *Stack) push(d *big.Int) {
-	
-	
-	
+
 	st.data = append(st.data, d)
 }
 func (st *Stack) pushN(ds ...*big.Int) {
@@ -53,18 +47,9 @@ func (st *Stack) peek() *big.Int {
 	return st.data[st.len()-1]
 }
 
-
 func (st *Stack) Back(n int) *big.Int {
 	return st.data[st.len()-n-1]
 }
-
-func (st *Stack) require(n int) error {
-	if st.len() < n {
-		return fmt.Errorf("stack underflow (%d <=> %d)", len(st.data), n)
-	}
-	return nil
-}
-
 
 func (st *Stack) Print() {
 	fmt.Println("### stack ###")
