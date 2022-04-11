@@ -14,6 +14,7 @@ import (
 	"github.com/neatlab/neatio/chain/core/state"
 
 	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/accounts/abi"
 	"github.com/neatlab/neatio/chain/accounts/keystore"
 	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/chain/core/rawdb"
@@ -36,6 +37,14 @@ import (
 const (
 	defaultGasPrice          = params.GWei
 	updateValidatorThreshold = 50
+)
+
+var (
+	minimumRegisterAmount = math.MustParseBig256("50000000000000000000000")
+
+	maxDelegationAddresses = 1000
+
+	maxEditValidatorLength = 100
 )
 
 type PublicNEATChainAPI struct {
@@ -91,8 +100,7 @@ func (s *PublicTxPoolAPI) Content() map[string]map[string]map[string]*RPCTransac
 		for _, tx := range txs {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = newRPCPendingTransaction(tx)
 		}
-
-		content["pending"][account.String()] = dump
+		content["pending"][account.Hex()] = dump
 	}
 
 	for account, txs := range queue {
@@ -100,8 +108,7 @@ func (s *PublicTxPoolAPI) Content() map[string]map[string]map[string]*RPCTransac
 		for _, tx := range txs {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = newRPCPendingTransaction(tx)
 		}
-
-		content["queued"][account.String()] = dump
+		content["queued"][account.Hex()] = dump
 	}
 	return content
 }
@@ -123,8 +130,7 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 
 	var format = func(tx *types.Transaction) string {
 		if to := tx.To(); to != nil {
-
-			return fmt.Sprintf("%s: %v wei + %v gas × %v wei", tx.To().String(), tx.Value(), tx.Gas(), tx.GasPrice())
+			return fmt.Sprintf("%s: %v wei + %v gas × %v wei", tx.To().Hex(), tx.Value(), tx.Gas(), tx.GasPrice())
 		}
 		return fmt.Sprintf("contract creation: %v wei + %v gas × %v wei", tx.Value(), tx.Gas(), tx.GasPrice())
 	}
@@ -134,7 +140,6 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 		for _, tx := range txs {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = format(tx)
 		}
-
 		content["pending"][account.Hex()] = dump
 	}
 
@@ -143,7 +148,6 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 		for _, tx := range txs {
 			dump[fmt.Sprintf("%d", tx.Nonce())] = format(tx)
 		}
-
 		content["queued"][account.Hex()] = dump
 	}
 	return content
@@ -366,7 +370,7 @@ func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Byt
 		return common.Address{}, fmt.Errorf("signature must be 65 bytes long")
 	}
 	if sig[64] != 27 && sig[64] != 28 {
-		return common.Address{}, fmt.Errorf("invalid NEAT Blockchain signature (V is not 27 or 28)")
+		return common.Address{}, fmt.Errorf("invalid Neatio signature (V is not 27 or 28)")
 	}
 	sig[64] -= 27
 
@@ -406,6 +410,12 @@ func (s *PublicBlockChainAPI) GetBalance(ctx context.Context, address common.Add
 	return (*hexutil.Big)(state.GetBalance(address)), state.Error()
 }
 
+type ProxiedDetail struct {
+	ProxiedBalance        *hexutil.Big `json:"proxiedBalance"`
+	DepositProxiedBalance *hexutil.Big `json:"depositProxiedBalance"`
+	PendingRefundBalance  *hexutil.Big `json:"pendingRefundBalance"`
+}
+
 func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address common.Address, blockNr rpc.BlockNumber, fullDetail bool) (map[string]interface{}, error) {
 	state, _, err := s.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
@@ -423,17 +433,9 @@ func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address comm
 	}
 
 	if fullDetail {
-		proxied_detail := make(map[common.Address]struct {
-			ProxiedBalance        *hexutil.Big
-			DepositProxiedBalance *hexutil.Big
-			PendingRefundBalance  *hexutil.Big
-		})
+		proxiedDetail := make(map[common.Address]ProxiedDetail)
 		state.ForEachProxied(address, func(key common.Address, proxiedBalance, depositProxiedBalance, pendingRefundBalance *big.Int) bool {
-			proxied_detail[key] = struct {
-				ProxiedBalance        *hexutil.Big
-				DepositProxiedBalance *hexutil.Big
-				PendingRefundBalance  *hexutil.Big
-			}{
+			proxiedDetail[key] = ProxiedDetail{
 				ProxiedBalance:        (*hexutil.Big)(proxiedBalance),
 				DepositProxiedBalance: (*hexutil.Big)(depositProxiedBalance),
 				PendingRefundBalance:  (*hexutil.Big)(pendingRefundBalance),
@@ -441,15 +443,15 @@ func (s *PublicBlockChainAPI) GetBalanceDetail(ctx context.Context, address comm
 			return true
 		})
 
-		fields["proxiedDetail"] = proxied_detail
+		fields["proxiedDetail"] = proxiedDetail
 
-		reward_detail := make(map[common.Address]*hexutil.Big)
+		rewardDetail := make(map[common.Address]*hexutil.Big)
 		state.ForEachReward(address, func(key common.Address, rewardBalance *big.Int) bool {
-			reward_detail[key] = (*hexutil.Big)(rewardBalance)
+			rewardDetail[key] = (*hexutil.Big)(rewardBalance)
 			return true
 		})
 
-		fields["rewardDetail"] = reward_detail
+		fields["rewardDetail"] = rewardDetail
 	}
 	return fields, state.Error()
 }
@@ -555,12 +557,12 @@ type CallArgs struct {
 	Data     hexutil.Bytes   `json:"data"`
 }
 
-func (s *PublicBlockChainAPI) doCall(ctx context.Context, args CallArgs, blockNr rpc.BlockNumber, vmCfg vm.Config, timeout time.Duration) ([]byte, uint64, bool, error) {
+func (s *PublicBlockChainAPI) doCall(ctx context.Context, args CallArgs, blockNr rpc.BlockNumber, vmCfg vm.Config, timeout time.Duration) (*core.ExecutionResult, error) {
 	defer func(start time.Time) { log.Debug("Executing EVM call finished", "runtime", time.Since(start)) }(time.Now())
 
 	state, header, err := s.b.StateAndHeaderByNumber(ctx, blockNr)
 	if state == nil || err != nil {
-		return nil, 0, false, err
+		return nil, err
 	}
 
 	addr := args.From
@@ -593,7 +595,7 @@ func (s *PublicBlockChainAPI) doCall(ctx context.Context, args CallArgs, blockNr
 
 	evm, vmError, err := s.b.GetEVM(ctx, msg, state, header, vmCfg)
 	if err != nil {
-		return nil, 0, false, err
+		return nil, err
 	}
 
 	go func() {
@@ -602,26 +604,70 @@ func (s *PublicBlockChainAPI) doCall(ctx context.Context, args CallArgs, blockNr
 	}()
 
 	gp := new(core.GasPool).AddGas(math.MaxUint64)
-	res, gas, failed, err := core.ApplyMessage(evm, msg, gp)
+	result, _, err := core.ApplyMessageEx(evm, msg, gp)
 	if err := vmError(); err != nil {
-		return nil, 0, false, err
+		return nil, err
 	}
-	return res, gas, failed, err
+
+	if err != nil {
+		return result, fmt.Errorf("err: %w (supplied gas %d)", err, msg.Gas())
+	}
+
+	return result, err
+}
+
+func newRevertError(result *core.ExecutionResult) *revertError {
+	reason, errUnpack := abi.UnpackRevert(result.Revert())
+	err := errors.New("execution reverted")
+	if errUnpack == nil {
+		err = fmt.Errorf("execution reverted: %v", reason)
+	}
+	return &revertError{
+		error:  err,
+		reason: hexutil.Encode(result.Revert()),
+	}
+}
+
+type revertError struct {
+	error
+	reason string
+}
+
+func (e *revertError) ErrorCode() int {
+	return 3
+}
+
+func (e *revertError) ErrorData() interface{} {
+	return e.reason
 }
 
 func (s *PublicBlockChainAPI) Call(ctx context.Context, args CallArgs, blockNr rpc.BlockNumber) (hexutil.Bytes, error) {
-	result, _, _, err := s.doCall(ctx, args, blockNr, vm.Config{}, 5*time.Second)
-	return (hexutil.Bytes)(result), err
+	result, err := s.doCall(ctx, args, blockNr, vm.Config{}, 5*time.Second)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(result.Revert()) > 0 {
+		return nil, newRevertError(result)
+	}
+	return result.Return(), result.Err
 }
 
 func (s *PublicBlockChainAPI) EstimateGas(ctx context.Context, args CallArgs) (hexutil.Uint64, error) {
-	fmt.Printf("+++++++++++++++++++++++++++++++++++++++++++++estimate gas %v\n", args)
 
 	var (
 		lo  uint64 = params.TxGas - 1
 		hi  uint64
 		cap uint64
 	)
+
+	functionType, e := neatAbi.FunctionTypeFromId(args.Data[:4])
+	if e == nil && functionType != neatAbi.Unknown {
+		fmt.Printf("neatio inner contract tx, address: %v, functionType: %v\n", args.To.Hex(), functionType)
+		return hexutil.Uint64(functionType.RequiredGas()), nil
+	}
+
 	if uint64(args.Gas) >= params.TxGas {
 		hi = uint64(args.Gas)
 	} else {
@@ -634,19 +680,29 @@ func (s *PublicBlockChainAPI) EstimateGas(ctx context.Context, args CallArgs) (h
 	}
 	cap = hi
 
-	executable := func(gas uint64) bool {
+	executable := func(gas uint64) (bool, *core.ExecutionResult, error) {
 		args.Gas = hexutil.Uint64(gas)
 
-		_, _, failed, err := s.doCall(ctx, args, rpc.PendingBlockNumber, vm.Config{}, 0)
-		if err != nil || failed {
-			return false
+		result, err := s.doCall(ctx, args, rpc.PendingBlockNumber, vm.Config{}, 0)
+
+		if err != nil {
+			if errors.Is(err, core.ErrIntrinsicGas) {
+				return true, nil, nil
+			}
+			return true, nil, err
 		}
-		return true
+		return result.Failed(), result, nil
 	}
 
 	for lo+1 < hi {
+
 		mid := (hi + lo) / 2
-		if !executable(mid) {
+		failed, _, err := executable(mid)
+
+		if err != nil {
+			return 0, err
+		}
+		if failed {
 			lo = mid
 		} else {
 			hi = mid
@@ -654,8 +710,20 @@ func (s *PublicBlockChainAPI) EstimateGas(ctx context.Context, args CallArgs) (h
 	}
 
 	if hi == cap {
-		if !executable(hi) {
-			return 0, fmt.Errorf("gas required exceeds allowance or always failing transaction")
+
+		failed, result, err := executable(hi)
+		if err != nil {
+			return 0, err
+		}
+		if failed {
+			if result != nil && result.Err != vm.ErrOutOfGas {
+				if len(result.Revert()) > 0 {
+					return 0, newRevertError(result)
+				}
+				return 0, result.Err
+			}
+
+			return 0, fmt.Errorf("gas required exceeds allowance (%d)", cap)
 		}
 	}
 	return hexutil.Uint64(hi), nil
@@ -719,7 +787,8 @@ func FormatLogs(logs []vm.StructLog) []StructLogRes {
 func (s *PublicBlockChainAPI) rpcOutputBlock(b *types.Block, inclTx bool, fullTx bool) (map[string]interface{}, error) {
 	head := b.Header()
 	fields := map[string]interface{}{
-		"number":           (*hexutil.Big)(head.Number),
+		"number": (*hexutil.Big)(head.Number),
+
 		"hash":             b.Hash(),
 		"parentHash":       head.ParentHash,
 		"nonce":            head.Nonce,
@@ -794,8 +863,8 @@ func newRPCTransaction(tx *types.Transaction, blockHash common.Hash, blockNumber
 		signer = types.NewEIP155Signer(tx.ChainId())
 	}
 	from, _ := types.Sender(signer, tx)
-
 	v, r, s := tx.RawSignatureValues()
+
 	result := &RPCTransaction{
 		From:     from,
 		Gas:      hexutil.Uint64(tx.Gas()),
@@ -996,7 +1065,6 @@ func (s *PublicTransactionPoolAPI) GetTransactionReceipt(ctx context.Context, ha
 	}
 	if receipt.Logs == nil {
 		fields["logs"] = [][]*types.Log{}
-
 	}
 
 	if receipt.ContractAddress != (common.Address{}) {
@@ -1125,8 +1193,7 @@ func submitTransaction(ctx context.Context, b Backend, tx *types.Transaction) (c
 			return common.Hash{}, err
 		}
 		addr := crypto.CreateAddress(from, tx.Nonce())
-
-		log.Info("Submitted contract creation", "fullhash", tx.Hash().Hex(), "contract", addr)
+		log.Info("Submitted contract creation", "fullhash", tx.Hash().Hex(), "contract", addr.Hex())
 	} else {
 		log.Info("Submitted transaction", "fullhash", tx.Hash().Hex(), "recipient", tx.To())
 	}
@@ -1401,16 +1468,6 @@ func (s *PublicNetAPI) Version() string {
 	return fmt.Sprintf("%d", s.networkVersion)
 }
 
-var (
-	minimumRegisterAmount = math.MustParseBig256("50000000000000000000000")
-
-	maxCandidateNumber = 1000
-
-	maxDelegationAddresses = 1000
-
-	maxEditValidatorLength = 1000
-)
-
 type PublicNEATAPI struct {
 	am        *accounts.Manager
 	b         Backend
@@ -1434,8 +1491,8 @@ func (s *PublicNEATAPI) SignAddress(from common.Address, consensusPrivateKey hex
 	return blsSign, nil
 }
 
-func (api *PublicNEATAPI) WithdrawReward(ctx context.Context, from common.Address, delegateAddress common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatAbi.ChainABI.Pack(neatAbi.WithdrawReward.String(), delegateAddress)
+func (api *PublicNEATAPI) WithdrawReward(ctx context.Context, from common.Address, delegateAddress common.Address, amount *hexutil.Big, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.WithdrawReward.String(), delegateAddress, (*big.Int)(amount))
 	if err != nil {
 		return common.Hash{}, err
 	}
@@ -1553,20 +1610,6 @@ func (api *PublicNEATAPI) CheckCandidate(ctx context.Context, address common.Add
 	return fields, state.Error()
 }
 
-func (api *PublicNEATAPI) GetBannedStatus(ctx context.Context, address common.Address, blockNr rpc.BlockNumber) (map[string]interface{}, error) {
-	state, _, err := api.b.StateAndHeaderByNumber(ctx, blockNr)
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	fields := map[string]interface{}{
-		"banned":      state.GetBanned(address),
-		"bannedEpoch": state.GetBannedTime(address),
-		"blocks":      state.GetMinedBlocks(address),
-	}
-	return fields, state.Error()
-}
-
 func (api *PublicNEATAPI) SetCommission(ctx context.Context, from common.Address, commission uint8, gasPrice *hexutil.Big) (common.Hash, error) {
 	input, err := neatAbi.ChainABI.Pack(neatAbi.SetCommission.String(), commission)
 	if err != nil {
@@ -1609,13 +1652,13 @@ func (api *PublicNEATAPI) EditValidator(ctx context.Context, from common.Address
 	return SendTransaction(ctx, args, api.am, api.b, api.nonceLock)
 }
 
-func (api *PublicNEATAPI) UnBanned(ctx context.Context, from common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
-	input, err := neatAbi.ChainABI.Pack(neatAbi.UnBanned.String())
+func (api *PublicNEATAPI) SetAddress(ctx context.Context, from, fAddress common.Address, gasPrice *hexutil.Big) (common.Hash, error) {
+	input, err := neatAbi.ChainABI.Pack(neatAbi.SetAddress.String(), fAddress)
 	if err != nil {
 		return common.Hash{}, err
 	}
 
-	defaultGas := neatAbi.UnBanned.RequiredGas()
+	defaultGas := neatAbi.SetAddress.RequiredGas()
 
 	args := SendTxArgs{
 		From:     from,
@@ -1652,8 +1695,8 @@ func init() {
 
 	core.RegisterValidateCb(neatAbi.EditValidator, editValidatorValidateCb)
 
-	core.RegisterValidateCb(neatAbi.UnBanned, unBannedValidateCb)
-	core.RegisterApplyCb(neatAbi.UnBanned, unBannedApplyCb)
+	core.RegisterValidateCb(neatAbi.SetAddress, setAddressValidateCb)
+	core.RegisterApplyCb(neatAbi.SetAddress, setAddressApplyCb)
 }
 
 func withdrawRewardValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
@@ -1674,9 +1717,8 @@ func withdrawRewardApplyCb(tx *types.Transaction, state *state.StateDB, bc *core
 		return err
 	}
 
-	reward := state.GetRewardBalanceByDelegateAddress(from, args.DelegateAddress)
-	state.SubRewardBalanceByDelegateAddress(from, args.DelegateAddress, reward)
-	state.AddBalance(from, reward)
+	state.SubRewardBalanceByDelegateAddress(from, args.DelegateAddress, args.Amount)
+	state.AddBalance(from, args.Amount)
 
 	return nil
 }
@@ -1695,6 +1737,13 @@ func withDrawRewardValidation(from common.Address, tx *types.Transaction, state 
 		return nil, fmt.Errorf("have no reward to withdraw")
 	}
 
+	if args.Amount.Sign() == -1 {
+		return nil, fmt.Errorf("widthdraw amount can not be negative")
+	}
+
+	if args.Amount.Cmp(reward) == 1 {
+		return nil, fmt.Errorf("reward balance not enough, withdraw amount %v, but balance %v, delegate address %v", args.Amount, reward, args.DelegateAddress)
+	}
 	return &args, nil
 }
 
@@ -1728,14 +1777,10 @@ func registerApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 
 	var blsPK goCrypto.BLSPubKey
 	copy(blsPK[:], args.Pubkey)
-	fmt.Printf("register pubkey unmarshal json start\n")
 	if verror != nil {
 		return verror
 	}
-	fmt.Printf("register pubkey %v\n", blsPK)
 	state.ApplyForCandidate(from, blsPK.KeyString(), args.Commission)
-
-	state.MarkAddressCandidate(from)
 
 	verror = updateNextEpochValidatorVoteSet(tx, state, bc, from, ops)
 	if verror != nil {
@@ -1746,10 +1791,6 @@ func registerApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 }
 
 func registerValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.RegisterArgs, error) {
-	candidateSet := state.GetCandidateSet()
-	if len(candidateSet) > maxCandidateNumber {
-		return nil, core.ErrMaxCandidate
-	}
 
 	if !state.IsCleanAddress(from) {
 		return nil, core.ErrAlreadyCandidate
@@ -1812,7 +1853,9 @@ func unRegisterApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Blo
 		if depositProxiedBalance.Sign() > 0 {
 			allRefund = false
 
-			state.AddPendingRefundBalanceByUser(from, key, depositProxiedBalance)
+			refunded := state.GetPendingRefundBalanceByUser(from, key)
+
+			state.AddPendingRefundBalanceByUser(from, key, new(big.Int).Sub(depositProxiedBalance, refunded))
 
 			state.MarkDelegateAddressRefund(from)
 		}
@@ -1821,13 +1864,6 @@ func unRegisterApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Blo
 
 	state.CancelCandidate(from, allRefund)
 
-	fmt.Printf("candidate set bug, unregiser clear candidate before\n")
-	fmt.Printf("candidate set bug, unregiser clear candidate before %v\n", state.GetCandidateSet())
-
-	state.ClearCandidateSetByAddress(from)
-	fmt.Printf("candidate set bug, unregiser clear candidate after\n")
-	fmt.Printf("candidate set bug, unregiser clear candidate after %v\n", state.GetCandidateSet())
-
 	return nil
 }
 
@@ -1835,10 +1871,6 @@ func unRegisterValidation(from common.Address, tx *types.Transaction, state *sta
 
 	if !state.IsCandidate(from) {
 		return core.ErrNotCandidate
-	}
-
-	if state.GetBanned(from) {
-		return core.ErrBannedUnRegister
 	}
 
 	var ep *epoch.Epoch
@@ -1885,11 +1917,9 @@ func delegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Block
 
 	state.AddProxiedBalanceByUser(args.Candidate, from, amount)
 
-	if !state.GetBanned(from) {
-		verror = updateNextEpochValidatorVoteSet(tx, state, bc, args.Candidate, ops)
-		if verror != nil {
-			return verror
-		}
+	verror = updateNextEpochValidatorVoteSet(tx, state, bc, args.Candidate, ops)
+	if verror != nil {
+		return verror
 	}
 
 	return nil
@@ -1971,6 +2001,11 @@ func unDelegateApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.Blo
 	state.SubDelegateBalance(from, immediatelyRefund)
 	state.AddBalance(from, immediatelyRefund)
 
+	verror = updateNextEpochValidatorVoteSet(tx, state, bc, args.Candidate, ops)
+	if verror != nil {
+		return verror
+	}
+
 	return nil
 }
 
@@ -1980,6 +2015,10 @@ func unDelegateValidation(from common.Address, tx *types.Transaction, state *sta
 	data := tx.Data()
 	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.UnDelegate.String(), data[4:]); err != nil {
 		return nil, err
+	}
+
+	if args.Amount.Sign() == -1 {
+		return nil, fmt.Errorf("undelegate amount can not be negative")
 	}
 
 	if from == args.Candidate {
@@ -2052,6 +2091,38 @@ func setCommissionValidation(from common.Address, tx *types.Transaction, state *
 	return &args, nil
 }
 
+func setAddressValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
+	from := derivedAddressFromTx(tx)
+	_, err := setAddressValidation(from, tx, state, bc)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func setAddressApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
+	from := derivedAddressFromTx(tx)
+	args, err := setAddressValidation(from, tx, state, bc)
+	if err != nil {
+		return err
+	}
+
+	state.SetAddress(from, args.FAddress)
+
+	return nil
+}
+
+func setAddressValidation(from common.Address, tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) (*neatAbi.SetAddressArgs, error) {
+	var args neatAbi.SetAddressArgs
+	data := tx.Data()
+	if err := neatAbi.ChainABI.UnpackMethodInputs(&args, neatAbi.SetAddress.String(), data[4:]); err != nil {
+		return nil, err
+	}
+
+	return &args, nil
+}
+
 func editValidatorValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
 	from := derivedAddressFromTx(tx)
 	if !state.IsCandidate(from) {
@@ -2070,55 +2141,6 @@ func editValidatorValidateCb(tx *types.Transaction, state *state.StateDB, bc *co
 		len([]byte(args.Website)) > maxEditValidatorLength {
 
 		return fmt.Errorf("args length too long, more than %v", maxEditValidatorLength)
-	}
-
-	return nil
-}
-
-func unBannedValidateCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain) error {
-	from := derivedAddressFromTx(tx)
-
-	err := unBannedValidation(from, state, bc)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func unBannedApplyCb(tx *types.Transaction, state *state.StateDB, bc *core.BlockChain, ops *types.PendingOps) error {
-	from := derivedAddressFromTx(tx)
-	err := unBannedValidation(from, state, bc)
-	if err != nil {
-		return err
-	}
-
-	state.SetBanned(from, false)
-
-	state.ClearBannedSetByAddress(from)
-
-	return nil
-}
-
-func unBannedValidation(from common.Address, state *state.StateDB, bc *core.BlockChain) error {
-	if !state.IsCandidate(from) {
-		return core.ErrNotCandidate
-	}
-
-	verror := updateValidation(bc)
-	if verror != nil {
-		return verror
-	}
-
-	if !state.GetBanned(from) {
-		return fmt.Errorf("should not unbanned")
-	}
-
-	bannedEpoch := state.GetBannedTime(from)
-	fmt.Printf("Unbannedden validation, banned epoch %v\n", bannedEpoch)
-
-	if bannedEpoch.Cmp(common.Big0) == 1 {
-		return fmt.Errorf("please unbanned %v epoch later", bannedEpoch)
 	}
 
 	return nil
@@ -2164,7 +2186,7 @@ func updateValidation(bc *core.BlockChain) error {
 
 	currHeight := bc.CurrentBlock().NumberU64()
 
-	if currHeight == 1 || currHeight == ep.StartBlock || currHeight == ep.StartBlock+1 || currHeight == ep.EndBlock {
+	if currHeight <= ep.StartBlock+2 || currHeight == ep.EndBlock {
 		return errors.New("incorrect block height, please retry later")
 	}
 
@@ -2187,9 +2209,7 @@ func updateNextEpochValidatorVoteSet(tx *types.Transaction, state *state.StateDB
 		return errors.New("validator voting power can not be negative")
 	}
 
-	fmt.Printf("update next epoch voteset %v\n", ep.GetEpochValidatorVoteSet())
 	currentEpochVoteSet := ep.GetEpochValidatorVoteSet()
-	fmt.Printf("update next epoch current epoch voteset %v\n", ep.GetEpochValidatorVoteSet())
 
 	if currentEpochVoteSet == nil {
 		update = true
@@ -2209,13 +2229,6 @@ func updateNextEpochValidatorVoteSet(tx *types.Transaction, state *state.StateDB
 	}
 
 	if update && state.IsCandidate(candidate) {
-
-		state.ForEachProxied(candidate, func(key common.Address, proxiedBalance, depositProxiedBalance, pendingRefundBalance *big.Int) bool {
-
-			state.SubProxiedBalanceByUser(candidate, key, proxiedBalance)
-			state.AddDepositProxiedBalanceByUser(candidate, key, proxiedBalance)
-			return true
-		})
 
 		var pubkey string
 		pubkey = state.GetPubkey(candidate)
