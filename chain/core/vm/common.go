@@ -7,12 +7,26 @@ import (
 	"github.com/neatlab/neatio/utilities/common/math"
 )
 
-func calcMemSize(off, l *big.Int) *big.Int {
-	if l.Sign() == 0 {
-		return common.Big0
+func calcMemSize64(off, l *big.Int) (uint64, bool) {
+	if !l.IsUint64() {
+		return 0, true
+	}
+	return calcMemSize64WithUint(off, l.Uint64())
+}
+
+func calcMemSize64WithUint(off *big.Int, length64 uint64) (uint64, bool) {
+
+	if length64 == 0 {
+		return 0, false
 	}
 
-	return new(big.Int).Add(off, l)
+	if !off.IsUint64() {
+		return 0, true
+	}
+	offset64 := off.Uint64()
+	val := offset64 + length64
+
+	return val, val < offset64
 }
 
 func getData(data []byte, start uint64, size uint64) []byte {
@@ -36,7 +50,7 @@ func getDataBig(data []byte, start *big.Int, size *big.Int) []byte {
 }
 
 func bigUint64(v *big.Int) (uint64, bool) {
-	return v.Uint64(), v.BitLen() > 64
+	return v.Uint64(), !v.IsUint64()
 }
 
 func toWordSize(size uint64) uint64 {

@@ -7,24 +7,19 @@ import (
 	"github.com/neatlab/neatio/utilities/common/math"
 )
 
-
 type Memory struct {
 	store       []byte
 	lastGasCost uint64
 }
 
-
 func NewMemory() *Memory {
 	return &Memory{}
 }
 
-
 func (m *Memory) Set(offset, size uint64, value []byte) {
-	
-	
+
 	if size > 0 {
-		
-		
+
 		if offset+size > uint64(len(m.store)) {
 			panic("invalid memory: store empty")
 		}
@@ -32,20 +27,16 @@ func (m *Memory) Set(offset, size uint64, value []byte) {
 	}
 }
 
-
-
 func (m *Memory) Set32(offset uint64, val *big.Int) {
-	
-	
+
 	if offset+32 > uint64(len(m.store)) {
 		panic("invalid memory: store empty")
 	}
-	
+
 	copy(m.store[offset:offset+32], []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-	
+
 	math.ReadBits(val, m.store[offset:offset+32])
 }
-
 
 func (m *Memory) Resize(size uint64) {
 	if uint64(m.Len()) < size {
@@ -53,8 +44,7 @@ func (m *Memory) Resize(size uint64) {
 	}
 }
 
-
-func (m *Memory) Get(offset, size int64) (cpy []byte) {
+func (m *Memory) GetCopy(offset, size int64) (cpy []byte) {
 	if size == 0 {
 		return nil
 	}
@@ -69,7 +59,6 @@ func (m *Memory) Get(offset, size int64) (cpy []byte) {
 	return
 }
 
-
 func (m *Memory) GetPtr(offset, size int64) []byte {
 	if size == 0 {
 		return nil
@@ -82,16 +71,13 @@ func (m *Memory) GetPtr(offset, size int64) []byte {
 	return nil
 }
 
-
 func (m *Memory) Len() int {
 	return len(m.store)
 }
 
-
 func (m *Memory) Data() []byte {
 	return m.store
 }
-
 
 func (m *Memory) Print() {
 	fmt.Printf("### mem %d bytes ###\n", len(m.store))
