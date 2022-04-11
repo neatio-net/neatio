@@ -53,8 +53,6 @@ type stPostState struct {
 	}
 }
 
-//go:generate gencodec -type stEnv -field-override stEnvMarshaling -out gen_stenv.go
-
 type stEnv struct {
 	Coinbase   common.Address `json:"currentCoinbase"   gencodec:"required"`
 	Difficulty *big.Int       `json:"currentDifficulty" gencodec:"required"`
@@ -121,7 +119,7 @@ func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config) (*state.StateD
 	gaspool := new(core.GasPool)
 	gaspool.AddGas(block.GasLimit())
 	snapshot := statedb.Snapshot()
-	if _, _, _, err := core.ApplyMessage(evm, msg, gaspool); err != nil {
+	if _, _, err := core.ApplyMessageEx(evm, msg, gaspool); err != nil {
 		statedb.RevertToSnapshot(snapshot)
 	}
 	if logs := rlpHash(statedb.Logs()); logs != common.Hash(post.Logs) {

@@ -4,9 +4,7 @@ import (
 	"fmt"
 )
 
-
 type OpCode byte
-
 
 func (op OpCode) IsPush() bool {
 	switch op {
@@ -16,11 +14,9 @@ func (op OpCode) IsPush() bool {
 	return false
 }
 
-
 func (op OpCode) IsStaticJump() bool {
 	return op == JUMP
 }
-
 
 const (
 	STOP OpCode = iota
@@ -36,7 +32,6 @@ const (
 	EXP
 	SIGNEXTEND
 )
-
 
 const (
 	LT OpCode = iota + 0x10
@@ -57,7 +52,6 @@ const (
 	SHA3 = 0x20
 )
 
-
 const (
 	ADDRESS OpCode = 0x30 + iota
 	BALANCE
@@ -77,7 +71,6 @@ const (
 	EXTCODEHASH
 )
 
-
 const (
 	BLOCKHASH OpCode = 0x40 + iota
 	COINBASE
@@ -85,8 +78,9 @@ const (
 	NUMBER
 	DIFFICULTY
 	GASLIMIT
+	CHAINID     = 0x46
+	SELFBALANCE = 0x47
 )
-
 
 const (
 	POP OpCode = 0x50 + iota
@@ -102,7 +96,6 @@ const (
 	GAS
 	JUMPDEST
 )
-
 
 const (
 	PUSH1 OpCode = 0x60 + iota
@@ -171,7 +164,6 @@ const (
 	SWAP16
 )
 
-
 const (
 	LOG0 OpCode = 0xa0 + iota
 	LOG1
@@ -180,13 +172,11 @@ const (
 	LOG4
 )
 
-
 const (
 	PUSH OpCode = 0xb0 + iota
 	DUP
 	SWAP
 )
-
 
 const (
 	CREATE OpCode = 0xf0 + iota
@@ -201,9 +191,8 @@ const (
 	SELFDESTRUCT = 0xff
 )
 
-
 var opCodeToString = map[OpCode]string{
-	
+
 	STOP:       "STOP",
 	ADD:        "ADD",
 	MUL:        "MUL",
@@ -222,7 +211,6 @@ var opCodeToString = map[OpCode]string{
 	ISZERO:     "ISZERO",
 	SIGNEXTEND: "SIGNEXTEND",
 
-	
 	AND:    "AND",
 	OR:     "OR",
 	XOR:    "XOR",
@@ -233,10 +221,8 @@ var opCodeToString = map[OpCode]string{
 	ADDMOD: "ADDMOD",
 	MULMOD: "MULMOD",
 
-	
 	SHA3: "SHA3",
 
-	
 	ADDRESS:        "ADDRESS",
 	BALANCE:        "BALANCE",
 	ORIGIN:         "ORIGIN",
@@ -254,18 +240,17 @@ var opCodeToString = map[OpCode]string{
 	RETURNDATACOPY: "RETURNDATACOPY",
 	EXTCODEHASH:    "EXTCODEHASH",
 
-	
-	BLOCKHASH:  "BLOCKHASH",
-	COINBASE:   "COINBASE",
-	TIMESTAMP:  "TIMESTAMP",
-	NUMBER:     "NUMBER",
-	DIFFICULTY: "DIFFICULTY",
-	GASLIMIT:   "GASLIMIT",
+	BLOCKHASH:   "BLOCKHASH",
+	COINBASE:    "COINBASE",
+	TIMESTAMP:   "TIMESTAMP",
+	NUMBER:      "NUMBER",
+	DIFFICULTY:  "DIFFICULTY",
+	GASLIMIT:    "GASLIMIT",
+	CHAINID:     "CHAINID",
+	SELFBALANCE: "SELFBALANCE",
 
-	
 	POP: "POP",
-	
-	
+
 	MLOAD:    "MLOAD",
 	MSTORE:   "MSTORE",
 	MSTORE8:  "MSTORE8",
@@ -278,7 +263,6 @@ var opCodeToString = map[OpCode]string{
 	GAS:      "GAS",
 	JUMPDEST: "JUMPDEST",
 
-	
 	PUSH1:  "PUSH1",
 	PUSH2:  "PUSH2",
 	PUSH3:  "PUSH3",
@@ -351,7 +335,6 @@ var opCodeToString = map[OpCode]string{
 	LOG3:   "LOG3",
 	LOG4:   "LOG4",
 
-	
 	CREATE:       "CREATE",
 	CALL:         "CALL",
 	RETURN:       "RETURN",
@@ -412,6 +395,7 @@ var stringToOp = map[string]OpCode{
 	"CALLDATALOAD":   CALLDATALOAD,
 	"CALLDATASIZE":   CALLDATASIZE,
 	"CALLDATACOPY":   CALLDATACOPY,
+	"CHAINID":        CHAINID,
 	"DELEGATECALL":   DELEGATECALL,
 	"STATICCALL":     STATICCALL,
 	"CODESIZE":       CODESIZE,
@@ -428,6 +412,7 @@ var stringToOp = map[string]OpCode{
 	"NUMBER":         NUMBER,
 	"DIFFICULTY":     DIFFICULTY,
 	"GASLIMIT":       GASLIMIT,
+	"SELFBALANCE":    SELFBALANCE,
 	"POP":            POP,
 	"MLOAD":          MLOAD,
 	"MSTORE":         MSTORE,
@@ -517,7 +502,6 @@ var stringToOp = map[string]OpCode{
 	"REVERT":         REVERT,
 	"SELFDESTRUCT":   SELFDESTRUCT,
 }
-
 
 func StringToOp(str string) OpCode {
 	return stringToOp[str]

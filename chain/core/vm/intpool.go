@@ -9,8 +9,6 @@ var checkVal = big.NewInt(-42)
 
 const poolLimit = 256
 
-
-
 type intPool struct {
 	pool *Stack
 }
@@ -19,16 +17,12 @@ func newIntPool() *intPool {
 	return &intPool{pool: newstack()}
 }
 
-
-
 func (p *intPool) get() *big.Int {
 	if p.pool.len() > 0 {
 		return p.pool.pop()
 	}
 	return new(big.Int)
 }
-
-
 
 func (p *intPool) getZero() *big.Int {
 	if p.pool.len() > 0 {
@@ -37,15 +31,12 @@ func (p *intPool) getZero() *big.Int {
 	return new(big.Int)
 }
 
-
-
 func (p *intPool) put(is ...*big.Int) {
 	if len(p.pool.data) > poolLimit {
 		return
 	}
 	for _, i := range is {
-		
-		
+
 		if verifyPool {
 			i.Set(checkVal)
 		}
@@ -53,9 +44,7 @@ func (p *intPool) put(is ...*big.Int) {
 	}
 }
 
-
 const poolDefaultCap = 25
-
 
 type intPoolPool struct {
 	pools []*intPool
@@ -65,7 +54,6 @@ type intPoolPool struct {
 var poolOfIntPools = &intPoolPool{
 	pools: make([]*intPool, 0, poolDefaultCap),
 }
-
 
 func (ipp *intPoolPool) get() *intPool {
 	ipp.lock.Lock()
@@ -78,7 +66,6 @@ func (ipp *intPoolPool) get() *intPool {
 	}
 	return newIntPool()
 }
-
 
 func (ipp *intPoolPool) put(ip *intPool) {
 	ipp.lock.Lock()
