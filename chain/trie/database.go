@@ -79,9 +79,9 @@ func (n rawFullNode) fstring(ind string) string     { panic("this should never e
 func (n rawFullNode) EncodeRLP(w io.Writer) error {
 	var nodes [17]node
 
-	for i, side := range n {
-		if side != nil {
-			nodes[i] = side
+	for i, child := range n {
+		if child != nil {
+			nodes[i] = child
 		} else {
 			nodes[i] = nilValueNode
 		}
@@ -104,8 +104,8 @@ type cachedNode struct {
 	node node
 	size uint16
 
-	parents uint32
-	sideren map[common.Hash]uint16
+	parents  uint32
+	children map[common.Hash]uint16
 
 	flushPrev common.Hash
 	flushNext common.Hash
@@ -129,28 +129,28 @@ func (n *cachedNode) obj(hash common.Hash) node {
 	return expandNode(hash[:], n.node)
 }
 
-func (n *cachedNode) sides() []common.Hash {
-	sideren := make([]common.Hash, 0, 16)
-	for side := range n.sideren {
-		sideren = append(sideren, side)
+func (n *cachedNode) childs() []common.Hash {
+	children := make([]common.Hash, 0, 16)
+	for child := range n.children {
+		children = append(children, child)
 	}
 	if _, ok := n.node.(rawNode); !ok {
-		gatherChildren(n.node, &sideren)
+		gatherChildren(n.node, &children)
 	}
-	return sideren
+	return children
 }
 
-func gatherChildren(n node, sideren *[]common.Hash) {
+func gatherChildren(n node, children *[]common.Hash) {
 	switch n := n.(type) {
 	case *rawShortNode:
-		gatherChildren(n.Val, sideren)
+		gatherChildren(n.Val, children)
 
 	case rawFullNode:
 		for i := 0; i < 16; i++ {
-			gatherChildren(n[i], sideren)
+			gatherChildren(n[i], children)
 		}
 	case hashNode:
-		*sideren = append(*sideren, common.BytesToHash(n))
+		*children = append(*children, common.BytesToHash(n))
 
 	case valueNode, nil:
 
@@ -269,8 +269,8 @@ func (db *Database) insert(hash common.Hash, blob []byte, node node) {
 		size:      uint16(len(blob)),
 		flushPrev: db.newest,
 	}
-	for _, side := range entry.sides() {
-		if c := db.dirties[side]; c != nil {
+	for _, child := range entry.childs() {
+		if c := db.dirties[child]; c != nil {
 			c.parents++
 		}
 	}
@@ -387,27 +387,27 @@ func (db *Database) Nodes() []common.Hash {
 	return hashes
 }
 
-func (db *Database) Reference(side common.Hash, parent common.Hash) {
+func (db *Database) Reference(child common.Hash, parent common.Hash) {
 	db.lock.Lock()
 	defer db.lock.Unlock()
 
-	db.reference(side, parent)
+	db.reference(child, parent)
 }
 
-func (db *Database) reference(side common.Hash, parent common.Hash) {
+func (db *Database) reference(child common.Hash, parent common.Hash) {
 
-	node, ok := db.dirties[side]
+	node, ok := db.dirties[child]
 	if !ok {
 		return
 	}
 
-	if db.dirties[parent].sideren == nil {
-		db.dirties[parent].sideren = make(map[common.Hash]uint16)
-	} else if _, ok = db.dirties[parent].sideren[side]; ok && parent != (common.Hash{}) {
+	if db.dirties[parent].children == nil {
+		db.dirties[parent].children = make(map[common.Hash]uint16)
+	} else if _, ok = db.dirties[parent].children[child]; ok && parent != (common.Hash{}) {
 		return
 	}
 	node.parents++
-	db.dirties[parent].sideren[side]++
+	db.dirties[parent].children[child]++
 }
 
 func (db *Database) Dereference(root common.Hash) {
@@ -434,18 +434,18 @@ func (db *Database) Dereference(root common.Hash) {
 		"gcnodes", db.gcnodes, "gcsize", db.gcsize, "gctime", db.gctime, "livenodes", len(db.dirties), "livesize", db.dirtiesSize)
 }
 
-func (db *Database) dereference(side common.Hash, parent common.Hash) {
+func (db *Database) dereference(child common.Hash, parent common.Hash) {
 
 	node := db.dirties[parent]
 
-	if node.sideren != nil && node.sideren[side] > 0 {
-		node.sideren[side]--
-		if node.sideren[side] == 0 {
-			delete(node.sideren, side)
+	if node.children != nil && node.children[child] > 0 {
+		node.children[child]--
+		if node.children[child] == 0 {
+			delete(node.children, child)
 		}
 	}
 
-	node, ok := db.dirties[side]
+	node, ok := db.dirties[child]
 	if !ok {
 		return
 	}
@@ -456,7 +456,7 @@ func (db *Database) dereference(side common.Hash, parent common.Hash) {
 	}
 	if node.parents == 0 {
 
-		switch side {
+		switch child {
 		case db.oldest:
 			db.oldest = node.flushNext
 			db.dirties[node.flushNext].flushPrev = common.Hash{}
@@ -468,10 +468,10 @@ func (db *Database) dereference(side common.Hash, parent common.Hash) {
 			db.dirties[node.flushNext].flushPrev = node.flushPrev
 		}
 
-		for _, hash := range node.sides() {
-			db.dereference(hash, side)
+		for _, hash := range node.childs() {
+			db.dereference(hash, child)
 		}
-		delete(db.dirties, side)
+		delete(db.dirties, child)
 		db.dirtiesSize -= common.StorageSize(common.HashLength + int(node.size))
 	}
 }
@@ -624,8 +624,8 @@ func (db *Database) commit(hash common.Hash, batch neatdb.Batch, uncacher *clean
 	if !ok {
 		return nil
 	}
-	for _, side := range node.sides() {
-		if err := db.commit(side, batch, uncacher); err != nil {
+	for _, child := range node.childs() {
+		if err := db.commit(child, batch, uncacher); err != nil {
 			return err
 		}
 	}
@@ -694,8 +694,8 @@ func (db *Database) verifyIntegrity() {
 
 	reachable := map[common.Hash]struct{}{{}: {}}
 
-	for side := range db.dirties[common.Hash{}].sideren {
-		db.accumulate(side, reachable)
+	for child := range db.dirties[common.Hash{}].children {
+		db.accumulate(child, reachable)
 	}
 
 	var unreachable []string
@@ -718,7 +718,33 @@ func (db *Database) accumulate(hash common.Hash, reachable map[common.Hash]struc
 	}
 	reachable[hash] = struct{}{}
 
-	for _, side := range node.sides() {
-		db.accumulate(side, reachable)
+	for _, child := range node.childs() {
+		db.accumulate(child, reachable)
 	}
+}
+
+var proposedInEpochPrefix = []byte("proposed-in-epoch-")
+
+func encodeUint64(number uint64) []byte {
+	enc := make([]byte, 8)
+	binary.BigEndian.PutUint64(enc, number)
+	return enc
+}
+
+func decodeUint64(raw []byte) uint64 {
+	return binary.BigEndian.Uint64(raw)
+}
+
+func (db *Database) MarkProposedInEpoch(address common.Address, epoch uint64) error {
+	return db.diskdb.Put(append(
+		append(proposedInEpochPrefix, address.Bytes()...), encodeUint64(epoch)...),
+		encodeUint64(1))
+}
+
+func (db *Database) CheckProposedInEpoch(address common.Address, epoch uint64) bool {
+	_, err := db.diskdb.Get(append(append(proposedInEpochPrefix, address.Bytes()...), encodeUint64(epoch)...))
+	if err != nil {
+		return false
+	}
+	return true
 }
