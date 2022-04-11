@@ -689,8 +689,6 @@ github.com/neatlib/config-go v1.1.0 h1:GdXWjVRsYEUXyzSSbgZmW292q5TTZPJ6z1lYx5Fin
 github.com/neatlib/config-go v1.1.0/go.mod h1:3nAT5TyeiUE+odFqJitYM1GvTTY0/owVH3UTAT4NRQU=
 github.com/neatlib/crypto-go v1.1.0 h1:dOioeehP7NuOuBg04p0XCVc2ydRP5GeCgNo6lq9/Fa0=
 github.com/neatlib/crypto-go v1.1.0/go.mod h1:Oo4bvl+d0EpFo6q4slEFmshBuYS2EE62gpD+3RAQawI=
-github.com/neatlib/crypto-go v1.2.0 h1:YlHyQDQdzzTqYdOZCuGute/32GrGA0TGTrpX4TyRxhc=
-github.com/neatlib/crypto-go v1.2.0/go.mod h1:Oo4bvl+d0EpFo6q4slEFmshBuYS2EE62gpD+3RAQawI=
 github.com/neatlib/data-go v1.1.0 h1:GXakNm5TkQ5qdO3ILDIw00rI0ny09HaWWSY/Tsw2zOM=
 github.com/neatlib/data-go v1.1.0/go.mod h1:AZZfqbQotEF6ec4G0JAjdDh7T4MGAjvvAJB+bXGqtXM=
 github.com/neatlib/db-go v1.1.0 h1:iE+7D41n104tboRdYl+p5BwqIgifMBz2VIak9o87SrU=
