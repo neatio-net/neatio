@@ -82,7 +82,7 @@ func HookupHTTP(chainId string, httpHandler *rpc.Server) error {
 	if httpMux != nil {
 		log.Infof("Hookup HTTP for (chainId, http Handler): (%v, %v)", chainId, httpHandler)
 		if httpHandler != nil {
-			httpMux.Handle("/"+chainId, httpHandler)
+			httpMux.Handle("/", httpHandler)
 			httpHandlerMapping[chainId] = httpHandler
 		}
 	}
@@ -93,7 +93,7 @@ func HookupWS(chainId string, wsHandler *rpc.Server) error {
 	if wsMux != nil {
 		log.Infof("Hookup WS for (chainId, ws Handler): (%v, %v)", chainId, wsHandler)
 		if wsHandler != nil {
-			wsMux.Handle("/"+chainId, wsHandler.WebsocketHandler(wsOrigins))
+			wsMux.Handle("/", wsHandler.WebsocketHandler(wsOrigins))
 			wsHandlerMapping[chainId] = wsHandler
 		}
 	}
