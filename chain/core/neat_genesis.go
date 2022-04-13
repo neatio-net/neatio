@@ -205,21 +205,23 @@ var DefaultMainnetGenesisJSON = `{
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
+			"petersburgBlock": 0,
+			"istanbulBlock": 0,
 			"neatcon": {
 					"epoch": 30000,
 					"policy": 0
 			}
 	},
 	"nonce": "0x0",
-	"timestamp": "0x6253095b",
+	"timestamp": "0x62569a93",
 	"extraData": "0x",
 	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"7d103c7d5efd5d709c5b261d2e190a61e433550f": {
-					"balance": "0x31729b192e6a534e40000",
+			"e2a8cd7a7384195f4871d336a06ef8a66b9308d1": {
+					"balance": "0x31729a3b22ff18d800000",
 					"amount": "0xa968163f0a57b400000"
 			}
 	},
