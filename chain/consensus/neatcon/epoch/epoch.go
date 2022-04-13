@@ -568,7 +568,8 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	var totalYear = epoch.rs.TotalMintingYears
 	var timePerBlockOfEpoch int64
 
-	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 1000
+	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER uint64 = 1000
+	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER uint64 = 5000
 	const DEFAULT_TIME_PER_BLOCK_OF_EPOCH int64 = 1000000000
 
 	zeroEpoch := loadOneEpoch(epoch.db, 0, epoch.logger)
@@ -625,8 +626,12 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 			"epochTimePerEpochLeftNextYear", epochTimePerEpochLeftNextYear,
 			"nextEpochBlocks", nextEpochBlocks)
 
-		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH {
-			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH
+		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
+			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+		}
+		if nextEpochBlocks > EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
 			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
 		}
 
@@ -654,8 +659,12 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 				"nextEpochBlocks", nextEpochBlocks)
 		}
 
-		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH {
-			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH
+		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
+			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+		}
+		if nextEpochBlocks > EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
 			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
 		}
 
