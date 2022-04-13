@@ -36,28 +36,6 @@ func (self *StateDB) SubRewardBalance(addr common.Address, amount *big.Int) {
 	}
 }
 
-func (self *StateDB) GetTotalAvailableRewardBalance(addr common.Address) *big.Int {
-	stateObject := self.getStateObject(addr)
-	if stateObject != nil {
-		return stateObject.AvailableRewardBalance()
-	}
-	return common.Big0
-}
-
-func (self *StateDB) AddAvailableRewardBalance(addr common.Address, amount *big.Int) {
-	stateObject := self.getStateObject(addr)
-	if stateObject != nil {
-		stateObject.AddAvailableRewardBalance(amount)
-	}
-}
-
-func (self *StateDB) SubAvailableRewardBalance(addr common.Address, amount *big.Int) {
-	stateObject := self.getStateObject(addr)
-	if stateObject != nil {
-		stateObject.SubAvailableRewardBalance(amount)
-	}
-}
-
 func (self *StateDB) GetDelegateRewardAddress(addr common.Address) map[common.Address]struct{} {
 	var deleAddr map[common.Address]struct{}
 	reward := Reward{}
@@ -255,9 +233,19 @@ func (self *StateDB) GetSideChainRewardPerBlock() *big.Int {
 func (self *StateDB) commitSideChainRewardPerBlock() {
 	data, err := rlp.EncodeToBytes(self.sideChainRewardPerBlock)
 	if err != nil {
-		panic(fmt.Errorf("can't encode side chain reward per block : %v", err))
+		panic(fmt.Errorf("can't encode child chain reward per block : %v", err))
 	}
 	self.setError(self.trie.TryUpdate(sideChainRewardPerBlockKey, data))
 }
 
 var sideChainRewardPerBlockKey = []byte("RewardPerBlock")
+
+func (self *StateDB) MarkProposedInEpoch(address common.Address, epoch uint64) error {
+
+	return self.db.TrieDB().MarkProposedInEpoch(address, epoch)
+}
+
+func (self *StateDB) CheckProposedInEpoch(address common.Address, epoch uint64) bool {
+
+	return self.db.TrieDB().CheckProposedInEpoch(address, epoch)
+}

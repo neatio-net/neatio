@@ -94,7 +94,7 @@ var (
 	}
 	NetworkIdFlag = cli.Uint64Flag{
 		Name:  "networkid",
-		Usage: "Network identifier (integer, mainnet=9910, testnet=9911)",
+		Usage: "Network identifier (integer, mainnet=515, testnet=525)",
 		Value: neatptc.DefaultConfig.NetworkId,
 	}
 	TestnetFlag = cli.BoolFlag{
@@ -860,7 +860,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *neatptc.Config) {
 	switch {
 	case ctx.GlobalBool(TestnetFlag.Name):
 		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
-			cfg.NetworkId = 9911
+			cfg.NetworkId = 525
 		}
 	}
 

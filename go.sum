@@ -139,7 +139,6 @@ github.com/btcsuite/btcd v0.22.0-beta h1:LTDpDKUM5EeOFBPM8IXpinEcmZ6FWfNZbE3lfrf
 github.com/btcsuite/btcd v0.22.0-beta/go.mod h1:9n5ntfhhHQBIhUvlhDvD3Qg6fRUj4jkN0VB8L8svzOA=
 github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f/go.mod h1:TdznJufoqS23FtqVCzL0ZqgP5MqXbb4fg/WgDys70nA=
 github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d/go.mod h1:+5NJ2+qvTyV9exUAL/rxXi3DcLg2Ts+ymUAY5y4NvMg=
-github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce h1:YtWJF7RHm2pYCvA5t0RPmAaLUhREsKuKd+SLhxFbFeQ=
 github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce/go.mod h1:0DVlHczLPewLcPGEIeUEzfOJhqGPQ0mJJRDBtD307+o=
 github.com/btcsuite/go-socks v0.0.0-20170105172521-4720035b7bfd/go.mod h1:HHNXQzUsZCxOoE+CPiyCTO6x34Zs86zZUiwtpXoGdtg=
 github.com/btcsuite/goleveldb v0.0.0-20160330041536-7834afc9e8cd/go.mod h1:F+uVaaLLH7j4eDXPRvw78tMflu7Ie2bzYOH4Y8rRKBY=
@@ -685,8 +684,8 @@ github.com/neatlib/common-go v1.1.0 h1:RpeGx1HV4Od8WwWdY8c4q8QeWNIonF0bhDEj1Z/RI
 github.com/neatlib/common-go v1.1.0/go.mod h1:y3fAUYVo8DToggLhf4AN9RpJe++X6KXZLfrE4c90tUk=
 github.com/neatlib/config-go v1.1.0 h1:GdXWjVRsYEUXyzSSbgZmW292q5TTZPJ6z1lYx5FinbA=
 github.com/neatlib/config-go v1.1.0/go.mod h1:3nAT5TyeiUE+odFqJitYM1GvTTY0/owVH3UTAT4NRQU=
-github.com/neatlib/crypto-go v1.1.0 h1:dOioeehP7NuOuBg04p0XCVc2ydRP5GeCgNo6lq9/Fa0=
-github.com/neatlib/crypto-go v1.1.0/go.mod h1:Oo4bvl+d0EpFo6q4slEFmshBuYS2EE62gpD+3RAQawI=
+github.com/neatlib/crypto-go v1.2.0 h1:YlHyQDQdzzTqYdOZCuGute/32GrGA0TGTrpX4TyRxhc=
+github.com/neatlib/crypto-go v1.2.0/go.mod h1:Oo4bvl+d0EpFo6q4slEFmshBuYS2EE62gpD+3RAQawI=
 github.com/neatlib/data-go v1.1.0 h1:GXakNm5TkQ5qdO3ILDIw00rI0ny09HaWWSY/Tsw2zOM=
 github.com/neatlib/data-go v1.1.0/go.mod h1:AZZfqbQotEF6ec4G0JAjdDh7T4MGAjvvAJB+bXGqtXM=
 github.com/neatlib/db-go v1.1.0 h1:iE+7D41n104tboRdYl+p5BwqIgifMBz2VIak9o87SrU=
@@ -705,8 +704,6 @@ github.com/neatlib/merkle-go v1.1.0 h1:DL5Dy6A24k+KS920jxnm54epsjNn2+hBpb9Rws1zz
 github.com/neatlib/merkle-go v1.1.0/go.mod h1:EO4tbVIa1HU1JB8jHY4Xe/BenATq1T7EU7+H/Y80zVY=
 github.com/neatlib/set-go v1.1.0 h1:BgJf0ml3JODIp5lNlYh+becpxGjp+YgXhzJh1fV2DJ0=
 github.com/neatlib/set-go v1.1.0/go.mod h1:pQ0vvANs2kwOSPTkabQteVknU7bk6+GZfPpzufAl81g=
-github.com/neatlib/wire-go v1.0.0 h1:NcvRkiRDoOewH8qVvnlbGOePru48BgNejhVJ24Gtyh4=
-github.com/neatlib/wire-go v1.0.0/go.mod h1:FScl+Rimq2BjvW4lnpKhkyYdpU64cqtZ7azmco+49HI=
 github.com/neatlib/wire-go v1.1.0 h1:SmNwE3SBAZmOJfATtcUea/h3ShmDWZEvZr9tzR+0D5A=
 github.com/neatlib/wire-go v1.1.0/go.mod h1:hTauKklk1CjqrDhum6tseHKgs9Bmz/C+bkfO76Aj35c=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=

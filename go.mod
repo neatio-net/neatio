@@ -6,7 +6,6 @@ require (
 	github.com/allegro/bigcache v1.2.1
 	github.com/aristanetworks/goarista v0.0.0-20210715113802-a1396632fc37
 	github.com/btcsuite/btcd v0.22.0-beta
-	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
 	github.com/cespare/cp v1.1.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.7.1
@@ -32,7 +31,7 @@ require (
 	github.com/neatlib/bls-go v1.1.0
 	github.com/neatlib/common-go v1.1.0
 	github.com/neatlib/config-go v1.1.0
-	github.com/neatlib/crypto-go v1.1.0
+	github.com/neatlib/crypto-go v1.2.0
 	github.com/neatlib/data-go v1.1.0 // indirect
 	github.com/neatlib/db-go v1.1.0
 	github.com/neatlib/ed25519-go v1.1.0 // indirect

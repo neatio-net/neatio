@@ -102,7 +102,7 @@ func init() {
 
 	app.Action = neatchainCmd
 	app.HideVersion = true
-	app.Copyright = "Copyright 2021 Neatio Developers"
+	app.Copyright = "Copyright 2022 Neatio Developers"
 	app.Commands = []cli.Command{
 
 		createValidatorCmd,

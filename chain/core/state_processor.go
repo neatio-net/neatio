@@ -1,22 +1,7 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package core
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/neatlab/neatio/chain/consensus"
@@ -24,23 +9,19 @@ import (
 	"github.com/neatlab/neatio/chain/core/types"
 	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/chain/log"
+	neatAbi "github.com/neatlab/neatio/neatabi/abi"
 	"github.com/neatlab/neatio/params"
 	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/crypto"
 )
 
-// StateProcessor is a basic Processor, which takes care of transitioning
-// state from one point to another.
-//
-// StateProcessor implements Processor.
 type StateProcessor struct {
-	config *params.ChainConfig // Chain configuration options
-	bc     *BlockChain         // Canonical block chain
-	engine consensus.Engine    // Consensus engine used for block rewards
+	config *params.ChainConfig
+	bc     *BlockChain
+	engine consensus.Engine
 	cch    CrossChainHelper
 }
 
-// NewStateProcessor initialises a new StateProcessor.
 func NewStateProcessor(config *params.ChainConfig, bc *BlockChain, engine consensus.Engine, cch CrossChainHelper) *StateProcessor {
 	return &StateProcessor{
 		config: config,
@@ -50,13 +31,6 @@ func NewStateProcessor(config *params.ChainConfig, bc *BlockChain, engine consen
 	}
 }
 
-// Process processes the state changes according to the Ethereum rules by running
-// the transaction messages using the statedb and applying any rewards to both
-// the processor (coinbase) and any included uncles.
-//
-// Process returns the receipts and logs accumulated during the process and
-// returns the amount of gas that was used in the process. If any of the
-// transactions failed to execute due to insufficient gas it will return an error.
 func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg vm.Config) (types.Receipts, []*types.Log, uint64, *types.PendingOps, error) {
 	var (
 		receipts types.Receipts
@@ -66,16 +40,13 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 		gp       = new(GasPool).AddGas(block.GasLimit())
 		ops      = new(types.PendingOps)
 	)
-	// Mutate the the block and state according to any hard-fork specs
-	//if p.config.DAOForkSupport && p.config.DAOForkBlock != nil && p.config.DAOForkBlock.Cmp(block.Number()) == 0 {
-	//	misc.ApplyDAOHardFork(statedb)
-	//}
+
 	totalUsedMoney := big.NewInt(0)
-	// Iterate over and process the individual transactions
+
 	for i, tx := range block.Transactions() {
 		statedb.Prepare(tx.Hash(), block.Hash(), i)
-		//receipt, _, err := ApplyTransaction(p.config, p.bc, nil, gp, statedb, header, tx, usedGas, cfg)
-		receipt, _, err := ApplyTransactionEx(p.config, p.bc, nil, gp, statedb, ops, header, tx,
+
+		receipt, err := ApplyTransactionEx(p.config, p.bc, nil, gp, statedb, ops, header, tx,
 			usedGas, totalUsedMoney, cfg, p.cch, false)
 		log.Debugf("(p *StateProcessor) Process()，after ApplyTransactionEx, receipt is %v\n", receipt)
 		if err != nil {
@@ -84,7 +55,7 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 		receipts = append(receipts, receipt)
 		allLogs = append(allLogs, receipt.Logs...)
 	}
-	// Finalize the block, applying any consensus engine specific extras (e.g. block rewards)
+
 	_, err := p.engine.Finalize(p.bc, header, statedb, block.Transactions(), totalUsedMoney, block.Uncles(), receipts, ops)
 	if err != nil {
 		return nil, nil, 0, nil, err
@@ -93,46 +64,192 @@ func (p *StateProcessor) Process(block *types.Block, statedb *state.StateDB, cfg
 	return receipts, allLogs, *usedGas, ops, nil
 }
 
-// ApplyTransaction attempts to apply a transaction to the given state database
-// and uses the input parameters for its environment. It returns the receipt
-// for the transaction, gas used and an error if the transaction failed,
-// indicating the block was invalid.
-func ApplyTransaction(config *params.ChainConfig, bc *BlockChain, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *uint64, cfg vm.Config) (*types.Receipt, uint64, error) {
+func ApplyTransaction(config *params.ChainConfig, bc *BlockChain, author *common.Address, gp *GasPool, statedb *state.StateDB, header *types.Header, tx *types.Transaction, usedGas *uint64, cfg vm.Config) (*types.Receipt, error) {
 	msg, err := tx.AsMessage(types.MakeSigner(config, header.Number))
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	// Create a new context to be used in the EVM environment
+
 	context := NewEVMContext(msg, header, bc, author)
-	// Create a new environment which holds all relevant information
-	// about the transaction and calling mechanisms.
+
 	vmenv := vm.NewEVM(context, statedb, config, cfg)
-	// Apply the transaction to the current state (included in the env)
-	_, gas, failed, err := ApplyMessage(vmenv, msg, gp)
+
+	result, err := ApplyMessage(vmenv, msg, gp)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	// Update the state with pending changes
+
 	var root []byte
 	if config.IsByzantium(header.Number) {
 		statedb.Finalise(true)
 	} else {
 		root = statedb.IntermediateRoot(config.IsEIP158(header.Number)).Bytes()
 	}
-	*usedGas += gas
+	*usedGas += result.UsedGas
 
-	// Create a new receipt for the transaction, storing the intermediate root and gas used by the tx
-	// based on the eip phase, we're passing wether the root touch-delete accounts.
-	receipt := types.NewReceipt(root, failed, *usedGas)
+	receipt := types.NewReceipt(root, result.Failed(), *usedGas)
 	receipt.TxHash = tx.Hash()
-	receipt.GasUsed = gas
-	// if the transaction created a contract, store the creation address in the receipt.
+	receipt.GasUsed = result.UsedGas
+
 	if msg.To() == nil {
 		receipt.ContractAddress = crypto.CreateAddress(vmenv.Context.Origin, tx.Nonce())
 	}
-	// Set the receipt logs and create a bloom for filtering
+
 	receipt.Logs = statedb.GetLogs(tx.Hash())
 	receipt.Bloom = types.CreateBloom(types.Receipts{receipt})
 
-	return receipt, gas, err
+	return receipt, err
+}
+
+func ApplyTransactionEx(config *params.ChainConfig, bc *BlockChain, author *common.Address, gp *GasPool, statedb *state.StateDB, ops *types.PendingOps,
+	header *types.Header, tx *types.Transaction, usedGas *uint64, totalUsedMoney *big.Int, cfg vm.Config, cch CrossChainHelper, mining bool) (*types.Receipt, error) {
+
+	signer := types.MakeSigner(config, header.Number)
+	msg, err := tx.AsMessage(signer)
+	if err != nil {
+		return nil, err
+	}
+
+	if !neatAbi.IsNeatChainContractAddr(tx.To()) {
+
+		context := NewEVMContext(msg, header, bc, author)
+
+		vmenv := vm.NewEVM(context, statedb, config, cfg)
+
+		result, money, err := ApplyMessageEx(vmenv, msg, gp)
+		if err != nil {
+			return nil, err
+		}
+
+		var root []byte
+		if config.IsByzantium(header.Number) {
+
+			statedb.Finalise(true)
+		} else {
+
+			root = statedb.IntermediateRoot(config.IsEIP158(header.Number)).Bytes()
+		}
+		*usedGas += result.UsedGas
+		totalUsedMoney.Add(totalUsedMoney, money)
+
+		receipt := types.NewReceipt(root, result.Failed(), *usedGas)
+		log.Debugf("ApplyTransactionEx，new receipt with (root,failed,*usedGas) = (%v,%v,%v)\n", root, result.Failed(), *usedGas)
+		receipt.TxHash = tx.Hash()
+
+		receipt.GasUsed = result.UsedGas
+
+		if msg.To() == nil {
+			receipt.ContractAddress = crypto.CreateAddress(vmenv.Context.Origin, tx.Nonce())
+		}
+
+		receipt.Logs = statedb.GetLogs(tx.Hash())
+
+		receipt.Bloom = types.CreateBloom(types.Receipts{receipt})
+		receipt.BlockHash = statedb.BlockHash()
+		receipt.BlockNumber = header.Number
+		receipt.TransactionIndex = uint(statedb.TxIndex())
+
+		return receipt, err
+
+	} else {
+
+		data := tx.Data()
+		function, err := neatAbi.FunctionTypeFromId(data[:4])
+		if err != nil {
+			return nil, err
+		}
+		log.Infof("ApplyTransactionEx() 0, Chain Function is %v", function.String())
+
+		if config.IsMainChain() && !function.AllowInMainChain() {
+			return nil, ErrNotAllowedInMainChain
+		} else if !config.IsMainChain() && !function.AllowInSideChain() {
+			return nil, ErrNotAllowedInSideChain
+		}
+
+		from := msg.From()
+
+		if msg.CheckNonce() {
+			nonce := statedb.GetNonce(from)
+			if nonce < msg.Nonce() {
+				log.Info("ApplyTransactionEx() abort due to nonce too high")
+				return nil, ErrNonceTooHigh
+			} else if nonce > msg.Nonce() {
+				log.Info("ApplyTransactionEx() abort due to nonce too low")
+				return nil, ErrNonceTooLow
+			}
+		}
+
+		gasLimit := tx.Gas()
+		gasValue := new(big.Int).Mul(new(big.Int).SetUint64(gasLimit), tx.GasPrice())
+		if statedb.GetBalance(from).Cmp(gasValue) < 0 {
+			return nil, fmt.Errorf("insufficient NEAT for gas (%x). Req %v, has %v", from.Bytes()[:4], gasValue, statedb.GetBalance(from))
+		}
+		if err := gp.SubGas(gasLimit); err != nil {
+			return nil, err
+		}
+		statedb.SubBalance(from, gasValue)
+
+		gas := function.RequiredGas()
+		if gasLimit < gas {
+			return nil, vm.ErrOutOfGas
+		}
+
+		if statedb.GetBalance(from).Cmp(tx.Value()) == -1 {
+			return nil, fmt.Errorf("insufficient NEAT for tx amount (%x). Req %v, has %v", from.Bytes()[:4], tx.Value(), statedb.GetBalance(from))
+		}
+
+		if applyCb := GetApplyCb(function); applyCb != nil {
+			if function.IsCrossChainType() {
+				if fn, ok := applyCb.(CrossChainApplyCb); ok {
+					cch.GetMutex().Lock()
+					err := fn(tx, statedb, ops, cch, mining)
+					cch.GetMutex().Unlock()
+
+					if err != nil {
+						return nil, err
+					}
+				} else {
+					panic("callback func is wrong, this should not happened, please check the code")
+				}
+			} else {
+				if fn, ok := applyCb.(NonCrossChainApplyCb); ok {
+					if err := fn(tx, statedb, bc, ops); err != nil {
+						return nil, err
+					}
+				} else {
+					panic("callback func is wrong, this should not happened, please check the code")
+				}
+			}
+		}
+
+		remainingGas := gasLimit - gas
+		remaining := new(big.Int).Mul(new(big.Int).SetUint64(remainingGas), tx.GasPrice())
+		statedb.AddBalance(from, remaining)
+		gp.AddGas(remainingGas)
+
+		*usedGas += gas
+		totalUsedMoney.Add(totalUsedMoney, new(big.Int).Mul(new(big.Int).SetUint64(gas), tx.GasPrice()))
+		log.Infof("ApplyTransactionEx() 2, totalUsedMoney is %v\n", totalUsedMoney)
+
+		var root []byte
+		if config.IsByzantium(header.Number) {
+			statedb.Finalise(true)
+		} else {
+			root = statedb.IntermediateRoot(config.IsEIP158(header.Number)).Bytes()
+		}
+
+		receipt := types.NewReceipt(root, false, *usedGas)
+		receipt.TxHash = tx.Hash()
+		receipt.GasUsed = gas
+
+		receipt.Logs = statedb.GetLogs(tx.Hash())
+		receipt.Bloom = types.CreateBloom(types.Receipts{receipt})
+		receipt.BlockHash = statedb.BlockHash()
+		receipt.BlockNumber = header.Number
+		receipt.TransactionIndex = uint(statedb.TxIndex())
+
+		statedb.SetNonce(msg.From(), statedb.GetNonce(msg.From())+1)
+
+		return receipt, nil
+	}
 }

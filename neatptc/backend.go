@@ -97,7 +97,13 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	if _, ok := genesisErr.(*params.ConfigCompatError); genesisErr != nil && !ok {
 		return nil, genesisErr
 	}
+
+	chainConfig.ConstantinopleBlock = big.NewInt(0)
+	chainConfig.PetersburgBlock = big.NewInt(0)
+	chainConfig.IstanbulBlock = big.NewInt(0)
+
 	chainConfig.ChainLogger = logger
+	logger.Info("Initialised chain configuration", "config", chainConfig)
 
 	neatChain := &NeatIO{
 		config:         config,
@@ -121,7 +127,7 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	if bcVersion != nil {
 		dbVer = fmt.Sprintf("%d", *bcVersion)
 	}
-	logger.Info("Initialising Neatio protocol", "Network", chainConfig.NeatChainId)
+	logger.Info("Initialising NeatIO protocol", "versions", neatChain.engine.Protocol().Versions, "network", config.NetworkId, "dbversion", dbVer)
 
 	if !config.SkipBcVersionCheck {
 		if bcVersion != nil && *bcVersion > core.BlockChainVersion {
@@ -310,10 +316,15 @@ func (s *NeatIO) Coinbase() (eb common.Address, err error) {
 			}
 		}
 	}
-	return common.Address{}, fmt.Errorf("Base address must be explicitly specified")
+	return common.Address{}, fmt.Errorf("etherbase must be explicitly specified")
 }
 
 func (self *NeatIO) SetCoinbase(coinbase common.Address) {
+
+	if _, ok := self.engine.(consensus.NeatCon); ok {
+		log.Error("Cannot set etherbase in NeatCon consensus")
+		return
+	}
 
 	self.lock.Lock()
 	self.coinbase = coinbase
@@ -327,14 +338,14 @@ func (s *NeatIO) StartMining(local bool) error {
 	if neatcon, ok := s.engine.(consensus.NeatCon); ok {
 		eb = neatcon.PrivateValidator()
 		if (eb == common.Address{}) {
-			log.Error("Cannot start minting without private validator")
+			log.Error("Cannot start mining without private validator")
 			return errors.New("private validator file missing")
 		}
 	} else {
 		_, err := s.Coinbase()
 		if err != nil {
-			log.Error("Cannot start mining without base address", "err", err)
-			return fmt.Errorf("base address missing: %v", err)
+			log.Error("Cannot start mining without etherbase", "err", err)
+			return fmt.Errorf("etherbase missing: %v", err)
 		}
 	}
 

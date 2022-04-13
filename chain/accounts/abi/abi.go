@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 
 	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 type ABI struct {
@@ -165,4 +167,21 @@ func (abi *ABI) EventByID(topic common.Hash) (*Event, error) {
 		}
 	}
 	return nil, fmt.Errorf("no event with id: %#x", topic.Hex())
+}
+
+var revertSelector = crypto.Keccak256([]byte("Error(string)"))[:4]
+
+func UnpackRevert(data []byte) (string, error) {
+	if len(data) < 4 {
+		return "", fmt.Errorf("invalid data for unpacking")
+	}
+	if !bytes.Equal(data[:4], revertSelector) {
+		return "", fmt.Errorf("invalid data for unpacking")
+	}
+	typ, _ := NewType("string", "", nil)
+	unpacked, err := (Arguments{{Type: typ}}).UnpackForRevert(reflect.New(reflect.TypeOf(typ)).Interface(), data[4:])
+	if err != nil {
+		return "", err
+	}
+	return unpacked[0].(string), nil
 }

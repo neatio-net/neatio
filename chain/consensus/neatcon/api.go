@@ -2,7 +2,6 @@ package neatcon
 
 import (
 	"errors"
-	"fmt"
 	"math/big"
 
 	"github.com/neatlab/neatio/chain/consensus"
@@ -229,58 +228,4 @@ func (api *API) GetVoteHash(from common.Address, pubkey crypto.BLSPubKey, amount
 		[]byte(salt),
 	}
 	return neatCrypto.Keccak256Hash(ConcatCopyPreAllocate(byteData))
-}
-
-func (api *API) GetValidatorStatus(from common.Address) (*ntcTypes.ValidatorStatus, error) {
-	state, err := api.chain.State()
-	if state == nil || err != nil {
-		return nil, err
-	}
-	status := &ntcTypes.ValidatorStatus{
-		IsBanned: state.GetOrNewStateObject(from).IsBanned(),
-	}
-
-	return status, nil
-}
-
-func (api *API) GetCandidateList() (*ntcTypes.CandidateApi, error) {
-	state, err := api.chain.State()
-
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	candidateList := make([]string, 0)
-	candidateSet := state.GetCandidateSet()
-	fmt.Printf("candidate set %v", candidateSet)
-	for addr := range candidateSet {
-		candidateList = append(candidateList, addr.String())
-	}
-
-	candidates := &ntcTypes.CandidateApi{
-		CandidateList: candidateList,
-	}
-
-	return candidates, nil
-}
-
-func (api *API) GetBannedList() (*ntcTypes.BannedApi, error) {
-	state, err := api.chain.State()
-
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	bannedList := make([]string, 0)
-	bannedSet := state.GetBannedSet()
-	fmt.Printf("banned set %v", bannedSet)
-	for addr := range bannedSet {
-		bannedList = append(bannedList, addr.String())
-	}
-
-	bannedAddresses := &ntcTypes.BannedApi{
-		BannedList: bannedList,
-	}
-
-	return bannedAddresses, nil
 }

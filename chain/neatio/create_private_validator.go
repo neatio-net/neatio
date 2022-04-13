@@ -51,7 +51,7 @@ func CreatePrivateValidatorCmd(ctx *cli.Context) error {
 		panic(err)
 	}
 
-	validator := types.GenPrivValidatorKey(common.StringToAddress(address))
+	validator := types.GenPrivValidatorKey(common.HexToAddress(address))
 
 	consolePrivVal = &PrivValidatorForConsole{
 		Address: validator.Address.String(),

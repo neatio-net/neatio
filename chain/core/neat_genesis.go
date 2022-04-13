@@ -40,12 +40,12 @@ func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block,
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.StringToAddress(genesisW.Coinbase),
+		Coinbase:   common.HexToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for k, v := range genesisW.Alloc {
-		genesis.Alloc[common.StringToAddress(k)] = v
+		genesis.Alloc[common.HexToAddress(k)] = v
 	}
 
 	return SetupGenesisBlockEx(chainDb, &genesis)
@@ -184,43 +184,45 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.StringToAddress(genesisW.Coinbase),
+		Coinbase:   common.HexToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for i, v := range genesisW.Alloc {
-		genesis.Alloc[common.StringToAddress(i)] = v
+		genesis.Alloc[common.HexToAddress(i)] = v
 	}
 
 	return &genesis
 }
 
-var DefaultMainnetGenesisJSON = `{                                                                                                                                                                                            
-	"config": {                                                                                                                                                                          
-			"neatChainId": "neatio",                                                                                                                                                     
-			"chainId": 1,                                                                                                                                                                
-			"homesteadBlock": 0,                                                                                                                                                         
+var DefaultMainnetGenesisJSON = `{
+	"config": {
+			"neatChainId": "neatio",
+			"chainId": 515,
+			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
+			"petersburgBlock": 0,
+			"istanbulBlock": 0,
 			"neatcon": {
-					"epoch": 86457,
+					"epoch": 30000,
 					"policy": 0
 			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x61cf9982",
+	"nonce": "0x0",
+	"timestamp": "0x62569a93",
 	"extraData": "0x",
-	"gasLimit": "0x7270e00",
+	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATioBlockchainsGenesisCoinbase",
+	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"NEATxdFbo7zsqQqr829U9p7rFja1ZGyk": {
-					"balance": "0x3ee1186f11c064cc00000",
-					"amount": "0x104e2da94483f6200000"
+			"e2a8cd7a7384195f4871d336a06ef8a66b9308d1": {
+					"balance": "0x31729a3b22ff18d800000",
+					"amount": "0xa968163f0a57b400000"
 			}
 	},
 	"number": "0x0",
@@ -230,8 +232,8 @@ var DefaultMainnetGenesisJSON = `{
 
 var DefaultTestnetGenesisJSON = `{
 	"config": {
-			"neatChainId": "testnet",
-			"chainId": 2,
+			"neatChainId": "neatio",
+			"chainId": 515,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -243,17 +245,17 @@ var DefaultTestnetGenesisJSON = `{
 					"policy": 0
 			}
 	},
-	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6127cacf",
+	"nonce": "0x0",
+	"timestamp": "0x624c9d75",
 	"extraData": "0x",
-	"gasLimit": "0x7270e00",
+	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "NEATioBlockchainsGenesisCoinbase",
+	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
-					"balance": "0x3ee1186f11c064cc00000",
-					"amount": "0x104e2da94483f6200000"
+			"58ce08a1227b7fd1d5b4b626b29c96f31ab3b4d4": {
+					"balance": "0x31729b192e6a534e40000",
+					"amount": "0xa968163f0a57b400000"
 			}
 	},
 	"number": "0x0",

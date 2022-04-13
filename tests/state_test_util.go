@@ -26,6 +26,7 @@ type StateTest struct {
 	json stJSON
 }
 
+// StateSubtest selects a specific configuration of a General State Test.
 type StateSubtest struct {
 	Fork  string
 	Index int
@@ -90,6 +91,7 @@ type stTransactionMarshaling struct {
 	PrivateKey hexutil.Bytes
 }
 
+// Subtests returns all valid subtests of the test.
 func (t *StateTest) Subtests() []StateSubtest {
 	var sub []StateSubtest
 	for fork, pss := range t.json.Post {
@@ -100,6 +102,7 @@ func (t *StateTest) Subtests() []StateSubtest {
 	return sub
 }
 
+// Run executes a specific subtest.
 func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config) (*state.StateDB, error) {
 	config, ok := Forks[subtest.Fork]
 	if !ok {
@@ -121,7 +124,7 @@ func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config) (*state.StateD
 	gaspool := new(core.GasPool)
 	gaspool.AddGas(block.GasLimit())
 	snapshot := statedb.Snapshot()
-	if _, _, _, err := core.ApplyMessage(evm, msg, gaspool); err != nil {
+	if _, _, err := core.ApplyMessageEx(evm, msg, gaspool); err != nil {
 		statedb.RevertToSnapshot(snapshot)
 	}
 	if logs := rlpHash(statedb.Logs()); logs != common.Hash(post.Logs) {
@@ -149,6 +152,7 @@ func MakePreState(db neatdb.Database, accounts core.GenesisAlloc) *state.StateDB
 			statedb.SetState(addr, k, v)
 		}
 	}
+	// Commit and re-open to start with a clean state.
 	root, _ := statedb.Commit(false)
 	statedb, _ = state.New(root, sdb)
 	return statedb
@@ -167,6 +171,7 @@ func (t *StateTest) genesis(config *params.ChainConfig) *core.Genesis {
 }
 
 func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
+	// Derive sender from private key if present.
 	var from common.Address
 	if len(tx.PrivateKey) > 0 {
 		key, err := crypto.ToECDSA(tx.PrivateKey)
@@ -175,6 +180,7 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 		}
 		from = crypto.PubkeyToAddress(key.PublicKey)
 	}
+	// Parse recipient if present.
 	var to *common.Address
 	if tx.To != "" {
 		to = new(common.Address)
@@ -183,6 +189,7 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 		}
 	}
 
+	// Get values specific to this post state.
 	if ps.Indexes.Data > len(tx.Data) {
 		return nil, fmt.Errorf("tx data index %d out of bounds", ps.Indexes.Data)
 	}
@@ -195,6 +202,7 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 	dataHex := tx.Data[ps.Indexes.Data]
 	valueHex := tx.Value[ps.Indexes.Value]
 	gasLimit := tx.GasLimit[ps.Indexes.Gas]
+	// Value, Data hex encoding is messy: https://github.com/ethereum/tests/issues/203
 	value := new(big.Int)
 	if valueHex != "0x" {
 		v, ok := math.ParseBig256(valueHex)

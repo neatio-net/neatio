@@ -80,7 +80,7 @@ func LoadPrivValidator(filePath string) *PrivValidator {
 		Exit(Fmt("Error reading PrivValidator from %v: %v\n", filePath, err))
 	}
 	privV := &PrivValidator{
-		Address:  common.StringToAddress(privVal.Address),
+		Address:  common.HexToAddress(privVal.Address),
 		PubKey:   privVal.PubKey,
 		PrivKey:  privVal.PrivKey,
 		filePath: filePath,

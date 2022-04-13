@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package state
 
 import (
@@ -32,7 +16,7 @@ var emptyCodeHash = crypto.Keccak256(nil)
 type Code []byte
 
 func (self Code) String() string {
-	return string(self) //strings.Join(Disassemble(self), " ")
+	return string(self)
 }
 
 type Storage map[common.Hash]common.Hash
@@ -54,98 +38,73 @@ func (self Storage) Copy() Storage {
 	return cpy
 }
 
-// stateObject represents an Ethereum account which is being modified.
-//
-// The usage pattern is as follows:
-// First you need to obtain a state object.
-// Account values can be accessed and modified through the object.
-// Finally, call CommitTrie to write the modified storage trie into a database.
 type stateObject struct {
 	address  common.Address
-	addrHash common.Hash // hash of ethereum address of the account
+	addrHash common.Hash
 	data     Account
 	db       *StateDB
 
-	// DB error.
-	// State objects are used by the consensus core and VM which are
-	// unable to deal with database-level errors. Any error that occurs
-	// during a database read is memoized here and will eventually be returned
-	// by StateDB.Commit.
 	dbErr error
 
-	// Write caches.
-	trie Trie // storage trie, which becomes non-nil on first access
-	code Code // contract bytecode, which gets set when code is loaded
+	trie Trie
+	code Code
 
-	originStorage Storage // Storage cache of original entries to dedup rewrites
-	dirtyStorage  Storage // Storage entries that need to be flushed to disk
+	originStorage Storage
+	dirtyStorage  Storage
 
-	// Cross Chain TX trie
-	tx1Trie Trie // tx1 trie, which become non-nil on first access
-	tx3Trie Trie // tx3 trie, which become non-nil on first access
+	tx1Trie Trie
+	tx3Trie Trie
 
-	dirtyTX1 map[common.Hash]struct{} // tx1 entries that need to be flushed to disk
-	dirtyTX3 map[common.Hash]struct{} // tx3 entries that need to be flushed to disk
+	dirtyTX1 map[common.Hash]struct{}
+	dirtyTX3 map[common.Hash]struct{}
 
-	// Delegate Trie
-	proxiedTrie   Trie    // proxied trie, store the proxied balance from other user
-	originProxied Proxied // cache data of proxied trie
-	dirtyProxied  Proxied // dirty data of proxied trie, need to be flushed to disk later
+	proxiedTrie   Trie
+	originProxied Proxied
+	dirtyProxied  Proxied
 
-	rewardTrie   Trie   // Reward Trie, store the pending reward balance for this account
-	originReward Reward // cache data of Reward trie
-	dirtyReward  Reward // dirty data of Reward trie, need to be flushed to disk later
+	rewardTrie   Trie
+	originReward Reward
+	dirtyReward  Reward
 
-	// Cache flags.
-	// When an object is marked suicided it will be delete from the trie
-	// during the "update" phase of the state transition.
-	dirtyCode bool // true if the code was updated
+	dirtyCode bool
 	suicided  bool
 	touched   bool
 	deleted   bool
-	onDirty   func(addr common.Address) // Callback method to mark a state object newly dirty
+	onDirty   func(addr common.Address)
 }
 
-// empty returns whether the account is considered empty.
 func (s *stateObject) empty() bool {
-	return s.data.Nonce == 0 && s.data.Balance.Sign() == 0 && bytes.Equal(s.data.CodeHash, emptyCodeHash) && s.data.DepositBalance.Sign() == 0 && len(s.data.SideChainDepositBalance) == 0 && s.data.ChainBalance.Sign() == 0 && s.data.DelegateBalance.Sign() == 0 && s.data.ProxiedBalance.Sign() == 0 && s.data.DepositProxiedBalance.Sign() == 0 && s.data.PendingRefundBalance.Sign() == 0 && s.data.AvailableRewardBalance.Sign() == 0
+	return s.data.Nonce == 0 && s.data.Balance.Sign() == 0 && bytes.Equal(s.data.CodeHash, emptyCodeHash) && s.data.DepositBalance.Sign() == 0 && len(s.data.SideChainDepositBalance) == 0 && s.data.ChainBalance.Sign() == 0 && s.data.DelegateBalance.Sign() == 0 && s.data.ProxiedBalance.Sign() == 0 && s.data.DepositProxiedBalance.Sign() == 0 && s.data.PendingRefundBalance.Sign() == 0
 }
 
-// Account is the Ethereum consensus representation of accounts.
-// These objects are stored in the main account trie.
 type Account struct {
 	Nonce                   uint64
-	Balance                 *big.Int                   // for normal user
-	DepositBalance          *big.Int                   // for validator, can not be consumed
-	SideChainDepositBalance []*sideChainDepositBalance // only valid in main chain for side chain validator before side chain launch, can not be consumed
-	ChainBalance            *big.Int                   // only valid in main chain for side chain owner, can not be consumed
-	Root                    common.Hash                // merkle root of the storage trie
-	TX1Root                 common.Hash                // merkle root of the TX1 trie
-	TX3Root                 common.Hash                // merkle root of the TX3 trie
+	Balance                 *big.Int
+	DepositBalance          *big.Int
+	SideChainDepositBalance []*sideChainDepositBalance
+	ChainBalance            *big.Int
+	Root                    common.Hash
+	TX1Root                 common.Hash
+	TX3Root                 common.Hash
 	CodeHash                []byte
 
-	// Delegation
-	DelegateBalance       *big.Int    // the accumulative balance which this account delegate the Balance to other user
-	ProxiedBalance        *big.Int    // the accumulative balance which other user delegate to this account (this balance can be revoked, can be deposit for validator)
-	DepositProxiedBalance *big.Int    // the deposit proxied balance for validator which come from ProxiedBalance (this balance can not be revoked)
-	PendingRefundBalance  *big.Int    // the accumulative balance which other user try to cancel their delegate balance (this balance will be refund to user's address after epoch end)
-	ProxiedRoot           common.Hash // merkle root of the Proxied trie
-	// Candidate
-	Candidate  bool     // flag for Account, true indicate the account has been applied for the Delegation Candidate
-	Commission uint8    // commission percentage of Delegation Candidate (0-100)
-	BlockTime  *big.Int // number for mined blocks current epoch
-	BannedTime *big.Int // timestamp for last consensus block
-	IsBanned   bool     // candidate is banned or not
-	Pubkey     string
+	DelegateBalance       *big.Int
+	ProxiedBalance        *big.Int
+	DepositProxiedBalance *big.Int
+	PendingRefundBalance  *big.Int
+	ProxiedRoot           common.Hash
 
-	// Reward
-	RewardBalance          *big.Int    // the accumulative reward balance for this account
-	AvailableRewardBalance *big.Int    // the available reward balance for this account
-	RewardRoot             common.Hash // merkle root of the Reward trie
+	Candidate  bool
+	Commission uint8
 
+	Pubkey   string
+	FAddress common.Address
+
+	RewardBalance *big.Int
+
+	RewardRoot common.Hash
 }
 
-// newObject creates a state object.
 func newObject(db *StateDB, address common.Address, data Account, onDirty func(addr common.Address)) *stateObject {
 	if data.Balance == nil {
 		data.Balance = new(big.Int)
@@ -156,7 +115,7 @@ func newObject(db *StateDB, address common.Address, data Account, onDirty func(a
 	if data.ChainBalance == nil {
 		data.ChainBalance = new(big.Int)
 	}
-	// init delegate balance
+
 	if data.DelegateBalance == nil {
 		data.DelegateBalance = new(big.Int)
 	}
@@ -169,21 +128,9 @@ func newObject(db *StateDB, address common.Address, data Account, onDirty func(a
 	if data.PendingRefundBalance == nil {
 		data.PendingRefundBalance = new(big.Int)
 	}
-	// init reward balance
+
 	if data.RewardBalance == nil {
 		data.RewardBalance = new(big.Int)
-	}
-
-	if data.AvailableRewardBalance == nil {
-		data.AvailableRewardBalance = new(big.Int)
-	}
-
-	if data.BlockTime == nil {
-		data.BlockTime = new(big.Int)
-	}
-
-	if data.BannedTime == nil {
-		data.BannedTime = new(big.Int)
 	}
 
 	if data.CodeHash == nil {
@@ -206,12 +153,10 @@ func newObject(db *StateDB, address common.Address, data Account, onDirty func(a
 	}
 }
 
-// EncodeRLP implements rlp.Encoder.
 func (c *stateObject) EncodeRLP(w io.Writer) error {
 	return rlp.Encode(w, c.data)
 }
 
-// setError remembers the first non-nil error it is called with.
 func (self *stateObject) setError(err error) {
 	if self.dbErr == nil {
 		self.dbErr = err
@@ -251,15 +196,13 @@ func (c *stateObject) getTX1Trie(db Database) Trie {
 	return c.tx1Trie
 }
 
-// HasTX1 returns true if tx1 is in account TX1 trie.
 func (self *stateObject) HasTX1(db Database, txHash common.Hash) bool {
-	// check the dirtyTX1 firstly.
+
 	_, ok := self.dirtyTX1[txHash]
 	if ok {
 		return true
 	}
 
-	// Load from DB in case it is missing.
 	enc, err := self.getTX1Trie(db).TryGet(txHash[:])
 	if err != nil {
 		return false
@@ -281,7 +224,6 @@ func (self *stateObject) HasTX1(db Database, txHash common.Hash) bool {
 	return false
 }
 
-// AddTX1 adds a tx1 in account tx1 trie.
 func (self *stateObject) AddTX1(db Database, txHash common.Hash) {
 	self.db.journal = append(self.db.journal, addTX1Change{
 		account: &self.address,
@@ -298,28 +240,23 @@ func (self *stateObject) removeTX1(txHash common.Hash) {
 	delete(self.dirtyTX1, txHash)
 }
 
-// updateTX1Trie writes cached tx1 modifications into the object's tx1 trie.
 func (self *stateObject) updateTX1Trie(db Database) Trie {
 	tr := self.getTX1Trie(db)
 
 	for tx1 := range self.dirtyTX1 {
 		delete(self.dirtyTX1, tx1)
 
-		// Encoding []byte cannot fail, ok to ignore the error.
 		v, _ := rlp.EncodeToBytes(bytes.TrimLeft(tx1[:], "\x00"))
 		self.setError(tr.TryUpdate(tx1[:], v))
 	}
 	return tr
 }
 
-// updateTX1Root sets the trie root to the current root hash
 func (self *stateObject) updateTX1Root(db Database) {
 	self.updateTX1Trie(db)
 	self.data.TX1Root = self.tx1Trie.Hash()
 }
 
-// CommitTX1Trie the tx1 trie of the object to dwb.
-// This updates the trie root.
 func (self *stateObject) CommitTX1Trie(db Database) error {
 	self.updateTX1Trie(db)
 	if self.dbErr != nil {
@@ -344,15 +281,13 @@ func (c *stateObject) getTX3Trie(db Database) Trie {
 	return c.tx3Trie
 }
 
-// HasTX3 returns true if tx3 is in account TX3 trie.
 func (self *stateObject) HasTX3(db Database, txHash common.Hash) bool {
-	// check the dirtyTX3 firstly.
+
 	_, ok := self.dirtyTX3[txHash]
 	if ok {
 		return true
 	}
 
-	// Load from DB in case it is missing.
 	enc, err := self.getTX3Trie(db).TryGet(txHash[:])
 	if err != nil {
 		return false
@@ -374,7 +309,6 @@ func (self *stateObject) HasTX3(db Database, txHash common.Hash) bool {
 	return false
 }
 
-// AddTX3 adds a tx3 in account tx3 trie.
 func (self *stateObject) AddTX3(db Database, txHash common.Hash) {
 	self.db.journal = append(self.db.journal, addTX3Change{
 		account: &self.address,
@@ -391,28 +325,23 @@ func (self *stateObject) removeTX3(txHash common.Hash) {
 	delete(self.dirtyTX3, txHash)
 }
 
-// updateTX3Trie writes cached tx3 modifications into the object's tx3 trie.
 func (self *stateObject) updateTX3Trie(db Database) Trie {
 	tr := self.getTX3Trie(db)
 
 	for tx3 := range self.dirtyTX3 {
 		delete(self.dirtyTX3, tx3)
 
-		// Encoding []byte cannot fail, ok to ignore the error.
 		v, _ := rlp.EncodeToBytes(bytes.TrimLeft(tx3[:], "\x00"))
 		self.setError(tr.TryUpdate(tx3[:], v))
 	}
 	return tr
 }
 
-// updateTX3Root sets the trie root to the current root hash
 func (self *stateObject) updateTX3Root(db Database) {
 	self.updateTX3Trie(db)
 	self.data.TX3Root = self.tx3Trie.Hash()
 }
 
-// CommitTX3Trie the tx3 trie of the object to dwb.
-// This updates the trie root.
 func (self *stateObject) CommitTX3Trie(db Database) error {
 	self.updateTX3Trie(db)
 	if self.dbErr != nil {
@@ -437,25 +366,23 @@ func (c *stateObject) getTrie(db Database) Trie {
 	return c.trie
 }
 
-// GetState returns a value in account storage.
 func (self *stateObject) GetState(db Database, key common.Hash) common.Hash {
-	// If we have a dirty value for this state entry, return it
+
 	value, dirty := self.dirtyStorage[key]
 	if dirty {
 		return value
 	}
-	// Otherwise return the entry's original value
+
 	return self.GetCommittedState(db, key)
 }
 
-// GetCommittedState retrieves a value from the committed account storage trie.
 func (self *stateObject) GetCommittedState(db Database, key common.Hash) common.Hash {
-	// If we have the original value cached, return that
+
 	value, cached := self.originStorage[key]
 	if cached {
 		return value
 	}
-	// Otherwise load the value from the database
+
 	enc, err := self.getTrie(db).TryGet(key[:])
 	if err != nil {
 		self.setError(err)
@@ -472,7 +399,6 @@ func (self *stateObject) GetCommittedState(db Database, key common.Hash) common.
 	return value
 }
 
-// SetState updates a value in account storage.
 func (self *stateObject) SetState(db Database, key, value common.Hash) {
 	self.db.journal = append(self.db.journal, storageChange{
 		account:  &self.address,
@@ -491,13 +417,11 @@ func (self *stateObject) setState(key, value common.Hash) {
 	}
 }
 
-// updateTrie writes cached storage modifications into the object's storage trie.
 func (self *stateObject) updateTrie(db Database) Trie {
 	tr := self.getTrie(db)
 	for key, value := range self.dirtyStorage {
 		delete(self.dirtyStorage, key)
 
-		// Skip noop changes, persist actual changes
 		if value == self.originStorage[key] {
 			continue
 		}
@@ -507,21 +431,18 @@ func (self *stateObject) updateTrie(db Database) Trie {
 			self.setError(tr.TryDelete(key[:]))
 			continue
 		}
-		// Encoding []byte cannot fail, ok to ignore the error.
+
 		v, _ := rlp.EncodeToBytes(bytes.TrimLeft(value[:], "\x00"))
 		self.setError(tr.TryUpdate(key[:], v))
 	}
 	return tr
 }
 
-// UpdateRoot sets the trie root to the current root hash of
 func (self *stateObject) updateRoot(db Database) {
 	self.updateTrie(db)
 	self.data.Root = self.trie.Hash()
 }
 
-// CommitTrie the storage trie of the object to dwb.
-// This updates the trie root.
 func (self *stateObject) CommitTrie(db Database) error {
 	self.updateTrie(db)
 	if self.dbErr != nil {
@@ -534,11 +455,8 @@ func (self *stateObject) CommitTrie(db Database) error {
 	return err
 }
 
-// AddBalance removes amount from c's balance.
-// It is used to add funds to the destination account of a transfer.
 func (c *stateObject) AddBalance(amount *big.Int) {
-	// EIP158: We must check emptiness for the objects such that the account
-	// clearing (0,0,0 objects) can take effect.
+
 	if amount.Sign() == 0 {
 		if c.empty() {
 			c.touch()
@@ -549,8 +467,6 @@ func (c *stateObject) AddBalance(amount *big.Int) {
 	c.SetBalance(new(big.Int).Add(c.Balance(), amount))
 }
 
-// SubBalance removes amount from c's balance.
-// It is used to remove funds from the origin account of a transfer.
 func (c *stateObject) SubBalance(amount *big.Int) {
 	if amount.Sign() == 0 {
 		return
@@ -574,7 +490,6 @@ func (self *stateObject) setBalance(amount *big.Int) {
 	}
 }
 
-// Return the gas back to the origin. Used by the Virtual machine or Closures
 func (c *stateObject) ReturnGas(gas *big.Int) {}
 
 func (self *stateObject) deepCopy(db *StateDB, onDirty func(addr common.Address)) *stateObject {
@@ -615,16 +530,10 @@ func (self *stateObject) deepCopy(db *StateDB, onDirty func(addr common.Address)
 	return stateObject
 }
 
-//
-// Attribute accessors
-//
-
-// Returns the address of the contract/account
 func (c *stateObject) Address() common.Address {
 	return c.address
 }
 
-// Code returns the contract code associated with this object, if any.
 func (self *stateObject) Code(db Database) []byte {
 	if self.code != nil {
 		return self.code
@@ -688,9 +597,27 @@ func (self *stateObject) Nonce() uint64 {
 	return self.data.Nonce
 }
 
-// Never called, but must be present to allow stateObject to be used
-// as a vm.Account interface that also satisfies the vm.ContractRef
-// interface. Interfaces are awesome.
 func (self *stateObject) Value() *big.Int {
 	panic("Value on stateObject should never be called")
+}
+
+func (self *stateObject) SetAddress(address common.Address) {
+	self.db.journal = append(self.db.journal, fAddressChange{
+		account: &self.address,
+		prev:    self.data.FAddress,
+	})
+
+	self.setAddress(address)
+}
+
+func (self *stateObject) setAddress(address common.Address) {
+	self.data.FAddress = address
+	if self.onDirty != nil {
+		self.onDirty(self.Address())
+		self.onDirty = nil
+	}
+}
+
+func (self *stateObject) GetAddress() common.Address {
+	return self.data.FAddress
 }
