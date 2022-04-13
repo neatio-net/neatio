@@ -389,6 +389,13 @@ func (cch *CrossChainHelper) VerifySideChainProofData(bs []byte) error {
 		if epoch == nil {
 			return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 		}
+
+		if epoch.Number > ci.EpochNumber {
+			ci.EpochNumber = epoch.Number
+			ci.Epoch = epoch
+			core.SaveChainInfo(cch.chainInfoDB, ci)
+		}
+
 		valSet := epoch.Validators
 		if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 			return errors.New("inconsistent validator set")
@@ -513,6 +520,13 @@ func (cch *CrossChainHelper) ValidateTX3ProofData(proofData *types.TX3ProofData)
 	if epoch == nil {
 		return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 	}
+
+	if epoch.Number > ci.EpochNumber {
+		ci.EpochNumber = epoch.Number
+		ci.Epoch = epoch
+		core.SaveChainInfo(cch.chainInfoDB, ci)
+	}
+
 	valSet := epoch.Validators
 	if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 		return errors.New("inconsistent validator set")

@@ -570,6 +570,7 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER uint64 = 1000
 	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER uint64 = 5000
+
 	const DEFAULT_TIME_PER_BLOCK_OF_EPOCH int64 = 1000000000
 
 	zeroEpoch := loadOneEpoch(epoch.db, 0, epoch.logger)
@@ -577,17 +578,6 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 	thisYear := epoch.Number / epochNumberPerYear
 	nextYear := thisYear + 1
-
-	log.Info("estimateForNextEpoch",
-		"Current epoch", epoch.Number,
-		"Epoch start block", epoch.StartBlock,
-		"Epoch end block", epoch.EndBlock,
-		"Epoch start time", epoch.StartTime,
-		"Epoch end time", epoch.EndTime,
-		"Last block height", lastBlockHeight,
-		"Reward per year", rewardFirstYear,
-		"Epoch per year", epochNumberPerYear,
-		"Total years", totalYear)
 
 	timePerBlockOfEpoch = lastBlockTime.Sub(epoch.StartTime).Nanoseconds() / int64(lastBlockHeight-epoch.StartBlock)
 
@@ -600,9 +590,9 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 	nextEpochBlocks = 0
 
-	log.Info("estimateForNextEpoch",
-		"epochLeftThisYear", epochLeftThisYear,
-		"timePerBlockOfEpoch", timePerBlockOfEpoch)
+	// log.Info("estimateForNextEpoch",
+	// 	"epochLeftThisYear", epochLeftThisYear,
+	// 	"timePerBlockOfEpoch", timePerBlockOfEpoch)
 
 	if epochLeftThisYear == 0 {
 
@@ -618,21 +608,21 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 		nextEpochBlocks = uint64(epochTimePerEpochLeftNextYear / timePerBlockOfEpoch)
 
-		log.Info("estimateForNextEpoch 0",
-			"timePerBlockOfEpoch", timePerBlockOfEpoch,
-			"nextYearStartTime", nextYearStartTime,
-			"timeLeftNextYear", timeLeftNextYear,
-			"epochLeftNextYear", epochLeftNextYear,
-			"epochTimePerEpochLeftNextYear", epochTimePerEpochLeftNextYear,
-			"nextEpochBlocks", nextEpochBlocks)
+		// log.Info("estimateForNextEpoch 0",
+		// 	"timePerBlockOfEpoch", timePerBlockOfEpoch,
+		// 	"nextYearStartTime", nextYearStartTime,
+		// 	"timeLeftNextYear", timeLeftNextYear,
+		// 	"epochLeftNextYear", epochLeftNextYear,
+		// 	"epochTimePerEpochLeftNextYear", epochTimePerEpochLeftNextYear,
+		// 	"nextEpochBlocks", nextEpochBlocks)
 
-		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+		if nextEpochBlocks <= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
 			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
-		if nextEpochBlocks > EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
+		if nextEpochBlocks >= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
 			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
 
 		rewardPerEpochNextYear := calculateRewardPerEpochByYear(rewardFirstYear, int64(nextYear), int64(totalYear), int64(epochNumberPerYear))
@@ -651,26 +641,16 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 			nextEpochBlocks = uint64(epochTimePerEpochLeftThisYear / timePerBlockOfEpoch)
 
-			log.Info("estimateForNextEpoch 1",
-				"timePerBlockOfEpoch", timePerBlockOfEpoch,
-				"nextYearStartTime", nextYearStartTime,
-				"timeLeftThisYear", timeLeftThisYear,
-				"epochTimePerEpochLeftThisYear", epochTimePerEpochLeftThisYear,
-				"nextEpochBlocks", nextEpochBlocks)
 		}
 
-		if nextEpochBlocks < EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+		if nextEpochBlocks <= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
 			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
 		if nextEpochBlocks > EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
 			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
-
-		log.Debugf("Current Epoch Number %v, This Year %v, Next Year %v, Epoch No Per Year %v, Epoch Left This year %v\n"+
-			"initStartTime %v ; nextYearStartTime %v\n"+
-			"Time Left This year %v, timePerBlockOfEpoch %v, nextEpochBlocks %v\n", epoch.Number, thisYear, nextYear, epochNumberPerYear, epochLeftThisYear, initStartTime, nextYearStartTime, timeLeftThisYear, timePerBlockOfEpoch, nextEpochBlocks)
 
 		rewardPerEpochThisYear := calculateRewardPerEpochByYear(rewardFirstYear, int64(thisYear), int64(totalYear), int64(epochNumberPerYear))
 
@@ -695,7 +675,7 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 	}
 
 	if epoch == nil && other == nil {
-		log.Debugf("Epoch equals epoch %v, other %v", epoch, other)
+		// log.Debugf("Epoch equals epoch %v, other %v", epoch, other)
 		return true
 	}
 
@@ -723,9 +703,9 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Block Reward: %v "+" NEAT"+",\n"+
-			"Next epoch is starting at block: %v,\n"+
-			"The epoch will last until block: %v,\n",
+			"Reward per block: %v "+"NEAT"+",\n"+
+			"Next epoch is starting at block height: %v,\n"+
+			"The epoch will last until block height: %v,\n",
 		epoch.Number,
 		blockReward,
 		epoch.StartBlock,

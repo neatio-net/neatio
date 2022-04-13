@@ -86,6 +86,17 @@ func (h *Header) Hash() common.Hash {
 	return rlpHash(h)
 }
 
+func (h *Header) HashWithoutTime() common.Hash {
+
+	if h.MixDigest == NeatConDigest {
+
+		if ntcHeader := NeatConFilteredHeaderWithoutTime(h, true); ntcHeader != nil {
+			return rlpHash(ntcHeader)
+		}
+	}
+	return rlpHash(h)
+}
+
 func (h *Header) HashNoNonce() common.Hash {
 	return rlpHash([]interface{}{
 		h.ParentHash,
@@ -192,6 +203,21 @@ func CopyHeader(h *Header) *Header {
 	if cpy.Time = new(big.Int); h.Time != nil {
 		cpy.Time.Set(h.Time)
 	}
+	if cpy.Difficulty = new(big.Int); h.Difficulty != nil {
+		cpy.Difficulty.Set(h.Difficulty)
+	}
+	if cpy.Number = new(big.Int); h.Number != nil {
+		cpy.Number.Set(h.Number)
+	}
+	if len(h.Extra) > 0 {
+		cpy.Extra = make([]byte, len(h.Extra))
+		copy(cpy.Extra, h.Extra)
+	}
+	return &cpy
+}
+
+func CopyWithoutTimeHeader(h *Header) *Header {
+	cpy := *h
 	if cpy.Difficulty = new(big.Int); h.Difficulty != nil {
 		cpy.Difficulty.Set(h.Difficulty)
 	}
@@ -447,13 +473,4 @@ type SideChainProofDataV1 struct {
 
 	TxIndexs []uint
 	TxProofs []*BSKeyValueSet
-}
-
-func DecodeSideChainProofData(bs []byte) (*SideChainProofData, error) {
-	proofData := &SideChainProofData{}
-	err := rlp.DecodeBytes(bs, proofData)
-	if err != nil {
-		return nil, err
-	}
-	return proofData, nil
 }
