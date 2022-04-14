@@ -40,6 +40,7 @@ type ConsensusReactor struct {
 	evsw       types.EventSwitch
 	peerStates sync.Map
 	logger     log.Logger
+	wg         sync.WaitGroup
 }
 
 func NewConsensusReactor(consensusState *ConsensusState) *ConsensusReactor {
@@ -52,36 +53,31 @@ func NewConsensusReactor(consensusState *ConsensusState) *ConsensusReactor {
 	consensusState.conR = conR
 
 	conR.BaseService = *NewBaseService(consensusState.backend.GetLogger(), "ConsensusReactor", conR)
-
 	return conR
 }
 
 func (conR *ConsensusReactor) OnStart() error {
-
 	conR.BaseService.OnStart()
 
 	conR.registerEventCallbacks()
 
 	_, err := conR.conS.Start()
 	if err != nil {
+		conR.logger.Errorf("ConsensusReactor) Start with error %v", err)
 		return err
 	}
 
-	return nil
-}
-
-func (conR *ConsensusReactor) AfterStart() {
-
-	for i := 0; i < waitReactorTimes && !conR.IsRunning(); i++ {
-		log.Infof("(conR *ConsensusReactor) AfterStart(), wait %v times for conR running", i)
-		time.Sleep(100 * time.Millisecond)
-	}
 	conR.startPeerRoutine()
+	return nil
 }
 
 func (conR *ConsensusReactor) OnStop() {
 	conR.BaseService.OnStop()
 	conR.conS.Stop()
+
+	conR.logger.Infof("ConsensusReactor wait")
+	conR.wg.Wait()
+	conR.logger.Infof("ConsensusReactor wait over")
 }
 
 func (conR *ConsensusReactor) AddPeer(peer consensus.Peer) {
@@ -106,10 +102,9 @@ func (conR *ConsensusReactor) AddPeer(peer consensus.Peer) {
 
 	conR.logger.Debugf("peer is:%+v", peer)
 	conR.logger.Debugf("peer key is:%+v", peer.GetKey())
-	conR.logger.Infof("Peer connected %v", peer.GetKey())
+	conR.logger.Infof("peer %v added", peer.GetKey())
 
 	if conR.IsRunning() {
-
 		go conR.gossipDataRoutine(peer, peerState)
 		go conR.gossipVotesRoutine(peer, peerState)
 
@@ -118,7 +113,6 @@ func (conR *ConsensusReactor) AddPeer(peer consensus.Peer) {
 }
 
 func (conR *ConsensusReactor) RemovePeer(peer consensus.Peer, reason interface{}) {
-
 	ps, ok := peer.GetPeerState().(*PeerState)
 	if !ok {
 		conR.logger.Debug("Peer has no state", "peer", peer)
@@ -152,14 +146,12 @@ func (conR *ConsensusReactor) Receive(chID uint64, src consensus.Peer, msgBytes 
 	_, msg, err := DecodeMessage(msgBytes)
 	if err != nil {
 		conR.logger.Warn("Error decoding message", "src", src, "chId", chID, "msg", msg, "error", err, "bytes", msgBytes)
-
 		return
 	}
 	conR.logger.Debug("Receive", "src", src, "chId", chID, "msg", msg)
 
 	ps, exist := src.GetPeerState().(*PeerState)
 	if !exist || ps == nil {
-
 		conR.logger.Debug("Receive, ps not exist, add peer", "src", src)
 		conR.AddPeer(src)
 		ps = src.GetPeerState().(*PeerState)
@@ -167,7 +159,6 @@ func (conR *ConsensusReactor) Receive(chID uint64, src consensus.Peer, msgBytes 
 
 	switch chID {
 	case StateChannel:
-
 		switch msg := msg.(type) {
 		case *NewRoundStepMessage:
 			ps.ApplyNewRoundStepMessage(msg)
@@ -180,7 +171,6 @@ func (conR *ConsensusReactor) Receive(chID uint64, src consensus.Peer, msgBytes 
 		}
 
 	case DataChannel:
-
 		switch msg := msg.(type) {
 		case *ProposalMessage:
 			ps.SetHasProposal(msg.Proposal)
@@ -198,7 +188,6 @@ func (conR *ConsensusReactor) Receive(chID uint64, src consensus.Peer, msgBytes 
 		}
 
 	case VoteChannel:
-
 		switch msg := msg.(type) {
 		case *VoteMessage:
 			cs := conR.conS
@@ -211,7 +200,6 @@ func (conR *ConsensusReactor) Receive(chID uint64, src consensus.Peer, msgBytes 
 			conR.conS.peerMsgQueue <- msgInfo{msg, src.GetKey()}
 
 		default:
-
 			conR.logger.Warn(Fmt("Unknown message type %v", reflect.TypeOf(msg)))
 		}
 	default:
@@ -241,10 +229,9 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 	})
 
 	types.AddListenerForEvent(conR.evsw, "conR", types.EventStringRequest(), func(data types.TMEventData) {
-
 		re := data.(types.EventDataRequest)
 		block := re.Proposal
-
+		conR.logger.Infof("registerEventCallbacks received block height: %d, conR.conS.Height: %d, conR.conS.Step: %v", block.NumberU64(), conR.conS.Height, conR.conS.Step)
 		if block.NumberU64() >= conR.conS.Height {
 
 			if block.NumberU64() >= conR.conS.Height+1 {
@@ -252,9 +239,9 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 			}
 
 			conR.conS.blockFromMiner = re.Proposal
-
+			conR.logger.Infof("registerEventCallbacks received Request Event conR.conS.blockFromMiner has been set with height: %v", conR.conS.blockFromMiner.NumberU64())
 		} else {
-
+			conR.logger.Info("registerEventCallbacks received Request Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
 		}
 	})
 
@@ -269,11 +256,12 @@ func (conR *ConsensusReactor) registerEventCallbacks() {
 	})
 
 	types.AddListenerForEvent(conR.evsw, "conR", types.EventStringFinalCommitted(), func(data types.TMEventData) {
+		conR.logger.Info("registerEventCallbacks received Final Committed Event", "conR.conS.Height", conR.conS.Height, "conR.conS.Step", conR.conS.Step)
 
 		edfc := data.(types.EventDataFinalCommitted)
 
 		if edfc.BlockNumber == conR.conS.Height {
-
+			conR.logger.Info("start new height to apply this commit", "new height", edfc.BlockNumber+1)
 			conR.conS.StartNewHeight()
 		}
 	})
@@ -320,7 +308,6 @@ func (conR *ConsensusReactor) sendVote2Proposer(vote *types.Vote, proposerKey st
 }
 
 func (conR *ConsensusReactor) broadcastHasVoteMessage(vote *types.Vote) {
-
 	if conR.conS.IsProposer() {
 		msg := &HasVoteMessage{
 			Height: vote.Height,
@@ -361,12 +348,17 @@ func (conR *ConsensusReactor) sendNewRoundStepMessages(peer consensus.Peer) {
 }
 
 func (conR *ConsensusReactor) gossipDataRoutine(peer consensus.Peer, ps *PeerState) {
+	conR.wg.Add(1)
+	defer func() {
+		conR.wg.Done()
+		conR.logger.Infof("ConsensusReactor done one routine ")
+	}()
+
 	id := peer.GetKey()
 	conR.logger.Infof("gossipDataRoutine start for peer %v", id)
 
 OUTER_LOOP:
 	for {
-
 		if peer == nil {
 			conR.logger.Infof("Peer is nil, Stopping gossipDataRoutine for peer %v", id)
 			return
@@ -387,13 +379,11 @@ OUTER_LOOP:
 		prs := ps.GetRoundState()
 
 		if !rs.isProposer || (rs.Height != prs.Height) || (rs.Round > prs.Round) {
-
 			time.Sleep(peerGossipSleepDuration)
 			continue OUTER_LOOP
 		}
 
 		if rs.ProposalBlockParts.HasHeader(prs.ProposalBlockPartsHeader) {
-
 			if index, ok := rs.ProposalBlockParts.BitArray().Sub(prs.ProposalBlockParts.Copy()).PickRandom(); ok {
 				part := rs.ProposalBlockParts.GetPart(int(index))
 				msg := &BlockPartMessage{
@@ -409,12 +399,11 @@ OUTER_LOOP:
 		}
 
 		if rs.Proposal != nil && !prs.Proposal {
-
+			log.Info("send proposal to peer", "peerHeight", prs.Height, "peerRound", prs.Round, "peer", peer)
 			msg := &ProposalMessage{Proposal: rs.Proposal}
 			if err := peer.Send(DataChannel, struct{ ConsensusMessage }{msg}); err == nil {
 				ps.SetHasProposal(rs.Proposal)
 			}
-
 			if 0 <= rs.Proposal.POLRound {
 				msg := &ProposalPOLMessage{
 					Height:           rs.Height,
@@ -432,12 +421,16 @@ OUTER_LOOP:
 }
 
 func (conR *ConsensusReactor) gossipVotesRoutine(peer consensus.Peer, ps *PeerState) {
+	conR.wg.Add(1)
+	defer func() {
+		conR.wg.Done()
+		conR.logger.Infof("ConsensusReactor done one routine ")
+	}()
 
 	var sleeping = 0
 	id := peer.GetKey()
 OUTER_LOOP:
 	for {
-
 		if peer == nil {
 			conR.logger.Infof("Peer is nil, Stopping gossipVotesRoutine for peer %v", id)
 			return
@@ -452,7 +445,6 @@ OUTER_LOOP:
 		if !conR.IsRunning() {
 			conR.logger.Infof("Consensus reactor is not running, stopping gossipVotesRoutine for peer %v", peer)
 			return
-
 		}
 
 		rs := conR.conS.GetRoundState()
@@ -508,11 +500,9 @@ OUTER_LOOP:
 		}
 
 		if sleeping == 0 {
-
 			sleeping = 1
 			conR.logger.Debug("No votes to send, sleeping", "peer", peer)
 		} else if sleeping == 2 {
-
 			sleeping = 1
 		}
 
@@ -522,7 +512,6 @@ OUTER_LOOP:
 }
 
 func (conR *ConsensusReactor) String() string {
-
 	return "ConsensusReactor"
 }
 
@@ -759,7 +748,6 @@ func (ps *PeerState) SetHasVote(vote *types.Vote) {
 
 func (ps *PeerState) setHasVote(height uint64, round int, type_ byte, index int) {
 	ps.logger.Debug("setHasVote()", "height", height, "round", round, "index", index)
-
 	ps.getVoteBitArray(height, round, type_).SetIndex(uint64(index), true)
 }
 
@@ -789,7 +777,6 @@ func (ps *PeerState) ApplyNewRoundStepMessage(msg *NewRoundStepMessage) {
 		ps.ProposalBlockParts = nil
 		ps.ProposalPOLRound = -1
 		ps.ProposalPOL = nil
-
 		ps.Prevotes = nil
 		ps.Precommits = nil
 	}
