@@ -69,7 +69,7 @@ var (
 	_ consensus.Engine = (*backend)(nil)
 
 	neatGenesisAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")
-	halfFeeBurnAddress = common.HexToAddress("0x0000000000000000000000000000000000000001")
+	foundationAddress  = common.HexToAddress("0xbbe9e63Dcb95105A3Ab5e9094B0C866F0f418987")
 
 	sideChainRewardAddress = common.StringToAddress("0x0000000000000000000000000000000000000535")
 )
@@ -615,8 +615,8 @@ func writeCommittedSeals(h *types.Header, ncExtra *ntcTypes.NeatConExtra) error 
 }
 
 func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, ep *epoch.Epoch, totalGasFee *big.Int) {
-	halfGasFee := big.NewInt(0).Div(totalGasFee, big.NewInt(2))
-	state.AddBalance(halfFeeBurnAddress, halfGasFee)
+	tenPercentGasFee := big.NewInt(0).Div(totalGasFee, big.NewInt(10))
+	state.AddBalance(foundationAddress, tenPercentGasFee)
 
 	var coinbaseReward *big.Int
 	if config.NeatChainId == params.MainnetChainConfig.NeatChainId || config.NeatChainId == params.TestnetChainConfig.NeatChainId {
@@ -625,16 +625,16 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 			zeroAddress := common.Address{}
 			if neatGenesisAddress == zeroAddress {
 				coinbaseReward = big.NewInt(0)
-				coinbaseReward.Add(rewardPerBlock, halfGasFee)
+				coinbaseReward.Add(rewardPerBlock, tenPercentGasFee)
 			} else {
 				coinbaseReward = new(big.Int).Mul(rewardPerBlock, big.NewInt(8))
 				coinbaseReward.Quo(coinbaseReward, big.NewInt(10))
 				foundationReward := new(big.Int).Sub(rewardPerBlock, coinbaseReward)
 				state.AddBalance(neatGenesisAddress, foundationReward)
-				coinbaseReward.Add(coinbaseReward, halfGasFee)
+				coinbaseReward.Add(coinbaseReward, tenPercentGasFee)
 			}
 		} else {
-			coinbaseReward = halfGasFee
+			coinbaseReward = tenPercentGasFee
 		}
 	} else {
 		rewardPerBlock := state.GetSideChainRewardPerBlock()
@@ -646,9 +646,9 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 
 			state.SubBalance(sideChainRewardAddress, rewardPerBlock)
 
-			coinbaseReward = new(big.Int).Add(rewardPerBlock, halfGasFee)
+			coinbaseReward = new(big.Int).Add(rewardPerBlock, tenPercentGasFee)
 		} else {
-			coinbaseReward = halfGasFee
+			coinbaseReward = tenPercentGasFee
 		}
 	}
 
