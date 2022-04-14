@@ -16,9 +16,7 @@ import (
 
 var GenDocKey = []byte("GenDocKey")
 
-var CONSENSUS_POS string = "pos"
-var CONSENSUS_POW string = "pow"
-var CONSENSUS_NeatCon string = "neatcon"
+var CONSENSUS_NEATCON string = "neatcon"
 
 type GenesisValidator struct {
 	EthAccount     common.Address `json:"address"`
@@ -26,6 +24,11 @@ type GenesisValidator struct {
 	Amount         *big.Int       `json:"amount"`
 	Name           string         `json:"name"`
 	RemainingEpoch uint64         `json:"epoch"`
+}
+
+type GenesisCandidate struct {
+	EthAccount common.Address `json:"address"`
+	PubKey     crypto.PubKey  `json:"pub_key"`
 }
 
 type OneEpochDoc struct {
@@ -52,58 +55,8 @@ type GenesisDoc struct {
 	CurrentEpoch OneEpochDoc     `json:"current_epoch"`
 }
 
-type GenesisDocWrite struct {
-	ChainID      string           `json:"chain_id"`
-	Consensus    string           `json:"consensus"`
-	GenesisTime  time.Time        `json:"genesis_time"`
-	RewardScheme RewardSchemeDoc  `json:"reward_scheme"`
-	CurrentEpoch OneEpochDocWrite `json:"current_epoch"`
-}
-
-type OneEpochDocWrite struct {
-	Number         uint64                  `json:"number"`
-	RewardPerBlock *big.Int                `json:"reward_per_block"`
-	StartBlock     uint64                  `json:"start_block"`
-	EndBlock       uint64                  `json:"end_block"`
-	Status         int                     `json:"status"`
-	Validators     []GenesisValidatorWrite `json:"validators"`
-}
-
-type GenesisValidatorWrite struct {
-	EthAccount     string        `json:"address"`
-	PubKey         crypto.PubKey `json:"pub_key"`
-	Amount         *big.Int      `json:"amount"`
-	Name           string        `json:"name"`
-	RemainingEpoch uint64        `json:"epoch"`
-}
-
 func (genDoc *GenesisDoc) SaveAs(file string) error {
-
-	genDocWrite := GenesisDocWrite{
-		ChainID:      genDoc.ChainID,
-		Consensus:    genDoc.Consensus,
-		GenesisTime:  genDoc.GenesisTime,
-		RewardScheme: genDoc.RewardScheme,
-		CurrentEpoch: OneEpochDocWrite{
-			Number:         genDoc.CurrentEpoch.Number,
-			RewardPerBlock: genDoc.CurrentEpoch.RewardPerBlock,
-			StartBlock:     genDoc.CurrentEpoch.StartBlock,
-			EndBlock:       genDoc.CurrentEpoch.EndBlock,
-			Status:         genDoc.CurrentEpoch.Status,
-			Validators:     make([]GenesisValidatorWrite, len(genDoc.CurrentEpoch.Validators)),
-		},
-	}
-	for i, v := range genDoc.CurrentEpoch.Validators {
-		genDocWrite.CurrentEpoch.Validators[i] = GenesisValidatorWrite{
-			EthAccount:     v.EthAccount.String(),
-			PubKey:         v.PubKey,
-			Amount:         v.Amount,
-			Name:           v.Name,
-			RemainingEpoch: v.RemainingEpoch,
-		}
-	}
-
-	genDocBytes, err := json.MarshalIndent(genDocWrite, "", "\t")
+	genDocBytes, err := json.MarshalIndent(genDoc, "", "\t")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -112,36 +65,7 @@ func (genDoc *GenesisDoc) SaveAs(file string) error {
 }
 
 func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
-	var genDocWrite *GenesisDocWrite
-	err = json.Unmarshal(jsonBlob, &genDocWrite)
-	if err != nil {
-		return &GenesisDoc{}, err
-	}
-
-	genDoc = &GenesisDoc{
-		ChainID:      genDocWrite.ChainID,
-		Consensus:    genDocWrite.Consensus,
-		GenesisTime:  genDocWrite.GenesisTime,
-		RewardScheme: genDocWrite.RewardScheme,
-		CurrentEpoch: OneEpochDoc{
-			Number:         genDocWrite.CurrentEpoch.Number,
-			RewardPerBlock: genDocWrite.CurrentEpoch.RewardPerBlock,
-			StartBlock:     genDocWrite.CurrentEpoch.StartBlock,
-			EndBlock:       genDocWrite.CurrentEpoch.EndBlock,
-			Status:         genDocWrite.CurrentEpoch.Status,
-			Validators:     make([]GenesisValidator, len(genDocWrite.CurrentEpoch.Validators)),
-		},
-	}
-	for i, v := range genDocWrite.CurrentEpoch.Validators {
-		genDoc.CurrentEpoch.Validators[i] = GenesisValidator{
-			EthAccount:     common.HexToAddress(v.EthAccount),
-			PubKey:         v.PubKey,
-			Amount:         v.Amount,
-			Name:           v.Name,
-			RemainingEpoch: v.RemainingEpoch,
-		}
-	}
-
+	err = json.Unmarshal(jsonBlob, &genDoc)
 	return
 }
 
@@ -241,48 +165,6 @@ func (ep *OneEpochDoc) UnmarshalJSON(input []byte) error {
 	return nil
 }
 
-func (ep OneEpochDocWrite) MarshalJSON() ([]byte, error) {
-	type hexEpoch struct {
-		Number         hexutil.Uint64          `json:"number"`
-		RewardPerBlock *hexutil.Big            `json:"reward_per_block"`
-		StartBlock     hexutil.Uint64          `json:"start_block"`
-		EndBlock       hexutil.Uint64          `json:"end_block"`
-		Validators     []GenesisValidatorWrite `json:"validators"`
-	}
-	var enc hexEpoch
-	enc.Number = hexutil.Uint64(ep.Number)
-	enc.RewardPerBlock = (*hexutil.Big)(ep.RewardPerBlock)
-	enc.StartBlock = hexutil.Uint64(ep.StartBlock)
-	enc.EndBlock = hexutil.Uint64(ep.EndBlock)
-	if ep.Validators != nil {
-		enc.Validators = ep.Validators
-	}
-	return json.Marshal(&enc)
-}
-
-func (ep *OneEpochDocWrite) UnmarshalJSON(input []byte) error {
-	type hexEpoch struct {
-		Number         hexutil.Uint64          `json:"number"`
-		RewardPerBlock *hexutil.Big            `json:"reward_per_block"`
-		StartBlock     hexutil.Uint64          `json:"start_block"`
-		EndBlock       hexutil.Uint64          `json:"end_block"`
-		Validators     []GenesisValidatorWrite `json:"validators"`
-	}
-	var dec hexEpoch
-	if err := json.Unmarshal(input, &dec); err != nil {
-		return err
-	}
-	ep.Number = uint64(dec.Number)
-	ep.RewardPerBlock = (*big.Int)(dec.RewardPerBlock)
-	ep.StartBlock = uint64(dec.StartBlock)
-	ep.EndBlock = uint64(dec.EndBlock)
-	if dec.Validators == nil {
-		return errors.New("missing required field 'validators' for Genesis/epoch")
-	}
-	ep.Validators = dec.Validators
-	return nil
-}
-
 func (gv GenesisValidator) MarshalJSON() ([]byte, error) {
 	type hexValidator struct {
 		Address        common.Address `json:"address"`
@@ -304,55 +186,6 @@ func (gv GenesisValidator) MarshalJSON() ([]byte, error) {
 func (gv *GenesisValidator) UnmarshalJSON(input []byte) error {
 	type hexValidator struct {
 		Address        common.Address `json:"address"`
-		PubKey         string         `json:"pub_key"`
-		Amount         *hexutil.Big   `json:"amount"`
-		Name           string         `json:"name"`
-		RemainingEpoch hexutil.Uint64 `json:"epoch"`
-	}
-	var dec hexValidator
-	if err := json.Unmarshal(input, &dec); err != nil {
-		return err
-	}
-	gv.EthAccount = dec.Address
-
-	pubkeyBytes := common.FromHex(dec.PubKey)
-	if dec.PubKey == "" || len(pubkeyBytes) != 128 {
-		return errors.New("wrong format of required field 'pub_key' for Genesis/epoch/validators")
-	}
-	var blsPK crypto.BLSPubKey
-	copy(blsPK[:], pubkeyBytes)
-	gv.PubKey = blsPK
-
-	if dec.Amount == nil {
-		return errors.New("missing required field 'amount' for Genesis/epoch/validators")
-	}
-	gv.Amount = (*big.Int)(dec.Amount)
-	gv.Name = dec.Name
-	gv.RemainingEpoch = uint64(dec.RemainingEpoch)
-	return nil
-}
-
-func (gv GenesisValidatorWrite) MarshalJSON() ([]byte, error) {
-	type hexValidator struct {
-		Address        string         `json:"address"`
-		PubKey         string         `json:"pub_key"`
-		Amount         *hexutil.Big   `json:"amount"`
-		Name           string         `json:"name"`
-		RemainingEpoch hexutil.Uint64 `json:"epoch"`
-	}
-	var enc hexValidator
-	enc.Address = gv.EthAccount
-	enc.PubKey = gv.PubKey.KeyString()
-	enc.Amount = (*hexutil.Big)(gv.Amount)
-	enc.Name = gv.Name
-	enc.RemainingEpoch = hexutil.Uint64(gv.RemainingEpoch)
-
-	return json.Marshal(&enc)
-}
-
-func (gv *GenesisValidatorWrite) UnmarshalJSON(input []byte) error {
-	type hexValidator struct {
-		Address        string         `json:"address"`
 		PubKey         string         `json:"pub_key"`
 		Amount         *hexutil.Big   `json:"amount"`
 		Name           string         `json:"name"`

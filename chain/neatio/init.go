@@ -291,7 +291,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 		fmt.Printf("init reward block %v\n", rewardPerBlock)
 		genDoc := types.GenesisDoc{
 			ChainID:      chainId,
-			Consensus:    types.CONSENSUS_NeatCon,
+			Consensus:    types.CONSENSUS_NEATCON,
 			GenesisTime:  time.Now(),
 			RewardScheme: rewardScheme,
 			CurrentEpoch: types.OneEpochDoc{
@@ -333,7 +333,7 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 
 	genDoc := types.GenesisDoc{
 		ChainID:      sideChainID,
-		Consensus:    types.CONSENSUS_NeatCon,
+		Consensus:    types.CONSENSUS_NEATCON,
 		GenesisTime:  time.Now(),
 		RewardScheme: rewardScheme,
 		CurrentEpoch: types.OneEpochDoc{
