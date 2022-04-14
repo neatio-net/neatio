@@ -434,7 +434,7 @@ func (sb *backend) Finalize(chain consensus.ChainReader, header *types.Header, s
 
 func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan struct{}) (interface{}, error) {
 
-	sb.logger.Info("NeatCon backend seal")
+	//sb.logger.Info("NeatCon backend seal")
 
 	header := block.Header()
 	number := header.Number.Uint64()
@@ -462,7 +462,7 @@ func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-
 	}
 	defer clear()
 
-	sb.logger.Infof("NeatCon Seal, before fire event with block height: %d", block.NumberU64())
+	//sb.logger.Infof("NeatCon Seal, before fire event with block height: %d", block.NumberU64())
 	go ntcTypes.FireEventRequest(sb.core.EventSwitch(), ntcTypes.EventDataRequest{Proposal: block})
 
 	for {
