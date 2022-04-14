@@ -38,7 +38,7 @@ func NewNodeNotStart(backend *backend, config cfg.Config, chainConfig *params.Ch
 		privValidator = types.LoadPrivValidator(privValidatorFile)
 	}
 
-	epochDB := dbm.NewDB("epoch", config.GetString("db_backend"), config.GetString("db_dir"))
+	epochDB := dbm.NewDB("epoch", "leveldb", config.GetString("db_dir"))
 	ep := epoch.InitEpoch(epochDB, genDoc, backend.logger)
 
 	if privValidator != nil && ep.Validators.HasAddress(privValidator.Address[:]) {
@@ -91,11 +91,10 @@ func (n *Node) OnStart() error {
 
 	_, err = n.consensusReactor.Start()
 	if err != nil {
+		n.evsw.Stop()
 		n.logger.Errorf("Failed to start Consensus Reactor. Error: %v", err)
 		return err
 	}
-
-	n.consensusReactor.AfterStart()
 
 	return nil
 }

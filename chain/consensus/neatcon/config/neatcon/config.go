@@ -71,7 +71,6 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("pex_reactor", false)
 	mapConfig.SetDefault("priv_validator_file", filepath.Join(rootDir, chainId, "priv_validator.json"))
 	mapConfig.SetDefault("priv_validator_file_root", filepath.Join(rootDir, chainId, "priv_validator"))
-	mapConfig.SetDefault("db_backend", "leveldb")
 	mapConfig.SetDefault("db_dir", filepath.Join(rootDir, chainId, defaultDataDir))
 	mapConfig.SetDefault("grpc_laddr", "")
 	mapConfig.SetDefault("prof_laddr", "")
@@ -92,7 +91,7 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("timeout_prevote_delta", 500)
 	mapConfig.SetDefault("timeout_precommit", 2000)
 	mapConfig.SetDefault("timeout_precommit_delta", 500)
-	mapConfig.SetDefault("timeout_commit", 1000) // 1 sec
+	mapConfig.SetDefault("timeout_commit", 1000)
 
 	mapConfig.SetDefault("skip_timeout_commit", false)
 	mapConfig.SetDefault("mempool_recheck", true)
@@ -110,7 +109,6 @@ moniker = "__MONIKER__"
 node_laddr = "tcp://0.0.0.0:46656"
 seeds = ""
 fast_sync = true
-db_backend = "leveldb"
 #rpc_laddr = "tcp://0.0.0.0:46657"
 `
 
