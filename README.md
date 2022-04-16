@@ -16,5 +16,4 @@ git clone -b main https://github.com/neatlab/neatio.git
 cd neatio
 make neatio
 ```
-That's it!
 

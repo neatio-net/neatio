@@ -92,7 +92,7 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 	if result, err := self.engine.Seal(self.chain, work.Block, stop); result != nil {
 		switch result := result.(type) {
 		case *types.Block:
-			self.logger.Info("Successfully sealed new block.", "New height", result.Number())
+			self.logger.Info("Successfully minted new block.")
 			self.returnCh <- &Result{Work: work, Block: result}
 		case *ntcTypes.IntermediateBlockResult:
 

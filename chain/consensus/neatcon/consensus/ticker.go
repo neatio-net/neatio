@@ -94,19 +94,19 @@ func (t *timeoutTicker) timeoutRoutine() {
 	for {
 		select {
 		case newti := <-t.tickChan:
-			t.logger.Infof("Received tick. old_ti: %v, new_ti: %v", ti, newti)
+			// t.logger.Infof("Received tick. old_ti: %v, new_ti: %v", ti, newti)
 
 			t.stopTimer()
 
 			ti = newti
 			t.timer.Reset(ti.Duration)
-			t.logger.Infof("Scheduled timeout. dur: %v, height: %v, round: %v, step: %v", ti.Duration, ti.Height, ti.Round, ti.Step)
+			//t.logger.Infof("Scheduled timeout. dur: %v, height: %v, round: %v, step: %v", ti.Duration, ti.Height, ti.Round, ti.Step)
 		case <-t.timer.C:
 			if !t.IsRunning() {
-				t.logger.Infof("timeoutTimer tickChan, but need stop or not running, just return")
+				//t.logger.Infof("timeoutTimer tickChan, but need stop or not running, just return")
 				return
 			}
-			t.logger.Infof("Timed out. dur: %v, height: %v, round: %v, step: %v", ti.Duration, ti.Height, ti.Round, ti.Step)
+			//t.logger.Infof("Timed out. dur: %v, height: %v, round: %v, step: %v", ti.Duration, ti.Height, ti.Round, ti.Step)
 			go func(toi timeoutInfo) { t.tockChan <- toi }(ti)
 		}
 	}

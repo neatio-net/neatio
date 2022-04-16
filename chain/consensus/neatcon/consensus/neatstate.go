@@ -24,7 +24,7 @@ func (cs *ConsensusState) StartNewHeight() {
 	cr := cs.backend.ChainReader()
 	curEthBlock := cr.CurrentBlock()
 	curHeight := curEthBlock.NumberU64()
-	cs.logger.Infof("StartNewHeight. current block height is %v", curHeight)
+	cs.logger.Infof("Current block height is: %v", curHeight)
 
 	state := cs.InitState(cs.Epoch)
 	cs.UpdateToState(state)
