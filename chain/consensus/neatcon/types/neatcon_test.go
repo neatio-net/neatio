@@ -47,7 +47,7 @@ func TestValidator_Hash(t *testing.T) {
 	}
 	fmt.Printf("blsPubKey%v\n", blsPubKey)
 	validator := Validator{
-		Address:        []byte("32H8py5Jg396p7QNDUwTwkeVod15ksxne5"),
+		Address:        []byte("0xBdC81a9D73cC9a79994a93115BC2693fa0161cdf"),
 		PubKey:         blsPubKey,
 		VotingPower:    big.NewInt(10000000000),
 		RemainingEpoch: uint64(0),

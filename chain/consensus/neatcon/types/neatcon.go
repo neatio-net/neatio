@@ -63,7 +63,6 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 	var ncExtra = NeatConExtra{}
 	err := wire.ReadBinaryBytes(h.Extra[:], &ncExtra)
-
 	if err != nil {
 		return nil, err
 	}
@@ -72,13 +71,14 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 func (te *NeatConExtra) String() string {
 	str := fmt.Sprintf(`Network info: {
-ChainID:   %s
-EpochNo.:  %v
-Height:    %v
-Timestamp: %v
+ChainID:     %s
+EpochNumber: %v
+Height:      %v
+Time:        %v
 
+EpochBytes: length %v
 }
-`, te.ChainID, te.EpochNumber, te.Height, te.Time)
+`, te.ChainID, te.EpochNumber, te.Height, te.Time, len(te.EpochBytes))
 	return str
 }
 

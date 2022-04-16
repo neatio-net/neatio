@@ -15,18 +15,8 @@ type EpochApi struct {
 	StartBlock     hexutil.Uint64    `json:"startBlock"`
 	EndBlock       hexutil.Uint64    `json:"endBlock"`
 	StartTime      time.Time         `json:"startTime"`
-	EndTime        time.Time         `json:"endEime"`
+	EndTime        time.Time         `json:"endTime"`
 	Validators     []*EpochValidator `json:"validators"`
-}
-
-type EpochApiForConsole struct {
-	Number         hexutil.Uint64              `json:"number"`
-	RewardPerBlock *hexutil.Big                `json:"rewardPerBlock"`
-	StartBlock     hexutil.Uint64              `json:"startBlock"`
-	EndBlock       hexutil.Uint64              `json:"endBlock"`
-	StartTime      time.Time                   `json:"startTime"`
-	EndTime        time.Time                   `json:"endTime"`
-	Validators     []*EpochValidatorForConsole `json:"validators"`
 }
 
 type EpochVotesApi struct {
@@ -36,22 +26,8 @@ type EpochVotesApi struct {
 	Votes       []*EpochValidatorVoteApi `json:"votes"`
 }
 
-type EpochVotesApiForConsole struct {
-	EpochNumber hexutil.Uint64                     `json:"voteForEpoch"`
-	StartBlock  hexutil.Uint64                     `json:"startBlock"`
-	EndBlock    hexutil.Uint64                     `json:"endBlock"`
-	Votes       []*EpochValidatorVoteApiForConsole `json:"votes"`
-}
-
 type EpochValidatorVoteApi struct {
 	EpochValidator
-	Salt     string      `json:"salt"`
-	VoteHash common.Hash `json:"voteHash"`
-	TxHash   common.Hash `json:"txHash"`
-}
-
-type EpochValidatorVoteApiForConsole struct {
-	EpochValidatorForConsole
 	Salt     string      `json:"salt"`
 	VoteHash common.Hash `json:"voteHash"`
 	TxHash   common.Hash `json:"txHash"`
@@ -64,11 +40,8 @@ type EpochValidator struct {
 	RemainingEpoch hexutil.Uint64 `json:"remainEpoch"`
 }
 
-type EpochValidatorForConsole struct {
-	Address        string         `json:"address"`
-	PubKey         string         `json:"publicKey"`
-	Amount         *hexutil.Big   `json:"votingPower"`
-	RemainingEpoch hexutil.Uint64 `json:"remainEpoch"`
+type EpochCandidate struct {
+	Address common.Address `json:"address"`
 }
 
 type NeatConExtraApi struct {
@@ -106,16 +79,4 @@ type PartSetHeaderApi struct {
 type ConsensusAggr struct {
 	PublicKeys []string         `json:"publicKey"`
 	Addresses  []common.Address `json:"address"`
-}
-
-type ValidatorStatus struct {
-	IsBanned bool `json:"isBanned"`
-}
-
-type CandidateApi struct {
-	CandidateList []string `json:"candidateList"`
-}
-
-type BannedApi struct {
-	BannedList []string `json:"bannedList"`
 }

@@ -21,6 +21,11 @@ func (cs *ConsensusState) StartNewHeight() {
 	cs.mtx.Lock()
 	defer cs.mtx.Unlock()
 
+	cr := cs.backend.ChainReader()
+	curEthBlock := cr.CurrentBlock()
+	curHeight := curEthBlock.NumberU64()
+	cs.logger.Infof("StartNewHeight. current block height is %v", curHeight)
+
 	state := cs.InitState(cs.Epoch)
 	cs.UpdateToState(state)
 
@@ -78,7 +83,6 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 	cs.Initialize()
 
 	height := state.NTCExtra.Height + 1
-
 	cs.Height = height
 
 	if cs.blockFromMiner != nil && cs.blockFromMiner.NumberU64() >= cs.Height {
@@ -94,7 +98,6 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 		cs.StartTime = cs.timeoutParams.Commit(time.Now())
 	} else {
 		if cs.CommitTime.IsZero() {
-
 			cs.StartTime = cs.timeoutParams.Commit(time.Now())
 		} else {
 			cs.StartTime = cs.timeoutParams.Commit(cs.CommitTime)

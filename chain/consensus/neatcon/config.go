@@ -7,6 +7,11 @@ const (
 	Sticky
 )
 
+var (
+	BigStr1 = "362209239056230863865135"
+	BigStr2 = "816822002239807650213698"
+)
+
 type Config struct {
 	RequestTimeout uint64         `toml:",omitempty"`
 	BlockPeriod    uint64         `toml:",omitempty"`

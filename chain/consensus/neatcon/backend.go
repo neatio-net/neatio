@@ -24,10 +24,10 @@ func New(chainConfig *params.ChainConfig, cliCtx *cli.Context,
 		chainConfig:     chainConfig,
 		neatconEventMux: new(event.TypeMux),
 		privateKey:      privateKey,
-		logger:    chainConfig.ChainLogger,
-		commitCh:  make(chan *neatTypes.Block, 1),
-		vcommitCh: make(chan *types.IntermediateBlockResult, 1),
-		coreStarted: false,
+		logger:          chainConfig.ChainLogger,
+		commitCh:        make(chan *neatTypes.Block, 1),
+		vcommitCh:       make(chan *types.IntermediateBlockResult, 1),
+		coreStarted:     false,
 	}
 	backend.core = MakeNeatConNode(backend, config, chainConfig, cch)
 	return backend
@@ -53,7 +53,6 @@ type backend struct {
 	coreMu            sync.RWMutex
 
 	broadcaster consensus.Broadcaster
-
 }
 
 func GetBackend() backend {

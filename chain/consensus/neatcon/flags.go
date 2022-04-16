@@ -5,22 +5,16 @@ import (
 )
 
 var (
-	// neatio flags
-
-	// So we can control the DefaultDir
 	DataDirFlag = cli.StringFlag{
 		Name:  "datadir",
 		Usage: "Data directory for the databases and keystore",
 		Value: DefaultDataDir(),
 	}
 
-	// Not exposed by neatio
 	VerbosityFlag = cli.IntFlag{
 		Name:  "verbosity",
 		Usage: "Verbosity of neatio",
 	}
-
-	// NeatCon Flags
 
 	MonikerFlag = cli.StringFlag{
 		Name:  "moniker",
@@ -52,7 +46,7 @@ var (
 
 	RpcLaddrFlag = cli.StringFlag{
 		Name:  "rpc_laddr",
-		Value: "unix://@neatchainrpcunixsock", //"tcp://0.0.0.0:46657",
+		Value: "unix://@neatiorpcunixsock", //"tcp://0.0.0.0:46657",
 		Usage: "RPC listen address. Port required",
 	}
 )
