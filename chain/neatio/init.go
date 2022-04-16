@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	TotalMintingReward = "46263839000000000000000000"
+	TotalMintingReward = "46188807750000000000000000"
 	TotalMintingYears  = 15
 
 	DefaultAccountPassword = "neatio"
@@ -283,7 +283,7 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(99159462877229100)
+			rewardPerBlock = big.NewInt(98998644868827200)
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
