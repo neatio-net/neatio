@@ -213,15 +213,15 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0x0",
-	"timestamp": "0x62579611",
+	"timestamp": "0x625b2f30",
 	"extraData": "0x",
 	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"a67175cdaf47b91f2aa332d8ec44409a4890f0c4": {
-					"balance": "0x31729a3b22ff18d800000",
+			"6cd7ab1002568f76665cebdc3adf72455590b92b": {
+					"balance": "0x3270d25571d0b9cb90000",
 					"amount": "0xa968163f0a57b400000"
 			}
 	},
@@ -240,21 +240,23 @@ var DefaultTestnetGenesisJSON = `{
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
+			"petersburgBlock": 0,
+			"istanbulBlock": 0,
 			"neatcon": {
 					"epoch": 30000,
 					"policy": 0
 			}
 	},
 	"nonce": "0x0",
-	"timestamp": "0x624c9d75",
+	"timestamp": "0x62579611",
 	"extraData": "0x",
 	"gasLimit": "0xe0000000",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "0x0000000000000000000000000000000000000000",
 	"alloc": {
-			"58ce08a1227b7fd1d5b4b626b29c96f31ab3b4d4": {
-					"balance": "0x31729b192e6a534e40000",
+			"a67175cdaf47b91f2aa332d8ec44409a4890f0c4": {
+					"balance": "0x31729a3b22ff18d800000",
 					"amount": "0xa968163f0a57b400000"
 			}
 	},
