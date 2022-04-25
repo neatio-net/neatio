@@ -246,7 +246,7 @@ func (sb *backend) verifyCascadingFields(chain consensus.ChainReader, header *ty
 }
 
 func (sb *backend) VerifyHeaderBeforeConsensus(chain consensus.ChainReader, header *types.Header, seal bool) error {
-	sb.logger.Info("NeatCon backend verify header before consensus")
+	//sb.logger.Info("NeatCon backend verify header before consensus")
 
 	if header.Number == nil {
 		return errUnknownBlock
@@ -280,7 +280,7 @@ func (sb *backend) VerifyHeaders(chain consensus.ChainReader, headers []*types.H
 	abort := make(chan struct{})
 	results := make(chan error, len(headers))
 
-	sb.logger.Info("NeatCon backend verify headers")
+	//sb.logger.Info("NeatCon backend verify headers")
 
 	go func() {
 		for i, header := range headers {
