@@ -399,7 +399,7 @@ OUTER_LOOP:
 		}
 
 		if rs.Proposal != nil && !prs.Proposal {
-			log.Info("send proposal to peer", "peerHeight", prs.Height, "peerRound", prs.Round, "peer", peer)
+			//log.Info("send proposal to peer", "peerHeight", prs.Height, "peerRound", prs.Round, "peer", peer)
 			msg := &ProposalMessage{Proposal: rs.Proposal}
 			if err := peer.Send(DataChannel, struct{ ConsensusMessage }{msg}); err == nil {
 				ps.SetHasProposal(rs.Proposal)
