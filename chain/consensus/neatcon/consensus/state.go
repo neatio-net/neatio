@@ -980,7 +980,7 @@ func (cs *ConsensusState) createProposalBlock() (*types.NCBlock, *types.PartSet)
 
 func (cs *ConsensusState) enterPrevote(height uint64, round int) {
 	if cs.Height != height || round < cs.Round || (cs.Round == round && RoundStepPrevoteWait < cs.Step) {
-		cs.logger.Warnf("enterPrevote(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
+		//cs.logger.Warnf("enterPrevote(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 		return
 	}
 
@@ -1016,28 +1016,28 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 
 	err := cs.ProposalBlock.ValidateBasic(cs.state.NTCExtra)
 	if err != nil {
-		cs.logger.Warnf("enterPrevote: ProposalBlock is invalid, error: %v", err)
+		//cs.logger.Warnf("enterPrevote: ProposalBlock is invalid, error: %v", err)
 		cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 		return
 	}
 
 	err = cs.ValidateTX4(cs.ProposalBlock)
 	if err != nil {
-		cs.logger.Warnf("enterPrevote: ProposalBlock is invalid, error: %v", err)
+		//cs.logger.Warnf("enterPrevote: ProposalBlock is invalid, error: %v", err)
 		cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 		return
 	}
 
 	if !cs.IsProposer() {
 		if cv, ok := cs.backend.ChainReader().(consss.ChainValidator); ok {
-			cs.logger.Info("enterPrevote: Validate/Execute Block")
+			//cs.logger.Info("enterPrevote: Validate/Execute Block")
 			state, receipts, ops, err := cv.ValidateBlock(cs.ProposalBlock.Block)
 			if err != nil {
-				cs.logger.Warnf("enterPrevote: ValidateBlock fail, error: %v", err)
+				//cs.logger.Warnf("enterPrevote: ValidateBlock fail, error: %v", err)
 				cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 				return
 			}
-			cs.logger.Info("enterPrevote: Validate/Execute Block, Setup the IntermediateBlockResult")
+			//cs.logger.Info("enterPrevote: Validate/Execute Block, Setup the IntermediateBlockResult")
 			cs.ProposalBlock.IntermediateResult = &types.IntermediateBlockResult{
 				State:    state,
 				Receipts: receipts,
@@ -1053,7 +1053,7 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 			lastBlockTime := time.Unix(int64(cs.backend.ChainReader().CurrentBlock().Time()), 0)
 			err = cs.Epoch.ValidateNextEpoch(proposedNextEpoch, lastHeight, lastBlockTime)
 			if err != nil {
-				cs.logger.Warnf("enterPrevote: Proposal Next Epoch is invalid, error: %v", err)
+				//cs.logger.Warnf("enterPrevote: Proposal Next Epoch is invalid, error: %v", err)
 				cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 				return
 			}
@@ -1066,7 +1066,7 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 
 func (cs *ConsensusState) enterPrevoteWait(height uint64, round int) {
 	if cs.Height != height || round < cs.Round || (cs.Round == round && RoundStepPrevoteWait <= cs.Step) {
-		cs.logger.Warnf("enterPrevoteWait(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
+		//cs.logger.Warnf("enterPrevoteWait(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 		return
 	}
 
