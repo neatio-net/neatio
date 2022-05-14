@@ -1452,18 +1452,14 @@ func (cs *ConsensusState) setMaj23SignAggr(signAggr *types.SignAggr) (error, boo
 	}
 
 	if signAggr.Type == types.VoteTypePrevote {
-		//cs.logger.Infof("setMaj23SignAggr: Received 2/3+ prevotes for block %d, enter precommit", cs.Height)
 		if cs.isProposalComplete() {
-			//cs.logger.Debugf("receive block:%+v", cs.ProposalBlock)
 			cs.enterPrecommit(cs.Height, cs.Round)
 			return nil, true
 
 		} else {
-			//cs.logger.Debug("block is not completed")
 			return nil, false
 		}
 	} else if signAggr.Type == types.VoteTypePrecommit {
-		//cs.logger.Info(Fmt("setMaj23SignAggr: Received 2/3+ precommits for block %d, enter commit\n", cs.Height))
 
 		if cs.isProposalComplete() {
 			cs.logger.Debug("block is completed")
@@ -1571,15 +1567,12 @@ func (cs *ConsensusState) tryAddVote(vote *types.Vote, peerKey string) error {
 }
 
 func (cs *ConsensusState) addVote(vote *types.Vote, peerKey string) (added bool, err error) {
-	//cs.logger.Info("addVote", "voteHeight", vote.Height, "voteType", vote.Type, "csHeight", cs.Height)
 
 	if !cs.IsProposer() {
-		cs.logger.Warn("addVote should only happen if this node is proposer")
 		return
 	}
 
 	if vote.Height != cs.Height || int(vote.Round) != cs.Round {
-		cs.logger.Warn("addVote, vote is for previous blocks or previous round, just ignore\n")
 		return
 	}
 
@@ -1642,7 +1635,6 @@ func (cs *ConsensusState) signAddVote(type_ byte, hash []byte, header types.Part
 		} else {
 			cs.sendInternalMessage(msgInfo{&VoteMessage{vote}, ""})
 		}
-		//cs.logger.Info("Signed and pushed vote", "height", cs.Height, "round", cs.Round, "vote", vote, "error", err)
 		cs.logger.Debugf("block is:%+v", vote.BlockID)
 		return vote
 	} else {
@@ -1652,7 +1644,6 @@ func (cs *ConsensusState) signAddVote(type_ byte, hash []byte, header types.Part
 }
 
 func (cs *ConsensusState) sendMaj23SignAggr(voteType byte) {
-	//cs.logger.Info("Enter sendMaj23SignAggr()")
 
 	var votes []*types.Vote
 	var maj23 types.BlockID
