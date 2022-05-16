@@ -72,12 +72,10 @@ func (arguments Arguments) Unpack(v interface{}, data []byte) error {
 			return nil
 		}
 	}
-
 	if reflect.Ptr != reflect.ValueOf(v).Kind() {
 		return fmt.Errorf("abi: Unpack(non-pointer %T)", v)
 	}
 	marshalledValues, err := arguments.UnpackValues(data)
-
 	if err != nil {
 		return err
 	}
@@ -95,7 +93,6 @@ func (arguments Arguments) UnpackForRevert(v interface{}, data []byte) ([]interf
 			return nil, nil
 		}
 	}
-
 	if reflect.Ptr != reflect.ValueOf(v).Kind() {
 		return nil, fmt.Errorf("abi: Unpack(non-pointer %T)", v)
 	}
@@ -275,10 +272,8 @@ func (arguments Arguments) UnpackValues(data []byte) ([]interface{}, error) {
 	for index, arg := range arguments.NonIndexed() {
 		marshalledValue, err := toGoType((index+virtualArgs)*32, arg.Type, data)
 		if arg.Type.T == ArrayTy && !isDynamicType(arg.Type) {
-
 			virtualArgs += getTypeSize(arg.Type)/32 - 1
 		} else if arg.Type.T == TupleTy && !isDynamicType(arg.Type) {
-
 			virtualArgs += getTypeSize(arg.Type)/32 - 1
 		}
 		if err != nil {
@@ -294,12 +289,10 @@ func (arguments Arguments) PackValues(args []interface{}) ([]byte, error) {
 }
 
 func (arguments Arguments) Pack(args ...interface{}) ([]byte, error) {
-
 	abiArgs := arguments
 	if len(args) != len(abiArgs) {
 		return nil, fmt.Errorf("argument count mismatch: %d for %d", len(args), len(abiArgs))
 	}
-
 	var variableInput []byte
 
 	inputOffset := 0
@@ -309,25 +302,18 @@ func (arguments Arguments) Pack(args ...interface{}) ([]byte, error) {
 	var ret []byte
 	for i, a := range args {
 		input := abiArgs[i]
-
 		packed, err := input.Type.pack(reflect.ValueOf(a))
 		if err != nil {
 			return nil, err
 		}
-
 		if isDynamicType(input.Type) {
-
 			ret = append(ret, packNum(reflect.ValueOf(inputOffset))...)
-
 			inputOffset += len(packed)
-
 			variableInput = append(variableInput, packed...)
 		} else {
-
 			ret = append(ret, packed...)
 		}
 	}
-
 	ret = append(ret, variableInput...)
 
 	return ret, nil

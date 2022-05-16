@@ -29,9 +29,7 @@ func JSON(reader io.Reader) (ABI, error) {
 }
 
 func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
-
 	if name == "" {
-
 		arguments, err := abi.Constructor.Inputs.Pack(args...)
 		if err != nil {
 			return nil, err
@@ -48,12 +46,10 @@ func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return append(method.ID(), arguments...), nil
 }
 
 func (abi ABI) Unpack(v interface{}, name string, data []byte) (err error) {
-
 	if method, ok := abi.Methods[name]; ok {
 		if len(data)%32 != 0 {
 			return fmt.Errorf("abi: improperly formatted output: %s - Bytes: [%+v]", string(data), data)
@@ -67,7 +63,6 @@ func (abi ABI) Unpack(v interface{}, name string, data []byte) (err error) {
 }
 
 func (abi ABI) UnpackIntoMap(v map[string]interface{}, name string, data []byte) (err error) {
-
 	if method, ok := abi.Methods[name]; ok {
 		if len(data)%32 != 0 {
 			return fmt.Errorf("abi: improperly formatted output")
@@ -113,7 +108,6 @@ func (abi *ABI) UnmarshalJSON(data []byte) error {
 			abi.Constructor = Method{
 				Inputs: field.Inputs,
 			}
-
 		case "function", "":
 			name := field.Name
 			_, ok := abi.Methods[name]
