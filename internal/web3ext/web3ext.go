@@ -550,12 +550,6 @@ web3._extend({
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
 		}),
 		new web3._extend.Method({
-			name: 'unBanned',
-			call: 'neat_unBanned',
-			params: 2,
-			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null]
-		}),
-		new web3._extend.Method({
 			name: 'editValidator',
 			call: 'neat_editValidator',
 			params: 6,
