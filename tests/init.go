@@ -7,7 +7,6 @@ import (
 	"github.com/neatlab/neatio/params"
 )
 
-// This table defines supported forks and their chain config.
 var Forks = map[string]*params.ChainConfig{
 	"Frontier": {
 		ChainId: big.NewInt(1),
@@ -90,7 +89,6 @@ var Forks = map[string]*params.ChainConfig{
 	},
 }
 
-// UnsupportedForkError is returned when a test requests a fork that isn't implemented.
 type UnsupportedForkError struct {
 	Name string
 }
