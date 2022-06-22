@@ -1,7 +1,7 @@
 package types
 
 import (
-	neatTypes "github.com/neatlab/neatio/chain/core/types"
+	neatTypes "github.com/neatio-network/neatio/chain/core/types"
 	. "github.com/neatlib/common-go"
 	"github.com/neatlib/events-go"
 	"github.com/neatlib/wire-go"

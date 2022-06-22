@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 type divServer struct{ results event.Feed }

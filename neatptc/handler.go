@@ -14,17 +14,17 @@ import (
 
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/neatptc/fetcher"
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/network/p2p/discover"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/event"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

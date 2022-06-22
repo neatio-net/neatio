@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 var (

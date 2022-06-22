@@ -30,10 +30,10 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/neatlab/neatio/chain/accounts"
 	"github.com/neatlab/neatio/chain/accounts/usbwallet/internal/trezor"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 )
 
 // ErrTrezorPINNeeded is returned if opening the trezor requires a PIN code. In

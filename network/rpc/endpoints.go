@@ -19,7 +19,7 @@ package rpc
 import (
 	"net"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 )
 
 // StartHTTPEndpoint starts the HTTP RPC endpoint, configured with cors/vhosts/modules

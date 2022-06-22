@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/network/p2p/discover"
 )
 

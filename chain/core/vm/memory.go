@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 type Memory struct {

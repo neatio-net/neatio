@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 type bytesBacked interface {

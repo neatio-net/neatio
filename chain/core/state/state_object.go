@@ -6,8 +6,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

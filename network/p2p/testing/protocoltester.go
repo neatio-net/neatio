@@ -32,7 +32,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/network/node"
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/network/p2p/discover"

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestUnmarshalJSONNewFilterArgs(t *testing.T) {

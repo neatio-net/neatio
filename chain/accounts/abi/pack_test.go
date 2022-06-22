@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestPack(t *testing.T) {

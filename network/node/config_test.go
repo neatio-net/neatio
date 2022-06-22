@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 func TestDatadirCreation(t *testing.T) {

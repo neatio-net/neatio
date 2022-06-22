@@ -20,7 +20,7 @@ import (
 	"fmt"
 
 	"github.com/neatlab/neatio/chain/core/vm/runtime"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func ExampleExecute() {

@@ -9,7 +9,7 @@ import (
 	"github.com/neatlab/neatio/chain/core/rawdb"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestDefaultGenesisBlock(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/utilities/metrics"
 	"github.com/syndtr/goleveldb/leveldb"

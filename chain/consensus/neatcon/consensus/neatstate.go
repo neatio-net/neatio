@@ -7,7 +7,7 @@ import (
 	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
 	cmn "github.com/neatlib/common-go"
 )

@@ -27,8 +27,8 @@ import (
 	"testing/quick"
 	"time"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 type nullTransport struct{}

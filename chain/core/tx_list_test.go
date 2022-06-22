@@ -20,8 +20,8 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 // Tests that transactions can be added to strict lists and list contents and

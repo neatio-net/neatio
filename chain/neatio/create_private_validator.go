@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/utils"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/wire-go"

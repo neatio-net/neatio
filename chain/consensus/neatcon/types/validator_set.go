@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 	cmn "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/merkle-go"

@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 func TestNetwork_Lookup(t *testing.T) {

@@ -5,10 +5,10 @@ import (
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatlab/neatio/network/rpc"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 type ChainReader interface {

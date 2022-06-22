@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/neatlab/neatio/chain/accounts/keystore"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 )
 
 func TestAccountManagement(t *testing.T) {

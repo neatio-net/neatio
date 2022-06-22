@@ -18,7 +18,7 @@ package core
 
 import (
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatlab/neatio/chain/core/vm"
 )
 

@@ -6,7 +6,7 @@ import (
 
 	"github.com/neatlab/neatio"
 	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 type PublicDownloaderAPI struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/neatlab/neatio/chain/accounts/keystore"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	neatnode "github.com/neatlab/neatio/network/node"
 	"github.com/neatlab/neatio/utilities/utils"
 	cfg "github.com/neatlib/config-go"

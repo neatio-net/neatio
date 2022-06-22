@@ -16,9 +16,9 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/crypto/ecies"
-	"github.com/neatlab/neatio/utilities/crypto/sha3"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto/ecies"
+	"github.com/neatio-network/neatio/utilities/crypto/sha3"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

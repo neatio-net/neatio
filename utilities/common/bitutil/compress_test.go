@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 )
 
 func TestEncodingCycle(t *testing.T) {

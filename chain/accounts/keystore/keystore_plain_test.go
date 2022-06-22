@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 func tmpKeyStoreIface(t *testing.T, encrypted bool) (dir string, ks keyStore) {

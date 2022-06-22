@@ -20,7 +20,7 @@ package rawdb
 import (
 	"encoding/binary"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/metrics"
 )
 

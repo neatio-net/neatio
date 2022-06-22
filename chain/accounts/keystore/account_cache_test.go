@@ -14,7 +14,7 @@ import (
 	"github.com/cespare/cp"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 var (

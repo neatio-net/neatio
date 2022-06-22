@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	ncTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	dbm "github.com/neatlib/db-go"
 	"github.com/neatlib/wire-go"
 )

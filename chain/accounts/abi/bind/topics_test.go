@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/chain/accounts/abi"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestMakeTopics(t *testing.T) {

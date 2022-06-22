@@ -3,8 +3,8 @@ package vm
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 func calcMemSize64(off, l *big.Int) (uint64, bool) {

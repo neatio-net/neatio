@@ -8,10 +8,10 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 type TwoOperandTestcase struct {

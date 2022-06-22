@@ -8,10 +8,10 @@ import (
 
 	"github.com/neatlab/neatio/chain/core/rawdb"
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/chain/trie"
 	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 	"golang.org/x/crypto/sha3"
 )
 

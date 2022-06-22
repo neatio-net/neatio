@@ -22,7 +22,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

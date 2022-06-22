@@ -14,8 +14,8 @@ import (
 	"math/big"
 	"os"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
 	"github.com/neatlab/neatio/utilities/rlp"
 
 	"golang.org/x/crypto/sha3"

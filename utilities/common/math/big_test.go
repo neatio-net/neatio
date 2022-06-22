@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestHexOrDecimal256(t *testing.T) {

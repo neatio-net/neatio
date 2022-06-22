@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/crypto/sha3"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto/sha3"
 )
 
 func init() {

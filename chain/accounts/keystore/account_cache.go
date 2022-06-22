@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/set-go"
 )
 

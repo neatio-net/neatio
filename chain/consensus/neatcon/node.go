@@ -9,7 +9,7 @@ import (
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
 	cmn "github.com/neatlib/common-go"
 	cfg "github.com/neatlib/config-go"

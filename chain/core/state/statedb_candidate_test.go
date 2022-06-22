@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func TestUpdateCandidateSet(t *testing.T) {

@@ -42,7 +42,7 @@ import (
 	"fmt"
 	"hash"
 
-	ethcrypto "github.com/neatlab/neatio/utilities/crypto"
+	ethcrypto "github.com/neatio-network/neatio/utilities/crypto"
 )
 
 var (

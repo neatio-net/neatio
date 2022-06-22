@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/neatdb/memorydb"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 func makeTestTrie() (*Database, *Trie, map[string][]byte) {

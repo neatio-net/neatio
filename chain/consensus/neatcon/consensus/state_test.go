@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatlib/crypto-go"
 )
 

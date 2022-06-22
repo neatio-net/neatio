@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 
 	"github.com/neatlab/neatio/internal/debug"
 	"github.com/neatlab/neatio/utilities/console"

@@ -3,7 +3,7 @@ package vm
 import (
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 func TestJumpDestAnalysis(t *testing.T) {

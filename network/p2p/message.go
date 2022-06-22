@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

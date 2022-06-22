@@ -3,7 +3,7 @@ package number
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 var tt256 = new(big.Int).Lsh(big.NewInt(1), 256)

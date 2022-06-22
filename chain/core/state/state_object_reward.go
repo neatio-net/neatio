@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 

@@ -8,7 +8,7 @@ import (
 	"math/big"
 
 	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 var (

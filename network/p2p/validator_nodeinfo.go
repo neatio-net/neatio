@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )

@@ -7,10 +7,10 @@ import (
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 	neatAbi "github.com/neatlab/neatio/neatabi/abi"
 	"github.com/neatlab/neatio/neatcli"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/crypto-go"
 	dbm "github.com/neatlib/db-go"
 )

@@ -8,9 +8,9 @@ import (
 
 	"github.com/neatlab/neatio/chain/accounts"
 	"github.com/neatlab/neatio/chain/accounts/keystore"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/console"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )

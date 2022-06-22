@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	. "github.com/neatlib/common-go"

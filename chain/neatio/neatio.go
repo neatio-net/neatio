@@ -8,7 +8,7 @@ import (
 	"syscall"
 
 	"github.com/neatlab/neatio/chain/consensus/neatcon/consensus"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/internal/debug"
 	"github.com/neatlab/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"

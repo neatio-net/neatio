@@ -25,7 +25,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 )
 
 // handler handles JSON-RPC messages. There is one handler per connection. Note that

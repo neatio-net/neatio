@@ -8,7 +8,7 @@ import (
 	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
-	neatTypes "github.com/neatlab/neatio/chain/core/types"
+	neatTypes "github.com/neatio-network/neatio/chain/core/types"
 )
 
 func (s *State) ValidateBlock(block *types.NCBlock) error {

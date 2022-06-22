@@ -3,7 +3,7 @@ package neatapi
 import (
 	"sync"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 type AddrLocker struct {

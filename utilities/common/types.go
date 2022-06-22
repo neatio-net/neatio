@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"reflect"
 
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"golang.org/x/crypto/sha3"
 )
 

@@ -10,7 +10,7 @@ import (
 	"unicode"
 
 	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 
 	"gopkg.in/urfave/cli.v1"
 

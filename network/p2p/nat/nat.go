@@ -9,7 +9,7 @@ import (
 	"time"
 
 	natpmp "github.com/jackpal/go-nat-pmp"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 )
 
 type Interface interface {

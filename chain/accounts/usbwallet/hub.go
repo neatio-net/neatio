@@ -24,8 +24,8 @@ import (
 
 	"github.com/karalabe/hid"
 	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 // LedgerScheme is the protocol scheme prefixing account and wallet URLs.

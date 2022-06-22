@@ -7,11 +7,11 @@ import (
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
-	neatTypes "github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
+	neatTypes "github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/event"
 	"gopkg.in/urfave/cli.v1"
 )
 

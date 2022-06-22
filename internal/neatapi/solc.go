@@ -20,7 +20,7 @@ import (
 	"sync"
 
 	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/common/compiler"
+	"github.com/neatio-network/neatio/utilities/common/compiler"
 )
 
 func makeCompilerAPIs(solcPath string) []rpc.API {

@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 func TestBlockNumberJSONUnmarshal(t *testing.T) {

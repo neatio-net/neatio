@@ -6,7 +6,7 @@ import (
 
 	"github.com/neatlab/neatio/chain/core/state"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 type dummyContractRef struct {

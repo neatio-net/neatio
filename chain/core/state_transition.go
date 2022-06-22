@@ -7,7 +7,7 @@ import (
 
 	"github.com/neatlab/neatio/chain/core/vm"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 var (

@@ -19,7 +19,7 @@ package bloombits
 import (
 	"errors"
 
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 )
 
 // errSectionOutOfBounds is returned if the user tried to add more bloom filters

@@ -7,9 +7,9 @@ import (
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-	neatCrypto "github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	neatCrypto "github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlib/crypto-go"
 )
 

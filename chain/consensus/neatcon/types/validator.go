@@ -7,8 +7,8 @@ import (
 
 	"math/big"
 
-	neatTypes "github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/utilities/common"
+	neatTypes "github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/common"
 	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/wire-go"

@@ -18,7 +18,7 @@ import (
 	"github.com/neatlab/neatio/network/p2p/discover"
 	"github.com/neatlab/neatio/network/p2p/simulations/adapters"
 	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 	"golang.org/x/net/websocket"
 )
 

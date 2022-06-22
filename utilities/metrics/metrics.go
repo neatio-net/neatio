@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 )
 
 var Enabled bool = false

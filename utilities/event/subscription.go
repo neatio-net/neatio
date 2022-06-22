@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/utilities/common/mclock"
+	"github.com/neatio-network/neatio/utilities/common/mclock"
 )
 
 type Subscription interface {

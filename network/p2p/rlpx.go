@@ -21,9 +21,9 @@ import (
 
 	"github.com/golang/snappy"
 	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/crypto/ecies"
-	"github.com/neatlab/neatio/utilities/crypto/secp256k1"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto/ecies"
+	"github.com/neatio-network/neatio/utilities/crypto/secp256k1"
 	"github.com/neatlab/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )

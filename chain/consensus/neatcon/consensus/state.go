@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 
 	"context"
 
@@ -23,10 +23,10 @@ import (
 	sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
 	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
-	neatTypes "github.com/neatlab/neatio/chain/core/types"
+	neatTypes "github.com/neatio-network/neatio/chain/core/types"
 	neatAbi "github.com/neatlab/neatio/neatabi/abi"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/utilities/rlp"
 	. "github.com/neatlib/common-go"
 	cfg "github.com/neatlib/config-go"

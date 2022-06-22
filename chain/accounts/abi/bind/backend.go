@@ -6,8 +6,8 @@ import (
 	"math/big"
 
 	"github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 var (

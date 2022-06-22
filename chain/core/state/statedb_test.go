@@ -32,8 +32,8 @@ import (
 	"gopkg.in/check.v1"
 
 	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 // Tests that updating a state trie does not leak any database writes prior to

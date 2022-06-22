@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 const Version = "1.0"

@@ -11,12 +11,12 @@ import (
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/event"
 	"github.com/neatlib/set-go"
 )
 

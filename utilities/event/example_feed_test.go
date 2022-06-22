@@ -3,7 +3,7 @@ package event_test
 import (
 	"fmt"
 
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 func ExampleFeed_acknowledgedEvents() {

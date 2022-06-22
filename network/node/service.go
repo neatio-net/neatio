@@ -10,7 +10,7 @@ import (
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 type ServiceContext struct {

@@ -7,10 +7,10 @@ import (
 	"time"
 
 	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-	"github.com/neatlab/neatio/utilities/common/math"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 type MethoadParams struct {

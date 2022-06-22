@@ -6,8 +6,8 @@ import (
 
 	ncTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 	dbm "github.com/neatlib/db-go"
 	"github.com/neatlib/wire-go"
 

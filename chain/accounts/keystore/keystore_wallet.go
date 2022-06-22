@@ -5,7 +5,7 @@ import (
 
 	"github.com/neatlab/neatio"
 	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/types"
 )
 
 type keystoreWallet struct {

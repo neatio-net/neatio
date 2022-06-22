@@ -14,8 +14,8 @@ import (
 
 	"github.com/neatlab/neatio/chain/trie"
 	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatlab/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
