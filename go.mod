@@ -1,4 +1,4 @@
-module github.com/neatlab/neatio
+module github.com/neatio-network/neatio
 
 go 1.16
 
