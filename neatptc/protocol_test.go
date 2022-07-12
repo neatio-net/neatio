@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlab/neatio/neatptc/downloader"
 	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/utilities/common"
 	"github.com/neatlab/neatio/utilities/rlp"
 )
 
