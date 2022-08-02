@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/neatlab/neatio/chain/accounts/abi"
+	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatlab/neatio/chain/core/rawdb"
 	"github.com/neatlab/neatio/chain/core/state"
 	"github.com/neatlab/neatio/chain/core/vm"

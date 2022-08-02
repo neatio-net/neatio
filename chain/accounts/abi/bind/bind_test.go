@@ -259,7 +259,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -312,7 +312,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -356,7 +356,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -410,7 +410,7 @@ var bindTests = []struct {
 			"math/big"
 			"reflect"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatio-network/neatio/utilities/common"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
@@ -457,7 +457,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -502,7 +502,7 @@ var bindTests = []struct {
 		[]string{`6060604052609f8060106000396000f3606060405260e060020a6000350463f97a60058114601a575b005b600060605260c0604052600d60809081527f4920646f6e27742065786973740000000000000000000000000000000000000060a052602060c0908152600d60e081905281906101009060a09080838184600060046012f15050815172ffffffffffffffffffffffffffffffffffffff1916909152505060405161012081900392509050f3`},
 		[]string{`[{"constant":true,"inputs":[],"name":"String","outputs":[{"name":"","type":"string"}],"type":"function"}]`},
 		`
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatio-network/neatio/utilities/common"
 			"github.com/neatlab/neatio/chain/core"
 		`,
@@ -548,7 +548,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -595,7 +595,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatio-network/neatio/utilities/common"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
@@ -669,7 +669,7 @@ var bindTests = []struct {
 			"fmt"
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -760,7 +760,7 @@ var bindTests = []struct {
 			"math/big"
 			"time"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatio-network/neatio/utilities/common"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
@@ -950,7 +950,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -1084,7 +1084,7 @@ var bindTests = []struct {
 			"math/big"
 			"reflect"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -1223,7 +1223,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -1288,7 +1288,7 @@ var bindTests = []struct {
 		"math/big"
 		"time"
 
-		"github.com/neatlab/neatio/chain/accounts/abi/bind"
+		"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 		"github.com/neatlab/neatio/chain/core"
 		"github.com/neatio-network/neatio/utilities/crypto"
 		`,
@@ -1375,7 +1375,7 @@ var bindTests = []struct {
 		`
 		"math/big"
 
-		"github.com/neatlab/neatio/chain/accounts/abi/bind"
+		"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 		"github.com/neatio-network/neatio/utilities/crypto"
 		"github.com/neatlab/neatio/chain/core"
 		`,
@@ -1437,7 +1437,7 @@ var bindTests = []struct {
 		`
 		"math/big"
 
-		"github.com/neatlab/neatio/chain/accounts/abi/bind"
+		"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 		"github.com/neatio-network/neatio/utilities/crypto"
 		"github.com/neatlab/neatio/chain/core"
         `,
@@ -1497,7 +1497,7 @@ var bindTests = []struct {
 		`
 			"math/big"
 
-			"github.com/neatlab/neatio/chain/accounts/abi/bind"
+			"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 			"github.com/neatlab/neatio/chain/core"
 			"github.com/neatio-network/neatio/utilities/crypto"
 		`,

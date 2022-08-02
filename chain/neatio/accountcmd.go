@@ -6,8 +6,8 @@ import (
 
 	"github.com/neatlab/neatio/params"
 
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatlab/neatio/utilities/console"
 	"github.com/neatio-network/neatio/utilities/crypto"

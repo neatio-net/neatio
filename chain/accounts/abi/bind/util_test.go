@@ -1,7 +1,7 @@
 package bind_test
 
 import (
-	"github.com/neatlab/neatio/chain/accounts/abi/bind"
+	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
 )

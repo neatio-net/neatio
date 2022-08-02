@@ -25,7 +25,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/pborman/uuid"
 	"golang.org/x/crypto/pbkdf2"

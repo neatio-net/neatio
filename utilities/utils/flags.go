@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	"github.com/neatlab/neatio/chain/consensus"
 	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/chain/core/vm"

@@ -28,8 +28,8 @@ import (
 	"math/big"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/accounts/usbwallet/internal/trezor"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts/usbwallet/internal/trezor"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"

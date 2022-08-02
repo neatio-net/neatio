@@ -6,7 +6,7 @@ import (
 
 	"github.com/neatlab/neatio/chain/core/rawdb"
 
-	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatlab/neatio/neatdb"
 	"github.com/neatlab/neatio/network/p2p"
 	"github.com/neatlab/neatio/network/rpc"

@@ -13,9 +13,9 @@ import (
 	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatlab/neatio/chain/core/state"
 
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/accounts/abi"
-	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts/abi"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	"github.com/neatlab/neatio/chain/core"
 	"github.com/neatlab/neatio/chain/core/rawdb"
 	"github.com/neatio-network/neatio/chain/core/types"

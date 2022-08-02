@@ -4,7 +4,7 @@ import (
 	"math/big"
 
 	"github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/chain/core/types"
 )
 

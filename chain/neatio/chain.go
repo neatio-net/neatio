@@ -3,7 +3,7 @@ package main
 import (
 	"path/filepath"
 
-	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
 	neatnode "github.com/neatlab/neatio/network/node"

@@ -23,7 +23,7 @@ import (
 	"time"
 
 	"github.com/karalabe/hid"
-	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/event"
 )

@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	"github.com/neatio-network/neatio/chain/core/types"
 )
 
