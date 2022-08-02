@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

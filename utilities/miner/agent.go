@@ -5,8 +5,8 @@ import (
 
 	"sync/atomic"
 
-	"github.com/neatlab/neatio/chain/consensus"
-	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-network/neatio/chain/consensus"
+	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
 )

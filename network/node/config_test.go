@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p"
 	"github.com/neatio-network/neatio/utilities/crypto"
 )
 

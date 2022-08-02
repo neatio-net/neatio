@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio"
+	"github.com/neatio-network/neatio"
 	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"

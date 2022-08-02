@@ -7,8 +7,8 @@ import (
 
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/neatptc/downloader"
-	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/neatptc/downloader"
+	"github.com/neatio-network/neatio/network/p2p/discover"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

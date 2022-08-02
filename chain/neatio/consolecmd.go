@@ -8,10 +8,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/neatlab/neatio/network/node"
-	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/console"
-	"github.com/neatlab/neatio/utilities/utils"
+	"github.com/neatio-network/neatio/network/node"
+	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/neatio-network/neatio/utilities/console"
+	"github.com/neatio-network/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

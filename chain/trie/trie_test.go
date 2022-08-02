@@ -13,12 +13,12 @@ import (
 	"testing/quick"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/neatdb/leveldb"
-	"github.com/neatlab/neatio/neatdb/memorydb"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/neatdb/leveldb"
+	"github.com/neatio-network/neatio/neatdb/memorydb"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 func init() {

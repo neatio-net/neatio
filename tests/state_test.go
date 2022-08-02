@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/core/vm"
 )
 
 func TestState(t *testing.T) {

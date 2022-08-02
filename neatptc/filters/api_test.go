@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

@@ -25,7 +25,7 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 //go:generate gencodec -type Receipt -field-override receiptMarshaling -out gen_receipt_json.go

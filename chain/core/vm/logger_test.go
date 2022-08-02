@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

@@ -9,8 +9,8 @@ import (
 
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/params"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatio-network/neatio/utilities/crypto"

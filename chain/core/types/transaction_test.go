@@ -10,10 +10,10 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 var (

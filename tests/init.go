@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 )
 
 var Forks = map[string]*params.ChainConfig{

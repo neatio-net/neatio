@@ -8,7 +8,7 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 var emptyCodeHash = crypto.Keccak256(nil)

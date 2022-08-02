@@ -8,7 +8,7 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 type RLPTest struct {

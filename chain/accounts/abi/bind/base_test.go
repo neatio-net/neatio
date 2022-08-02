@@ -11,10 +11,10 @@ import (
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlab/neatio"
+	"github.com/neatio-network/neatio"
 	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 type mockCaller struct {

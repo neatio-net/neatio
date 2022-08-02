@@ -3,7 +3,7 @@ package consensus
 import (
 	"testing"
 
-	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatlib/crypto-go"
 )

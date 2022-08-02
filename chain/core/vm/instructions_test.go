@@ -10,7 +10,7 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/crypto"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

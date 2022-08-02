@@ -21,7 +21,7 @@ const (
 )
 
 var locationTrims = []string{
-	"github.com/neatlab/neatio/",
+	"github.com/neatio-network/neatio/",
 }
 
 func PrintOrigins(print bool) {

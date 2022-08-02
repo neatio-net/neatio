@@ -3,7 +3,7 @@ package accounts
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio"
+	"github.com/neatio-network/neatio"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/event"

@@ -4,7 +4,7 @@ import (
 	"math/big"
 
 	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/math"
 	"golang.org/x/crypto/sha3"

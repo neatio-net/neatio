@@ -24,7 +24,7 @@ import (
 	"strings"
 
 	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatlab/neatio/chain/contracts/ens/contract"
+	"github.com/neatio-network/neatio/chain/contracts/ens/contract"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"

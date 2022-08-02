@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatio-network/neatio/utilities/common/math"

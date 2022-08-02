@@ -37,10 +37,10 @@ import (
 
 	"github.com/docker/docker/pkg/reexec"
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/node"
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/network/node"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/rpc"
 	"golang.org/x/net/websocket"
 )
 

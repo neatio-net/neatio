@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/neatdb/memorydb"
+	"github.com/neatio-network/neatio/neatdb/memorydb"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
 )

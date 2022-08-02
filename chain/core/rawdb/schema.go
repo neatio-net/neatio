@@ -21,7 +21,7 @@ import (
 	"encoding/binary"
 
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/metrics"
 )
 
 // The fields below define the low level database schema prefixing.

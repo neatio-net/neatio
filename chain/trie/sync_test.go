@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/neatlab/neatio/neatdb/memorydb"
+	"github.com/neatio-network/neatio/neatdb/memorydb"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

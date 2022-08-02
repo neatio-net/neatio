@@ -8,7 +8,7 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/crypto/blake2b"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/math"
 	"github.com/neatio-network/neatio/utilities/crypto"

@@ -7,7 +7,7 @@ import (
 	"math/big"
 	"strings"
 
-	neatio "github.com/neatlab/neatio"
+	neatio "github.com/neatio-network/neatio"
 	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 	"github.com/neatio-network/neatio/chain/core/types"

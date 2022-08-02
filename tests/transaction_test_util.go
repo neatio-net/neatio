@@ -7,11 +7,11 @@ import (
 	"math/big"
 
 	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 type TransactionTest struct {

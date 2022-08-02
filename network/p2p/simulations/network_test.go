@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/p2p/simulations/adapters"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
 )
 
 func TestNetworkSimulation(t *testing.T) {

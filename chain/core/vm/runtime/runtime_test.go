@@ -17,18 +17,18 @@
 package runtime
 
 import (
-	"github.com/neatlab/neatio/chain/consensus"
-	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatio-network/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/core"
 	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	"math/big"
 	"strings"
 	"testing"
 
 	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/chain/core/vm"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

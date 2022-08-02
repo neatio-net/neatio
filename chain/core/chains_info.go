@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
-	"github.com/neatlab/neatio/chain/core/state"
+	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
+	"github.com/neatio-network/neatio/chain/core/state"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/math"

@@ -1,7 +1,7 @@
 package vm
 
 import (
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 )
 
 func minSwapStack(n int) int {

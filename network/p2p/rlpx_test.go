@@ -15,11 +15,11 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/discover"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatio-network/neatio/utilities/crypto/ecies"
 	"github.com/neatio-network/neatio/utilities/crypto/sha3"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 func TestSharedSecret(t *testing.T) {

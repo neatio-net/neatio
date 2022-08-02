@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio"
+	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/utilities/event"
 )
 

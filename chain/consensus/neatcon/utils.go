@@ -8,7 +8,7 @@ import (
 
 	"gopkg.in/urfave/cli.v1"
 
-	tmcfg "github.com/neatlab/neatio/chain/consensus/neatcon/config/neatcon"
+	tmcfg "github.com/neatio-network/neatio/chain/consensus/neatcon/config/neatcon"
 	cfg "github.com/neatlib/config-go"
 )
 

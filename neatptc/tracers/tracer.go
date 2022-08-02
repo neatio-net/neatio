@@ -9,7 +9,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/core/vm"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"

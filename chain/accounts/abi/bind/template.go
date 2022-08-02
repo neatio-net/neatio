@@ -59,7 +59,7 @@ import (
 	"math/big"
 	"strings"
 
-	ethereum "github.com/neatlab/neatio"
+	ethereum "github.com/neatio-network/neatio"
 	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 	"github.com/neatio-network/neatio/utilities/common"

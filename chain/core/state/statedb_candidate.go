@@ -7,7 +7,7 @@ import (
 	"sort"
 
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // ----- candidate Set

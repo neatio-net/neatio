@@ -4,8 +4,8 @@ import (
 	"io"
 	"sort"
 
-	"github.com/neatlab/neatio/internal/debug"
-	"github.com/neatlab/neatio/utilities/utils"
+	"github.com/neatio-network/neatio/internal/debug"
+	"github.com/neatio-network/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

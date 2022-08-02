@@ -23,7 +23,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/core/vm"
 	"github.com/neatio-network/neatio/utilities/common/math"
 )
 

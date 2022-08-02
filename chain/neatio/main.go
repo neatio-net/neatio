@@ -9,10 +9,10 @@ import (
 
 	"github.com/neatio-network/neatio/chain/log"
 
-	"github.com/neatlab/neatio/internal/debug"
-	"github.com/neatlab/neatio/utilities/console"
-	"github.com/neatlab/neatio/utilities/metrics"
-	"github.com/neatlab/neatio/utilities/utils"
+	"github.com/neatio-network/neatio/internal/debug"
+	"github.com/neatio-network/neatio/utilities/console"
+	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

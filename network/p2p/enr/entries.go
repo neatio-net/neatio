@@ -23,7 +23,7 @@ import (
 	"net"
 
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // Entry is implemented by known node record entry types.

@@ -3,7 +3,7 @@ package vm
 import (
 	"fmt"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 )
 
 func EnableEIP(eipNum int, jt *JumpTable) error {

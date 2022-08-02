@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/p2p/netutil"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/netutil"
 )
 
 const (

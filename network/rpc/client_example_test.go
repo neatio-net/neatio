@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/network/rpc"
 )
 
 type Block struct {

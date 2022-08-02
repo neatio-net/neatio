@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/discover"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatio-network/neatio/utilities/crypto/sha3"
 )

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/consensus"
-	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-network/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	neatCrypto "github.com/neatio-network/neatio/utilities/crypto"

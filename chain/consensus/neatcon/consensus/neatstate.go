@@ -3,12 +3,12 @@ package consensus
 import (
 	"time"
 
-	consss "github.com/neatlab/neatio/chain/consensus"
-	ep "github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
-	sm "github.com/neatlab/neatio/chain/consensus/neatcon/state"
-	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	consss "github.com/neatio-network/neatio/chain/consensus"
+	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
+	sm "github.com/neatio-network/neatio/chain/consensus/neatcon/state"
+	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 	cmn "github.com/neatlib/common-go"
 )
 

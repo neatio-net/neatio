@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatio-network/neatio/neatdb"
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 func (t *Trie) Prove(key []byte, fromLevel uint, proofDb neatdb.Writer) error {

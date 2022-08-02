@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/neatlab/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/metrics"
 )
 
 type exp struct {

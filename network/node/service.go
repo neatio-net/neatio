@@ -4,12 +4,12 @@ import (
 	"crypto/ecdsa"
 	"reflect"
 
-	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
 
 	"github.com/neatio-network/neatio/chain/accounts"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/utilities/event"
 )
 

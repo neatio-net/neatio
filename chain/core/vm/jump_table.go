@@ -3,7 +3,7 @@ package vm
 import (
 	"errors"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 )
 
 type (

@@ -9,14 +9,14 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/p2p/discv5"
-	"github.com/neatlab/neatio/network/p2p/nat"
-	"github.com/neatlab/neatio/network/p2p/netutil"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/discv5"
+	"github.com/neatio-network/neatio/network/p2p/nat"
+	"github.com/neatio-network/neatio/network/p2p/netutil"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/mclock"
 	"github.com/neatio-network/neatio/utilities/event"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 const (

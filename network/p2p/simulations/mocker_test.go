@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/discover"
 )
 
 func TestMocker(t *testing.T) {

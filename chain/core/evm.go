@@ -19,9 +19,9 @@ package core
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/consensus"
 	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/core/vm"
 	"github.com/neatio-network/neatio/utilities/common"
 )
 

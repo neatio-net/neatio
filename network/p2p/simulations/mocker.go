@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/discover"
 )
 
 var mockerList = map[string]func(net *Network, quit chan struct{}, nodeCount int){

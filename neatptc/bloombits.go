@@ -3,12 +3,12 @@ package neatptc
 import (
 	"time"
 
-	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/core/bloombits"
-	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core"
+	"github.com/neatio-network/neatio/chain/core/bloombits"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
 	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/bitutil"
 )

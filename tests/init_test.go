@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 )
 
 var (

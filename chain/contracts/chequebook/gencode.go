@@ -7,7 +7,7 @@ package main
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatio-network/neatio/chain/core"
 	"github.com/neatio-network/neatio/utilities/crypto"
 )
 

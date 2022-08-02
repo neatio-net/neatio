@@ -17,7 +17,7 @@ import (
 
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
 )
 
 func TestUpdateLeaks(t *testing.T) {

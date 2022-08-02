@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/p2p/simulations/adapters"
-	p2ptest "github.com/neatlab/neatio/network/p2p/testing"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
+	p2ptest "github.com/neatio-network/neatio/network/p2p/testing"
 )
 
 type hs0 struct {

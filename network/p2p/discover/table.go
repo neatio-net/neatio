@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p/netutil"
+	"github.com/neatio-network/neatio/network/p2p/netutil"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/crypto"
 )

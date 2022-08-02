@@ -5,9 +5,9 @@ package neatptc
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/neatptc/downloader"
-	"github.com/neatlab/neatio/neatptc/gasprice"
+	"github.com/neatio-network/neatio/chain/core"
+	"github.com/neatio-network/neatio/neatptc/downloader"
+	"github.com/neatio-network/neatio/neatptc/gasprice"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 )

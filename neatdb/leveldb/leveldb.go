@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/utilities/metrics"
 	"github.com/syndtr/goleveldb/leveldb"
 	"github.com/syndtr/goleveldb/leveldb/errors"
 	"github.com/syndtr/goleveldb/leveldb/filter"

@@ -24,7 +24,7 @@ import (
 	"testing"
 
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // from bcValidBlockTest.json, "SimpleTx"

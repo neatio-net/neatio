@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatlab/neatio/chain/contracts/chequebook/contract"
+	"github.com/neatio-network/neatio/chain/contracts/chequebook/contract"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"

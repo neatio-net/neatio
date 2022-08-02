@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/consensus"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"

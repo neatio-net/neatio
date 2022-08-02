@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/network/node"
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/network/p2p/simulations/adapters"
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/network/node"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
+	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/utilities/event"
 )
 
