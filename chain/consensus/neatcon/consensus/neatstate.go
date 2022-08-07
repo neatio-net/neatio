@@ -3,13 +3,13 @@ package consensus
 import (
 	"time"
 
+	cmn "github.com/neatio-network/common-go"
 	consss "github.com/neatio-network/neatio/chain/consensus"
 	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
 	sm "github.com/neatio-network/neatio/chain/consensus/neatcon/state"
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/params"
-	cmn "github.com/neatlib/common-go"
 )
 
 func (bs *ConsensusState) GetChainReader() consss.ChainReader {

@@ -17,7 +17,7 @@ import (
 	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/event"
-	"github.com/neatlib/set-go"
+	"github.com/neatio-network/set-go"
 )
 
 const (

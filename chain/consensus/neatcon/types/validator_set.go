@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
+	cmn "github.com/neatio-network/common-go"
+	"github.com/neatio-network/crypto-go"
+	"github.com/neatio-network/merkle-go"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
-	cmn "github.com/neatlib/common-go"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/merkle-go"
 )
 
 type ValidatorSet struct {

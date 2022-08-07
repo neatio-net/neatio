@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"sync"
 
+	"github.com/neatio-network/bls-go"
+	. "github.com/neatio-network/common-go"
+	"github.com/neatio-network/crypto-go"
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlib/bls-go"
-	. "github.com/neatlib/common-go"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 type PrivValidator struct {

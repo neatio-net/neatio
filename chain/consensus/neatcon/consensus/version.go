@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	. "github.com/neatlib/common-go"
+	. "github.com/neatio-network/common-go"
 )
 
 var Spec = "1"

@@ -12,6 +12,7 @@ import (
 
 	"github.com/neatio-network/neatio/chain/core/rawdb"
 
+	flock "github.com/neatio-network/flock-go"
 	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/internal/debug"
@@ -19,7 +20,6 @@ import (
 	"github.com/neatio-network/neatio/network/p2p"
 	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/utilities/event"
-	flock "github.com/neatlib/flock-go"
 )
 
 type Node struct {

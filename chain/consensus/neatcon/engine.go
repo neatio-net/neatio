@@ -15,7 +15,7 @@ import (
 	"github.com/neatio-network/neatio/network/rpc"
 	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 const (

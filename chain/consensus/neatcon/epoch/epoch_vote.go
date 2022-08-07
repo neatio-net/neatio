@@ -5,11 +5,11 @@ import (
 	"math/big"
 	"sync"
 
+	"github.com/neatio-network/crypto-go"
+	"github.com/neatio-network/db-go"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/db-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 var voteRWMutex sync.RWMutex

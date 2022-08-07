@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
+	dbm "github.com/neatio-network/db-go"
 	ncTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/core/state"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
-	dbm "github.com/neatlib/db-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 
 	"math/big"
 	"sort"

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/crypto-go"
+	"github.com/neatio-network/wire-go"
 )
 
 var (

@@ -3,12 +3,12 @@ package main
 import (
 	"path/filepath"
 
+	cfg "github.com/neatio-network/config-go"
 	"github.com/neatio-network/neatio/chain/accounts/keystore"
 	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
 	neatnode "github.com/neatio-network/neatio/network/node"
 	"github.com/neatio-network/neatio/utilities/utils"
-	cfg "github.com/neatlib/config-go"
 	"gopkg.in/urfave/cli.v1"
 )
 

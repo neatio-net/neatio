@@ -8,14 +8,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/neatio-network/crypto-go"
+	dbm "github.com/neatio-network/db-go"
 	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatio-network/neatio/chain/core/state"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatlib/crypto-go"
-	dbm "github.com/neatlib/db-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 const (

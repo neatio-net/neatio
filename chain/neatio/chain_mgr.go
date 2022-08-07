@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/neatio-network/crypto-go"
+	dbm "github.com/neatio-network/db-go"
 	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/chain/consensus"
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
@@ -20,8 +22,6 @@ import (
 	"github.com/neatio-network/neatio/network/node"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/utils"
-	"github.com/neatlib/crypto-go"
-	dbm "github.com/neatlib/db-go"
 	"github.com/pkg/errors"
 	"gopkg.in/urfave/cli.v1"
 )

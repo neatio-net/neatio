@@ -9,9 +9,9 @@ import (
 
 	"golang.org/x/crypto/ripemd160"
 
-	. "github.com/neatlib/common-go"
-	"github.com/neatlib/merkle-go"
-	"github.com/neatlib/wire-go"
+	. "github.com/neatio-network/common-go"
+	"github.com/neatio-network/merkle-go"
+	"github.com/neatio-network/wire-go"
 )
 
 var (

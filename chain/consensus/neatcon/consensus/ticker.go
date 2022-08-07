@@ -6,7 +6,7 @@ import (
 
 	"github.com/neatio-network/neatio/chain/log"
 
-	. "github.com/neatlib/common-go"
+	. "github.com/neatio-network/common-go"
 )
 
 var (

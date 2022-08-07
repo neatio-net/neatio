@@ -5,13 +5,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/neatio-network/crypto-go"
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/utils"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 	"gopkg.in/urfave/cli.v1"
 )
 

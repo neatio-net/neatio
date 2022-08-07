@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 type Candidate struct {

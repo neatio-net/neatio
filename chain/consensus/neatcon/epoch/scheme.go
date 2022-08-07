@@ -5,10 +5,10 @@ import (
 	"math/big"
 	"sync"
 
+	dbm "github.com/neatio-network/db-go"
 	ncTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
-	dbm "github.com/neatlib/db-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 const rewardSchemeKey = "REWARDSCHEME"

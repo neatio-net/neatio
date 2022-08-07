@@ -8,8 +8,8 @@ import (
 
 	"gopkg.in/urfave/cli.v1"
 
+	cfg "github.com/neatio-network/config-go"
 	tmcfg "github.com/neatio-network/neatio/chain/consensus/neatcon/config/neatcon"
-	cfg "github.com/neatlib/config-go"
 )
 
 func GetNeatConConfig(chainId string, ctx *cli.Context) cfg.Config {

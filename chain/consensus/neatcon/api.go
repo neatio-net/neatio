@@ -4,13 +4,13 @@ import (
 	"errors"
 	"math/big"
 
+	"github.com/neatio-network/crypto-go"
 	"github.com/neatio-network/neatio/chain/consensus"
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
 	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	neatCrypto "github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatlib/crypto-go"
 )
 
 type API struct {

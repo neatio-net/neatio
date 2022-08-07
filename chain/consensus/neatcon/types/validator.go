@@ -7,11 +7,11 @@ import (
 
 	"math/big"
 
+	. "github.com/neatio-network/common-go"
+	"github.com/neatio-network/crypto-go"
 	neatTypes "github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"
-	. "github.com/neatlib/common-go"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 )
 
 type Validator struct {

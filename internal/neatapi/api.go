@@ -13,6 +13,7 @@ import (
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
 	"github.com/neatio-network/neatio/chain/core/state"
 
+	goCrypto "github.com/neatio-network/crypto-go"
 	"github.com/neatio-network/neatio/chain/accounts"
 	"github.com/neatio-network/neatio/chain/accounts/abi"
 	"github.com/neatio-network/neatio/chain/accounts/keystore"
@@ -30,7 +31,6 @@ import (
 	"github.com/neatio-network/neatio/utilities/common/math"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatio-network/neatio/utilities/rlp"
-	goCrypto "github.com/neatlib/crypto-go"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 

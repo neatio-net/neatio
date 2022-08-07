@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/neatlib/common-go"
-	cfg "github.com/neatlib/config-go"
+	. "github.com/neatio-network/common-go"
+	cfg "github.com/neatio-network/config-go"
 )
 
 const (

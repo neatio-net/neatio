@@ -7,8 +7,8 @@ import (
 
 	"github.com/neatio-network/neatio/chain/log"
 
+	. "github.com/neatio-network/common-go"
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	. "github.com/neatlib/common-go"
 )
 
 type RoundVoteSet struct {

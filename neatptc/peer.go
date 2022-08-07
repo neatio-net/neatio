@@ -8,13 +8,13 @@ import (
 	"time"
 
 	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatlib/wire-go"
+	"github.com/neatio-network/wire-go"
 
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/network/p2p"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/rlp"
-	"github.com/neatlib/set-go"
+	"github.com/neatio-network/set-go"
 )
 
 var (
