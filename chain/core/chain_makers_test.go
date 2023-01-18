@@ -16,15 +16,19 @@ func ExampleGenerateChain() {
 		key1, _ = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
 		key2, _ = crypto.HexToECDSA("8a1f9a8f95be41cd7ccb6168179afb4504aefe388d1e14474d32c45c72ce7b7a")
 		key3, _ = crypto.HexToECDSA("49a7b37aa6f6645917e7b807e9d1c00d4fa71f18343b0d4122a4d2df64dd6fee")
+		key4, _ = crypto.HexToECDSA("c15c038a5a9f8f948a2ac0eb102c249e4ae1c4fa1e0971b50c63db46dc5fcf8b")
+		key5, _ = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")
 		addr1   = crypto.PubkeyToAddress(key1.PublicKey)
 		addr2   = crypto.PubkeyToAddress(key2.PublicKey)
 		addr3   = crypto.PubkeyToAddress(key3.PublicKey)
+		addr4   = crypto.PubkeyToAddress(key4.PublicKey)
+		addr5   = crypto.PubkeyToAddress(key5.PublicKey)
 		db      = rawdb.NewMemoryDatabase()
 	)
 
 	gspec := &Genesis{
 		Config: &params.ChainConfig{HomesteadBlock: new(big.Int)},
-		Alloc:  GenesisAlloc{addr1: {Balance: big.NewInt(1000000)}},
+		Alloc:  GenesisAlloc{addr1: {Balance: big.NewInt(2500000)}},
 	}
 	genesis := gspec.MustCommit(db)
 
@@ -69,5 +73,7 @@ func ExampleGenerateChain() {
 	fmt.Println("balance of addr1:", state.GetBalance(addr1))
 	fmt.Println("balance of addr2:", state.GetBalance(addr2))
 	fmt.Println("balance of addr3:", state.GetBalance(addr3))
+	fmt.Println("balance of addr4:", state.GetBalance(addr4))
+	fmt.Println("balance of addr5:", state.GetBalance(addr5))
 
 }
