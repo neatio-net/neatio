@@ -30,7 +30,7 @@ func HomeDir() string {
 }
 
 func DefaultDataDir() string {
-	// Try to place the data folder in the user's home dir
+
 	home := HomeDir()
 	if home != "" {
 		if runtime.GOOS == "windows" {
@@ -39,7 +39,7 @@ func DefaultDataDir() string {
 			return filepath.Join(home, ".neatio")
 		}
 	}
-	// As we cannot guess a stable location, return empty and handle later
+
 	return ""
 }
 
