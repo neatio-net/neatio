@@ -662,8 +662,8 @@ func (s *PublicBlockChainAPI) EstimateGas(ctx context.Context, args CallArgs) (h
 		cap uint64
 	)
 
-	functionType, e := neatAbi.FunctionTypeFromId(args.Data[:4])
-	if e == nil && functionType != neatAbi.Unknown {
+	functionType, e := NeatIOAbi.FunctionTypeFromId(args.Data[:4])
+	if e == nil && functionType != NeatIOAbi.Unknown {
 		fmt.Printf("neatio inner contract tx, address: %v, functionType: %v\n", args.To.Hex(), functionType)
 		return hexutil.Uint64(functionType.RequiredGas()), nil
 	}
@@ -787,8 +787,8 @@ func FormatLogs(logs []vm.StructLog) []StructLogRes {
 func (s *PublicBlockChainAPI) rpcOutputBlock(b *types.Block, inclTx bool, fullTx bool) (map[string]interface{}, error) {
 	head := b.Header()
 	fields := map[string]interface{}{
-		"number": (*hexutil.Big)(head.Number),
-
+		"number":           (*hexutil.Big)(head.Number),
+		"mainchainNumber":  (*hexutil.Big)(head.MainChainNumber),
 		"hash":             b.Hash(),
 		"parentHash":       head.ParentHash,
 		"nonce":            head.Nonce,
