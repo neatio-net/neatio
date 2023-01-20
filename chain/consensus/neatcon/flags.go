@@ -46,7 +46,7 @@ var (
 
 	RpcLaddrFlag = cli.StringFlag{
 		Name:  "rpc_laddr",
-		Value: "unix://@neatiorpcunixsock", //"tcp://0.0.0.0:46657",
+		Value: "unix://@neatiorpcunixsock",
 		Usage: "RPC listen address. Port required",
 	}
 )

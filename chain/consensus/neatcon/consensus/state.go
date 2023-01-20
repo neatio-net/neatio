@@ -793,8 +793,6 @@ func (cs *ConsensusState) enterLowerRound(height uint64, round int) {
 		cs.logger.Warn("Need to set a buffer and log.Warn() here for sanity.", "startTime", cs.StartTime, "now", now)
 	}
 
-	//cs.logger.Infof("enterLowerRound(%v/%v). Current: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
-	//cs.logger.Infof("Validators: %v", cs.Validators)
 
 	for r := cs.Round; r > round; r-- {
 		if _, ok := cs.pastRoundStates[r]; ok {
@@ -1033,11 +1031,9 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 			//cs.logger.Info("enterPrevote: Validate/Execute Block")
 			state, receipts, ops, err := cv.ValidateBlock(cs.ProposalBlock.Block)
 			if err != nil {
-				//cs.logger.Warnf("enterPrevote: ValidateBlock fail, error: %v", err)
 				cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 				return
 			}
-			//cs.logger.Info("enterPrevote: Validate/Execute Block, Setup the IntermediateBlockResult")
 			cs.ProposalBlock.IntermediateResult = &types.IntermediateBlockResult{
 				State:    state,
 				Receipts: receipts,
@@ -1053,7 +1049,6 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 			lastBlockTime := time.Unix(int64(cs.backend.ChainReader().CurrentBlock().Time()), 0)
 			err = cs.Epoch.ValidateNextEpoch(proposedNextEpoch, lastHeight, lastBlockTime)
 			if err != nil {
-				//cs.logger.Warnf("enterPrevote: Proposal Next Epoch is invalid, error: %v", err)
 				cs.signAddVote(types.VoteTypePrevote, nil, types.PartSetHeader{})
 				return
 			}
@@ -1066,11 +1061,9 @@ func (cs *ConsensusState) defaultDoPrevote(height uint64, round int) {
 
 func (cs *ConsensusState) enterPrevoteWait(height uint64, round int) {
 	if cs.Height != height || round < cs.Round || (cs.Round == round && RoundStepPrevoteWait <= cs.Step) {
-		//cs.logger.Warnf("enterPrevoteWait(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 		return
 	}
 
-	//cs.logger.Infof("enterPrevoteWait(%v/%v). Current: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 
 	defer func() {
 		cs.updateRoundStep(round, RoundStepPrevoteWait)
@@ -1082,11 +1075,9 @@ func (cs *ConsensusState) enterPrevoteWait(height uint64, round int) {
 
 func (cs *ConsensusState) enterPrecommit(height uint64, round int) {
 	if cs.Height != height || round < cs.Round || (cs.Round == round && RoundStepPrecommit <= cs.Step) {
-		//cs.logger.Warnf("enterPrecommit(%v/%v): Invalid args. Current step: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 		return
 	}
 
-	//cs.logger.Infof("enterPrecommit(%v/%v). Current: %v/%v/%v", height, round, cs.Height, cs.Round, cs.Step)
 
 	defer func() {
 		cs.updateRoundStep(round, RoundStepPrecommit)
@@ -1629,9 +1620,7 @@ func (cs *ConsensusState) signAddVote(type_ byte, hash []byte, header types.Part
 			if cs.ProposerPeerKey != "" {
 				v2pMsg := types.EventDataVote2Proposer{vote, cs.ProposerPeerKey}
 				types.FireEventVote2Proposer(cs.evsw, v2pMsg)
-			} else {
-				cs.logger.Warn("sign and vote, Proposer key is nil")
-			}
+			} 
 		} else {
 			cs.sendInternalMessage(msgInfo{&VoteMessage{vote}, ""})
 		}
