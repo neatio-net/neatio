@@ -11,8 +11,8 @@ import (
 	"testing/quick"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 func ExampleNewNode() {

@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/chain/accounts/abi"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 type FunctionType struct {
@@ -35,7 +35,6 @@ var (
 	WithdrawReward = FunctionType{17, false, true, true}
 	UnBanned       = FunctionType{18, false, true, true}
 	SetCommission  = FunctionType{19, false, true, true}
-	SetAddress     = FunctionType{20, false, true, true}
 
 	Unknown = FunctionType{-1, false, false, false}
 )
@@ -55,37 +54,35 @@ func (t FunctionType) AllowInSideChain() bool {
 func (t FunctionType) RequiredGas() uint64 {
 	switch t {
 	case CreateSideChain:
-		return 42000
+		return 200000
 	case JoinSideChain:
-		return 21000
+		return 100000
 	case DepositInMainChain:
-		return 42000
+		return 200000
 	case DepositInSideChain:
 		return 0
 	case WithdrawFromSideChain:
-		return 42000
+		return 200000
 	case WithdrawFromMainChain:
 		return 0
 	case SaveDataToMainChain:
 		return 0
 	case VoteNextEpoch:
-		return 21000
+		return 100000
 	case RevealVote:
-		return 21000
+		return 100000
 	case Delegate, UnDelegate, Register, UnRegister:
-		return 21000
+		return 100000
 	case SetBlockReward:
-		return 21000
+		return 100000
 	case EditValidator:
-		return 21000
+		return 100000
 	case WithdrawReward:
-		return 21000
+		return 100000
 	case UnBanned:
-		return 21000
+		return 100000
 	case SetCommission:
-		return 21000
-	case SetAddress:
-		return 21000
+		return 100000
 	default:
 		return 0
 	}
@@ -129,8 +126,6 @@ func (t FunctionType) String() string {
 		return "UnBanned"
 	case SetCommission:
 		return "SetCommission"
-	case SetAddress:
-		return "SetAddress"
 	default:
 		return "UnKnown"
 	}
@@ -174,8 +169,6 @@ func StringToFunctionType(s string) FunctionType {
 		return UnBanned
 	case "SetCommission":
 		return SetCommission
-	case "SetAddress":
-		return SetAddress
 	default:
 		return Unknown
 	}
@@ -254,7 +247,6 @@ type EditValidatorArgs struct {
 
 type WithdrawRewardArgs struct {
 	DelegateAddress common.Address
-	Amount          *big.Int
 }
 
 type UnBannedArgs struct {
@@ -262,10 +254,6 @@ type UnBannedArgs struct {
 
 type SetCommissionArgs struct {
 	Commission uint8
-}
-
-type SetAddressArgs struct {
-	FAddress common.Address
 }
 
 const jsonChainABI = `
@@ -514,10 +502,6 @@ const jsonChainABI = `
 			{
 				"name": "delegateAddress",
 				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
 			}
 		]
 	},
@@ -537,23 +521,12 @@ const jsonChainABI = `
 				"type": "uint8"
 			}
 		]
-	},
-	{
-		"type": "function",
-		"name": "SetAddress",
-		"constant": false,
-		"inputs": [
-			{
-				"name": "fAddress",
-				"type": "address"
-			}
-		]
 	}
 ]`
 
-var NeatioSideChainsAddress = common.HexToAddress("0x0000000000000000000000000000000000000535")
+var SideChainTokenIncentiveAddr = common.StringToAddress("NEATioSideChainsTokenDepositAddy")
 
-var NeatioSmartContractAddress = common.HexToAddress("0x0000000000000000000000000000000000000505")
+var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress")
 
 var ChainABI abi.ABI
 
@@ -566,7 +539,7 @@ func init() {
 }
 
 func IsNeatChainContractAddr(addr *common.Address) bool {
-	return addr != nil && *addr == NeatioSmartContractAddress
+	return addr != nil && *addr == ChainContractMagicAddr
 }
 
 func FunctionTypeFromId(sigdata []byte) (FunctionType, error) {

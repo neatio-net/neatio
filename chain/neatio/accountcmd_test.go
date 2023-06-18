@@ -1,3 +1,19 @@
+// Copyright 2016 The go-ethereum Authors
+// This file is part of go-neatio.
+//
+// go-ethereum is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// go-ethereum is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with go-neatio. If not, see <http://www.gnu.org/licenses/>.
+
 package main
 
 import (
@@ -10,6 +26,11 @@ import (
 	"github.com/cespare/cp"
 )
 
+// These tests are 'smoke tests' for the account related
+// subcommands and flags.
+//
+// For most tests, the test files from package accounts
+// are copied into a temporary keystore directory.
 
 func tmpDatadirWithKeystore(t *testing.T) string {
 	datadir := tmpdir(t)
@@ -152,6 +173,7 @@ Fatal: Failed to unlock account f466859ead1932d743d622cb74fc058882e8648a (could 
 `)
 }
 
+// https://github.com/neatlab/neatio/issues/1785
 func TestUnlockFlagMultiIndex(t *testing.T) {
 	datadir := tmpDatadirWithKeystore(t)
 	geth := runGeth(t,
@@ -218,6 +240,7 @@ func TestUnlockFlagAmbiguous(t *testing.T) {
 		"js", "testdata/empty.js")
 	defer geth.ExpectExit()
 
+	// Helper for the expect template, returns absolute keystore path.
 	geth.SetTemplateFunc("keypath", func(file string) string {
 		abs, _ := filepath.Abs(filepath.Join(store, file))
 		return abs
@@ -254,6 +277,7 @@ func TestUnlockFlagAmbiguousWrongPassword(t *testing.T) {
 		"--unlock", "f466859ead1932d743d622cb74fc058882e8648a")
 	defer geth.ExpectExit()
 
+	// Helper for the expect template, returns absolute keystore path.
 	geth.SetTemplateFunc("keypath", func(file string) string {
 		abs, _ := filepath.Abs(filepath.Join(store, file))
 		return abs

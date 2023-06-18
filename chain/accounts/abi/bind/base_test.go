@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/neatio-network/neatio"
+	"github.com/neatio-network/neatio/chain/accounts/abi"
+	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 	"github.com/neatio-network/neatio/chain/core/types"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio"
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
 	"github.com/neatio-network/neatio/utilities/rlp"
 )
 

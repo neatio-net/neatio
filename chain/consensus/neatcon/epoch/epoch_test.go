@@ -33,27 +33,27 @@ func TestVoteSetCompare(t *testing.T) {
 	var voteArr []*EpochValidatorVote
 	voteArr = []*EpochValidatorVote{
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEATfxRkRYDgG5gjaJSTpwZz9cZQsMEr"),
 			Amount:  big.NewInt(1),
 		},
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEAToT41aVcZXxKxY5F8nMY6MU6AdsVx"),
 			Amount:  big.NewInt(1),
 		},
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEATqSts5DJr6pwKVdDefhHEYvbWUPGD"),
 			Amount:  big.NewInt(1),
 		},
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEATxUxwDzVQrRKB9WZwfoUFiJY9dizi"),
 			Amount:  big.NewInt(1),
 		},
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEATcbjuDR3PGRghZdTduYpykCFhZBS2"),
 			Amount:  big.NewInt(1),
 		},
 		{
-			Address: common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca"),
+			Address: common.StringToAddress("NEATgAEfFuiMug54tpoh6GPDZ8SNB6a6"),
 			Amount:  big.NewInt(1),
 		},
 	}
@@ -66,6 +66,6 @@ func TestVoteSetCompare(t *testing.T) {
 		return voteArr[i].Amount.Cmp(voteArr[j].Amount) == 1
 	})
 	for i := range voteArr {
-		fmt.Printf("address:%v, amount: %v\n", voteArr[i].Address, voteArr[i].Amount)
+		fmt.Printf("address:%v, amount: %v\n", voteArr[i].Address.String(), voteArr[i].Amount)
 	}
 }

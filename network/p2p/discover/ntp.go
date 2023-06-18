@@ -6,7 +6,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/log"
 )
 
 const (

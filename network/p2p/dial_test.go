@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/network/p2p/netutil"
+	"github.com/neatlab/neatio/network/p2p/discover"
+	"github.com/neatlab/neatio/network/p2p/netutil"
 )
 
 func init() {

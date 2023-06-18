@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/network/node"
+	"github.com/neatlab/neatio/network/rpc"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -25,8 +25,10 @@ var (
 
 func StartRPC(ctx *cli.Context) error {
 
+	// Use Default Config
 	rpcConfig := node.DefaultConfig
 
+	// Setup the config from context
 	SetHTTP(ctx, &rpcConfig)
 	SetWS(ctx, &rpcConfig)
 	wsOrigins = rpcConfig.WSOrigins
@@ -45,6 +47,7 @@ func StartRPC(ctx *cli.Context) error {
 }
 
 func StopRPC() {
+	// Stop HTTP Listener
 	if httpListener != nil {
 		httpAddr := httpListener.Addr().String()
 		httpListener.Close()
@@ -57,6 +60,7 @@ func StopRPC() {
 		}
 	}
 
+	// Stop WS Listener
 	if wsListener != nil {
 		wsAddr := wsListener.Addr().String()
 		wsListener.Close()
@@ -82,7 +86,7 @@ func HookupHTTP(chainId string, httpHandler *rpc.Server) error {
 	if httpMux != nil {
 		log.Infof("Hookup HTTP for (chainId, http Handler): (%v, %v)", chainId, httpHandler)
 		if httpHandler != nil {
-			httpMux.Handle("/", httpHandler)
+			httpMux.Handle("/"+chainId, httpHandler)
 			httpHandlerMapping[chainId] = httpHandler
 		}
 	}
@@ -93,7 +97,7 @@ func HookupWS(chainId string, wsHandler *rpc.Server) error {
 	if wsMux != nil {
 		log.Infof("Hookup WS for (chainId, ws Handler): (%v, %v)", chainId, wsHandler)
 		if wsHandler != nil {
-			wsMux.Handle("/", wsHandler.WebsocketHandler(wsOrigins))
+			wsMux.Handle("/"+chainId, wsHandler.WebsocketHandler(wsOrigins))
 			wsHandlerMapping[chainId] = wsHandler
 		}
 	}
@@ -101,6 +105,7 @@ func HookupWS(chainId string, wsHandler *rpc.Server) error {
 }
 
 func startHTTP(endpoint string, cors []string, vhosts []string, timeouts rpc.HTTPTimeouts) error {
+	// Short circuit if the HTTP endpoint isn't being exposed
 	if endpoint == "" {
 		return nil
 	}
@@ -130,6 +135,7 @@ func startNeatChainHTTPEndpoint(endpoint string, cors []string, vhosts []string,
 }
 
 func startWS(endpoint string) error {
+	// Short circuit if the WS endpoint isn't being exposed
 	if endpoint == "" {
 		return nil
 	}

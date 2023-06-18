@@ -20,9 +20,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/neatio-network/neatio/chain/trie"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/neatlab/neatio/chain/trie"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // NodeIterator is an iterator to traverse the entire state trie post-order,

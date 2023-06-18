@@ -4,15 +4,15 @@ import (
 	"bytes"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/log"
 
-	. "github.com/neatio-network/common-go"
+	. "github.com/neatlib/common-go"
 
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/wire-go"
 
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
+	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
 
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
+	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
 	"github.com/pkg/errors"
 )
 

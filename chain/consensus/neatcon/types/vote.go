@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	. "github.com/neatio-network/common-go"
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/neatio/utilities/rlp"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlab/neatio/utilities/rlp"
+	. "github.com/neatlib/common-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
 )
 
 var (
@@ -28,6 +28,8 @@ func (err *ErrVoteConflictingVotes) Error() string {
 	return "Conflicting votes"
 }
 
+// Types of votes
+// TODO Make a new type "VoteType"
 const (
 	VoteTypePrevote   = byte(0x01)
 	VoteTypePrecommit = byte(0x02)
@@ -44,13 +46,14 @@ func IsVoteTypeValid(type_ byte) bool {
 	}
 }
 
+// Represents a prevote, precommit, or commit vote from validators for consensus.
 type Vote struct {
 	ValidatorAddress []byte           `json:"validator_address"`
 	ValidatorIndex   uint64           `json:"validator_index"`
 	Height           uint64           `json:"height"`
 	Round            uint64           `json:"round"`
 	Type             byte             `json:"type"`
-	BlockID          BlockID          `json:"block_id"`
+	BlockID          BlockID          `json:"block_id"` // zero if vote is nil.
 	Signature        crypto.Signature `json:"signature"`
 	SignBytes        []byte           `json:"sign_bytes"`
 }
@@ -62,6 +65,7 @@ func (vote *Vote) WriteSignBytes(chainID string, w io.Writer, n *int, err *error
 	}, w, n, err)
 }
 
+// EncodeRLP serializes ist into the Ethereum RLP format.
 func (vote *Vote) EncodeRLP(w io.Writer) error {
 	return rlp.Encode(w, []interface{}{
 		vote.ValidatorAddress,
@@ -74,6 +78,7 @@ func (vote *Vote) EncodeRLP(w io.Writer) error {
 	})
 }
 
+// DecodeRLP implements rlp.Decoder, and load the istanbul fields from a RLP stream.
 func (vote *Vote) DecodeRLP(s *rlp.Stream) error {
 	var vt struct {
 		ValidatorAddress []byte

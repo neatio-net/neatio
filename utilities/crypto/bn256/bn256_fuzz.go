@@ -10,8 +10,8 @@ import (
 	"bytes"
 	"math/big"
 
-	cloudflare "github.com/neatio-network/neatio/utilities/crypto/bn256/cloudflare"
-	google "github.com/neatio-network/neatio/utilities/crypto/bn256/google"
+	cloudflare "github.com/neatlab/neatio/utilities/crypto/bn256/cloudflare"
+	google "github.com/neatlab/neatio/utilities/crypto/bn256/google"
 )
 
 // FuzzAdd fuzzez bn256 addition between the Google and Cloudflare libraries.

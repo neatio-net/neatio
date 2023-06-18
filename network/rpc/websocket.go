@@ -32,7 +32,7 @@ import (
 	"time"
 
 	mapset "github.com/deckarep/golang-set"
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/log"
 	"golang.org/x/net/websocket"
 )
 

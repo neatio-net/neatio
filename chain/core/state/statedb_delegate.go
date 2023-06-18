@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/neatio-network/neatio/chain/trie"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/neatlab/neatio/chain/trie"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 // ----- DelegateBalance
@@ -224,7 +224,7 @@ func (self *StateDB) AddPendingRefundBalanceByUser(addr, user common.Address, am
 		dirtyApb.PendingRefundBalance = new(big.Int).Add(dirtyApb.PendingRefundBalance, amount)
 		stateObject.SetAccountProxiedBalance(self.db, user, dirtyApb)
 
-		// Add amount to Total pending refund Balance
+		// Add amount to Total Proxied Balance
 		stateObject.AddPendingRefundBalance(amount)
 	}
 }
@@ -244,7 +244,7 @@ func (self *StateDB) SubPendingRefundBalanceByUser(addr, user common.Address, am
 		dirtyApb.PendingRefundBalance = new(big.Int).Sub(dirtyApb.PendingRefundBalance, amount)
 		stateObject.SetAccountProxiedBalance(self.db, user, dirtyApb)
 
-		// Sub amount from Total pending refund Balance
+		// Sub amount from Total Proxied Balance
 		stateObject.SubPendingRefundBalance(amount)
 	}
 }
@@ -316,66 +316,50 @@ func (self *StateDB) CancelCandidate(addr common.Address, allRefund bool) {
 	}
 }
 
-//func (self *StateDB) GetBanned(addr common.Address) bool {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		return stateObject.IsBanned()
-//	}
-//	return false
-//}
-
-//func (self *StateDB) SetBanned(addr common.Address, forbidden bool) {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		stateObject.SetBanned(forbidden)
-//	}
-//}
-
-//func (self *StateDB) GetBannedTime(addr common.Address) *big.Int {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		return stateObject.BannedTime()
-//	}
-//	return common.Big0
-//}
-
-//func (self *StateDB) SetBannedTime(addr common.Address, forbiddenTime *big.Int) {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		stateObject.SetBannedTime(forbiddenTime)
-//	}
-//}
-
-//func (self *StateDB) GetMinedBlocks(addr common.Address) *big.Int {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		return stateObject.BlockTime()
-//	}
-//
-//	return common.Big0
-//}
-
-//func (self *StateDB) SetMinedBlocks(addr common.Address, blocks *big.Int) {
-//	stateObject := self.GetOrNewStateObject(addr)
-//	if stateObject != nil {
-//		stateObject.SetBlockTime(blocks)
-//	}
-//}
-
-func (self *StateDB) SetAddress(addr, fAddr common.Address) {
+func (self *StateDB) GetBanned(addr common.Address) bool {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		stateObject.SetAddress(fAddr)
+		return stateObject.IsBanned()
+	}
+	return false
+}
+
+func (self *StateDB) SetBanned(addr common.Address, banned bool) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.SetBanned(banned)
 	}
 }
 
-func (self *StateDB) GetAddress(addr common.Address) common.Address {
+func (self *StateDB) GetBannedTime(addr common.Address) *big.Int {
 	stateObject := self.GetOrNewStateObject(addr)
 	if stateObject != nil {
-		return stateObject.GetAddress()
+		return stateObject.BannedTime()
+	}
+	return common.Big0
+}
+
+func (self *StateDB) SetBannedTime(addr common.Address, bannedTime *big.Int) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.SetBannedTime(bannedTime)
+	}
+}
+
+func (self *StateDB) GetMinedBlocks(addr common.Address) *big.Int {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		return stateObject.BlockTime()
 	}
 
-	return common.Address{}
+	return common.Big0
+}
+
+func (self *StateDB) SetMinedBlocks(addr common.Address, blocks *big.Int) {
+	stateObject := self.GetOrNewStateObject(addr)
+	if stateObject != nil {
+		stateObject.SetBlockTime(blocks)
+	}
 }
 
 // ClearCommission Set the Candidate commission to 0

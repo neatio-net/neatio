@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/neatio-network/neatio/chain/trie"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/neatlab/neatio/chain/trie"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/rlp"
 )
 
 func (self *StateDB) GetTotalRewardBalance(addr common.Address) *big.Int {
@@ -33,6 +33,28 @@ func (self *StateDB) SubRewardBalance(addr common.Address, amount *big.Int) {
 	if stateObject != nil {
 
 		stateObject.SubRewardBalance(amount)
+	}
+}
+
+func (self *StateDB) GetTotalAvailableRewardBalance(addr common.Address) *big.Int {
+	stateObject := self.getStateObject(addr)
+	if stateObject != nil {
+		return stateObject.AvailableRewardBalance()
+	}
+	return common.Big0
+}
+
+func (self *StateDB) AddAvailableRewardBalance(addr common.Address, amount *big.Int) {
+	stateObject := self.getStateObject(addr)
+	if stateObject != nil {
+		stateObject.AddAvailableRewardBalance(amount)
+	}
+}
+
+func (self *StateDB) SubAvailableRewardBalance(addr common.Address, amount *big.Int) {
+	stateObject := self.getStateObject(addr)
+	if stateObject != nil {
+		stateObject.SubAvailableRewardBalance(amount)
 	}
 }
 
@@ -233,19 +255,9 @@ func (self *StateDB) GetSideChainRewardPerBlock() *big.Int {
 func (self *StateDB) commitSideChainRewardPerBlock() {
 	data, err := rlp.EncodeToBytes(self.sideChainRewardPerBlock)
 	if err != nil {
-		panic(fmt.Errorf("can't encode child chain reward per block : %v", err))
+		panic(fmt.Errorf("can't encode side chain reward per block : %v", err))
 	}
 	self.setError(self.trie.TryUpdate(sideChainRewardPerBlockKey, data))
 }
 
 var sideChainRewardPerBlockKey = []byte("RewardPerBlock")
-
-func (self *StateDB) MarkProposedInEpoch(address common.Address, epoch uint64) error {
-
-	return self.db.TrieDB().MarkProposedInEpoch(address, epoch)
-}
-
-func (self *StateDB) CheckProposedInEpoch(address common.Address, epoch uint64) bool {
-
-	return self.db.TrieDB().CheckProposedInEpoch(address, epoch)
-}

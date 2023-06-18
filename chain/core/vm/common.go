@@ -1,34 +1,39 @@
+// Copyright 2014 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package vm
 
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
 )
 
-func calcMemSize64(off, l *big.Int) (uint64, bool) {
-	if !l.IsUint64() {
-		return 0, true
+// calculates the memory size required for a step
+func calcMemSize(off, l *big.Int) *big.Int {
+	if l.Sign() == 0 {
+		return common.Big0
 	}
-	return calcMemSize64WithUint(off, l.Uint64())
+
+	return new(big.Int).Add(off, l)
 }
 
-func calcMemSize64WithUint(off *big.Int, length64 uint64) (uint64, bool) {
-
-	if length64 == 0 {
-		return 0, false
-	}
-
-	if !off.IsUint64() {
-		return 0, true
-	}
-	offset64 := off.Uint64()
-	val := offset64 + length64
-
-	return val, val < offset64
-}
-
+// getData returns a slice from the data based on the start and size and pads
+// up to size with zero's. This function is overflow safe.
 func getData(data []byte, start uint64, size uint64) []byte {
 	length := uint64(len(data))
 	if start > length {
@@ -41,6 +46,8 @@ func getData(data []byte, start uint64, size uint64) []byte {
 	return common.RightPadBytes(data[start:end], int(size))
 }
 
+// getDataBig returns a slice from the data based on the start and size and pads
+// up to size with zero's. This function is overflow safe.
 func getDataBig(data []byte, start *big.Int, size *big.Int) []byte {
 	dlen := big.NewInt(int64(len(data)))
 
@@ -49,10 +56,13 @@ func getDataBig(data []byte, start *big.Int, size *big.Int) []byte {
 	return common.RightPadBytes(data[s.Uint64():e.Uint64()], int(size.Uint64()))
 }
 
+// bigUint64 returns the integer casted to a uint64 and returns whether it
+// overflowed in the process.
 func bigUint64(v *big.Int) (uint64, bool) {
-	return v.Uint64(), !v.IsUint64()
+	return v.Uint64(), v.BitLen() > 64
 }
 
+// toWordSize returns the ceiled word size required for memory expansion.
 func toWordSize(size uint64) uint64 {
 	if size > math.MaxUint64-31 {
 		return math.MaxUint64/32 + 1

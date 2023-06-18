@@ -25,10 +25,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/mclock"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/mclock"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 const (

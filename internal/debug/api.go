@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/log"
 )
 
 var Handler = new(HandlerT)

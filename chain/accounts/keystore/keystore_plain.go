@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 type keyStorePlain struct {

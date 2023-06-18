@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
 )
 
 var (
@@ -40,7 +40,7 @@ func NewProposal(height uint64, round int, hash []byte, blockPartsHeader PartSet
 }
 
 func (p *Proposal) String() string {
-	return fmt.Sprintf("Proposal{%v/%v %v %v (%v,%v) %s %s %v}", p.Height, p.Round, p.Hash,
+	return fmt.Sprintf("Proposal{%v/%v %v (%v,%v) %s %s %v}", p.Height, p.Round,
 		p.BlockPartsHeader, p.POLRound, p.POLBlockID, p.ProposerNetAddr, p.ProposerPeerKey, p.Signature)
 }
 

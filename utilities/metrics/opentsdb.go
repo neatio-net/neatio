@@ -12,14 +12,19 @@ import (
 
 var shortHostName string = ""
 
+// OpenTSDBConfig provides a container with configuration parameters for
+// the OpenTSDB exporter
 type OpenTSDBConfig struct {
-	Addr          *net.TCPAddr
-	Registry      Registry
-	FlushInterval time.Duration
-	DurationUnit  time.Duration
-	Prefix        string
+	Addr          *net.TCPAddr  // Network address to connect to
+	Registry      Registry      // Registry to be exported
+	FlushInterval time.Duration // Flush interval
+	DurationUnit  time.Duration // Time conversion unit for durations
+	Prefix        string        // Prefix to be prepended to metric names
 }
 
+// OpenTSDB is a blocking exporter function which reports metrics in r
+// to a TSDB server located at addr, flushing them every d duration
+// and prepending metric names with prefix.
 func OpenTSDB(r Registry, d time.Duration, prefix string, addr *net.TCPAddr) {
 	OpenTSDBWithConfig(OpenTSDBConfig{
 		Addr:          addr,
@@ -30,6 +35,8 @@ func OpenTSDB(r Registry, d time.Duration, prefix string, addr *net.TCPAddr) {
 	})
 }
 
+// OpenTSDBWithConfig is a blocking exporter function just like OpenTSDB,
+// but it takes a OpenTSDBConfig instead.
 func OpenTSDBWithConfig(c OpenTSDBConfig) {
 	for range time.Tick(c.FlushInterval) {
 		if err := openTSDB(&c); nil != err {

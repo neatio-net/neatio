@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlib/crypto-go"
 )
 
 // PendingOps tracks the operations(except balance related stuff since it's tracked in statedb) that need to be applied after consensus achieved.

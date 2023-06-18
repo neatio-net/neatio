@@ -27,15 +27,20 @@ import log "github.com/inconshreveable/log15"
 ## Examples
 
 ```go
+// all loggers can have key/value context
 srvlog := log.New("module", "app/server")
 
+// all log messages can have key/value context
 srvlog.Warn("abnormal conn rate", "rate", curRate, "low", lowRate, "high", highRate)
 
+// side loggers with inherited context
 connlog := srvlog.New("raddr", c.RemoteAddr())
 connlog.Info("connection open")
 
+// lazy evaluation
 connlog.Debug("ping remote", "latency", log.Lazy{pingRemote})
 
+// flexible configuration
 srvlog.SetHandler(log.MultiHandler(
     log.StreamHandler(os.Stderr, log.LogfmtFormat()),
     log.LvlFilterHandler(

@@ -6,12 +6,12 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block, error) {
@@ -40,12 +40,12 @@ func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block,
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.HexToAddress(genesisW.Coinbase),
+		Coinbase:   common.StringToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for k, v := range genesisW.Alloc {
-		genesis.Alloc[common.HexToAddress(k)] = v
+		genesis.Alloc[common.StringToAddress(k)] = v
 	}
 
 	return SetupGenesisBlockEx(chainDb, &genesis)
@@ -184,12 +184,12 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 		GasLimit:   genesisW.GasLimit,
 		Difficulty: genesisW.Difficulty,
 		Mixhash:    genesisW.Mixhash,
-		Coinbase:   common.HexToAddress(genesisW.Coinbase),
+		Coinbase:   common.StringToAddress(genesisW.Coinbase),
 		Alloc:      GenesisAlloc{},
 	}
 
 	for i, v := range genesisW.Alloc {
-		genesis.Alloc[common.HexToAddress(i)] = v
+		genesis.Alloc[common.StringToAddress(i)] = v
 	}
 
 	return &genesis
@@ -197,32 +197,30 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{
 	"config": {
-			"neatChainId": "neatio",
-			"chainId": 515,
+			"NeatChainId": "neatio",
+			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
-			"petersburgBlock": 0,
-			"istanbulBlock": 0,
 			"neatcon": {
 					"epoch": 30000,
 					"policy": 0
 			}
 	},
-	"nonce": "0x0",
-	"timestamp": "0x6264ddcb",
+	"nonce": "0xdeadbeefdeadbeef",
+	"timestamp": "0x6156bc27",
 	"extraData": "0x",
-	"gasLimit": "0xe0000000",
+	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "0x0000000000000000000000000000000000000000",
+	"coinbase": "NEATioBlockchainsGenesisCoinbase",
 	"alloc": {
-			"03ba7541d4484155c7d08b398d6ade9f34bd8363": {
-					"balance": "0x492bb173ae3d8b5300000",
-					"amount": "0xa968163f0a57b400000"
+			"NEAThqiY535HtJxfD84ixftPijPqormo": {
+					"balance": "0x3ee1186f11c064cc00000",
+					"amount": "0x104e2da94483f6200000"
 			}
 	},
 	"number": "0x0",
@@ -232,32 +230,30 @@ var DefaultMainnetGenesisJSON = `{
 
 var DefaultTestnetGenesisJSON = `{
 	"config": {
-			"neatChainId": "neatio",
-			"chainId": 515,
+			"NeatChainId": "neatio",
+			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
 			"eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 			"eip155Block": 0,
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
-			"petersburgBlock": 0,
-			"istanbulBlock": 0,
 			"neatcon": {
 					"epoch": 30000,
 					"policy": 0
 			}
 	},
-	"nonce": "0x0",
-	"timestamp": "0x62579611",
+	"nonce": "0xdeadbeefdeadbeef",
+	"timestamp": "0x6127cacf",
 	"extraData": "0x",
-	"gasLimit": "0xe0000000",
+	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-	"coinbase": "0x0000000000000000000000000000000000000000",
+	"coinbase": "NEATioBlockchainsGenesisCoinbase",
 	"alloc": {
-			"a67175cdaf47b91f2aa332d8ec44409a4890f0c4": {
-					"balance": "0x31729a3b22ff18d800000",
-					"amount": "0xa968163f0a57b400000"
+			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
+					"balance": "0x3ee1186f11c064cc00000",
+					"amount": "0x104e2da94483f6200000"
 			}
 	},
 	"number": "0x0",

@@ -1,3 +1,19 @@
+// Copyright 2015 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package miner
 
 import (
@@ -5,10 +21,10 @@ import (
 
 	"sync/atomic"
 
-	"github.com/neatio-network/neatio/chain/consensus"
-	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/consensus"
+	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
 )
 
 type CpuAgent struct {
@@ -22,7 +38,7 @@ type CpuAgent struct {
 	chain  consensus.ChainReader
 	engine consensus.Engine
 
-	isMining int32
+	isMining int32 // isMining indicates whether the agent is currently mining
 
 	logger log.Logger
 }
@@ -43,11 +59,11 @@ func (self *CpuAgent) SetReturnCh(ch chan<- *Result) { self.returnCh = ch }
 
 func (self *CpuAgent) Stop() {
 	if !atomic.CompareAndSwapInt32(&self.isMining, 1, 0) {
-		return
+		return // agent already stopped
 	}
 	self.stop <- struct{}{}
 done:
-
+	// Empty work channel
 	for {
 		select {
 		case <-self.workCh:
@@ -59,7 +75,7 @@ done:
 
 func (self *CpuAgent) Start() {
 	if !atomic.CompareAndSwapInt32(&self.isMining, 0, 1) {
-		return
+		return // agent already started
 	}
 	go self.update()
 }
@@ -92,10 +108,10 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 	if result, err := self.engine.Seal(self.chain, work.Block, stop); result != nil {
 		switch result := result.(type) {
 		case *types.Block:
-			self.logger.Info("Successfully minted new block.")
+			self.logger.Info("Successfully sealed new block.", "New height", result.Number())
 			self.returnCh <- &Result{Work: work, Block: result}
 		case *ntcTypes.IntermediateBlockResult:
-
+			//self.logger.Info("v Successfully sealed new block.", "New height", result.Block.Number())
 			self.returnCh <- &Result{Intermediate: result}
 		}
 
@@ -103,7 +119,7 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 		if err != nil {
 			self.logger.Warn("Block sealing failed", "err", err)
 		}
-		// self.logger.Warn("Block sealing aborted")
+		self.logger.Warn("Block sealing aborted")
 		self.returnCh <- nil
 	}
 }

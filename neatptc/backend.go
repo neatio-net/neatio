@@ -8,31 +8,31 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/neatio-network/neatio/chain/accounts"
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon"
-	ntcBackend "github.com/neatio-network/neatio/chain/consensus/neatcon"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/bloombits"
-	"github.com/neatio-network/neatio/chain/core/datareduction"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/core/vm"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/internal/neatapi"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/neatptc/filters"
-	"github.com/neatio-network/neatio/neatptc/gasprice"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/event"
-	"github.com/neatio-network/neatio/utilities/miner"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/neatlab/neatio/chain/accounts"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/consensus/neatcon"
+	ntcBackend "github.com/neatlab/neatio/chain/consensus/neatcon"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/bloombits"
+	"github.com/neatlab/neatio/chain/core/datareduction"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/vm"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/internal/neatapi"
+	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/neatptc/downloader"
+	"github.com/neatlab/neatio/neatptc/filters"
+	"github.com/neatlab/neatio/neatptc/gasprice"
+	"github.com/neatlab/neatio/network/node"
+	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatlab/neatio/utilities/miner"
+	"github.com/neatlab/neatio/utilities/rlp"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -97,13 +97,7 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	if _, ok := genesisErr.(*params.ConfigCompatError); genesisErr != nil && !ok {
 		return nil, genesisErr
 	}
-
-	chainConfig.ConstantinopleBlock = big.NewInt(0)
-	chainConfig.PetersburgBlock = big.NewInt(0)
-	chainConfig.IstanbulBlock = big.NewInt(0)
-
 	chainConfig.ChainLogger = logger
-	logger.Info("Initialised chain configuration", "config", chainConfig)
 
 	neatChain := &NeatIO{
 		config:         config,
@@ -127,7 +121,7 @@ func New(ctx *node.ServiceContext, config *Config, cliCtx *cli.Context,
 	if bcVersion != nil {
 		dbVer = fmt.Sprintf("%d", *bcVersion)
 	}
-	logger.Info("Initialising NeatIO protocol", "versions", neatChain.engine.Protocol().Versions, "network", config.NetworkId, "dbversion", dbVer)
+	logger.Info("Initialising Neatio protocol", "Network", chainConfig.NeatChainId)
 
 	if !config.SkipBcVersionCheck {
 		if bcVersion != nil && *bcVersion > core.BlockChainVersion {
@@ -316,15 +310,10 @@ func (s *NeatIO) Coinbase() (eb common.Address, err error) {
 			}
 		}
 	}
-	return common.Address{}, fmt.Errorf("etherbase must be explicitly specified")
+	return common.Address{}, fmt.Errorf("Base address must be explicitly specified")
 }
 
 func (self *NeatIO) SetCoinbase(coinbase common.Address) {
-
-	if _, ok := self.engine.(consensus.NeatCon); ok {
-		log.Error("Cannot set etherbase in NeatCon consensus")
-		return
-	}
 
 	self.lock.Lock()
 	self.coinbase = coinbase
@@ -338,14 +327,14 @@ func (s *NeatIO) StartMining(local bool) error {
 	if neatcon, ok := s.engine.(consensus.NeatCon); ok {
 		eb = neatcon.PrivateValidator()
 		if (eb == common.Address{}) {
-			log.Error("Cannot start mining without private validator")
+			log.Error("Cannot start minting without private validator")
 			return errors.New("private validator file missing")
 		}
 	} else {
 		_, err := s.Coinbase()
 		if err != nil {
-			log.Error("Cannot start mining without etherbase", "err", err)
-			return fmt.Errorf("etherbase missing: %v", err)
+			log.Error("Cannot start mining without base address", "err", err)
+			return fmt.Errorf("base address missing: %v", err)
 		}
 	}
 

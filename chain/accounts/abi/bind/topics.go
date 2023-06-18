@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatlab/neatio/chain/accounts/abi"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/crypto"
 )
 
 func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {
@@ -22,7 +22,7 @@ func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {
 			case common.Hash:
 				copy(topic[:], rule[:])
 			case common.Address:
-				copy(topic[common.HashLength-common.AddressLength:], rule[:])
+				copy(topic[common.HashLength-common.NEATAddressLength:], rule[:])
 			case *big.Int:
 				blob := rule.Bytes()
 				copy(topic[common.HashLength-len(blob):], blob)
@@ -141,7 +141,7 @@ func parseTopics(out interface{}, fields abi.Arguments, topics []common.Hash) er
 
 			case reflectAddress:
 				var addr common.Address
-				copy(addr[:], topics[0][common.HashLength-common.AddressLength:])
+				copy(addr[:], topics[0][common.HashLength-common.NEATAddressLength:])
 				field.Set(reflect.ValueOf(addr))
 
 			case reflectBigInt:
@@ -189,7 +189,7 @@ func parseTopicsIntoMap(out map[string]interface{}, fields abi.Arguments, topics
 			out[arg.Name] = abi.ReadInteger(arg.Type.T, arg.Type.Kind, topics[0].Bytes())
 		case abi.AddressTy:
 			var addr common.Address
-			copy(addr[:], topics[0][common.HashLength-common.AddressLength:])
+			copy(addr[:], topics[0][common.HashLength-common.NEATAddressLength:])
 			out[arg.Name] = addr
 		case abi.HashTy:
 			out[arg.Name] = topics[0]

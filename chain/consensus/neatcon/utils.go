@@ -8,8 +8,8 @@ import (
 
 	"gopkg.in/urfave/cli.v1"
 
-	cfg "github.com/neatio-network/config-go"
-	tmcfg "github.com/neatio-network/neatio/chain/consensus/neatcon/config/neatcon"
+	tmcfg "github.com/neatlab/neatio/chain/consensus/neatcon/config/neatcon"
+	cfg "github.com/neatlib/config-go"
 )
 
 func GetNeatConConfig(chainId string, ctx *cli.Context) cfg.Config {
@@ -30,7 +30,7 @@ func HomeDir() string {
 }
 
 func DefaultDataDir() string {
-
+	// Try to place the data folder in the user's home dir
 	home := HomeDir()
 	if home != "" {
 		if runtime.GOOS == "windows" {
@@ -39,7 +39,7 @@ func DefaultDataDir() string {
 			return filepath.Join(home, ".neatio")
 		}
 	}
-
+	// As we cannot guess a stable location, return empty and handle later
 	return ""
 }
 

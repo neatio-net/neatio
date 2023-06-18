@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/network/p2p/discover"
 )
 
 type TestPeer interface {

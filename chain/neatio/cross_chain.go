@@ -11,26 +11,26 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/neatio-network/crypto-go"
-	dbm "github.com/neatio-network/db-go"
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/chain/trie"
-	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
-	"github.com/neatio-network/neatio/neatcli"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/neatptc"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/neatlab/neatio/chain/consensus"
+	"github.com/neatlab/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatlab/neatio/chain/core"
+	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatlab/neatio/chain/core/state"
+	"github.com/neatlab/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/chain/trie"
+	neatAbi "github.com/neatlab/neatio/neatabi/abi"
+	"github.com/neatlab/neatio/neatcli"
+	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatlab/neatio/neatptc"
+	"github.com/neatlab/neatio/network/node"
+	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatlib/crypto-go"
+	dbm "github.com/neatlib/db-go"
 )
 
 type CrossChainHelper struct {
@@ -389,13 +389,6 @@ func (cch *CrossChainHelper) VerifySideChainProofData(bs []byte) error {
 		if epoch == nil {
 			return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 		}
-
-		if epoch.Number > ci.EpochNumber {
-			ci.EpochNumber = epoch.Number
-			ci.Epoch = epoch
-			core.SaveChainInfo(cch.chainInfoDB, ci)
-		}
-
 		valSet := epoch.Validators
 		if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 			return errors.New("inconsistent validator set")
@@ -520,13 +513,6 @@ func (cch *CrossChainHelper) ValidateTX3ProofData(proofData *types.TX3ProofData)
 	if epoch == nil {
 		return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 	}
-
-	if epoch.Number > ci.EpochNumber {
-		ci.EpochNumber = epoch.Number
-		ci.Epoch = epoch
-		core.SaveChainInfo(cch.chainInfoDB, ci)
-	}
-
 	valSet := epoch.Validators
 	if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 		return errors.New("inconsistent validator set")

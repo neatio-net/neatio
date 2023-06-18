@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb/client"
-	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/neatlab/neatio/utilities/metrics"
 )
 
 type reporter struct {
@@ -26,10 +26,12 @@ type reporter struct {
 	cache map[string]int64
 }
 
+// InfluxDB starts a InfluxDB reporter which will post the from the given metrics.Registry at each d interval.
 func InfluxDB(r metrics.Registry, d time.Duration, url, database, username, password, namespace string) {
 	InfluxDBWithTags(r, d, url, database, username, password, namespace, nil)
 }
 
+// InfluxDBWithTags starts a InfluxDB reporter which will post the from the given metrics.Registry at each d interval with the specified tags
 func InfluxDBWithTags(r metrics.Registry, d time.Duration, url, database, username, password, namespace string, tags map[string]string) {
 	u, err := uurl.Parse(url)
 	if err != nil {

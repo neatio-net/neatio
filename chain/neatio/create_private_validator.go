@@ -5,13 +5,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/utils"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlab/neatio/chain/consensus/neatcon/types"
+	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatlab/neatio/params"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/utils"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -51,7 +51,7 @@ func CreatePrivateValidatorCmd(ctx *cli.Context) error {
 		panic(err)
 	}
 
-	validator := types.GenPrivValidatorKey(common.HexToAddress(address))
+	validator := types.GenPrivValidatorKey(common.StringToAddress(address))
 
 	consolePrivVal = &PrivValidatorForConsole{
 		Address: validator.Address.String(),

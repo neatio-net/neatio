@@ -4,24 +4,30 @@ import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
-
+	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
-
+	"hash"
 	"io"
 	"io/ioutil"
 	"math/big"
 	"os"
+	"strings"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatio-network/neatio/utilities/rlp"
-
+	"github.com/btcsuite/btcutil/base58"
+	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatlab/neatio/utilities/rlp"
+	"golang.org/x/crypto/ripemd160"
 	"golang.org/x/crypto/sha3"
 )
 
 var (
+	pubkeyVersion  = byte(0x00)
+	scriptVersion  = byte(0x42)
+	addressPrefix  = "NEA"
+	bs58Str        = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 	secp256k1N, _  = new(big.Int).SetString("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16)
 	secp256k1halfN = new(big.Int).Div(secp256k1N, big.NewInt(2))
 )
@@ -55,11 +61,11 @@ func Keccak512(data ...[]byte) []byte {
 
 func CreateAddress(b common.Address, nonce uint64) common.Address {
 	data, _ := rlp.EncodeToBytes([]interface{}{b, nonce})
-	return common.BytesToAddress(Keccak256(data)[12:])
+	return common.StringToAddress(NewNEATScriptAddr(data))
 }
 
-func CreateAddress2(b common.Address, salt [32]byte, initHash []byte) common.Address {
-	return common.BytesToAddress(Keccak256([]byte{0xff}, b.Bytes(), salt[:], initHash)[12:])
+func CreateAddress2(b common.Address, salt [32]byte, inithash []byte) common.Address {
+	return common.BytesToAddress([]byte(NewNEATScriptAddr(Keccak256([]byte{0xff}, b.Bytes(), salt[:], inithash))))
 }
 
 func ToECDSA(d []byte) (*ecdsa.PrivateKey, error) {
@@ -122,6 +128,7 @@ func FromECDSAPub(pub *ecdsa.PublicKey) []byte {
 		return nil
 	}
 	return elliptic.Marshal(S256(), pub.X, pub.Y)
+
 }
 
 func HexToECDSA(hexkey string) (*ecdsa.PrivateKey, error) {
@@ -173,11 +180,58 @@ func ValidateSignatureValues(v byte, r, s *big.Int, homestead bool) bool {
 
 func PubkeyToAddress(p ecdsa.PublicKey) common.Address {
 	pubBytes := FromECDSAPub(&p)
-	return common.BytesToAddress(Keccak256(pubBytes[1:])[12:])
+	return common.StringToAddress(NewNEATScriptAddr(pubBytes))
 }
 
 func zeroBytes(bytes []byte) {
 	for i := range bytes {
 		bytes[i] = 0
 	}
+}
+
+func NewNEATPubkeyAddr(pubkey []byte) string {
+	input := Hash160(pubkey)
+
+	return encodeAddress(input, pubkeyVersion)
+}
+
+func NewNEATScriptAddr(script []byte) string {
+	input := Hash160(script)
+	strArray := strings.Split(encodeAddress(input, scriptVersion), "")
+	return addressPrefix + strings.Join(strArray[:29], "")
+}
+
+func ValidateNEATAddr(input string) bool {
+	inputByte := []byte(input)
+	if len(inputByte) != 32 {
+		return false
+	}
+
+	if inputByte[0] != 'N' || inputByte[1] != 'E' || inputByte[2] != 'A' || inputByte[3] != 'T' {
+		return false
+	}
+
+	inputArray := strings.Split(input, "")[3:]
+
+	for _, v := range inputArray {
+		if !strings.Contains(bs58Str, v) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func encodeAddress(hash160 []byte, version byte) string {
+
+	return base58.CheckEncode(hash160, version)
+}
+
+func calcHash(buf []byte, hasher hash.Hash) []byte {
+	hasher.Write(buf)
+	return hasher.Sum(nil)
+}
+
+func Hash160(buf []byte) []byte {
+	return calcHash(calcHash(buf, sha256.New()), ripemd160.New())
 }

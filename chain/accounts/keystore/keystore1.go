@@ -1,7 +1,7 @@
 package keystore
 
 import (
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 func KeyFileName(keyAddr common.Address) string {

@@ -3,7 +3,7 @@ package downloader
 import (
 	"fmt"
 
-	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatlab/neatio/chain/core/types"
 )
 
 type peerDropFn func(id string)

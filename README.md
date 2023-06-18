@@ -12,7 +12,7 @@ You can download and install **Go** from the official guide from the [Go website
 
 After all the dependencies are installed and the $PATH is set, open a terminal and run:
 ```shell
-git clone -b main https://github.com/neatio-network/neatio.git
-cd neatio
-make neatio
+git clone https://github.com/neatio-network/neatio.git && cd neatio && make neatio
 ```
+That's it!
+

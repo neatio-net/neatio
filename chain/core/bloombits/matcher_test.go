@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 const testSectionSize = 4096

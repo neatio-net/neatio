@@ -20,10 +20,13 @@ const (
 	termMsgJust    = 40
 )
 
+// locationTrims are trimmed for display to avoid unwieldy log lines.
 var locationTrims = []string{
-	"github.com/neatio-network/neatio/",
+	"github.com/neatlab/neatio/",
 }
 
+// PrintOrigins sets or unsets log location (file:line) printing for terminal
+// format output.
 func PrintOrigins(print bool) {
 	if print {
 		atomic.StoreUint32(&locationEnabled, 1)
@@ -32,18 +35,27 @@ func PrintOrigins(print bool) {
 	}
 }
 
+// locationEnabled is an atomic flag controlling whether the terminal formatter
+// should append the log locations too when printing entries.
 var locationEnabled uint32
 
+// locationLength is the maxmimum path length encountered, which all logs are
+// padded to to aid in alignment.
 var locationLength uint32
 
+// fieldPadding is a global map with maximum field value lengths seen until now
+// to allow padding log contexts in a bit smarter way.
 var fieldPadding = make(map[string]int)
 
+// fieldPaddingLock is a global mutex protecting the field padding map.
 var fieldPaddingLock sync.RWMutex
 
 type Format interface {
 	Format(r *Record) []byte
 }
 
+// FormatFunc returns a new Format object which uses
+// the given function to perform record formatting.
 func FormatFunc(f func(*Record) []byte) Format {
 	return formatFunc(f)
 }
@@ -54,10 +66,23 @@ func (f formatFunc) Format(r *Record) []byte {
 	return f(r)
 }
 
+// TerminalStringer is an analogous interface to the stdlib stringer, allowing
+// own types to have custom shortened serialization formats when printed to the
+// screen.
 type TerminalStringer interface {
 	TerminalString() string
 }
 
+// TerminalFormat formats log records optimized for human readability on
+// a terminal with color-coded level output and terser human friendly timestamp.
+// This format should only be used for interactive programs or while developing.
+//
+//     [LEVEL] [TIME] MESAGE key=value key=value ...
+//
+// Example:
+//
+//     [DBUG] [May 16 20:58:45] remove route ns=haproxy addr=127.0.0.1:50002
+//
 func TerminalFormat(usecolor bool) Format {
 	return FormatFunc(func(r *Record) []byte {
 		var color = 0
@@ -81,12 +106,12 @@ func TerminalFormat(usecolor bool) Format {
 		b := &bytes.Buffer{}
 		lvl := r.Lvl.AlignedString()
 		if atomic.LoadUint32(&locationEnabled) != 0 {
-
+			// Log origin printing was requested, format the location path and line number
 			location := fmt.Sprintf("%+v", r.Call)
 			for _, prefix := range locationTrims {
 				location = strings.TrimPrefix(location, prefix)
 			}
-
+			// Maintain the maximum location length for fancyer alignment
 			align := int(atomic.LoadUint32(&locationLength))
 			if align < len(location) {
 				align = len(location)
@@ -94,6 +119,7 @@ func TerminalFormat(usecolor bool) Format {
 			}
 			padding := strings.Repeat(" ", align-len(location))
 
+			// Assemble and print the log heading
 			if color > 0 {
 				fmt.Fprintf(b, "\x1b[%dm%s\x1b[0m[%s|%s]%s %s ", color, lvl, r.Time.Format(termTimeFormat), location, padding, r.Msg)
 			} else {
@@ -106,17 +132,22 @@ func TerminalFormat(usecolor bool) Format {
 				fmt.Fprintf(b, "%s[%s] %s ", lvl, r.Time.Format(termTimeFormat), r.Msg)
 			}
 		}
-
+		// try to justify the log output for short messages
 		length := utf8.RuneCountInString(r.Msg)
 		if len(r.Ctx) > 0 && length < termMsgJust {
 			b.Write(bytes.Repeat([]byte{' '}, termMsgJust-length))
 		}
-
+		// print the keys logfmt style
 		logfmt(b, r.Ctx, color, true)
 		return b.Bytes()
 	})
 }
 
+// LogfmtFormat prints records in logfmt format, an easy machine-parseable but human-readable
+// format for key/value pairs.
+//
+// For more details see: http://godoc.org/github.com/kr/logfmt
+//
 func LogfmtFormat() Format {
 	return FormatFunc(func(r *Record) []byte {
 		common := []interface{}{r.KeyNames.Time, r.Time, r.KeyNames.Lvl, r.Lvl, r.KeyNames.Msg, r.Msg}
@@ -138,6 +169,7 @@ func logfmt(buf *bytes.Buffer, ctx []interface{}, color int, term bool) {
 			k, v = errorKey, formatLogfmtValue(k, term)
 		}
 
+		// XXX: we should probably check that all of your key bytes aren't invalid
 		fieldPaddingLock.RLock()
 		padding := fieldPadding[k]
 		fieldPaddingLock.RUnlock()
@@ -164,10 +196,15 @@ func logfmt(buf *bytes.Buffer, ctx []interface{}, color int, term bool) {
 	buf.WriteByte('\n')
 }
 
+// JSONFormat formats log records as JSON objects separated by newlines.
+// It is the equivalent of JSONFormatEx(false, true).
 func JSONFormat() Format {
 	return JSONFormatEx(false, true)
 }
 
+// JSONFormatOrderedEx formats log records as JSON arrays. If pretty is true,
+// records will be pretty-printed. If lineSeparated is true, records
+// will be logged with a new line between each record.
 func JSONFormatOrderedEx(pretty, lineSeparated bool) Format {
 	jsonMarshal := json.Marshal
 	if pretty {
@@ -207,6 +244,9 @@ func JSONFormatOrderedEx(pretty, lineSeparated bool) Format {
 	})
 }
 
+// JSONFormatEx formats log records as JSON objects. If pretty is true,
+// records will be pretty-printed. If lineSeparated is true, records
+// will be logged with a new line between each record.
 func JSONFormatEx(pretty, lineSeparated bool) Format {
 	jsonMarshal := json.Marshal
 	if pretty {
@@ -282,18 +322,21 @@ func formatJSONValue(value interface{}) interface{} {
 	}
 }
 
+// formatValue formats a value for serialization
 func formatLogfmtValue(value interface{}, term bool) string {
 	if value == nil {
 		return "nil"
 	}
 
 	if t, ok := value.(time.Time); ok {
-
+		// Performance optimization: No need for escaping since the provided
+		// timeFormat doesn't have any escape characters, and escaping is
+		// expensive.
 		return t.Format(timeFormat)
 	}
 	if term {
 		if s, ok := value.(TerminalStringer); ok {
-
+			// Custom terminal stringer provided, use that
 			return escapeString(s.TerminalString())
 		}
 	}

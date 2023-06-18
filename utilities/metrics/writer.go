@@ -7,12 +7,16 @@ import (
 	"time"
 )
 
+// Write sorts writes each metric in the given registry periodically to the
+// given io.Writer.
 func Write(r Registry, d time.Duration, w io.Writer) {
 	for range time.Tick(d) {
 		WriteOnce(r, w)
 	}
 }
 
+// WriteOnce sorts and writes metrics in the given registry to the given
+// io.Writer.
 func WriteOnce(r Registry, w io.Writer) {
 	var namedMetrics namedMetricSlice
 	r.Each(func(name string, i interface{}) {
@@ -84,6 +88,7 @@ type namedMetric struct {
 	m    interface{}
 }
 
+// namedMetricSlice is a slice of namedMetrics that implements sort.Interface.
 type namedMetricSlice []namedMetric
 
 func (nms namedMetricSlice) Len() int { return len(nms) }

@@ -29,7 +29,7 @@ import (
 	"net"
 	"sort"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatlab/neatio/utilities/common"
 )
 
 const (
