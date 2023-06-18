@@ -1,7 +1,7 @@
 package downloader
 
 import (
-	"github.com/neatlab/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/metrics"
 )
 
 var (

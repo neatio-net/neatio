@@ -9,16 +9,16 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/network/rpc"
 
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/accounts/keystore"
-	"github.com/neatlab/neatio/chain/accounts/usbwallet"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/p2p/discover"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/accounts/keystore"
+	"github.com/neatio-network/neatio/chain/accounts/usbwallet"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 const (

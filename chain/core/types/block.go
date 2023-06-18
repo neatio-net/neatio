@@ -12,11 +12,11 @@ import (
 
 	"bytes"
 
-	"github.com/neatlab/neatio/chain/trie"
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/chain/trie"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 

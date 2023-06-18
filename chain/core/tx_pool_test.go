@@ -26,13 +26,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 // testTxPoolConfig is a transaction pool configuration without stateful disk

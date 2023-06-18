@@ -7,9 +7,9 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/neatlab/neatio/chain/accounts/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/accounts/abi"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 func makeTopics(query ...[]interface{}) ([][]common.Hash, error) {

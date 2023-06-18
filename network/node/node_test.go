@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatlab/neatio/network/p2p"
-	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 var (

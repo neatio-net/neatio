@@ -6,8 +6,8 @@ import (
 	"io"
 	"sort"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // ----- banned Set

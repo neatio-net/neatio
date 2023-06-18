@@ -21,11 +21,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // errNoActiveJournal is returned if a transaction is attempted to be inserted

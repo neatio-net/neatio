@@ -27,19 +27,19 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/neatlab/neatio/chain/consensus"
-	neatptc "github.com/neatlab/neatio/neatptc"
+	"github.com/neatio-network/neatio/chain/consensus"
+	neatptc "github.com/neatio-network/neatio/neatptc"
 	"gopkg.in/urfave/cli.v1"
 
-	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/network/node"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/chain/core"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/network/node"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 const (

@@ -25,11 +25,11 @@ import (
 	"time"
 
 	"github.com/allegro/bigcache"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/metrics"
-	"github.com/neatlab/neatio/utilities/rlp"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 var (

@@ -9,9 +9,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/neatlab/neatio/params"
+	"github.com/neatio-network/neatio/params"
 
-	"github.com/neatlab/neatio/utilities/utils"
+	"github.com/neatio-network/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -23,7 +23,7 @@ var bugCommand = cli.Command{
 	Category:  "MISCELLANEOUS COMMANDS",
 }
 
-const issueUrl = "https://github.com/neatlab/neatio/issues/new"
+const issueUrl = "https://github.com/neatio-network/neatio/issues/new"
 
 func reportBug(ctx *cli.Context) error {
 	var buff bytes.Buffer

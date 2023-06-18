@@ -27,7 +27,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common/math"
 	"gopkg.in/urfave/cli.v1"
 )
 

@@ -3,7 +3,7 @@ package consensus
 import (
 	"time"
 
-	"github.com/neatlab/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log"
 
 	. "github.com/neatlib/common-go"
 )

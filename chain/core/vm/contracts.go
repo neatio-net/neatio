@@ -21,11 +21,11 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/crypto/bn256"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/crypto/bn256"
 	"golang.org/x/crypto/ripemd160"
 )
 

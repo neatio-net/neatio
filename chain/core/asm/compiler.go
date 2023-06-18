@@ -23,8 +23,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 // Compiler contains information about the parsed source

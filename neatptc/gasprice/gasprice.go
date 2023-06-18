@@ -6,11 +6,11 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/internal/neatapi"
-	"github.com/neatlab/neatio/network/rpc"
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/internal/neatapi"
+	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 var maxPrice = big.NewInt(5000 * params.GWei)

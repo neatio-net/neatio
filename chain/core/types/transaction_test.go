@@ -24,12 +24,12 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 
-	neatAbi "github.com/neatlab/neatio/neatabi/abi"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/rlp"
+	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/rlp"
 )
 
 // The values in those tests are from the Transaction Tests

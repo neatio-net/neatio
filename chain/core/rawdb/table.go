@@ -17,7 +17,7 @@
 package rawdb
 
 import (
-	"github.com/neatlab/neatio/neatdb"
+	"github.com/neatio-network/neatio/neatdb"
 )
 
 // table is a wrapper around a database that prefixes each key access with a pre-

@@ -34,7 +34,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/neatlab/neatio/network/p2p"
+	"github.com/neatio-network/neatio/network/p2p"
 )
 
 // error codes used by this  protocol scheme

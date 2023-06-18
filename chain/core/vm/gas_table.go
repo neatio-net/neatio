@@ -17,9 +17,9 @@
 package vm
 
 import (
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 // memoryGasCosts calculates the quadratic gas for memory expansion. It does so

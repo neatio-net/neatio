@@ -23,13 +23,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatlab/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
 
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 // ChainIndexerBackend defines the methods needed to process chain segments in

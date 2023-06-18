@@ -19,8 +19,8 @@ package vm
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 // calculates the memory size required for a step

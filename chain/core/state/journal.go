@@ -19,7 +19,7 @@ package state
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 type journalEntry interface {

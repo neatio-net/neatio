@@ -26,11 +26,11 @@ import (
 	"time"
 
 	"github.com/karalabe/hid"
-	"github.com/neatlab/neatio"
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 // Maximum time between wallet health checks to detect USB unplugs.

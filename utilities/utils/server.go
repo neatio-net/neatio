@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/network/node"
-	"github.com/neatlab/neatio/network/rpc"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/network/node"
+	"github.com/neatio-network/neatio/network/rpc"
 	"gopkg.in/urfave/cli.v1"
 )
 

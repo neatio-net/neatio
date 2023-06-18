@@ -20,9 +20,9 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/neatlab/neatio/neatdb/memorydb"
+	"github.com/neatio-network/neatio/neatdb/memorydb"
 
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 // Tests that the node iterator indeed walks over the entire database contents.

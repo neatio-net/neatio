@@ -13,11 +13,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatlab/neatio/chain/accounts"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
-	"github.com/neatlab/neatio/utilities/event"
+	"github.com/neatio-network/neatio/chain/accounts"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/utilities/event"
 )
 
 var (

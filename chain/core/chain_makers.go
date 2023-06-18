@@ -20,13 +20,13 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/consensus"
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/neatdb"
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
+	"github.com/neatio-network/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/neatdb"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
 )
 
 // So we can deterministically seed different blockchains

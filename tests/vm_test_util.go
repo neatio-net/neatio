@@ -6,15 +6,15 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/chain/core/rawdb"
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
-	"github.com/neatlab/neatio/utilities/common/math"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/core"
+	"github.com/neatio-network/neatio/chain/core/rawdb"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 type VMTest struct {

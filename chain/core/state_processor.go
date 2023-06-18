@@ -19,14 +19,14 @@ package core
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/consensus"
-	"github.com/neatlab/neatio/chain/core/state"
-	"github.com/neatlab/neatio/chain/core/types"
-	"github.com/neatlab/neatio/chain/core/vm"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/consensus"
+	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/neatio-network/neatio/chain/core/vm"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 // StateProcessor is a basic Processor, which takes care of transitioning

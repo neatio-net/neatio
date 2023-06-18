@@ -22,7 +22,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 )
 
 // API describes the set of methods offered over the RPC interface

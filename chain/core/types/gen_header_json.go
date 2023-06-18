@@ -7,8 +7,8 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatlab/neatio/utilities/common"
-	"github.com/neatlab/neatio/utilities/common/hexutil"
+	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/neatio-network/neatio/utilities/common/hexutil"
 )
 
 var _ = (*headerMarshaling)(nil)

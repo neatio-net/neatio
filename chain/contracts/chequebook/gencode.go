@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
+//go:build none
 // +build none
 
 // This program generates contract/code.go, which contains the chequebook code
@@ -23,8 +24,8 @@ package main
 import (
 	"math/big"
 
-	"github.com/neatlab/neatio/chain/core"
-	"github.com/neatlab/neatio/utilities/crypto"
+	"github.com/neatio-network/neatio/chain/core"
+	"github.com/neatio-network/neatio/utilities/crypto"
 )
 
 var (

@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/neatlab/neatio/params"
-	"github.com/neatlab/neatio/utilities/common/math"
+	"github.com/neatio-network/neatio/params"
+	"github.com/neatio-network/neatio/utilities/common/math"
 )
 
 // Config are the configuration options for the Interpreter

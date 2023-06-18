@@ -9,10 +9,10 @@ import (
 	"runtime"
 
 	colorable "github.com/mattn/go-colorable"
-	"github.com/neatlab/neatio/chain/log"
-	"github.com/neatlab/neatio/chain/log/term"
-	"github.com/neatlab/neatio/utilities/metrics"
-	"github.com/neatlab/neatio/utilities/metrics/exp"
+	"github.com/neatio-network/neatio/chain/log"
+	"github.com/neatio-network/neatio/chain/log/term"
+	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/neatio-network/neatio/utilities/metrics/exp"
 	"gopkg.in/urfave/cli.v1"
 )
 
