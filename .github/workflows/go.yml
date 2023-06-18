@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ testnet ]
+    branches: [ nio3dev ]
   pull_request:
-    branches: [ testnet ]
+    branches: [ nio3dev ]
 
 jobs:
 
