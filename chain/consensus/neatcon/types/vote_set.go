@@ -8,7 +8,7 @@ import (
 
 	"math/big"
 
-	. "github.com/neatlib/common-go"
+	. "github.com/nio-net/common"
 )
 
 /*

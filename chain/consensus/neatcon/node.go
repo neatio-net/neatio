@@ -11,9 +11,9 @@ import (
 	"github.com/neatio-network/neatio/chain/core"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/params"
-	cmn "github.com/neatlib/common-go"
 	cfg "github.com/neatlib/config-go"
 	dbm "github.com/neatlib/db-go"
+	cmn "github.com/nio-net/common"
 )
 
 type Node struct {

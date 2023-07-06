@@ -10,8 +10,8 @@ import (
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
 
 	"github.com/neatio-network/neatio/utilities/common"
-	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
+	. "github.com/nio-net/common"
 )
 
 var GenDocKey = []byte("GenDocKey")

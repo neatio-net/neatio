@@ -27,9 +27,9 @@ import (
 	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/utils"
-	cmn "github.com/neatlib/common-go"
 	cfg "github.com/neatlib/config-go"
 	dbm "github.com/neatlib/db-go"
+	cmn "github.com/nio-net/common"
 	"github.com/pkg/errors"
 )
 

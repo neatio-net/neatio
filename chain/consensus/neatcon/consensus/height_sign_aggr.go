@@ -6,7 +6,7 @@ import (
 
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
-	. "github.com/neatlib/common-go"
+	. "github.com/nio-net/common"
 )
 
 type RoundVoteSignAggr struct {

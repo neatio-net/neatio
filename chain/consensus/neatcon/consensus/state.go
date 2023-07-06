@@ -28,9 +28,9 @@ import (
 	"github.com/neatio-network/neatio/params"
 	"github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatio-network/neatio/utilities/rlp"
-	. "github.com/neatlib/common-go"
 	cfg "github.com/neatlib/config-go"
 	tmdcrypto "github.com/neatlib/crypto-go"
+	. "github.com/nio-net/common"
 )
 
 const ROUND_NOT_PROPOSED int = 0

@@ -681,8 +681,8 @@ github.com/nats-io/nkeys v0.1.3/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxzi
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
 github.com/neatlib/bls-go v1.1.0 h1:kNYzEbgDXJitJx61tJMbKrSQZuYOk0BXPm6qKTGO6U8=
 github.com/neatlib/bls-go v1.1.0/go.mod h1:476vz6rAuIIdnAHmdLPMa9XQ+fPSQQ9Q7BCddBm65I8=
-github.com/neatlib/common-go v1.1.0 h1:RpeGx1HV4Od8WwWdY8c4q8QeWNIonF0bhDEj1Z/RITA=
-github.com/neatlib/common-go v1.1.0/go.mod h1:y3fAUYVo8DToggLhf4AN9RpJe++X6KXZLfrE4c90tUk=
+github.com/nio-net/common v1.1.0 h1:RpeGx1HV4Od8WwWdY8c4q8QeWNIonF0bhDEj1Z/RITA=
+github.com/nio-net/common v1.1.0/go.mod h1:y3fAUYVo8DToggLhf4AN9RpJe++X6KXZLfrE4c90tUk=
 github.com/neatlib/config-go v1.1.0 h1:GdXWjVRsYEUXyzSSbgZmW292q5TTZPJ6z1lYx5FinbA=
 github.com/neatlib/config-go v1.1.0/go.mod h1:3nAT5TyeiUE+odFqJitYM1GvTTY0/owVH3UTAT4NRQU=
 github.com/neatlib/crypto-go v1.1.0 h1:dOioeehP7NuOuBg04p0XCVc2ydRP5GeCgNo6lq9/Fa0=

@@ -6,9 +6,9 @@ import (
 	"io"
 
 	"github.com/neatio-network/neatio/utilities/rlp"
-	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/wire-go"
+	. "github.com/nio-net/common"
 )
 
 var (

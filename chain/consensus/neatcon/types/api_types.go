@@ -5,8 +5,8 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
+	. "github.com/nio-net/common"
 )
 
 type EpochApi struct {

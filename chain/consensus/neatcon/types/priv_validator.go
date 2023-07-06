@@ -8,9 +8,9 @@ import (
 
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/bls-go"
-	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/wire-go"
+	. "github.com/nio-net/common"
 )
 
 type PrivValidator struct {

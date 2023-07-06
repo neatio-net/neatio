@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
-	. "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
+	. "github.com/nio-net/common"
 
 	"io"
 

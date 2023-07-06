@@ -30,7 +30,7 @@ require (
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
 	github.com/neatlib/bls-go v1.1.0
-	github.com/neatlib/common-go v1.1.0
+	github.com/nio-net/common v1.1.0
 	github.com/neatlib/config-go v1.1.0
 	github.com/neatlib/crypto-go v1.1.0
 	github.com/neatlib/data-go v1.1.0 // indirect

@@ -9,9 +9,9 @@ import (
 
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
-	cmn "github.com/neatlib/common-go"
 	"github.com/neatlib/crypto-go"
 	"github.com/neatlib/merkle-go"
+	cmn "github.com/nio-net/common"
 )
 
 // ValidatorSet represent a set of *Validator at a given height.

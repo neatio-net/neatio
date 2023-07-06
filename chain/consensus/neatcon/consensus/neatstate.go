@@ -9,7 +9,7 @@ import (
 	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/params"
-	cmn "github.com/neatlib/common-go"
+	cmn "github.com/nio-net/common"
 )
 
 func (bs *ConsensusState) GetChainReader() consss.ChainReader {
