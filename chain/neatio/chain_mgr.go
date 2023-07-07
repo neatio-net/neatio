@@ -21,7 +21,7 @@ import (
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatio-network/neatio/utilities/utils"
 	"github.com/neatlib/crypto-go"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 	"github.com/pkg/errors"
 	"gopkg.in/urfave/cli.v1"
 )

@@ -12,7 +12,7 @@ import (
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/params"
 	cfg "github.com/neatlib/config-go"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 	cmn "github.com/nio-net/common"
 )
 

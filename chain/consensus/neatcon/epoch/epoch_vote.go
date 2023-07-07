@@ -8,7 +8,7 @@ import (
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/db-go"
+	"github.com/nio-net/database"
 	"github.com/neatlib/wire-go"
 )
 

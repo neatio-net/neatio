@@ -12,7 +12,7 @@ import (
 	"github.com/neatio-network/neatio/neatcli"
 	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/crypto-go"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 )
 
 type TX3LocalCache interface {

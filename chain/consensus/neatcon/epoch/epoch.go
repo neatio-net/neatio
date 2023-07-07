@@ -8,7 +8,7 @@ import (
 	"github.com/neatio-network/neatio/chain/core/state"
 	"github.com/neatio-network/neatio/chain/log"
 	"github.com/neatio-network/neatio/utilities/common"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 	"github.com/neatlib/wire-go"
 
 	"math/big"

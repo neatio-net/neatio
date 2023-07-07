@@ -7,7 +7,7 @@ import (
 
 	ncTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	"github.com/neatio-network/neatio/chain/log"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 	"github.com/neatlib/wire-go"
 )
 

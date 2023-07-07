@@ -30,7 +30,7 @@ import (
 	"github.com/neatio-network/neatio/utilities/common/math"
 	"github.com/neatio-network/neatio/utilities/rlp"
 	"github.com/neatlib/crypto-go"
-	dbm "github.com/neatlib/db-go"
+	dbm "github.com/nio-net/database"
 )
 
 type CrossChainHelper struct {
