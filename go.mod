@@ -1,6 +1,6 @@
-module github.com/neatio-network/neatio
+module github.com/nio-net/neatio
 
-go 1.16
+go 1.21
 
 require (
 	github.com/allegro/bigcache v1.2.1
@@ -29,20 +29,20 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
-	github.com/neatlib/bls-go v1.1.0
-	github.com/nio-net/common v1.1.0
-	github.com/neatlib/config-go v1.1.0
-	github.com/neatlib/crypto-go v1.1.0
-	github.com/neatlib/data-go v1.1.0 // indirect
-	github.com/neatlib/db-go v1.1.0
-	github.com/neatlib/ed25519-go v1.1.0 // indirect
-	github.com/neatlib/events-go v1.1.0
-	github.com/neatlib/flock-go v1.1.0
-	github.com/neatlib/log15-go v1.1.0 // indirect
-	github.com/neatlib/logger-go v1.1.0 // indirect
-	github.com/neatlib/merkle-go v1.1.0
-	github.com/neatlib/set-go v1.1.0
-	github.com/neatlib/wire-go v1.1.0
+	github.com/nio-net/bls v1.0.0
+	github.com/nio-net/common v1.0.0
+	github.com/nio-net/config v1.0.0
+	github.com/nio-net/crypto v1.0.0
+	github.com/nio-net/data v1.0.0 // indirect
+	github.com/nio-net/db v1.0.0
+	github.com/nio-net/ed25519 v1.0.0 // indirect
+	github.com/nio-net/events v1.0.0
+	github.com/nio-net/flock v1.0.0
+	github.com/nio-net/log15 v1.0.0 // indirect
+	github.com/nio-net/logger v1.0.1 // indirect
+	github.com/nio-net/merkle v1.0.1
+	github.com/nio-net/set v1.0.1
+	github.com/nio-net/wire v1.0.0
 	github.com/nsf/termbox-go v1.1.1 // indirect
 	github.com/pborman/uuid v1.2.1
 	github.com/peterh/liner v1.2.1
