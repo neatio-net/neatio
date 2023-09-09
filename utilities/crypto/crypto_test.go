@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/btcsuite/btcutil/base58"
+	"github.com/btcsuite/btcd/btcutil/base58"
 	"github.com/nio-net/neatio/utilities/common/hexutil"
 
 	"github.com/nio-net/neatio/utilities/common"
