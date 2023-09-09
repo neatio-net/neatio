@@ -4,7 +4,7 @@ go 1.20
 require (
 	github.com/allegro/bigcache v1.2.1
 	github.com/aristanetworks/goarista v0.0.0-20210715113802-a1396632fc37
-	github.com/btcsuite/btcd v0.23.3
+        github.com/btcsuite/btcd v0.20.1-beta
 	github.com/cespare/cp v1.1.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/deckarep/golang-set v1.7.1
