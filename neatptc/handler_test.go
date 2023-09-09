@@ -7,16 +7,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/neatptc/downloader"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 func TestProtocolCompatibility(t *testing.T) {

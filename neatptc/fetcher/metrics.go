@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/nio-net/neatio/utilities/metrics"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 
-	"github.com/neatio-network/merkle-go"
+	"github.com/neatlib/merkle-go"
 )
 
 type Tx []byte

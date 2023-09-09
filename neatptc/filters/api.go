@@ -9,13 +9,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 var (
@@ -459,7 +459,7 @@ func (args *FilterCriteria) UnmarshalJSON(data []byte) error {
 
 func decodeAddress(s string) (common.Address, error) {
 	b, err := hexutil.Decode(s)
-	if err == nil && len(b) != common.AddressLength {
+	if err == nil && len(b) != common.NEATAddressLength {
 		err = fmt.Errorf("hex has invalid length %d after decoding", len(b))
 	}
 	return common.BytesToAddress(b), err

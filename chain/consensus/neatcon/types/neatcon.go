@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/neatio-network/merkle-go"
-	neatTypes "github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/merkle-go"
+	"github.com/neatlib/wire-go"
+	neatTypes "github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 type NeatConExtra struct {
@@ -63,6 +63,7 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 	var ncExtra = NeatConExtra{}
 	err := wire.ReadBinaryBytes(h.Extra[:], &ncExtra)
+
 	if err != nil {
 		return nil, err
 	}
@@ -71,14 +72,13 @@ func ExtractNeatConExtra(h *neatTypes.Header) (*NeatConExtra, error) {
 
 func (te *NeatConExtra) String() string {
 	str := fmt.Sprintf(`Network info: {
-ChainID:     %s
-EpochNumber: %v
-Height:      %v
-Time:        %v
+ChainID:   %s
+EpochNo.:  %v
+Height:    %v
+Timestamp: %v
 
-EpochBytes: length %v
 }
-`, te.ChainID, te.EpochNumber, te.Height, te.Time, len(te.EpochBytes))
+`, te.ChainID, te.EpochNumber, te.Height, te.Time)
 	return str
 }
 

@@ -5,10 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"reflect"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type ABI struct {
@@ -29,7 +27,9 @@ func JSON(reader io.Reader) (ABI, error) {
 }
 
 func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
+
 	if name == "" {
+
 		arguments, err := abi.Constructor.Inputs.Pack(args...)
 		if err != nil {
 			return nil, err
@@ -46,10 +46,12 @@ func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return append(method.ID(), arguments...), nil
 }
 
 func (abi ABI) Unpack(v interface{}, name string, data []byte) (err error) {
+
 	if method, ok := abi.Methods[name]; ok {
 		if len(data)%32 != 0 {
 			return fmt.Errorf("abi: improperly formatted output: %s - Bytes: [%+v]", string(data), data)
@@ -63,6 +65,7 @@ func (abi ABI) Unpack(v interface{}, name string, data []byte) (err error) {
 }
 
 func (abi ABI) UnpackIntoMap(v map[string]interface{}, name string, data []byte) (err error) {
+
 	if method, ok := abi.Methods[name]; ok {
 		if len(data)%32 != 0 {
 			return fmt.Errorf("abi: improperly formatted output")
@@ -108,6 +111,7 @@ func (abi *ABI) UnmarshalJSON(data []byte) error {
 			abi.Constructor = Method{
 				Inputs: field.Inputs,
 			}
+
 		case "function", "":
 			name := field.Name
 			_, ok := abi.Methods[name]
@@ -161,21 +165,4 @@ func (abi *ABI) EventByID(topic common.Hash) (*Event, error) {
 		}
 	}
 	return nil, fmt.Errorf("no event with id: %#x", topic.Hex())
-}
-
-var revertSelector = crypto.Keccak256([]byte("Error(string)"))[:4]
-
-func UnpackRevert(data []byte) (string, error) {
-	if len(data) < 4 {
-		return "", fmt.Errorf("invalid data for unpacking")
-	}
-	if !bytes.Equal(data[:4], revertSelector) {
-		return "", fmt.Errorf("invalid data for unpacking")
-	}
-	typ, _ := NewType("string", "", nil)
-	unpacked, err := (Arguments{{Type: typ}}).UnpackForRevert(reflect.New(reflect.TypeOf(typ)).Interface(), data[4:])
-	if err != nil {
-		return "", err
-	}
-	return unpacked[0].(string), nil
 }

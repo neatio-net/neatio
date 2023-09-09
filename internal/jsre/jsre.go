@@ -9,8 +9,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/neatio-network/neatio/internal/jsre/deps"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/internal/jsre/deps"
+	"github.com/nio-net/neatio/utilities/common"
 	"github.com/robertkrimen/otto"
 )
 

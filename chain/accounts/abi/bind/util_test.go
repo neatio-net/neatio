@@ -1,9 +1,9 @@
 package bind_test
 
 import (
-	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/accounts/abi/bind"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 var testKey, _ = crypto.HexToECDSA("b71c71a67e1177ad4e901695e1b4b9ee17ae16c6668d313eac2f96dbcda3f291")

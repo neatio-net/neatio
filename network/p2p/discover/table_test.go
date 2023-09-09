@@ -12,8 +12,8 @@ import (
 	"testing/quick"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 func TestTable_pingReplace(t *testing.T) {

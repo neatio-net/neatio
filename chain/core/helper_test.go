@@ -19,10 +19,10 @@ package core
 import (
 	"container/list"
 
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 // Implement our EthTest Manager

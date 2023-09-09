@@ -1,3 +1,19 @@
+// Copyright 2015 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package vm
 
 import (
@@ -7,10 +23,10 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/common/math"
 )
 
 // Storage represents a contract's storage.
@@ -40,17 +56,16 @@ type LogConfig struct {
 // StructLog is emitted to the EVM each cycle and lists information about the current internal state
 // prior to the execution of the statement.
 type StructLog struct {
-	Pc            uint64                      `json:"pc"`
-	Op            OpCode                      `json:"op"`
-	Gas           uint64                      `json:"gas"`
-	GasCost       uint64                      `json:"gasCost"`
-	Memory        []byte                      `json:"memory"`
-	MemorySize    int                         `json:"memSize"`
-	Stack         []*big.Int                  `json:"stack"`
-	Storage       map[common.Hash]common.Hash `json:"-"`
-	Depth         int                         `json:"depth"`
-	RefundCounter uint64                      `json:"refund"`
-	Err           error                       `json:"-"`
+	Pc         uint64                      `json:"pc"`
+	Op         OpCode                      `json:"op"`
+	Gas        uint64                      `json:"gas"`
+	GasCost    uint64                      `json:"gasCost"`
+	Memory     []byte                      `json:"memory"`
+	MemorySize int                         `json:"memSize"`
+	Stack      []*big.Int                  `json:"stack"`
+	Storage    map[common.Hash]common.Hash `json:"-"`
+	Depth      int                         `json:"depth"`
+	Err        error                       `json:"-"`
 }
 
 // overrides for gencodec
@@ -82,7 +97,7 @@ func (s *StructLog) ErrorString() string {
 // Note that reference types are actual VM data structures; make copies
 // if you need to retain them beyond the current call.
 type Tracer interface {
-	CaptureStart(from common.Address, to common.Address, create bool, input []byte, gas uint64, value *big.Int) error
+	CaptureStart(from common.Address, to common.Address, call bool, input []byte, gas uint64, value *big.Int) error
 	CaptureState(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error
 	CaptureFault(env *EVM, pc uint64, op OpCode, gas, cost uint64, memory *Memory, stack *Stack, contract *Contract, depth int, err error) error
 	CaptureEnd(output []byte, gasUsed uint64, t time.Duration, err error) error
@@ -142,7 +157,7 @@ func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost ui
 		)
 		l.changedValues[contract.Address()][address] = value
 	}
-	// Copy a snapshot of the current memory state to a new buffer
+	// Copy a snapstot of the current memory state to a new buffer
 	var mem []byte
 	if !l.cfg.DisableMemory {
 		mem = make([]byte, len(memory.Data()))
@@ -161,8 +176,8 @@ func (l *StructLogger) CaptureState(env *EVM, pc uint64, op OpCode, gas, cost ui
 	if !l.cfg.DisableStorage {
 		storage = l.changedValues[contract.Address()].Copy()
 	}
-	// create a new snapshot of the EVM.
-	log := StructLog{pc, op, gas, cost, mem, memory.Len(), stck, storage, depth, env.StateDB.GetRefund(), err}
+	// create a new snaptshot of the EVM.
+	log := StructLog{pc, op, gas, cost, mem, memory.Len(), stck, storage, depth, err}
 
 	l.logs = append(l.logs, log)
 	return nil

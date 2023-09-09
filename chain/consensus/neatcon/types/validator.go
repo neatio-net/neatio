@@ -7,11 +7,11 @@ import (
 
 	"math/big"
 
-	. "github.com/neatio-network/common-go"
-	"github.com/neatio-network/crypto-go"
-	neatTypes "github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
+	. "github.com/nio-net/common"
+	neatTypes "github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type Validator struct {
@@ -46,8 +46,8 @@ func (v *Validator) String() string {
 	if v == nil {
 		return "nil-Validator"
 	}
-	return fmt.Sprintf("Validator{ADD:%X PK:%X VP:%v EP:%d}",
-		v.Address,
+	return fmt.Sprintf("Validator{ADD:%s PK:%X VP:%v EP:%d}",
+		string(v.Address),
 		v.PubKey,
 		v.VotingPower,
 		v.RemainingEpoch)

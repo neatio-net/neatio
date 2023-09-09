@@ -19,10 +19,10 @@ package core
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/core/vm"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 // ChainContext supports retrieving headers and consensus parameters from the

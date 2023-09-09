@@ -8,19 +8,19 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatio-network/crypto-go"
-	dbm "github.com/neatio-network/db-go"
-	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
+	dbm "github.com/nio-net/database"
+	ep "github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/math"
 )
 
 const (
 	OFFICIAL_MINIMUM_VALIDATORS = 1
-	OFFICIAL_MINIMUM_DEPOSIT    = "50000000000000000000000"
+	OFFICIAL_MINIMUM_DEPOSIT    = "77000000000000000000000"
 )
 
 type CoreChainInfo struct {

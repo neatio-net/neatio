@@ -46,7 +46,7 @@ const (
 	SstoreClearRefundEIP2200 uint64 = 15000
 
 	JumpdestGas   uint64 = 1
-	EpochDuration uint64 = 30000
+	EpochDuration uint64 = 86457
 
 	CreateDataGas            uint64 = 200
 	CallCreateDepth          uint64 = 1024

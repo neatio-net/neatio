@@ -8,11 +8,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/utilities/common/mclock"
-	"github.com/neatio-network/neatio/utilities/event"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/utilities/common/mclock"
+	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 const (

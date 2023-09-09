@@ -7,15 +7,15 @@ import (
 	"time"
 
 	lru "github.com/hashicorp/golang-lru"
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/wire-go"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 const (
@@ -68,10 +68,7 @@ var (
 
 	_ consensus.Engine = (*backend)(nil)
 
-	neatGenesisAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")
-	halfFeeAddress  = common.HexToAddress("0x0000000000000000000000000000000000000001")
-
-	sideChainRewardAddress = common.StringToAddress("0x0000000000000000000000000000000000000535")
+	sideChainRewardAddress = common.StringToAddress("NEAToND9QsiAFbMan5tqVg899qAv2EsQ")
 )
 
 func (sb *backend) APIs(chain consensus.ChainReader) []rpc.API {
@@ -104,6 +101,7 @@ func (sb *backend) Start(chain consensus.ChainReader, currentBlock func() *types
 	sb.vcommitCh = make(chan *ntcTypes.IntermediateBlockResult, 1)
 
 	sb.chain = chain
+
 	sb.currentBlock = currentBlock
 	sb.hasBadBlock = hasBadBlock
 
@@ -144,7 +142,7 @@ func (sb *backend) Author(header *types.Header) (common.Address, error) {
 
 func (sb *backend) VerifyHeader(chain consensus.ChainReader, header *types.Header, seal bool) error {
 
-	//sb.logger.Info("Your node is synchronized. This is Neat!")
+	sb.logger.Info("Your node is synchronized. This is Neat!")
 
 	return sb.verifyHeader(chain, header, nil)
 }
@@ -246,7 +244,7 @@ func (sb *backend) verifyCascadingFields(chain consensus.ChainReader, header *ty
 }
 
 func (sb *backend) VerifyHeaderBeforeConsensus(chain consensus.ChainReader, header *types.Header, seal bool) error {
-	//sb.logger.Info("NeatCon backend verify header before consensus")
+	sb.logger.Info("NeatCon backend verify header before consensus")
 
 	if header.Number == nil {
 		return errUnknownBlock
@@ -279,8 +277,6 @@ func (sb *backend) VerifyHeaderBeforeConsensus(chain consensus.ChainReader, head
 func (sb *backend) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
 	abort := make(chan struct{})
 	results := make(chan error, len(headers))
-
-	//sb.logger.Info("NeatCon backend verify headers")
 
 	go func() {
 		for i, header := range headers {
@@ -410,12 +406,6 @@ func (sb *backend) Finalize(chain consensus.ChainReader, header *types.Header, s
 	curBlockNumber := header.Number.Uint64()
 	epoch := sb.GetEpoch().GetEpochByBlockNumber(curBlockNumber)
 
-	genesisHeader := chain.GetBlockByNumber(1)
-	if genesisHeader != nil {
-		genesisCoinbase := genesisHeader.Header().Coinbase
-		neatGenesisAddress = state.GetAddress(genesisCoinbase)
-	}
-
 	accumulateRewards(sb.chainConfig, state, header, epoch, totalGasFee)
 
 	if ok, newValidators, _ := epoch.ShouldEnterNewEpoch(header.Number.Uint64(), state); ok {
@@ -433,8 +423,6 @@ func (sb *backend) Finalize(chain consensus.ChainReader, header *types.Header, s
 }
 
 func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan struct{}) (interface{}, error) {
-
-	//sb.logger.Info("NeatCon backend seal")
 
 	header := block.Header()
 	number := header.Number.Uint64()
@@ -462,7 +450,6 @@ func (sb *backend) Seal(chain consensus.ChainReader, block *types.Block, stop <-
 	}
 	defer clear()
 
-	//sb.logger.Infof("NeatCon Seal, before fire event with block height: %d", block.NumberU64())
 	go ntcTypes.FireEventRequest(sb.core.EventSwitch(), ntcTypes.EventDataRequest{Proposal: block})
 
 	for {
@@ -585,6 +572,7 @@ func (sb *backend) updateBlock(parent *types.Header, block *types.Block) (*types
 	sb.logger.Debug("NeatCon backend update block")
 
 	header := block.Header()
+
 	err := writeSeal(header, []byte{})
 	if err != nil {
 		return nil, err
@@ -601,10 +589,8 @@ func prepareExtra(header *types.Header, vals []common.Address) ([]byte, error) {
 
 func writeSeal(h *types.Header, seal []byte) error {
 
-	if h.Extra == nil {
-		payload := types.MagicExtra
-		h.Extra = payload
-	}
+	payload := types.MagicExtra
+	h.Extra = payload
 	return nil
 }
 
@@ -615,28 +601,19 @@ func writeCommittedSeals(h *types.Header, ncExtra *ntcTypes.NeatConExtra) error 
 }
 
 func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, ep *epoch.Epoch, totalGasFee *big.Int) {
-	halfFeeBurning := big.NewInt(0).Div(totalGasFee, big.NewInt(2))
-	state.AddBalance(halfFeeAddress, halfFeeBurning)
 
 	var coinbaseReward *big.Int
 	if config.NeatChainId == params.MainnetChainConfig.NeatChainId || config.NeatChainId == params.TestnetChainConfig.NeatChainId {
+
 		rewardPerBlock := ep.RewardPerBlock
 		if rewardPerBlock != nil && rewardPerBlock.Sign() == 1 {
-			zeroAddress := common.Address{}
-			if neatGenesisAddress == zeroAddress {
-				coinbaseReward = big.NewInt(0)
-				coinbaseReward.Add(rewardPerBlock, halfFeeBurning)
-			} else {
-				coinbaseReward = new(big.Int).Mul(rewardPerBlock, big.NewInt(8))
-				coinbaseReward.Quo(coinbaseReward, big.NewInt(10))
-				foundationReward := new(big.Int).Sub(rewardPerBlock, coinbaseReward)
-				state.AddBalance(neatGenesisAddress, foundationReward)
-				coinbaseReward.Add(coinbaseReward, halfFeeBurning)
-			}
+			coinbaseReward = big.NewInt(0)
+			coinbaseReward.Add(rewardPerBlock, totalGasFee)
 		} else {
-			coinbaseReward = halfFeeBurning
+			coinbaseReward = totalGasFee
 		}
 	} else {
+
 		rewardPerBlock := state.GetSideChainRewardPerBlock()
 		if rewardPerBlock != nil && rewardPerBlock.Sign() == 1 {
 			sideChainRewardBalance := state.GetBalance(sideChainRewardAddress)
@@ -646,9 +623,9 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 
 			state.SubBalance(sideChainRewardAddress, rewardPerBlock)
 
-			coinbaseReward = new(big.Int).Add(rewardPerBlock, halfFeeBurning)
+			coinbaseReward = new(big.Int).Add(rewardPerBlock, totalGasFee)
 		} else {
-			coinbaseReward = halfFeeBurning
+			coinbaseReward = totalGasFee
 		}
 	}
 
@@ -709,5 +686,4 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 			state.SubRewardBalanceByDelegateAddress(header.Coinbase, header.Coinbase, diff)
 		}
 	}
-
 }

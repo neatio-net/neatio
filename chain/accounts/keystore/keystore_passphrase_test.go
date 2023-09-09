@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/crypto"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 const (
@@ -55,7 +55,7 @@ func TestDecryptKey(t *testing.T) {
 	}
 
 	password := "neatio"
-	address := common.HexToAddress("0e0ffd4c684b325be82f120a7938c7d938ff3dca")
+	address := common.StringToAddress("3K7YBykphE6N8jFGVbNAWfvor94i9nigU8")
 	key, err := DecryptKey(keyjson, password)
 	fmt.Printf("private key %x\n", crypto.FromECDSA(key.PrivateKey))
 	if err != nil {

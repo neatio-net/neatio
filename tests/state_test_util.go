@@ -1,3 +1,19 @@
+// Copyright 2015 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package tests
 
 import (
@@ -7,21 +23,23 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/core/vm"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/common/math"
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 
+// StateTest checks transaction processing without block context.
+// See https://github.com/ethereum/EIPs/issues/176 for the test format specification.
 type StateTest struct {
 	json stJSON
 }
@@ -124,7 +142,7 @@ func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config) (*state.StateD
 	gaspool := new(core.GasPool)
 	gaspool.AddGas(block.GasLimit())
 	snapshot := statedb.Snapshot()
-	if _, _, err := core.ApplyMessageEx(evm, msg, gaspool); err != nil {
+	if _, _, _, err := core.ApplyMessage(evm, msg, gaspool); err != nil {
 		statedb.RevertToSnapshot(snapshot)
 	}
 	if logs := rlpHash(statedb.Logs()); logs != common.Hash(post.Logs) {
@@ -221,7 +239,7 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 }
 
 func rlpHash(x interface{}) (h common.Hash) {
-	hw := sha3.NewLegacyKeccak256()
+	hw := sha3.NewKeccak256()
 	rlp.Encode(hw, x)
 	hw.Sum(h[:0])
 	return h

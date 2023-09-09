@@ -5,10 +5,10 @@ import (
 	"math/big"
 	"sync"
 
-	dbm "github.com/neatio-network/db-go"
-	ncTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/wire-go"
+	dbm "github.com/nio-net/database"
+	ncTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/log"
 )
 
 const rewardSchemeKey = "REWARDSCHEME"
@@ -20,7 +20,7 @@ type RewardScheme struct {
 	TotalReward        *big.Int
 	RewardFirstYear    *big.Int
 	EpochNumberPerYear uint64
-	TotalMintingYears  uint64
+	TotalYear          uint64
 }
 
 func LoadRewardScheme(db dbm.DB) *RewardScheme {
@@ -45,7 +45,7 @@ func MakeRewardScheme(db dbm.DB, rsDoc *ncTypes.RewardSchemeDoc) *RewardScheme {
 		TotalReward:        rsDoc.TotalReward,
 		RewardFirstYear:    rsDoc.RewardFirstYear,
 		EpochNumberPerYear: rsDoc.EpochNumberPerYear,
-		TotalMintingYears:  rsDoc.TotalMintingYears,
+		TotalYear:          rsDoc.TotalYear,
 	}
 
 	return rs

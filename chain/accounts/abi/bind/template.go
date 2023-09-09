@@ -1,6 +1,6 @@
 package bind
 
-import "github.com/neatio-network/neatio/chain/accounts/abi"
+import "github.com/nio-net/neatio/chain/accounts/abi"
 
 type tmplData struct {
 	Package   string
@@ -59,12 +59,12 @@ import (
 	"math/big"
 	"strings"
 
-	ethereum "github.com/neatio-network/neatio"
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/event"
+	ethereum "github.com/nio-net/neatio"
+	"github.com/nio-net/neatio/chain/accounts/abi"
+	"github.com/nio-net/neatio/chain/accounts/abi/bind"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 

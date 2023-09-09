@@ -22,8 +22,8 @@ import (
 	"io"
 	"net"
 
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 // Entry is implemented by known node record entry types.

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	cmn "github.com/neatio-network/common-go"
-	ctest "github.com/neatio-network/common-go/test"
-	wire "github.com/neatio-network/wire-go"
+	wire "github.com/neatlib/wire-go"
+	cmn "github.com/nio-net/common"
+	ctest "github.com/nio-net/common/test"
 	"github.com/stretchr/testify/assert"
 )
 

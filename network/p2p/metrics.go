@@ -3,7 +3,7 @@ package p2p
 import (
 	"net"
 
-	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/nio-net/neatio/utilities/metrics"
 )
 
 var (

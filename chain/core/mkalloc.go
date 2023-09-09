@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
+//go:build none
 // +build none
 
 /*
@@ -34,8 +35,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 type allocItem struct{ Addr, Balance *big.Int }

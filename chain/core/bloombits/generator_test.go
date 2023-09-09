@@ -21,7 +21,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/core/types"
 )
 
 // Tests that batched bloom bits are correctly rotated from the input bloom

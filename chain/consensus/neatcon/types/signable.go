@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"io"
 
-	. "github.com/neatio-network/common-go"
-	"github.com/neatio-network/merkle-go"
+	"github.com/neatlib/merkle-go"
+	. "github.com/nio-net/common"
 )
 
 type Signable interface {

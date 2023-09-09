@@ -21,8 +21,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/mclock"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/mclock"
 )
 
 func TestTopicRadius(t *testing.T) {

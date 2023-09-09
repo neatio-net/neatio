@@ -5,15 +5,15 @@ import (
 	"os"
 	"strings"
 
-	cmn "github.com/neatio-network/common-go"
-	cfg "github.com/neatio-network/config-go"
-	dbm "github.com/neatio-network/db-go"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/params"
+	cfg "github.com/neatlib/config-go"
+	cmn "github.com/nio-net/common"
+	dbm "github.com/nio-net/database"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/consensus"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/params"
 )
 
 type Node struct {
@@ -38,7 +38,7 @@ func NewNodeNotStart(backend *backend, config cfg.Config, chainConfig *params.Ch
 		privValidator = types.LoadPrivValidator(privValidatorFile)
 	}
 
-	epochDB := dbm.NewDB("epoch", "leveldb", config.GetString("db_dir"))
+	epochDB := dbm.NewDB("epoch", config.GetString("db_backend"), config.GetString("db_dir"))
 	ep := epoch.InitEpoch(epochDB, genDoc, backend.logger)
 
 	if privValidator != nil && ep.Validators.HasAddress(privValidator.Address[:]) {
@@ -91,10 +91,11 @@ func (n *Node) OnStart() error {
 
 	_, err = n.consensusReactor.Start()
 	if err != nil {
-		n.evsw.Stop()
 		n.logger.Errorf("Failed to start Consensus Reactor. Error: %v", err)
 		return err
 	}
+
+	n.consensusReactor.AfterStart()
 
 	return nil
 }

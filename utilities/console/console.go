@@ -13,9 +13,9 @@ import (
 	"syscall"
 
 	"github.com/mattn/go-colorable"
-	"github.com/neatio-network/neatio/internal/jsre"
-	"github.com/neatio-network/neatio/internal/web3ext"
-	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/nio-net/neatio/internal/jsre"
+	"github.com/nio-net/neatio/internal/web3ext"
+	"github.com/nio-net/neatio/network/rpc"
 	"github.com/peterh/liner"
 	"github.com/robertkrimen/otto"
 )

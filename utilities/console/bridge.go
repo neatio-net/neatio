@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/accounts/usbwallet"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/nio-net/neatio/chain/accounts/usbwallet"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/rpc"
 	"github.com/robertkrimen/otto"
 )
 
@@ -265,31 +265,23 @@ func (b *bridge) Send(call otto.FunctionCall) (response otto.Value) {
 		resp.Set("id", req.Id)
 		var result json.RawMessage
 		err = b.client.Call(&result, req.Method, req.Params...)
-
-		if err == nil {
+		switch err := err.(type) {
+		case nil:
 			if result == nil {
 
 				resp.Set("result", otto.NullValue())
 			} else {
 				resultVal, err := JSON.Call("parse", string(result))
 				if err != nil {
-					setError(resp, -32603, err.Error(), nil)
+					setError(resp, -32603, err.Error())
 				} else {
 					resp.Set("result", resultVal)
 				}
 			}
-		} else {
-			code := -32603
-			var data interface{}
-			if err, ok := err.(rpc.Error); ok {
-				code = err.ErrorCode()
-			}
-
-			if err, ok := err.(rpc.DataError); ok {
-				data = err.ErrorData()
-			}
-
-			setError(resp, code, err.Error(), data)
+		case rpc.Error:
+			setError(resp, err.ErrorCode(), err.Error())
+		default:
+			setError(resp, -32603, err.Error())
 		}
 		resps.Call("push", resp)
 	}
@@ -306,15 +298,8 @@ func (b *bridge) Send(call otto.FunctionCall) (response otto.Value) {
 	return response
 }
 
-func setError(resp *otto.Object, code int, msg string, data interface{}) {
-
-	err := make(map[string]interface{})
-	err["code"] = code
-	err["message"] = msg
-	if data != nil {
-		err["data"] = data
-	}
-	resp.Set("error", err)
+func setError(resp *otto.Object, code int, msg string) {
+	resp.Set("error", map[string]interface{}{"code": code, "message": msg})
 }
 
 func throwJSException(msg interface{}) otto.Value {

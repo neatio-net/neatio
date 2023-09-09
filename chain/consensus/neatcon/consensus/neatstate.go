@@ -3,13 +3,13 @@ package consensus
 import (
 	"time"
 
-	cmn "github.com/neatio-network/common-go"
-	consss "github.com/neatio-network/neatio/chain/consensus"
-	ep "github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	sm "github.com/neatio-network/neatio/chain/consensus/neatcon/state"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/params"
+	cmn "github.com/nio-net/common"
+	consss "github.com/nio-net/neatio/chain/consensus"
+	ep "github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	sm "github.com/nio-net/neatio/chain/consensus/neatcon/state"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/params"
 )
 
 func (bs *ConsensusState) GetChainReader() consss.ChainReader {
@@ -20,11 +20,6 @@ func (cs *ConsensusState) StartNewHeight() {
 
 	cs.mtx.Lock()
 	defer cs.mtx.Unlock()
-
-	cr := cs.backend.ChainReader()
-	curEthBlock := cr.CurrentBlock()
-	curHeight := curEthBlock.NumberU64()
-	cs.logger.Infof("Current block height is: %v", curHeight)
 
 	state := cs.InitState(cs.Epoch)
 	cs.UpdateToState(state)
@@ -83,6 +78,7 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 	cs.Initialize()
 
 	height := state.NTCExtra.Height + 1
+
 	cs.Height = height
 
 	if cs.blockFromMiner != nil && cs.blockFromMiner.NumberU64() >= cs.Height {
@@ -98,6 +94,7 @@ func (cs *ConsensusState) UpdateToState(state *sm.State) {
 		cs.StartTime = cs.timeoutParams.Commit(time.Now())
 	} else {
 		if cs.CommitTime.IsZero() {
+
 			cs.StartTime = cs.timeoutParams.Commit(time.Now())
 		} else {
 			cs.StartTime = cs.timeoutParams.Commit(cs.CommitTime)

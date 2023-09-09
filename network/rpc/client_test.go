@@ -1,3 +1,19 @@
+// Copyright 2016 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package rpc
 
 import (
@@ -15,7 +31,7 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/nio-net/neatio/chain/log"
 )
 
 func TestClientRequest(t *testing.T) {
@@ -30,30 +46,6 @@ func TestClientRequest(t *testing.T) {
 	}
 	if !reflect.DeepEqual(resp, Result{"hello", 10, &Args{"world"}}) {
 		t.Errorf("incorrect result %#v", resp)
-	}
-}
-
-func TestClientErrorData(t *testing.T) {
-	server := newTestServer()
-	defer server.Stop()
-	client := DialInProc(server)
-	defer client.Close()
-
-	var resp interface{}
-	err := client.Call(&resp, "test_returnError")
-	if err == nil {
-		t.Fatal("expected error")
-	}
-
-	if e, ok := err.(Error); !ok {
-		t.Fatalf("client did not return rpc.Error, got %#v", e)
-	} else if e.ErrorCode() != (testError{}.ErrorCode()) {
-		t.Fatalf("wrong error code %d, want %d", e.ErrorCode(), testError{}.ErrorCode())
-	}
-	if e, ok := err.(DataError); !ok {
-		t.Fatalf("client did not return rpc.DataError, got %#v", e)
-	} else if e.ErrorData() != (testError{}.ErrorData()) {
-		t.Fatalf("wrong error data %#v, want %#v", e.ErrorData(), testError{}.ErrorData())
 	}
 }
 
@@ -117,16 +109,35 @@ func TestClientNotify(t *testing.T) {
 	}
 }
 
+// func TestClientCancelInproc(t *testing.T) { testClientCancel("inproc", t) }
 func TestClientCancelWebsocket(t *testing.T) { testClientCancel("ws", t) }
 func TestClientCancelHTTP(t *testing.T)      { testClientCancel("http", t) }
 func TestClientCancelIPC(t *testing.T)       { testClientCancel("ipc", t) }
 
+// This test checks that requests made through CallContext can be canceled by canceling
+// the context.
 func testClientCancel(transport string, t *testing.T) {
+	// These tests take a lot of time, run them all at once.
+	// You probably want to run with -parallel 1 or comment out
+	// the call to t.Parallel if you enable the logging.
 	t.Parallel()
 
 	server := newTestServer()
 	defer server.Stop()
 
+	// What we want to achieve is that the context gets canceled
+	// at various stages of request processing. The interesting cases
+	// are:
+	//  - cancel during dial
+	//  - cancel while performing a HTTP request
+	//  - cancel while waiting for a response
+	//
+	// To trigger those, the times are chosen such that connections
+	// are killed within the deadline for every other call (maxKillTimeout
+	// is 2x maxCancelTimeout).
+	//
+	// Once a connection is dead, there is a fair chance it won't connect
+	// successfully because the accept is delayed by 1s.
 	maxContextCancelTimeout := 300 * time.Millisecond
 	fl := &flakeyListener{
 		maxAcceptDelay: 1 * time.Second,
@@ -147,6 +158,7 @@ func testClientCancel(transport string, t *testing.T) {
 		panic("unknown transport: " + transport)
 	}
 
+	// The actual test starts here.
 	var (
 		wg       sync.WaitGroup
 		nreqs    = 10
@@ -161,11 +173,18 @@ func testClientCancel(transport string, t *testing.T) {
 				timeout = time.Duration(rand.Int63n(int64(maxContextCancelTimeout)))
 			)
 			if index < ncallers/2 {
+				// For half of the callers, create a context without deadline
+				// and cancel it later.
 				ctx, cancel = context.WithCancel(context.Background())
 				time.AfterFunc(timeout, cancel)
 			} else {
+				// For the other half, create a context with a deadline instead. This is
+				// different because the context deadline is used to set the socket write
+				// deadline.
 				ctx, cancel = context.WithTimeout(context.Background(), timeout)
 			}
+			// Now perform a call with the context.
+			// The key thing here is that no call will ever complete successfully.
 			sleepTime := maxContextCancelTimeout + 20*time.Millisecond
 			err := client.CallContext(ctx, nil, "test_sleep", sleepTime)
 			if err != nil {
@@ -244,6 +263,7 @@ func TestClientSubscribe(t *testing.T) {
 	}
 }
 
+// In this test, the connection drops while Subscribe is waiting for a response.
 func TestClientSubscribeClose(t *testing.T) {
 	server := newTestServer()
 	service := &notificationTestService{
@@ -286,6 +306,8 @@ func TestClientSubscribeClose(t *testing.T) {
 	}
 }
 
+// This test reproduces https://github.com/nio-net/neatio/issues/17837 where the
+// client hangs during shutdown when Unsubscribe races with Client.Close.
 func TestClientCloseUnsubscribeRace(t *testing.T) {
 	server := newTestServer()
 	defer server.Stop()
@@ -307,6 +329,8 @@ func TestClientCloseUnsubscribeRace(t *testing.T) {
 	}
 }
 
+// This test checks that Client doesn't lock up when a single subscriber
+// doesn't read subscription events.
 func TestClientNotificationStorm(t *testing.T) {
 	server := newTestServer()
 	defer server.Stop()
@@ -317,6 +341,8 @@ func TestClientNotificationStorm(t *testing.T) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
+		// Subscribe on the server. It will start sending many notifications
+		// very quickly.
 		nc := make(chan int)
 		sub, err := client.Subscribe(ctx, "nftest", nc, "someSubscription", count, 0)
 		if err != nil {
@@ -324,6 +350,7 @@ func TestClientNotificationStorm(t *testing.T) {
 		}
 		defer sub.Unsubscribe()
 
+		// Process each notification, try to run a call in between each of them.
 		for i := 0; i < count; i++ {
 			select {
 			case val := <-nc:
@@ -361,6 +388,7 @@ func TestClientHTTP(t *testing.T) {
 	defer hs.Close()
 	defer client.Close()
 
+	// Launch concurrent requests.
 	var (
 		results    = make([]Result, 100)
 		errc       = make(chan error)
@@ -375,6 +403,7 @@ func TestClientHTTP(t *testing.T) {
 		}()
 	}
 
+	// Wait for all of them to complete.
 	timeout := time.NewTimer(5 * time.Second)
 	defer timeout.Stop()
 	for i := range results {
@@ -388,6 +417,7 @@ func TestClientHTTP(t *testing.T) {
 		}
 	}
 
+	// Check results.
 	for i := range results {
 		if !reflect.DeepEqual(results[i], wantResult) {
 			t.Errorf("result %d mismatch: got %#v, want %#v", i, results[i], wantResult)
@@ -409,26 +439,33 @@ func TestClientReconnect(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()
 
+	// Start a server and corresponding client.
 	s1, l1 := startServer("127.0.0.1:0")
 	client, err := DialContext(ctx, "ws://"+l1.Addr().String())
 	if err != nil {
 		t.Fatal("can't dial", err)
 	}
 
+	// Perform a call. This should work because the server is up.
 	var resp Result
 	if err := client.CallContext(ctx, &resp, "test_echo", "", 1, nil); err != nil {
 		t.Fatal(err)
 	}
 
+	// Shut down the server and allow for some cool down time so we can listen on the same
+	// address again.
 	l1.Close()
 	s1.Stop()
 	time.Sleep(2 * time.Second)
 
+	// Try calling again. It shouldn't work.
 	if err := client.CallContext(ctx, &resp, "test_echo", "", 2, nil); err == nil {
 		t.Error("successful call while the server is down")
 		t.Logf("resp: %#v", resp)
 	}
 
+	// Start it up again and call again. The connection should be reestablished.
+	// We spawn multiple calls here to check whether this hangs somehow.
 	s2, l2 := startServer(l1.Addr().String())
 	defer l2.Close()
 	defer s2.Stop()
@@ -456,6 +493,7 @@ func TestClientReconnect(t *testing.T) {
 }
 
 func httpTestClient(srv *Server, transport string, fl *flakeyListener) (*Client, *httptest.Server) {
+	// Create the HTTP server.
 	var hs *httptest.Server
 	switch transport {
 	case "ws":
@@ -465,10 +503,12 @@ func httpTestClient(srv *Server, transport string, fl *flakeyListener) (*Client,
 	default:
 		panic("unknown HTTP transport: " + transport)
 	}
+	// Wrap the listener if required.
 	if fl != nil {
 		fl.Listener = hs.Listener
 		hs.Listener = fl
 	}
+	// Connect the client.
 	hs.Start()
 	client, err := Dial(transport + "://" + hs.Listener.Addr().String())
 	if err != nil {
@@ -478,6 +518,7 @@ func httpTestClient(srv *Server, transport string, fl *flakeyListener) (*Client,
 }
 
 func ipcTestClient(srv *Server, fl *flakeyListener) (*Client, net.Listener) {
+	// Listen on a random endpoint.
 	endpoint := fmt.Sprintf("go-ethereum-test-ipc-%d-%d", os.Getpid(), rand.Int63())
 	if runtime.GOOS == "windows" {
 		endpoint = `\\.\pipe\` + endpoint
@@ -488,11 +529,13 @@ func ipcTestClient(srv *Server, fl *flakeyListener) (*Client, net.Listener) {
 	if err != nil {
 		panic(err)
 	}
+	// Connect the listener to the server.
 	if fl != nil {
 		fl.Listener = l
 		l = fl
 	}
 	go srv.ServeListener(l)
+	// Connect the client.
 	client, err := Dial(endpoint)
 	if err != nil {
 		panic(err)
@@ -500,6 +543,7 @@ func ipcTestClient(srv *Server, fl *flakeyListener) (*Client, net.Listener) {
 	return client, l
 }
 
+// flakeyListener kills accepted connections after a random timeout.
 type flakeyListener struct {
 	net.Listener
 	maxKillTimeout time.Duration

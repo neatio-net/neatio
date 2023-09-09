@@ -12,11 +12,11 @@ import (
 
 	"bytes"
 
-	"github.com/neatio-network/neatio/chain/trie"
-	neatAbi "github.com/neatio-network/neatio/neatabi/abi"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/trie"
+	neatAbi "github.com/nio-net/neatio/neatabi/abi"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -80,17 +80,6 @@ func (h *Header) Hash() common.Hash {
 	if h.MixDigest == NeatConDigest {
 
 		if ntcHeader := NeatConFilteredHeader(h, true); ntcHeader != nil {
-			return rlpHash(ntcHeader)
-		}
-	}
-	return rlpHash(h)
-}
-
-func (h *Header) HashWithoutTime() common.Hash {
-
-	if h.MixDigest == NeatConDigest {
-
-		if ntcHeader := NeatConFilteredHeaderWithoutTime(h, true); ntcHeader != nil {
 			return rlpHash(ntcHeader)
 		}
 	}
@@ -203,21 +192,6 @@ func CopyHeader(h *Header) *Header {
 	if cpy.Time = new(big.Int); h.Time != nil {
 		cpy.Time.Set(h.Time)
 	}
-	if cpy.Difficulty = new(big.Int); h.Difficulty != nil {
-		cpy.Difficulty.Set(h.Difficulty)
-	}
-	if cpy.Number = new(big.Int); h.Number != nil {
-		cpy.Number.Set(h.Number)
-	}
-	if len(h.Extra) > 0 {
-		cpy.Extra = make([]byte, len(h.Extra))
-		copy(cpy.Extra, h.Extra)
-	}
-	return &cpy
-}
-
-func CopyWithoutTimeHeader(h *Header) *Header {
-	cpy := *h
 	if cpy.Difficulty = new(big.Int); h.Difficulty != nil {
 		cpy.Difficulty.Set(h.Difficulty)
 	}
@@ -473,4 +447,13 @@ type SideChainProofDataV1 struct {
 
 	TxIndexs []uint
 	TxProofs []*BSKeyValueSet
+}
+
+func DecodeSideChainProofData(bs []byte) (*SideChainProofData, error) {
+	proofData := &SideChainProofData{}
+	err := rlp.DecodeBytes(bs, proofData)
+	if err != nil {
+		return nil, err
+	}
+	return proofData, nil
 }

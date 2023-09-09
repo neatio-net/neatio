@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 // ----- Type
@@ -401,6 +401,69 @@ func (self *stateObject) SetCommission(commission uint8) {
 
 func (self *stateObject) setCommission(commission uint8) {
 	self.data.Commission = commission
+
+	if self.onDirty != nil {
+		self.onDirty(self.Address())
+		self.onDirty = nil
+	}
+}
+
+func (self *stateObject) IsBanned() bool {
+	return self.data.IsBanned
+}
+
+func (self *stateObject) SetBanned(banned bool) {
+	self.db.journal = append(self.db.journal, bannedChange{
+		account: &self.address,
+		prev:    self.data.IsBanned,
+	})
+	self.setBanned(banned)
+}
+
+func (self *stateObject) setBanned(banned bool) {
+	self.data.IsBanned = banned
+
+	if self.onDirty != nil {
+		self.onDirty(self.Address())
+		self.onDirty = nil
+	}
+}
+
+func (self *stateObject) BlockTime() *big.Int {
+	return self.data.BlockTime
+}
+
+func (self *stateObject) SetBlockTime(blockTime *big.Int) {
+	self.db.journal = append(self.db.journal, blockTimeChange{
+		account: &self.address,
+		prev:    self.data.BlockTime,
+	})
+	self.setBlockTime(blockTime)
+}
+
+func (self *stateObject) setBlockTime(blockTime *big.Int) {
+	self.data.BlockTime = blockTime
+
+	if self.onDirty != nil {
+		self.onDirty(self.Address())
+		self.onDirty = nil
+	}
+}
+
+func (self *stateObject) BannedTime() *big.Int {
+	return self.data.BannedTime
+}
+
+func (self *stateObject) SetBannedTime(bannedTime *big.Int) {
+	self.db.journal = append(self.db.journal, bannedTimeChange{
+		account: &self.address,
+		prev:    self.data.BannedTime,
+	})
+	self.setBannedTime(bannedTime)
+}
+
+func (self *stateObject) setBannedTime(bannedTime *big.Int) {
+	self.data.BannedTime = bannedTime
 
 	if self.onDirty != nil {
 		self.onDirty(self.Address())

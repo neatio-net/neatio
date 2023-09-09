@@ -15,7 +15,9 @@ type LibratoClient struct {
 	Email, Token string
 }
 
+// property strings
 const (
+	// display attributes
 	Color             = "color"
 	DisplayMax        = "display_max"
 	DisplayMin        = "display_min"
@@ -23,25 +25,30 @@ const (
 	DisplayUnitsShort = "display_units_short"
 	DisplayStacked    = "display_stacked"
 	DisplayTransform  = "display_transform"
+	// special gauge display attributes
 	SummarizeFunction = "summarize_function"
 	Aggregate         = "aggregate"
 
+	// metric keys
 	Name        = "name"
 	Period      = "period"
 	Description = "description"
 	DisplayName = "display_name"
 	Attributes  = "attributes"
 
+	// measurement keys
 	MeasureTime = "measure_time"
 	Source      = "source"
 	Value       = "value"
 
+	// special gauge keys
 	Count      = "count"
 	Sum        = "sum"
 	Max        = "max"
 	Min        = "min"
 	SumSquares = "sum_squares"
 
+	// batch keys
 	Counters = "counters"
 	Gauges   = "gauges"
 

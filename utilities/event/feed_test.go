@@ -1,3 +1,19 @@
+// Copyright 2016 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package event
 
 import (
@@ -173,6 +189,8 @@ func TestFeedSubscribeBlockedPost(t *testing.T) {
 	sub2 := feed.Subscribe(ch2)
 	defer sub2.Unsubscribe()
 
+	// We're done when ch1 has received N times.
+	// The number of receives on ch2 depends on scheduling.
 	for i := 0; i < nsends; {
 		select {
 		case <-ch1:
@@ -196,6 +214,7 @@ func TestFeedUnsubscribeBlockedPost(t *testing.T) {
 		chans[i] = make(chan int, nsends)
 	}
 
+	// Queue up some Sends. None of these can make progress while bchan isn't read.
 	wg.Add(nsends)
 	for i := 0; i < nsends; i++ {
 		go func() {
@@ -203,19 +222,21 @@ func TestFeedUnsubscribeBlockedPost(t *testing.T) {
 			wg.Done()
 		}()
 	}
-
+	// Subscribe the other channels.
 	for i, ch := range chans {
 		subs[i] = feed.Subscribe(ch)
 	}
-
+	// Unsubscribe them again.
 	for _, sub := range subs {
 		sub.Unsubscribe()
 	}
-
+	// Unblock the Sends.
 	bsub.Unsubscribe()
 	wg.Wait()
 }
 
+// Checks that unsubscribing a channel during Send works even if that
+// channel has already been sent on.
 func TestFeedUnsubscribeSentChan(t *testing.T) {
 	var (
 		feed Feed
@@ -233,13 +254,17 @@ func TestFeedUnsubscribeSentChan(t *testing.T) {
 		wg.Done()
 	}()
 
+	// Wait for the value on ch1.
 	<-ch1
-
+	// Unsubscribe ch1, removing it from the send cases.
 	sub1.Unsubscribe()
 
+	// Receive ch2, finishing Send.
 	<-ch2
 	wg.Wait()
 
+	// Send again. This should send to ch2 only, so the wait group will unblock
+	// as soon as a value is received on ch2.
 	wg.Add(1)
 	go func() {
 		feed.Send(0)
@@ -295,6 +320,7 @@ func BenchmarkFeedSend1000(b *testing.B) {
 		go subscriber(ch)
 	}
 
+	// The actual benchmark.
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		if feed.Send(i) != nsubs {

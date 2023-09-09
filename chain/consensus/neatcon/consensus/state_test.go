@@ -3,9 +3,9 @@ package consensus
 import (
 	"testing"
 
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/nio-net/crypto-go"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 var (

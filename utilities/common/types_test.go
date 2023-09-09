@@ -129,7 +129,7 @@ func TestAddressHexChecksum(t *testing.T) {
 }
 
 func TestAddress_UnmarshalJSON(t *testing.T) {
-	addr1 := HexToAddress("0x0e0ffd4c684b325be82f120a7938c7d938ff3dca")
+	addr1 := StringToAddress("34Sjxs9AwRj5mCyx7AfxJuZx5f91BqJ533")
 
 	addr2 := Address{}
 	addrB := []byte(`"`)

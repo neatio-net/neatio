@@ -8,15 +8,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/trie"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/chain/trie"
 )
 
 var (
@@ -33,26 +33,27 @@ func init() {
 type downloadTester struct {
 	downloader *Downloader
 
-	genesis *types.Block
-	stateDb neatdb.Database
-	peerDb  neatdb.Database
+	genesis *types.Block   
+	stateDb neatdb.Database 
+	peerDb  neatdb.Database 
 
-	ownHashes   []common.Hash
-	ownHeaders  map[common.Hash]*types.Header
-	ownBlocks   map[common.Hash]*types.Block
-	ownReceipts map[common.Hash]types.Receipts
-	ownChainTd  map[common.Hash]*big.Int
+	ownHashes   []common.Hash                  
+	ownHeaders  map[common.Hash]*types.Header  
+	ownBlocks   map[common.Hash]*types.Block   
+	ownReceipts map[common.Hash]types.Receipts 
+	ownChainTd  map[common.Hash]*big.Int       
 
-	peerHashes   map[string][]common.Hash
-	peerHeaders  map[string]map[common.Hash]*types.Header
-	peerBlocks   map[string]map[common.Hash]*types.Block
-	peerReceipts map[string]map[common.Hash]types.Receipts
-	peerChainTds map[string]map[common.Hash]*big.Int
+	peerHashes   map[string][]common.Hash                  
+	peerHeaders  map[string]map[common.Hash]*types.Header  
+	peerBlocks   map[string]map[common.Hash]*types.Block   
+	peerReceipts map[string]map[common.Hash]types.Receipts 
+	peerChainTds map[string]map[common.Hash]*big.Int       
 
-	peerMissingStates map[string]map[common.Hash]bool
+	peerMissingStates map[string]map[common.Hash]bool 
 
 	lock sync.RWMutex
 }
+
 
 func newTester() *downloadTester {
 	testdb := rawdb.NewMemoryDatabase()
@@ -81,15 +82,20 @@ func newTester() *downloadTester {
 	return tester
 }
 
-func (dl *downloadTester) makeChain(n int, seed byte, parent *types.Block, parentReceipts types.Receipts, heavy bool) ([]common.Hash, map[common.Hash]*types.Header, map[common.Hash]*types.Block, map[common.Hash]types.Receipts) {
 
+
+
+
+func (dl *downloadTester) makeChain(n int, seed byte, parent *types.Block, parentReceipts types.Receipts, heavy bool) ([]common.Hash, map[common.Hash]*types.Header, map[common.Hash]*types.Block, map[common.Hash]types.Receipts) {
+	
 	blocks, receipts := core.GenerateChain(params.TestChainConfig, parent, nil, dl.peerDb, n, func(i int, block *core.BlockGen) {
 		block.SetCoinbase(common.Address{seed})
 
+		
 		if heavy {
 			block.OffsetTime(-1)
 		}
-
+		
 		if parent == dl.genesis && i%3 == 0 {
 			signer := types.MakeSigner(params.TestChainConfig, block.Number())
 			tx, err := types.SignTx(types.NewTransaction(block.TxNonce(testAddress), common.Address{seed}, big.NewInt(1000), params.TxGas, nil, nil), signer, testKey)
@@ -98,7 +104,7 @@ func (dl *downloadTester) makeChain(n int, seed byte, parent *types.Block, paren
 			}
 			block.AddTx(tx)
 		}
-
+		
 		if i > 0 && i%5 == 0 {
 			block.AddUncle(&types.Header{
 				ParentHash: block.PrevBlock(i - 1).Hash(),
@@ -106,7 +112,7 @@ func (dl *downloadTester) makeChain(n int, seed byte, parent *types.Block, paren
 			})
 		}
 	})
-
+	
 	hashes := make([]common.Hash, n+1)
 	hashes[len(hashes)-1] = parent.Hash()
 
@@ -128,10 +134,13 @@ func (dl *downloadTester) makeChain(n int, seed byte, parent *types.Block, paren
 	return hashes, headerm, blockm, receiptm
 }
 
-func (dl *downloadTester) makeChainFork(n, f int, parent *types.Block, parentReceipts types.Receipts, balanced bool) ([]common.Hash, []common.Hash, map[common.Hash]*types.Header, map[common.Hash]*types.Header, map[common.Hash]*types.Block, map[common.Hash]*types.Block, map[common.Hash]types.Receipts, map[common.Hash]types.Receipts) {
 
+
+func (dl *downloadTester) makeChainFork(n, f int, parent *types.Block, parentReceipts types.Receipts, balanced bool) ([]common.Hash, []common.Hash, map[common.Hash]*types.Header, map[common.Hash]*types.Header, map[common.Hash]*types.Block, map[common.Hash]*types.Block, map[common.Hash]types.Receipts, map[common.Hash]types.Receipts) {
+	
 	hashes, headers, blocks, receipts := dl.makeChain(n-f, 0, parent, parentReceipts, false)
 
+	
 	hashes1, headers1, blocks1, receipts1 := dl.makeChain(f, 1, blocks[hashes[0]], receipts[hashes[0]], false)
 	hashes1 = append(hashes1, hashes[1:]...)
 
@@ -157,14 +166,17 @@ func (dl *downloadTester) makeChainFork(n, f int, parent *types.Block, parentRec
 	return hashes1, hashes2, headers1, headers2, blocks1, blocks2, receipts1, receipts2
 }
 
+
+
 func (dl *downloadTester) terminate() {
 	dl.downloader.Terminate()
 }
 
+
 func (dl *downloadTester) sync(id string, td *big.Int, mode SyncMode) error {
 	dl.lock.RLock()
 	hash := dl.peerHashes[id][0]
-
+	
 	if td == nil {
 		td = big.NewInt(1)
 		if diff, ok := dl.peerChainTds[id][hash]; ok {
@@ -173,24 +185,28 @@ func (dl *downloadTester) sync(id string, td *big.Int, mode SyncMode) error {
 	}
 	dl.lock.RUnlock()
 
+	
 	err := dl.downloader.synchronise(id, hash, td, mode)
 	select {
 	case <-dl.downloader.cancelCh:
-
+		
 	default:
-
-		panic("downloader active post sync cycle")
+		
+		panic("downloader active post sync cycle") 
 	}
 	return err
 }
+
 
 func (dl *downloadTester) HasHeader(hash common.Hash, number uint64) bool {
 	return dl.GetHeaderByHash(hash) != nil
 }
 
+
 func (dl *downloadTester) HasBlock(hash common.Hash, number uint64) bool {
 	return dl.GetBlockByHash(hash) != nil
 }
+
 
 func (dl *downloadTester) GetHeaderByHash(hash common.Hash) *types.Header {
 	dl.lock.RLock()
@@ -199,12 +215,14 @@ func (dl *downloadTester) GetHeaderByHash(hash common.Hash) *types.Header {
 	return dl.ownHeaders[hash]
 }
 
+
 func (dl *downloadTester) GetBlockByHash(hash common.Hash) *types.Block {
 	dl.lock.RLock()
 	defer dl.lock.RUnlock()
 
 	return dl.ownBlocks[hash]
 }
+
 
 func (dl *downloadTester) CurrentHeader() *types.Header {
 	dl.lock.RLock()
@@ -217,6 +235,7 @@ func (dl *downloadTester) CurrentHeader() *types.Header {
 	}
 	return dl.genesis.Header()
 }
+
 
 func (dl *downloadTester) CurrentBlock() *types.Block {
 	dl.lock.RLock()
@@ -232,6 +251,7 @@ func (dl *downloadTester) CurrentBlock() *types.Block {
 	return dl.genesis
 }
 
+
 func (dl *downloadTester) CurrentFastBlock() *types.Block {
 	dl.lock.RLock()
 	defer dl.lock.RUnlock()
@@ -244,14 +264,16 @@ func (dl *downloadTester) CurrentFastBlock() *types.Block {
 	return dl.genesis
 }
 
-func (dl *downloadTester) FastSyncCommitHead(hash common.Hash) error {
 
+func (dl *downloadTester) FastSyncCommitHead(hash common.Hash) error {
+	
 	if block := dl.GetBlockByHash(hash); block != nil {
 		_, err := trie.NewSecure(block.Root(), trie.NewDatabase(dl.stateDb))
 		return err
 	}
 	return fmt.Errorf("non existent block: %x", hash[:4])
 }
+
 
 func (dl *downloadTester) GetTd(hash common.Hash, number uint64) *big.Int {
 	dl.lock.RLock()
@@ -260,10 +282,12 @@ func (dl *downloadTester) GetTd(hash common.Hash, number uint64) *big.Int {
 	return dl.ownChainTd[hash]
 }
 
+
 func (dl *downloadTester) InsertHeaderChain(headers []*types.Header, checkFreq int) (int, error) {
 	dl.lock.Lock()
 	defer dl.lock.Unlock()
 
+	
 	if _, ok := dl.ownHeaders[headers[0].ParentHash]; !ok {
 		return 0, errors.New("unknown parent")
 	}
@@ -272,7 +296,7 @@ func (dl *downloadTester) InsertHeaderChain(headers []*types.Header, checkFreq i
 			return i, errors.New("unknown parent")
 		}
 	}
-
+	
 	for i, header := range headers {
 		if _, ok := dl.ownHeaders[header.Hash()]; ok {
 			continue
@@ -286,6 +310,7 @@ func (dl *downloadTester) InsertHeaderChain(headers []*types.Header, checkFreq i
 	}
 	return len(headers), nil
 }
+
 
 func (dl *downloadTester) InsertChain(blocks types.Blocks) (int, error) {
 	dl.lock.Lock()
@@ -308,6 +333,7 @@ func (dl *downloadTester) InsertChain(blocks types.Blocks) (int, error) {
 	return len(blocks), nil
 }
 
+
 func (dl *downloadTester) InsertReceiptChain(blocks types.Blocks, receipts []types.Receipts) (int, error) {
 	dl.lock.Lock()
 	defer dl.lock.Unlock()
@@ -325,6 +351,7 @@ func (dl *downloadTester) InsertReceiptChain(blocks types.Blocks, receipts []typ
 	return len(blocks), nil
 }
 
+
 func (dl *downloadTester) Rollback(hashes []common.Hash) {
 	dl.lock.Lock()
 	defer dl.lock.Unlock()
@@ -340,9 +367,13 @@ func (dl *downloadTester) Rollback(hashes []common.Hash) {
 	}
 }
 
+
 func (dl *downloadTester) newPeer(id string, version int, hashes []common.Hash, headers map[common.Hash]*types.Header, blocks map[common.Hash]*types.Block, receipts map[common.Hash]types.Receipts) error {
 	return dl.newSlowPeer(id, version, hashes, headers, blocks, receipts, 0)
 }
+
+
+
 
 func (dl *downloadTester) newSlowPeer(id string, version int, hashes []common.Hash, headers map[common.Hash]*types.Header, blocks map[common.Hash]*types.Block, receipts map[common.Hash]types.Receipts, delay time.Duration) error {
 	dl.lock.Lock()
@@ -350,7 +381,7 @@ func (dl *downloadTester) newSlowPeer(id string, version int, hashes []common.Ha
 
 	var err = dl.downloader.RegisterPeer(id, version, &downloadTesterPeer{dl: dl, id: id, delay: delay})
 	if err == nil {
-
+		
 		dl.peerHashes[id] = make([]common.Hash, len(hashes))
 		copy(dl.peerHashes[id], hashes)
 
@@ -393,6 +424,7 @@ func (dl *downloadTester) newSlowPeer(id string, version int, hashes []common.Ha
 	return err
 }
 
+
 func (dl *downloadTester) dropPeer(id string) {
 	dl.lock.Lock()
 	defer dl.lock.Unlock()
@@ -412,12 +444,14 @@ type downloadTesterPeer struct {
 	lock  sync.RWMutex
 }
 
+
 func (dlp *downloadTesterPeer) setDelay(delay time.Duration) {
 	dlp.lock.Lock()
 	defer dlp.lock.Unlock()
 
 	dlp.delay = delay
 }
+
 
 func (dlp *downloadTesterPeer) waitDelay() {
 	dlp.lock.RLock()
@@ -427,6 +461,8 @@ func (dlp *downloadTesterPeer) waitDelay() {
 	time.Sleep(delay)
 }
 
+
+
 func (dlp *downloadTesterPeer) Head() (common.Hash, *big.Int) {
 	dlp.dl.lock.RLock()
 	defer dlp.dl.lock.RUnlock()
@@ -434,8 +470,11 @@ func (dlp *downloadTesterPeer) Head() (common.Hash, *big.Int) {
 	return dlp.dl.peerHashes[dlp.id][0], nil
 }
 
-func (dlp *downloadTesterPeer) RequestHeadersByHash(origin common.Hash, amount int, skip int, reverse bool) error {
 
+
+
+func (dlp *downloadTesterPeer) RequestHeadersByHash(origin common.Hash, amount int, skip int, reverse bool) error {
+	
 	dlp.dl.lock.RLock()
 	number := uint64(0)
 	for num, hash := range dlp.dl.peerHashes[dlp.id] {
@@ -446,8 +485,12 @@ func (dlp *downloadTesterPeer) RequestHeadersByHash(origin common.Hash, amount i
 	}
 	dlp.dl.lock.RUnlock()
 
+	
 	return dlp.RequestHeadersByNumber(number, amount, skip, reverse)
 }
+
+
+
 
 func (dlp *downloadTesterPeer) RequestHeadersByNumber(origin uint64, amount int, skip int, reverse bool) error {
 	dlp.waitDelay()
@@ -455,6 +498,7 @@ func (dlp *downloadTesterPeer) RequestHeadersByNumber(origin uint64, amount int,
 	dlp.dl.lock.RLock()
 	defer dlp.dl.lock.RUnlock()
 
+	
 	hashes := dlp.dl.peerHashes[dlp.id]
 	headers := dlp.dl.peerHeaders[dlp.id]
 	result := make([]*types.Header, 0, amount)
@@ -463,13 +507,16 @@ func (dlp *downloadTesterPeer) RequestHeadersByNumber(origin uint64, amount int,
 			result = append(result, header)
 		}
 	}
-
+	
 	go func() {
 		time.Sleep(time.Millisecond)
 		dlp.dl.downloader.DeliverHeaders(dlp.id, result)
 	}()
 	return nil
 }
+
+
+
 
 func (dlp *downloadTesterPeer) RequestBodies(hashes []common.Hash) error {
 	dlp.waitDelay()
@@ -493,6 +540,9 @@ func (dlp *downloadTesterPeer) RequestBodies(hashes []common.Hash) error {
 	return nil
 }
 
+
+
+
 func (dlp *downloadTesterPeer) RequestReceipts(hashes []common.Hash) error {
 	dlp.waitDelay()
 
@@ -511,6 +561,9 @@ func (dlp *downloadTesterPeer) RequestReceipts(hashes []common.Hash) error {
 
 	return nil
 }
+
+
+
 
 func (dlp *downloadTesterPeer) RequestNodeData(hashes []common.Hash) error {
 	dlp.waitDelay()
@@ -531,18 +584,22 @@ func (dlp *downloadTesterPeer) RequestNodeData(hashes []common.Hash) error {
 	return nil
 }
 
+
+
 func assertOwnChain(t *testing.T, tester *downloadTester, length int) {
 	assertOwnForkedChain(t, tester, 1, []int{length})
 }
 
-func assertOwnForkedChain(t *testing.T, tester *downloadTester, common int, lengths []int) {
 
+
+func assertOwnForkedChain(t *testing.T, tester *downloadTester, common int, lengths []int) {
+	
 	headers, blocks, receipts := lengths[0], lengths[0], lengths[0]-fsMinFullBlocks
 
 	if receipts < 0 {
 		receipts = 1
 	}
-
+	
 	for _, length := range lengths[1:] {
 		headers += length - common
 		blocks += length - common
@@ -551,15 +608,1112 @@ func assertOwnForkedChain(t *testing.T, tester *downloadTester, common int, leng
 	switch tester.downloader.mode {
 	case FullSync:
 		receipts = 1
-		if hs := len(tester.ownHeaders); hs != headers {
-			t.Fatalf("synchronised headers mismatch: have %v, want %v", hs, headers)
-		}
-		if bs := len(tester.ownBlocks); bs != blocks {
-			t.Fatalf("synchronised blocks mismatch: have %v, want %v", bs, blocks)
-		}
-		if rs := len(tester.ownReceipts); rs != receipts {
-			t.Fatalf("synchronised receipts mismatch: have %v, want %v", rs, receipts)
-		}
-
+	if hs := len(tester.ownHeaders); hs != headers {
+		t.Fatalf("synchronised headers mismatch: have %v, want %v", hs, headers)
 	}
+	if bs := len(tester.ownBlocks); bs != blocks {
+		t.Fatalf("synchronised blocks mismatch: have %v, want %v", bs, blocks)
+	}
+	if rs := len(tester.ownReceipts); rs != receipts {
+		t.Fatalf("synchronised receipts mismatch: have %v, want %v", rs, receipts)
+	}
+	
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

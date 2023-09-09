@@ -26,8 +26,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common/bitutil"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/common/bitutil"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 // bloomIndexes represents the bit indexes inside the bloom filter that belong

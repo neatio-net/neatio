@@ -23,9 +23,9 @@ import (
 	"math/big"
 	"unsafe"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 //go:generate gencodec -type Receipt -field-override receiptMarshaling -out gen_receipt_json.go

@@ -19,8 +19,8 @@ package neatapi
 import (
 	"sync"
 
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/utilities/common/compiler"
+	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/neatio/utilities/common/compiler"
 )
 
 func makeCompilerAPIs(solcPath string) []rpc.API {

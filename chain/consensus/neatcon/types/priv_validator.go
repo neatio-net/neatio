@@ -6,15 +6,26 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/neatio-network/bls-go"
-	. "github.com/neatio-network/common-go"
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/bls-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
+	. "github.com/nio-net/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type PrivValidator struct {
 	Address common.Address `json:"address"`
+	PubKey  crypto.PubKey  `json:"consensus_pub_key"`
+	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
+
+	Signer `json:"-"`
+
+	filePath string
+	mtx      sync.Mutex
+}
+
+type PrivV struct {
+	Address string         `json:"address"`
 	PubKey  crypto.PubKey  `json:"consensus_pub_key"`
 	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
 
@@ -63,13 +74,20 @@ func LoadPrivValidator(filePath string) *PrivValidator {
 	if err != nil {
 		Exit(err.Error())
 	}
-	privVal := wire.ReadJSON(&PrivValidator{}, privValJSONBytes, &err).(*PrivValidator)
+	privVal := wire.ReadJSON(&PrivV{}, privValJSONBytes, &err).(*PrivV)
+
 	if err != nil {
 		Exit(Fmt("Error reading PrivValidator from %v: %v\n", filePath, err))
 	}
-	privVal.filePath = filePath
-	privVal.Signer = NewDefaultSigner(privVal.PrivKey)
-	return privVal
+	privV := &PrivValidator{
+		Address:  common.StringToAddress(privVal.Address),
+		PubKey:   privVal.PubKey,
+		PrivKey:  privVal.PrivKey,
+		filePath: filePath,
+		Signer:   NewDefaultSigner(privVal.PrivKey),
+	}
+
+	return privV
 }
 
 func (pv *PrivValidator) SetFile(filePath string) {
@@ -90,7 +108,12 @@ func (pv *PrivValidator) save() {
 	if pv.filePath == "" {
 		PanicSanity("Cannot save PrivValidator: filePath not set")
 	}
-	jsonBytes := wire.JSONBytesPretty(pv)
+	var priv PrivV
+	priv.Address = pv.Address.String()
+	priv.PubKey = pv.PubKey
+	priv.PrivKey = pv.PrivKey
+
+	jsonBytes := wire.JSONBytesPretty(priv)
 	err := WriteFileAtomic(pv.filePath, jsonBytes, 0600)
 	if err != nil {
 		PanicCrisis(err)

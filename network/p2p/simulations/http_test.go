@@ -11,22 +11,25 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio/network/node"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
+	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 type testService struct {
 	id discover.NodeID
 
+	// peerCount is incremented once a peer handshake has been performed
 	peerCount int64
 
 	peers    map[discover.NodeID]*testPeer
 	peersMtx sync.Mutex
 
+	// state stores []byte which is used to test creating and loading
+	// snapshots
 	state atomic.Value
 }
 
@@ -100,6 +103,8 @@ func (t *testService) Stop() error {
 	return nil
 }
 
+// handshake performs a peer handshake by sending and expecting an empty
+// message with the given code
 func (t *testService) handshake(rw p2p.MsgReadWriter, code uint64) error {
 	errc := make(chan error, 2)
 	go func() { errc <- p2p.Send(rw, code, struct{}{}) }()
@@ -115,6 +120,8 @@ func (t *testService) handshake(rw p2p.MsgReadWriter, code uint64) error {
 func (t *testService) RunTest(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 	peer := t.peer(p.ID())
 
+	// perform three handshakes with three different message codes,
+	// used to test message sending and filtering
 	if err := t.handshake(rw, 2); err != nil {
 		return err
 	}
@@ -125,11 +132,14 @@ func (t *testService) RunTest(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 		return err
 	}
 
+	// close the testReady channel so that other protocols can run
 	close(peer.testReady)
 
+	// track the peer
 	atomic.AddInt64(&t.peerCount, 1)
 	defer atomic.AddInt64(&t.peerCount, -1)
 
+	// block until the peer is dropped
 	for {
 		_, err := rw.ReadMsg()
 		if err != nil {
@@ -141,14 +151,18 @@ func (t *testService) RunTest(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 func (t *testService) RunDum(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 	peer := t.peer(p.ID())
 
+	// wait for the test protocol to perform its handshake
 	<-peer.testReady
 
+	// perform a handshake
 	if err := t.handshake(rw, 0); err != nil {
 		return err
 	}
 
+	// close the dumReady channel so that other protocols can run
 	close(peer.dumReady)
 
+	// block until the peer is dropped
 	for {
 		_, err := rw.ReadMsg()
 		if err != nil {
@@ -159,12 +173,15 @@ func (t *testService) RunDum(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 func (t *testService) RunPrb(p *p2p.Peer, rw p2p.MsgReadWriter) error {
 	peer := t.peer(p.ID())
 
+	// wait for the dum protocol to perform its handshake
 	<-peer.dumReady
 
+	// perform a handshake
 	if err := t.handshake(rw, 0); err != nil {
 		return err
 	}
 
+	// block until the peer is dropped
 	for {
 		_, err := rw.ReadMsg()
 		if err != nil {
@@ -177,6 +194,11 @@ func (t *testService) Snapshot() ([]byte, error) {
 	return t.state.Load().([]byte), nil
 }
 
+// TestAPI provides a test API to:
+// * get the peer count
+// * get and set an arbitrary state byte slice
+// * get and increment a counter
+// * subscribe to counter increment events
 type TestAPI struct {
 	state     *atomic.Value
 	peerCount *int64
@@ -247,10 +269,14 @@ func testHTTPServer(t *testing.T) (*Network, *httptest.Server) {
 	return network, httptest.NewServer(NewServer(network))
 }
 
+// TestHTTPNetwork tests interacting with a simulation network using the HTTP
+// API
 func TestHTTPNetwork(t *testing.T) {
+	// start the server
 	network, s := testHTTPServer(t)
 	defer s.Close()
 
+	// subscribe to events so we can check them later
 	client := NewClient(s.URL)
 	events := make(chan *Event, 100)
 	var opts SubscribeOpts
@@ -260,6 +286,7 @@ func TestHTTPNetwork(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// check we can retrieve details about the network
 	gotNetwork, err := client.GetNetwork()
 	if err != nil {
 		t.Fatalf("error getting network: %s", err)
@@ -268,8 +295,10 @@ func TestHTTPNetwork(t *testing.T) {
 		t.Fatalf("expected network to have ID %q, got %q", network.ID, gotNetwork.ID)
 	}
 
+	// start a simulation network
 	nodeIDs := startTestNetwork(t, client)
 
+	// check we got all the events
 	x := &expectEvents{t, events, sub}
 	x.expect(
 		x.nodeEvent(nodeIDs[0], false),
@@ -280,6 +309,7 @@ func TestHTTPNetwork(t *testing.T) {
 		x.connEvent(nodeIDs[0], nodeIDs[1], true),
 	)
 
+	// reconnect the stream and check we get the current nodes and conns
 	events = make(chan *Event, 100)
 	opts.Current = true
 	sub, err = client.SubscribeNetwork(events, opts)
@@ -296,6 +326,7 @@ func TestHTTPNetwork(t *testing.T) {
 }
 
 func startTestNetwork(t *testing.T, client *Client) []string {
+	// create two nodes
 	nodeCount := 2
 	nodeIDs := make([]string, nodeCount)
 	for i := 0; i < nodeCount; i++ {
@@ -306,6 +337,7 @@ func startTestNetwork(t *testing.T, client *Client) []string {
 		nodeIDs[i] = node.ID
 	}
 
+	// check both nodes exist
 	nodes, err := client.GetNodes()
 	if err != nil {
 		t.Fatalf("error getting nodes: %s", err)
@@ -326,12 +358,14 @@ func startTestNetwork(t *testing.T, client *Client) []string {
 		}
 	}
 
+	// start both nodes
 	for _, nodeID := range nodeIDs {
 		if err := client.StartNode(nodeID); err != nil {
 			t.Fatalf("error starting node %q: %s", nodeID, err)
 		}
 	}
 
+	// connect the nodes
 	for i := 0; i < nodeCount-1; i++ {
 		peerId := i + 1
 		if i == nodeCount-1 {
@@ -467,10 +501,13 @@ func (t *expectEvents) expect(events ...*Event) {
 	}
 }
 
+// TestHTTPNodeRPC tests calling RPC methods on nodes via the HTTP API
 func TestHTTPNodeRPC(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 
+	// start a node in the network
 	client := NewClient(s.URL)
 	node, err := client.CreateNode(nil)
 	if err != nil {
@@ -480,6 +517,7 @@ func TestHTTPNodeRPC(t *testing.T) {
 		t.Fatalf("error starting node: %s", err)
 	}
 
+	// create two RPC clients
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	rpcClient1, err := client.RPCClient(ctx, node.ID)
@@ -491,6 +529,7 @@ func TestHTTPNodeRPC(t *testing.T) {
 		t.Fatalf("error getting node RPC client: %s", err)
 	}
 
+	// subscribe to events using client 1
 	events := make(chan int64, 1)
 	sub, err := rpcClient1.Subscribe(ctx, "test", events, "events")
 	if err != nil {
@@ -498,6 +537,7 @@ func TestHTTPNodeRPC(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// call some RPC methods using client 2
 	if err := rpcClient2.CallContext(ctx, nil, "test_add", 10); err != nil {
 		t.Fatalf("error calling RPC method: %s", err)
 	}
@@ -509,6 +549,7 @@ func TestHTTPNodeRPC(t *testing.T) {
 		t.Fatalf("expected result to be 10, got %d", result)
 	}
 
+	// check we got an event from client 1
 	select {
 	case event := <-events:
 		if event != 10 {
@@ -519,10 +560,13 @@ func TestHTTPNodeRPC(t *testing.T) {
 	}
 }
 
+// TestHTTPSnapshot tests creating and loading network snapshots
 func TestHTTPSnapshot(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 
+	// create a two-node network
 	client := NewClient(s.URL)
 	nodeCount := 2
 	nodes := make([]*p2p.NodeInfo, nodeCount)
@@ -540,6 +584,7 @@ func TestHTTPSnapshot(t *testing.T) {
 		t.Fatalf("error connecting nodes: %s", err)
 	}
 
+	// store some state in the test services
 	states := make([]string, nodeCount)
 	for i, node := range nodes {
 		rpc, err := client.RPCClient(context.Background(), node.ID)
@@ -554,6 +599,7 @@ func TestHTTPSnapshot(t *testing.T) {
 		states[i] = state
 	}
 
+	// create a snapshot
 	snap, err := client.CreateSnapshot()
 	if err != nil {
 		t.Fatalf("error creating snapshot: %s", err)
@@ -565,10 +611,12 @@ func TestHTTPSnapshot(t *testing.T) {
 		}
 	}
 
+	// create another network
 	_, s = testHTTPServer(t)
 	defer s.Close()
 	client = NewClient(s.URL)
 
+	// subscribe to events so we can check them later
 	events := make(chan *Event, 100)
 	var opts SubscribeOpts
 	sub, err := client.SubscribeNetwork(events, opts)
@@ -577,10 +625,12 @@ func TestHTTPSnapshot(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// load the snapshot
 	if err := client.LoadSnapshot(snap); err != nil {
 		t.Fatalf("error loading snapshot: %s", err)
 	}
 
+	// check the nodes and connection exists
 	net, err := client.GetNetwork()
 	if err != nil {
 		t.Fatalf("error getting network: %s", err)
@@ -605,6 +655,7 @@ func TestHTTPSnapshot(t *testing.T) {
 		t.Fatalf("expected connection to have other=%q, got other=%q", nodes[1].ID, conn.Other)
 	}
 
+	// check the node states were restored
 	for i, node := range nodes {
 		rpc, err := client.RPCClient(context.Background(), node.ID)
 		if err != nil {
@@ -620,6 +671,7 @@ func TestHTTPSnapshot(t *testing.T) {
 		}
 	}
 
+	// check we got all the events
 	x := &expectEvents{t, events, sub}
 	x.expect(
 		x.nodeEvent(nodes[0].ID, false),
@@ -631,10 +683,14 @@ func TestHTTPSnapshot(t *testing.T) {
 	)
 }
 
+// TestMsgFilterPassMultiple tests streaming message events using a filter
+// with multiple protocols
 func TestMsgFilterPassMultiple(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 
+	// subscribe to events with a message filter
 	client := NewClient(s.URL)
 	events := make(chan *Event, 10)
 	opts := SubscribeOpts{
@@ -646,8 +702,10 @@ func TestMsgFilterPassMultiple(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// start a simulation network
 	startTestNetwork(t, client)
 
+	// check we got the expected events
 	x := &expectEvents{t, events, sub}
 	x.expectMsgs(map[MsgFilter]int{
 		{"test", 0}: 2,
@@ -655,10 +713,14 @@ func TestMsgFilterPassMultiple(t *testing.T) {
 	})
 }
 
+// TestMsgFilterPassWildcard tests streaming message events using a filter
+// with a code wildcard
 func TestMsgFilterPassWildcard(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 
+	// subscribe to events with a message filter
 	client := NewClient(s.URL)
 	events := make(chan *Event, 10)
 	opts := SubscribeOpts{
@@ -670,8 +732,10 @@ func TestMsgFilterPassWildcard(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// start a simulation network
 	startTestNetwork(t, client)
 
+	// check we got the expected events
 	x := &expectEvents{t, events, sub}
 	x.expectMsgs(map[MsgFilter]int{
 		{"test", 2}: 2,
@@ -681,10 +745,14 @@ func TestMsgFilterPassWildcard(t *testing.T) {
 	})
 }
 
+// TestMsgFilterPassSingle tests streaming message events using a filter
+// with a single protocol and code
 func TestMsgFilterPassSingle(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 
+	// subscribe to events with a message filter
 	client := NewClient(s.URL)
 	events := make(chan *Event, 10)
 	opts := SubscribeOpts{
@@ -696,15 +764,20 @@ func TestMsgFilterPassSingle(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
+	// start a simulation network
 	startTestNetwork(t, client)
 
+	// check we got the expected events
 	x := &expectEvents{t, events, sub}
 	x.expectMsgs(map[MsgFilter]int{
 		{"dum", 0}: 2,
 	})
 }
 
+// TestMsgFilterPassSingle tests streaming message events using an invalid
+// filter
 func TestMsgFilterFailBadParams(t *testing.T) {
+	// start the server
 	_, s := testHTTPServer(t)
 	defer s.Close()
 

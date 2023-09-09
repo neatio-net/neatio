@@ -1,9 +1,9 @@
 package neatptc
 
 import (
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/utilities/metrics"
 )
 
 var (

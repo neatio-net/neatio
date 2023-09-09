@@ -8,20 +8,20 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/neatio-network/crypto-go"
-	dbm "github.com/neatio-network/db-go"
-	"github.com/neatio-network/neatio/chain/accounts"
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/neatcli"
-	"github.com/neatio-network/neatio/neatptc"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/utils"
+	"github.com/neatlib/crypto-go"
+	dbm "github.com/nio-net/database"
+	"github.com/nio-net/neatio/chain/accounts"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/neatcli"
+	"github.com/nio-net/neatio/neatptc"
+	"github.com/nio-net/neatio/network/node"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/utils"
 	"github.com/pkg/errors"
 	"gopkg.in/urfave/cli.v1"
 )
@@ -83,7 +83,6 @@ func (cm *ChainManager) LoadMainChain() error {
 func (cm *ChainManager) LoadChains(sideIds []string) error {
 
 	sideChainIds := core.GetSideChainIds(cm.cch.chainInfoDB)
-	log.Infof("Before load side chains, side chain IDs are %v, len is %d", sideChainIds, len(sideChainIds))
 
 	readyToLoadChains := make(map[string]bool)
 
@@ -111,9 +110,6 @@ func (cm *ChainManager) LoadChains(sideIds []string) error {
 		}
 	}
 
-	log.Infof("Number of side chain to be loaded :%v", len(readyToLoadChains))
-	log.Infof("Start to load side chain: %v", readyToLoadChains)
-
 	for chainId := range readyToLoadChains {
 		chain := LoadSideChain(cm.ctx, chainId)
 		if chain == nil {
@@ -128,7 +124,8 @@ func (cm *ChainManager) LoadChains(sideIds []string) error {
 }
 
 func (cm *ChainManager) InitCrossChainHelper() {
-	cm.cch.chainInfoDB = dbm.NewDB("chaininfo", "leveldb",
+	cm.cch.chainInfoDB = dbm.NewDB("chaininfo",
+		cm.mainChain.Config.GetString("db_backend"),
 		cm.ctx.GlobalString(utils.DataDirFlag.Name))
 	cm.cch.localTX3CacheDB, _ = rawdb.NewLevelDBDatabase(path.Join(cm.ctx.GlobalString(utils.DataDirFlag.Name), "tx3cache"), 0, 0, "neatio/db/tx3/")
 
@@ -154,11 +151,14 @@ func (cm *ChainManager) InitCrossChainHelper() {
 
 func (cm *ChainManager) StartP2PServer() error {
 	srv := cm.server.Server()
+
 	srv.Protocols = append(srv.Protocols, cm.mainChain.NeatNode.GatherProtocols()...)
+
 	return srv.Start()
 }
 
 func (cm *ChainManager) StartMainChain() error {
+
 	cm.mainStartDone = make(chan struct{})
 
 	cm.mainChain.NeatNode.SetP2PServer(cm.server.Server())
@@ -178,9 +178,12 @@ func (cm *ChainManager) StartMainChain() error {
 func (cm *ChainManager) StartChains() error {
 
 	for _, chain := range cm.sideChains {
+
 		srv := cm.server.Server()
 		sideProtocols := chain.NeatNode.GatherProtocols()
+
 		srv.Protocols = append(srv.Protocols, sideProtocols...)
+
 		srv.AddChildProtocolCaps(sideProtocols)
 
 		chain.NeatNode.SetP2PServer(srv)
@@ -307,6 +310,7 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 
 	if !validator {
 		log.Warnf("You are not in the validators of side chain %v, no need to start the side chain", chainId)
+
 		cm.formalizeSideChain(chainId, *cci, nil)
 		return
 	}
@@ -343,7 +347,9 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 
 	srv := cm.server.Server()
 	sideProtocols := chain.NeatNode.GatherProtocols()
+
 	srv.Protocols = append(srv.Protocols, sideProtocols...)
+
 	srv.AddChildProtocolCaps(sideProtocols)
 
 	chain.NeatNode.SetP2PServer(srv)
@@ -364,6 +370,7 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 	var sideEthereum *neatptc.NeatIO
 	chain.NeatNode.Service(&sideEthereum)
 	firstEpoch := sideEthereum.Engine().(consensus.NeatCon).GetEpoch()
+
 	cm.formalizeSideChain(chainId, *cci, firstEpoch)
 
 	cm.sideChains[chainId] = chain
@@ -388,7 +395,9 @@ func (cm *ChainManager) LoadSideChainInRT(chainId string) {
 }
 
 func (cm *ChainManager) formalizeSideChain(chainId string, cci core.CoreChainInfo, ep *epoch.Epoch) {
+
 	core.DeletePendingSideChainData(cm.cch.chainInfoDB, chainId)
+
 	core.SaveChainInfo(cm.cch.chainInfoDB, &core.ChainInfo{CoreChainInfo: cci, Epoch: ep})
 }
 
@@ -452,7 +461,7 @@ func (cm *ChainManager) getNodeValidator(neatNode *node.Node) (common.Address, b
 	ntc := neatio.Engine()
 	epoch := ntc.GetEpoch()
 	coinbase = ntc.PrivateValidator()
-	log.Debugf("getNodeValidator() coinbase is :%x", coinbase)
+	log.Debugf("getNodeValidator() coinbase is :%v", coinbase)
 	return coinbase, epoch.Validators.HasAddress(coinbase[:])
 }
 

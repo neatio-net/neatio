@@ -19,8 +19,8 @@ package state
 import (
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var addr = common.BytesToAddress([]byte("test"))

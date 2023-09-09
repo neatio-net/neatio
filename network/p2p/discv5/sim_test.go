@@ -28,7 +28,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 // In this test, nodes try to randomly resolve each other.

@@ -5,11 +5,11 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/neatio-network/crypto-go"
-	"github.com/neatio-network/db-go"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/wire-go"
+	"github.com/neatlib/crypto-go"
+	"github.com/neatlib/wire-go"
+	"github.com/nio-net/database"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var voteRWMutex sync.RWMutex
@@ -19,7 +19,8 @@ func calcEpochValidatorVoteKey(epochNumber uint64) []byte {
 }
 
 type EpochValidatorVoteSet struct {
-	Votes          []*EpochValidatorVote
+	Votes []*EpochValidatorVote
+
 	votesByAddress map[common.Address]*EpochValidatorVote
 }
 
@@ -53,6 +54,7 @@ func (voteSet *EpochValidatorVoteSet) StoreVote(vote *EpochValidatorVote) {
 
 	oldVote, exist := voteSet.votesByAddress[vote.Address]
 	if exist {
+
 		index := -1
 		for i := 0; i < len(voteSet.Votes); i++ {
 			if voteSet.Votes[i] == oldVote {
@@ -87,6 +89,7 @@ func LoadEpochVoteSet(epochDB db.DB, epochNumber uint64) *EpochValidatorVoteSet 
 			log.Error("Load Epoch Vote Set failed", "error", err)
 			return nil
 		}
+
 		voteSet.votesByAddress = make(map[common.Address]*EpochValidatorVote)
 		for _, v := range voteSet.Votes {
 			voteSet.votesByAddress[v.Address] = v

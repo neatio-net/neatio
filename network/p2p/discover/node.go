@@ -15,9 +15,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/crypto/secp256k1"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/crypto/secp256k1"
 )
 
 const NodeIDBits = 512

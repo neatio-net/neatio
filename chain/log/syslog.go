@@ -1,4 +1,3 @@
-//go:build !windows && !plan9
 // +build !windows,!plan9
 
 package log
@@ -8,11 +7,15 @@ import (
 	"strings"
 )
 
+// SyslogHandler opens a connection to the system syslog daemon by calling
+// syslog.New and writes all records to it.
 func SyslogHandler(priority syslog.Priority, tag string, fmtr Format) (Handler, error) {
 	wr, err := syslog.New(priority, tag)
 	return sharedSyslog(fmtr, wr, err)
 }
 
+// SyslogNetHandler opens a connection to a log daemon over the network and writes
+// all log records to it.
 func SyslogNetHandler(net, addr string, priority syslog.Priority, tag string, fmtr Format) (Handler, error) {
 	wr, err := syslog.Dial(net, addr, priority, tag)
 	return sharedSyslog(fmtr, wr, err)
@@ -36,7 +39,7 @@ func sharedSyslog(fmtr Format, sysWr *syslog.Writer, err error) (Handler, error)
 		case LvlDebug:
 			syslogFn = sysWr.Debug
 		case LvlTrace:
-			syslogFn = func(m string) error { return nil }
+			syslogFn = func(m string) error { return nil } // There's no syslog level for trace
 		}
 
 		s := strings.TrimSpace(string(fmtr.Format(r)))

@@ -5,11 +5,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/neatabi/abi"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/neatabi/abi"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/common/math"
 
 	"gopkg.in/urfave/cli.v1"
 
@@ -21,21 +21,21 @@ import (
 	"strings"
 	"time"
 
-	cmn "github.com/neatio-network/common-go"
-	cfg "github.com/neatio-network/config-go"
-	dbm "github.com/neatio-network/db-go"
-	"github.com/neatio-network/neatio/chain/accounts/keystore"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/utils"
+	cfg "github.com/neatlib/config-go"
+	cmn "github.com/nio-net/common"
+	dbm "github.com/nio-net/database"
+	"github.com/nio-net/neatio/chain/accounts/keystore"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/utils"
 	"github.com/pkg/errors"
 )
 
 const (
-	TotalMintingReward = "44471380000000000000000000"
-	TotalMintingYears  = 15
+	POSReward = "72248976000000000000000000"
+	TotalYear = 29
 
 	DefaultAccountPassword = "neatio"
 )
@@ -91,20 +91,20 @@ func init_neat_genesis(config cfg.Config, balanceStr string, isMainnet bool) err
 		chainConfig = params.TestnetChainConfig
 	}
 
-	var coreGenesis = core.Genesis{
+	var coreGenesis = core.GenesisWrite{
 		Config:     chainConfig,
-		Nonce:      0x0,
+		Nonce:      0xdeadbeefdeadbeef,
 		Timestamp:  uint64(time.Now().Unix()),
 		ParentHash: common.Hash{},
 		ExtraData:  extraData,
-		GasLimit:   0xe0000000,
+		GasLimit:   0x7270e00,
 		Difficulty: new(big.Int).SetUint64(0x01),
 		Mixhash:    common.Hash{},
-		Coinbase:   common.Address{},
-		Alloc:      core.GenesisAlloc{},
+		Coinbase:   "NEATioBlockchainsGenesisCoinbase",
+		Alloc:      core.GenesisAllocWrite{},
 	}
 	for i, validator := range validators {
-		coreGenesis.Alloc[validator.Address] = core.GenesisAccount{
+		coreGenesis.Alloc[validator.Address.String()] = core.GenesisAccount{
 			Balance: math.MustParseBig256(balanceAmounts[i].balance),
 			Amount:  math.MustParseBig256(balanceAmounts[i].amount),
 		}
@@ -232,9 +232,29 @@ func init_em_files(config cfg.Config, chainId string, genesisPath string, valida
 		utils.Fatalf("failed to read neatio genesis file: %v", err)
 		return err
 	}
-	var coreGenesis = core.Genesis{}
-	if err := json.Unmarshal(contents, &coreGenesis); err != nil {
+	var (
+		genesisW    core.GenesisWrite
+		coreGenesis core.Genesis
+	)
+	if err := json.Unmarshal(contents, &genesisW); err != nil {
 		return err
+	}
+
+	coreGenesis = core.Genesis{
+		Config:     genesisW.Config,
+		Nonce:      genesisW.Nonce,
+		Timestamp:  genesisW.Timestamp,
+		ParentHash: genesisW.ParentHash,
+		ExtraData:  genesisW.ExtraData,
+		GasLimit:   genesisW.GasLimit,
+		Difficulty: genesisW.Difficulty,
+		Mixhash:    genesisW.Mixhash,
+		Coinbase:   common.StringToAddress(genesisW.Coinbase),
+		Alloc:      core.GenesisAlloc{},
+	}
+
+	for k, v := range genesisW.Alloc {
+		coreGenesis.Alloc[common.StringToAddress(k)] = v
 	}
 
 	var privValidator *types.PrivValidator
@@ -260,8 +280,8 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 	genFile := config.GetString("genesis_file")
 	if _, err := os.Stat(genFile); os.IsNotExist(err) {
 
-		posReward, _ := new(big.Int).SetString(TotalMintingReward, 10)
-		totalYear := TotalMintingYears
+		posReward, _ := new(big.Int).SetString(POSReward, 10)
+		totalYear := TotalYear
 		rewardFirstYear := new(big.Int).Div(posReward, big.NewInt(int64(totalYear)))
 
 		var rewardScheme types.RewardSchemeDoc
@@ -269,21 +289,21 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        posReward,
 				RewardFirstYear:    rewardFirstYear,
-				EpochNumberPerYear: 8760,
-				TotalMintingYears:  uint64(totalYear),
+				EpochNumberPerYear: 365,
+				TotalYear:          uint64(totalYear),
 			}
 		} else {
 			rewardScheme = types.RewardSchemeDoc{
 				TotalReward:        big.NewInt(0),
 				RewardFirstYear:    big.NewInt(0),
 				EpochNumberPerYear: 1,
-				TotalMintingYears:  0,
+				TotalYear:          0,
 			}
 		}
 
 		var rewardPerBlock *big.Int
 		if chainId == MainChain || chainId == TestnetChain {
-			rewardPerBlock = big.NewInt(142976401748971000)
+			rewardPerBlock = big.NewInt(8176717120000000)
 		} else {
 			rewardPerBlock = big.NewInt(0)
 		}
@@ -291,14 +311,14 @@ func createGenesisDoc(config cfg.Config, chainId string, coreGenesis *core.Genes
 		fmt.Printf("init reward block %v\n", rewardPerBlock)
 		genDoc := types.GenesisDoc{
 			ChainID:      chainId,
-			Consensus:    types.CONSENSUS_NEATCON,
+			Consensus:    types.CONSENSUS_NeatCon,
 			GenesisTime:  time.Now(),
 			RewardScheme: rewardScheme,
 			CurrentEpoch: types.OneEpochDoc{
 				Number:         0,
 				RewardPerBlock: rewardPerBlock,
 				StartBlock:     0,
-				EndBlock:       2400,
+				EndBlock:       86457,
 				Status:         0,
 			},
 		}
@@ -327,20 +347,20 @@ func generateNTCGenesis(sideChainID string, validators []types.GenesisValidator)
 	var rewardScheme = types.RewardSchemeDoc{
 		TotalReward:        big.NewInt(0),
 		RewardFirstYear:    big.NewInt(0),
-		EpochNumberPerYear: 8760,
-		TotalMintingYears:  0,
+		EpochNumberPerYear: 365,
+		TotalYear:          0,
 	}
 
 	genDoc := types.GenesisDoc{
 		ChainID:      sideChainID,
-		Consensus:    types.CONSENSUS_NEATCON,
+		Consensus:    types.CONSENSUS_NeatCon,
 		GenesisTime:  time.Now(),
 		RewardScheme: rewardScheme,
 		CurrentEpoch: types.OneEpochDoc{
 			Number:         0,
 			RewardPerBlock: big.NewInt(0),
 			StartBlock:     0,
-			EndBlock:       2400,
+			EndBlock:       86457,
 			Status:         0,
 			Validators:     validators,
 		},
@@ -462,7 +482,7 @@ func generateETHGenesis(sideChainID string, validators []types.GenesisValidator)
 		}
 	}
 
-	coreGenesis.Alloc[abi.NeatioSideChainsAddress] = core.GenesisAccount{
+	coreGenesis.Alloc[abi.SideChainTokenIncentiveAddr] = core.GenesisAccount{
 		Balance: new(big.Int).Mul(big.NewInt(100000), big.NewInt(1e+18)),
 		Amount:  common.Big0,
 	}
