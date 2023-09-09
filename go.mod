@@ -29,8 +29,6 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/naoina/go-stringutil v0.1.0 // indirect
 	github.com/naoina/toml v0.1.1
-	github.com/neatlab/neatio v1.7.2 // indirect
-	github.com/neatlib/common-go v1.2.0 // indirect
 	github.com/nio-net/bls v1.0.0
 	github.com/nio-net/common v1.0.0
 	github.com/nio-net/config v1.0.0
@@ -42,7 +40,7 @@ require (
 	github.com/nio-net/merkle v1.0.1
 	github.com/nio-net/set v1.0.1
 	github.com/nio-net/wire v1.0.0
-	github.com/nio-net/wire-go v1.1.0 // indirect
+	github.com/nio-net/data v1.0.0 // indirect
 	github.com/nsf/termbox-go v1.1.1 // indirect
 	github.com/pborman/uuid v1.2.1
 	github.com/peterh/liner v1.2.1
@@ -62,3 +60,5 @@ require (
 	gopkg.in/urfave/cli.v1 v1.20.0
 	gotest.tools/v3 v3.0.3 // indirect
 )
+
+
