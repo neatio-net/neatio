@@ -21,11 +21,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/trie"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/trie"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 // testAccount is the data associated with an account used by the state tests.

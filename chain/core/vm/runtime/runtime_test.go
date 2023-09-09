@@ -21,11 +21,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/chain/core/rawdb"
-	"github.com/neatio-network/neatio/chain/core/state"
-	"github.com/neatio-network/neatio/chain/core/vm"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/accounts/abi"
+	"github.com/nio-net/neatio/chain/core/rawdb"
+	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 func TestDefaults(t *testing.T) {

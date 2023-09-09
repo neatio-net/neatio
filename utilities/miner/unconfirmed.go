@@ -20,9 +20,9 @@ import (
 	"container/ring"
 	"sync"
 
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 // headerRetriever is used by the unconfirmed block set to verify whether a previously

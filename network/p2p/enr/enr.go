@@ -35,9 +35,9 @@ import (
 	"io"
 	"sort"
 
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/crypto/sha3"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/crypto/sha3"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 const SizeLimit = 300 // maximum encoded size of a node record in bytes

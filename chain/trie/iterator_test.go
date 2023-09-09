@@ -22,8 +22,8 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/neatio-network/neatio/neatdb/memorydb"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/neatdb/memorydb"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 func TestIterator(t *testing.T) {

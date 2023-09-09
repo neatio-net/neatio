@@ -30,8 +30,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/accounts/keystore"
-	"github.com/neatio-network/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/accounts/keystore"
+	"github.com/nio-net/neatio/chain/core/types"
 )
 
 // Tests that the account management snippets work correctly.

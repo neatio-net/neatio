@@ -36,11 +36,11 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/reexec"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/node"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/rpc"
 	"golang.org/x/net/websocket"
 )
 

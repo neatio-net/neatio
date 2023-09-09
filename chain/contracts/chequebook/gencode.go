@@ -24,8 +24,8 @@ package main
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 var (

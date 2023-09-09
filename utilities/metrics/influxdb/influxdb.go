@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/influxdata/influxdb/client"
-	"github.com/neatio-network/neatio/utilities/metrics"
+	"github.com/nio-net/neatio/utilities/metrics"
 )
 
 type reporter struct {

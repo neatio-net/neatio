@@ -7,11 +7,11 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 
-	"github.com/neatio-network/neatio/utilities/common"
 	"github.com/neatlib/crypto-go"
 	. "github.com/nio-net/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var GenDocKey = []byte("GenDocKey")

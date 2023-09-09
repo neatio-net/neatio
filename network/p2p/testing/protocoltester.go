@@ -32,14 +32,14 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/network/p2p/simulations"
-	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
-	"github.com/neatio-network/neatio/network/rpc"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/node"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/p2p/simulations"
+	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
+	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 // ProtocolTester is the tester environment used for unit testing protocol

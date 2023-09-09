@@ -25,11 +25,11 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/neatio-network/neatio/chain/core/vm"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/crypto"
 	duktape "gopkg.in/olebedev/go-duktape.v3"
 )
 

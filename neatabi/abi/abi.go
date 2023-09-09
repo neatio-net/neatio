@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/accounts/abi"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type FunctionType struct {

@@ -25,11 +25,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/network/p2p/simulations/adapters"
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 var dialBanTimeout = 200 * time.Millisecond

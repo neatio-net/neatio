@@ -24,8 +24,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/network/p2p/discover"
 )
 
 //a map of mocker names to its function

@@ -35,8 +35,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 type allocItem struct{ Addr, Balance *big.Int }

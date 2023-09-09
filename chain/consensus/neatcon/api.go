@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatio-network/neatio/chain/consensus"
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/neatio-network/neatio/chain/consensus/neatcon/types"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	neatCrypto "github.com/neatio-network/neatio/utilities/crypto"
 	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/neatio/chain/consensus"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	neatCrypto "github.com/nio-net/neatio/utilities/crypto"
 )
 
 type API struct {

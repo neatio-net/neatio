@@ -5,11 +5,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/network/p2p/discover"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/neatptc/downloader"
+	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 const (

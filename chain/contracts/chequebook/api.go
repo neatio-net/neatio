@@ -20,7 +20,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 const Version = "1.0"

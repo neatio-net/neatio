@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"github.com/neatio-network/neatio/network/node"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/network/node"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/utilities/common"
 	"gopkg.in/urfave/cli.v1"
 )
 

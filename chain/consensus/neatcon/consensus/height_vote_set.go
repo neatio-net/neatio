@@ -5,10 +5,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatio-network/neatio/chain/log"
+	"github.com/nio-net/neatio/chain/log"
 
-	"github.com/neatio-network/neatio/chain/consensus/neatcon/types"
 	. "github.com/nio-net/common"
+	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
 )
 
 type RoundVoteSet struct {

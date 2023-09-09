@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 type MyType [5]byte

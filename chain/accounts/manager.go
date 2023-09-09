@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/neatio-network/neatio/utilities/event"
+	"github.com/nio-net/neatio/utilities/event"
 )
 
 type Manager struct {

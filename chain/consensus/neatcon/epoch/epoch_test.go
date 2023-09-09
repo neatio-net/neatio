@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 func TestEstimateEpoch(t *testing.T) {

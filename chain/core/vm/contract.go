@@ -19,7 +19,7 @@ package vm
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 // ContractRef is a reference to the contract's backing object

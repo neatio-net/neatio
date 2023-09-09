@@ -5,8 +5,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 func TestLoose23MajorThreshold(t *testing.T) {

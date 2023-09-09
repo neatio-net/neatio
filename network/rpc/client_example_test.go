@@ -22,7 +22,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/neatio-network/neatio/network/rpc"
+	"github.com/nio-net/neatio/network/rpc"
 )
 
 // In this example, our client wishes to track the latest 'block number'

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var (

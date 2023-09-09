@@ -8,13 +8,13 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/consensus/neatcon"
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/neatptc/gasprice"
-	"github.com/neatio-network/neatio/params"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/chain/consensus/neatcon"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/neatptc/downloader"
+	"github.com/nio-net/neatio/neatptc/gasprice"
+	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 var DefaultConfig = Config{

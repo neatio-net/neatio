@@ -3,7 +3,7 @@ package p2p
 import (
 	"fmt"
 
-	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/p2p/discover"
 )
 
 type Protocol struct {

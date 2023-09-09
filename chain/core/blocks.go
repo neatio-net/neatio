@@ -16,7 +16,7 @@
 
 package core
 
-import "github.com/neatio-network/neatio/utilities/common"
+import "github.com/nio-net/neatio/utilities/common"
 
 // BadHashes represent a set of manually tracked bad hashes (usually hard forks)
 var BadHashes = map[common.Hash]bool{

@@ -20,8 +20,8 @@ import (
 	"hash"
 	"sync"
 
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 

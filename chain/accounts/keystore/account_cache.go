@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/accounts"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatlib/set-go"
+	"github.com/nio-net/neatio/chain/accounts"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/set"
 )
 
 const minReloadInterval = 2 * time.Second

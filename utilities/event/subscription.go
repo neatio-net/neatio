@@ -21,7 +21,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/utilities/common/mclock"
+	"github.com/nio-net/neatio/utilities/common/mclock"
 )
 
 // Subscription represents a stream of events. The carrier of the events is typically a

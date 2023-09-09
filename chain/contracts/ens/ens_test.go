@@ -17,7 +17,7 @@
 package ens
 
 import (
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 var (

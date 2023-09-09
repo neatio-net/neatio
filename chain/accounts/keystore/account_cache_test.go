@@ -13,8 +13,8 @@ import (
 
 	"github.com/cespare/cp"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatio-network/neatio/chain/accounts"
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/chain/accounts"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var (

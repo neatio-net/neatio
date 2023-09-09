@@ -36,7 +36,7 @@ import (
 	"math/big"
 	"unsafe"
 
-	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/nio-net/neatio/utilities/common/math"
 )
 
 /*

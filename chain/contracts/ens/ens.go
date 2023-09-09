@@ -23,11 +23,11 @@ package ens
 import (
 	"strings"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatio-network/neatio/chain/contracts/ens/contract"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/accounts/abi/bind"
+	"github.com/nio-net/neatio/chain/contracts/ens/contract"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 var (

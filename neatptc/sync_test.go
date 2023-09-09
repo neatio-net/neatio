@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/network/p2p"
-	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/neatptc/downloader"
+	"github.com/nio-net/neatio/network/p2p"
+	"github.com/nio-net/neatio/network/p2p/discover"
 )
 
 func TestFastSyncDisabling(t *testing.T) {

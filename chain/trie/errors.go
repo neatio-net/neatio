@@ -19,7 +19,7 @@ package trie
 import (
 	"fmt"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type MissingNodeError struct {

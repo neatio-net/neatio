@@ -20,7 +20,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatio-network/neatio/params"
+	"github.com/nio-net/neatio/params"
 )
 
 func TestTransaction(t *testing.T) {

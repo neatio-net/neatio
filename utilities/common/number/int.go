@@ -19,7 +19,7 @@ package number
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 var tt256 = new(big.Int).Lsh(big.NewInt(1), 256)

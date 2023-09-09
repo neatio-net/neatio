@@ -5,11 +5,11 @@ package neatptc
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/chain/core"
-	"github.com/neatio-network/neatio/neatptc/downloader"
-	"github.com/neatio-network/neatio/neatptc/gasprice"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/chain/core"
+	"github.com/nio-net/neatio/neatptc/downloader"
+	"github.com/nio-net/neatio/neatptc/gasprice"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 var _ = (*configMarshaling)(nil)

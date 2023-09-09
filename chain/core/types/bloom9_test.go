@@ -54,7 +54,7 @@ func TestBloom(t *testing.T) {
 import (
 	"testing"
 
-	"github.com/neatio-network/neatio/chain/core/state"
+	"github.com/nio-net/neatio/chain/core/state"
 )
 
 func TestBloom9(t *testing.T) {

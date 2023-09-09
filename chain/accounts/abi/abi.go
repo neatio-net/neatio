@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/neatio-network/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common"
 )
 
 type ABI struct {

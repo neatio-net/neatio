@@ -20,7 +20,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/neatio-network/neatio/network/p2p/discover"
+	"github.com/nio-net/neatio/network/p2p/discover"
 )
 
 // Simulation provides a framework for running actions in a simulated network

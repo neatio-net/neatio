@@ -1,6 +1,6 @@
 package neatcli
 
-import "github.com/neatio-network/neatio"
+import "github.com/nio-net/neatio"
 
 var (
 	_ = neatio.ChainReader(&Client{})

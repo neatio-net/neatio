@@ -20,9 +20,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/prque"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/prque"
 )
 
 var ErrNotRequested = errors.New("not requested")

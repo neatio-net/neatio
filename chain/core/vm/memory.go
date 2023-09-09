@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatio-network/neatio/utilities/common/math"
+	"github.com/nio-net/neatio/utilities/common/math"
 )
 
 // Memory implements a simple memory model for the ethereum virtual machine.

@@ -36,13 +36,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/neatio-network/neatio/chain/accounts/abi/bind"
-	"github.com/neatio-network/neatio/chain/contracts/chequebook/contract"
-	"github.com/neatio-network/neatio/chain/core/types"
-	"github.com/neatio-network/neatio/chain/log"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/common/hexutil"
-	"github.com/neatio-network/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/chain/accounts/abi/bind"
+	"github.com/nio-net/neatio/chain/contracts/chequebook/contract"
+	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/neatio/utilities/crypto"
 )
 
 // TODO(zelig): watch peer solvency and notify of bouncing cheques

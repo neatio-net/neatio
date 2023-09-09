@@ -19,7 +19,7 @@ package vm
 import (
 	"math/big"
 
-	"github.com/neatio-network/neatio/params"
+	"github.com/nio-net/neatio/params"
 )
 
 // Gas costs

@@ -29,12 +29,12 @@ import (
 	"testing/quick"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/neatio-network/neatio/neatdb"
-	"github.com/neatio-network/neatio/neatdb/leveldb"
-	"github.com/neatio-network/neatio/neatdb/memorydb"
-	"github.com/neatio-network/neatio/utilities/common"
-	"github.com/neatio-network/neatio/utilities/crypto"
-	"github.com/neatio-network/neatio/utilities/rlp"
+	"github.com/nio-net/neatio/neatdb"
+	"github.com/nio-net/neatio/neatdb/leveldb"
+	"github.com/nio-net/neatio/neatdb/memorydb"
+	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/neatio/utilities/rlp"
 )
 
 func init() {
