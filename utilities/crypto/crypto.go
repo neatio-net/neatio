@@ -15,7 +15,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/btcsuite/btcutil/base58"
+	"github.com/btcsuite/btcd/btcutil/base58"
 	"github.com/nio-net/neatio/utilities/common"
 	"github.com/nio-net/neatio/utilities/common/math"
 	"github.com/nio-net/neatio/utilities/rlp"
