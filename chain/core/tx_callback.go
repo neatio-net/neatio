@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/crypto"
 	dbm "github.com/nio-net/database"
 	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
 	"github.com/nio-net/neatio/chain/core/state"

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/wire"
 	dbm "github.com/nio-net/database"
 	ep "github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
 	"github.com/nio-net/neatio/chain/core/state"

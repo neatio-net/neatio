@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	cfg "github.com/neatlib/config-go"
+	cfg "github.com/nio-net/config"
 	cmn "github.com/nio-net/common"
 	dbm "github.com/nio-net/database"
 	"github.com/nio-net/neatio/chain/accounts/keystore"

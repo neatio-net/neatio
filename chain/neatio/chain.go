@@ -3,7 +3,7 @@ package main
 import (
 	"path/filepath"
 
-	cfg "github.com/neatlib/config-go"
+	cfg "github.com/nio-net/config"
 	"github.com/nio-net/neatio/chain/accounts/keystore"
 	ntcTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
 	"github.com/nio-net/neatio/chain/log"

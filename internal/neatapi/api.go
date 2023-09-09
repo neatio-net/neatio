@@ -13,7 +13,7 @@ import (
 	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
 	"github.com/nio-net/neatio/chain/core/state"
 
-	goCrypto "github.com/neatlib/crypto-go"
+	goCrypto "github.com/nio-net/crypto"
 	"github.com/nio-net/neatio/chain/accounts"
 	"github.com/nio-net/neatio/chain/accounts/keystore"
 	"github.com/nio-net/neatio/chain/core"

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	wire "github.com/neatlib/wire-go"
+	wire "github.com/nio-net/wire"
 	cmn "github.com/nio-net/common"
 	ctest "github.com/nio-net/common/test"
 	"github.com/stretchr/testify/assert"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/crypto"
 	"github.com/nio-net/neatio/chain/consensus"
 	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
 	ntcTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"

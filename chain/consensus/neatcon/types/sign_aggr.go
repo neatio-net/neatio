@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
 
 	"io"
 
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/wire"
 )
 
 const MaxSignAggrSize = 22020096

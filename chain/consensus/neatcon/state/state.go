@@ -8,7 +8,7 @@ import (
 
 	. "github.com/nio-net/common"
 
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/wire"
 
 	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
 

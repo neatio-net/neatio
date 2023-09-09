@@ -18,8 +18,8 @@ import (
 	"crypto/sha256"
 	"math/big"
 
-	cfg "github.com/neatlib/config-go"
-	tmdcrypto "github.com/neatlib/crypto-go"
+	cfg "github.com/nio-net/config"
+	tmdcrypto "github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
 	consss "github.com/nio-net/neatio/chain/consensus"
 	ep "github.com/nio-net/neatio/chain/consensus/neatcon/epoch"

@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/wire"
 	dbm "github.com/nio-net/database"
 	ncTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
 	"github.com/nio-net/neatio/chain/log"

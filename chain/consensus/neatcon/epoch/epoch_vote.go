@@ -5,8 +5,8 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/wire"
 	"github.com/nio-net/database"
 	"github.com/nio-net/neatio/chain/log"
 	"github.com/nio-net/neatio/utilities/common"

@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
 	"github.com/nio-net/neatio/utilities/common"
 	"github.com/nio-net/neatio/utilities/common/hexutil"

@@ -6,8 +6,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/wire"
 	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 

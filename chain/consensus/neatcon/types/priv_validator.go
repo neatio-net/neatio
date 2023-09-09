@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/neatlib/bls-go"
-	"github.com/neatlib/crypto-go"
-	"github.com/neatlib/wire-go"
+	"github.com/nio-net/bls"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/wire"
 	. "github.com/nio-net/common"
 	"github.com/nio-net/neatio/utilities/common"
 )

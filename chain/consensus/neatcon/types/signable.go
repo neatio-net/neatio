@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/neatlib/merkle-go"
+	"github.com/nio-net/merkle"
 	. "github.com/nio-net/common"
 )
 

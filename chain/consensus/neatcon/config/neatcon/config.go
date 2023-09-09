@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	cfg "github.com/neatlib/config-go"
+	cfg "github.com/nio-net/config"
 	. "github.com/nio-net/common"
 )
 

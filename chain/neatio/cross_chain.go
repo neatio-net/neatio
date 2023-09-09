@@ -11,7 +11,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/neatlib/crypto-go"
+	"github.com/nio-net/crypto"
 	dbm "github.com/nio-net/database"
 	"github.com/nio-net/neatio/chain/consensus"
 	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
