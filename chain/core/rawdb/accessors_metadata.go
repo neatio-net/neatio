@@ -19,11 +19,11 @@ package rawdb
 import (
 	"encoding/json"
 
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 // ReadDatabaseVersion retrieves the version number of the database.

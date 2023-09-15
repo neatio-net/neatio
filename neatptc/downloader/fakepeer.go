@@ -3,11 +3,11 @@ package downloader
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio/chain/core"
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/core"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 type FakePeer struct {

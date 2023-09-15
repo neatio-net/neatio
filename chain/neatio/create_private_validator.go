@@ -6,12 +6,12 @@ import (
 	"path/filepath"
 
 	"github.com/nio-net/crypto"
+	"github.com/nio-net/nio/chain/consensus/neatcon/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/utils"
 	"github.com/nio-net/wire"
-	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

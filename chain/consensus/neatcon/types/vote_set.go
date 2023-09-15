@@ -49,7 +49,7 @@ import (
 const LooseRound = 30
 const HalfLooseRound = 15
 
-//max { [(2*LooseRound - round)*totalVotingPower + 3*LooseRound]/(3*LooseRound), totalVotingPower/2 + 1 }
+// max { [(2*LooseRound - round)*totalVotingPower + 3*LooseRound]/(3*LooseRound), totalVotingPower/2 + 1 }
 func Loose23MajorThreshold(totalVotingPower *big.Int, round int) *big.Int {
 
 	//quorum := big.NewInt(0)
@@ -155,8 +155,10 @@ func (voteSet *VoteSet) Size() int {
 
 // Returns added=true if vote is valid and new.
 // Otherwise returns err=ErrVote[
-//		UnexpectedStep | InvalidIndex | InvalidAddress |
-//		InvalidSignature | InvalidBlockHash | ConflictingVotes ]
+//
+//	UnexpectedStep | InvalidIndex | InvalidAddress |
+//	InvalidSignature | InvalidBlockHash | ConflictingVotes ]
+//
 // Duplicate votes return added=false, err=nil.
 // Conflicting votes return added=*, err=ErrVoteConflictingVotes.
 // NOTE: vote should not be mutated after adding.
@@ -519,10 +521,10 @@ func (voteSet *VoteSet) StringShort() string {
 //--------------------------------------------------------------------------------
 
 /*
-	Votes for a particular block
-	There are two ways a *blockVotes gets created for a blockKey.
-	1. first (non-conflicting) vote of a validator w/ blockKey (peerMaj23=false)
-	2. A peer claims to have a 2/3 majority w/ blockKey (peerMaj23=true)
+Votes for a particular block
+There are two ways a *blockVotes gets created for a blockKey.
+1. first (non-conflicting) vote of a validator w/ blockKey (peerMaj23=false)
+2. A peer claims to have a 2/3 majority w/ blockKey (peerMaj23=true)
 */
 type blockVotes struct {
 	peerMaj23 bool      // peer claims to have maj23

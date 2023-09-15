@@ -20,13 +20,13 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/neatio/chain/consensus"
-	"github.com/nio-net/neatio/chain/core/state"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/core/vm"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/consensus"
+	"github.com/nio-net/nio/chain/core/state"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/core/vm"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 // So we can deterministically seed different blockchains

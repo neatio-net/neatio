@@ -21,7 +21,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 // precompiledTest defines the input/output pairs for precompiled contract tests.

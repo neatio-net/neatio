@@ -20,9 +20,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 //go:generate gencodec -type Log -field-override logMarshaling -out gen_log_json.go

@@ -17,9 +17,9 @@
 package vm
 
 import (
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/math"
 )
 
 // memoryGasCosts calculates the quadratic gas for memory expansion. It does so

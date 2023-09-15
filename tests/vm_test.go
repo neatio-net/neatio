@@ -19,7 +19,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/nio/chain/core/vm"
 )
 
 func TestVM(t *testing.T) {

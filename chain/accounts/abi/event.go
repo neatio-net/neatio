@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/crypto"
 )
 
 type Event struct {

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/nio/chain/log"
 )
 
 // Enabled is checked by the constructor functions for all of the

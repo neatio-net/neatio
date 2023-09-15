@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/nio-net/neatio/network/node"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/nio/network/node"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/rpc"
 )
 
 type SampleService struct{}

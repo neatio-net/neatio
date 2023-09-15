@@ -1,3 +1,19 @@
+// Copyright 2017 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package simulations
 
 import (
@@ -11,14 +27,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/neatio/network/node"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio/network/node"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/network/p2p/simulations/adapters"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/event"
 )
 
+// testService implements the node.Service interface and provides protocols
+// and APIs which are useful for testing nodes in a simulation network
 type testService struct {
 	id discover.NodeID
 

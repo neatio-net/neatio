@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 func TestUpdateCandidateSet(t *testing.T) {

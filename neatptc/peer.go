@@ -7,13 +7,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/nio-net/nio/chain/consensus"
 	"github.com/nio-net/wire"
-	"github.com/nio-net/neatio/chain/consensus"
 
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/rlp"
 	"github.com/nio-net/set"
 )
 

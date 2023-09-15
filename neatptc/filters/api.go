@@ -9,13 +9,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/neatio"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/nio-net/nio/utilities/event"
 )
 
 var (

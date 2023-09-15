@@ -9,7 +9,7 @@ import (
 )
 
 func Report(extra ...interface{}) {
-	fmt.Fprintln(os.Stderr, "You've encountered a sought after, hard to reproduce bug. Please report this to the developers <3 https://github.com/nio-net/neatio/issues")
+	fmt.Fprintln(os.Stderr, "You've encountered a sought after, hard to reproduce bug. Please report this to the developers <3 https://github.com/nio-net/nio/issues")
 	fmt.Fprintln(os.Stderr, extra...)
 
 	_, file, line, _ := runtime.Caller(1)

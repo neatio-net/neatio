@@ -6,11 +6,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/prque"
-	"github.com/nio-net/neatio/utilities/metrics"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/prque"
+	"github.com/nio-net/nio/utilities/metrics"
 )
 
 var (

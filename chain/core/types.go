@@ -17,15 +17,14 @@
 package core
 
 import (
-	"github.com/nio-net/neatio/chain/core/state"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/nio/chain/core/state"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/core/vm"
 )
 
 // Validator is an interface which defines the standard for block validation. It
 // is only responsible for validating block contents, as the header validation is
 // done by the specific consensus engines.
-//
 type Validator interface {
 	// ValidateBody validates the given block's content.
 	ValidateBody(block *types.Block) error

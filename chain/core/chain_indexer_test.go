@@ -23,9 +23,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 // Runs multiple tests with randomized parameters.

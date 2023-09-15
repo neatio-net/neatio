@@ -22,7 +22,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/nio/chain/core/vm"
 )
 
 func TestState(t *testing.T) {

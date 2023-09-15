@@ -25,16 +25,16 @@ import (
 	"math/big"
 	"strings"
 
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/chain/core/state"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
-	"github.com/nio-net/neatio/utilities/common/math"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/chain/core/state"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/nio-net/nio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 //go:generate gencodec -type Genesis -field-override genesisSpecMarshaling -out gen_genesis.go
@@ -171,10 +171,10 @@ func (e *GenesisMismatchError) Error() string {
 // SetupGenesisBlock writes or updates the genesis block in db.
 // The block that will be used is:
 //
-//                          genesis == nil       genesis != nil
-//                       +------------------------------------------
-//     db has no genesis |  main-net default  |  genesis
-//     db has genesis    |  from DB           |  genesis (if compatible)
+//	                     genesis == nil       genesis != nil
+//	                  +------------------------------------------
+//	db has no genesis |  main-net default  |  genesis
+//	db has genesis    |  from DB           |  genesis (if compatible)
 //
 // The stored chain configuration will be updated if it is compatible (i.e. does not
 // specify a fork block below the local head block). In case of a conflict, the

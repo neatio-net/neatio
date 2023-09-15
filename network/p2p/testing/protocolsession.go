@@ -22,10 +22,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/network/p2p/simulations/adapters"
 )
 
 var errTimedOut = errors.New("timed out")

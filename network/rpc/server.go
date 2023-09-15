@@ -22,7 +22,7 @@ import (
 	"sync/atomic"
 
 	mapset "github.com/deckarep/golang-set"
-	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/nio/chain/log"
 )
 
 const MetadataApi = "rpc"

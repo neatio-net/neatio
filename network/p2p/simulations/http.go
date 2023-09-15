@@ -30,11 +30,11 @@ import (
 	"sync"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/network/p2p/simulations/adapters"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/event"
 	"golang.org/x/net/websocket"
 )
 

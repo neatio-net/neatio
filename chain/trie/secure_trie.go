@@ -19,8 +19,8 @@ package trie
 import (
 	"fmt"
 
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 type SecureTrie struct {

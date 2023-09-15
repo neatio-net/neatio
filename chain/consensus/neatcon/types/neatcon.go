@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/nio-net/merkle"
+	neatTypes "github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 	"github.com/nio-net/wire"
-	neatTypes "github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
 )
 
 type NeatConExtra struct {

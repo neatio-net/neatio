@@ -20,9 +20,9 @@ import (
 	"fmt"
 
 	lru "github.com/hashicorp/golang-lru"
-	"github.com/nio-net/neatio/chain/trie"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/trie"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 const (

@@ -3,9 +3,9 @@ package keystore
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio"
-	"github.com/nio-net/neatio/chain/accounts"
-	"github.com/nio-net/neatio/chain/core/types"
+	"github.com/nio-net/nio"
+	"github.com/nio-net/nio/chain/accounts"
+	"github.com/nio-net/nio/chain/core/types"
 )
 
 type keystoreWallet struct {

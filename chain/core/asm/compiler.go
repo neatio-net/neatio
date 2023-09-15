@@ -23,8 +23,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nio-net/neatio/chain/core/vm"
-	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/nio/chain/core/vm"
+	"github.com/nio-net/nio/utilities/common/math"
 )
 
 // Compiler contains information about the parsed source

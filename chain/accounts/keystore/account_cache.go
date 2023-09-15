@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/neatio/chain/accounts"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/accounts"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
 	"github.com/nio-net/set"
 )
 

@@ -4,8 +4,8 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/math"
 )
 
 func packBytesSlice(bytes []byte, l int) []byte {

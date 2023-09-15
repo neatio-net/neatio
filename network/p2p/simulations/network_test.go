@@ -22,8 +22,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/network/p2p/simulations/adapters"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/network/p2p/simulations/adapters"
 )
 
 // TestNetworkSimulation creates a multi-node simulation network with each node

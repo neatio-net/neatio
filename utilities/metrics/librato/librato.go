@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/nio-net/neatio/utilities/metrics"
+	"github.com/nio-net/nio/utilities/metrics"
 )
 
 // a regexp for extracting the unit from time.Duration.String

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/nio/chain/log"
 	set "github.com/nio-net/set"
 )
 

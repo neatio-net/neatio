@@ -21,7 +21,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/nio-net/neatio/chain/core/vm"
+	"github.com/nio-net/nio/chain/core/vm"
 )
 
 // Iterator for disassembled EVM instructions

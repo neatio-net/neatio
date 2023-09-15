@@ -26,9 +26,9 @@ import (
 	"time"
 
 	"github.com/gizak/termui"
-	"github.com/nio-net/neatio/network/node"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/utils"
+	"github.com/nio-net/nio/network/node"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

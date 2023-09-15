@@ -26,7 +26,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/nio/chain/log"
 )
 
 /*

@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	cfg "github.com/nio-net/config"
 	. "github.com/nio-net/common"
+	cfg "github.com/nio-net/config"
 )
 
 const (

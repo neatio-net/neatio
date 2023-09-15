@@ -17,9 +17,9 @@
 package runtime
 
 import (
-	"github.com/nio-net/neatio/chain/core"
-	"github.com/nio-net/neatio/chain/core/vm"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/core"
+	"github.com/nio-net/nio/chain/core/vm"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 func NewEnv(cfg *Config) *vm.EVM {

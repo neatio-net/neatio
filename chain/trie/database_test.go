@@ -18,8 +18,8 @@ package trie
 import (
 	"testing"
 
-	"github.com/nio-net/neatio/neatdb/memorydb"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/neatdb/memorydb"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 func TestDatabaseMetarootFetch(t *testing.T) {

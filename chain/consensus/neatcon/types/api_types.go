@@ -3,10 +3,10 @@ package types
 import (
 	"time"
 
-	"github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 )
 
 type EpochApi struct {

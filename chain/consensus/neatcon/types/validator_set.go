@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
+	cmn "github.com/nio-net/common"
 	"github.com/nio-net/crypto"
 	"github.com/nio-net/merkle"
-	cmn "github.com/nio-net/common"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 // ValidatorSet represent a set of *Validator at a given height.

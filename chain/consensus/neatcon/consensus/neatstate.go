@@ -4,12 +4,12 @@ import (
 	"time"
 
 	cmn "github.com/nio-net/common"
-	consss "github.com/nio-net/neatio/chain/consensus"
-	ep "github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
-	sm "github.com/nio-net/neatio/chain/consensus/neatcon/state"
-	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/params"
+	consss "github.com/nio-net/nio/chain/consensus"
+	ep "github.com/nio-net/nio/chain/consensus/neatcon/epoch"
+	sm "github.com/nio-net/nio/chain/consensus/neatcon/state"
+	"github.com/nio-net/nio/chain/consensus/neatcon/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/params"
 )
 
 func (bs *ConsensusState) GetChainReader() consss.ChainReader {

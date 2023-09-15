@@ -22,9 +22,9 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/crypto"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 var emptyCodeHash = crypto.Keccak256(nil)

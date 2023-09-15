@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/nio-net/neatio/utilities/metrics"
+	"github.com/nio-net/nio/utilities/metrics"
 )
 
 type exp struct {

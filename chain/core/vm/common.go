@@ -19,8 +19,8 @@ package vm
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/math"
 )
 
 // calculates the memory size required for a step

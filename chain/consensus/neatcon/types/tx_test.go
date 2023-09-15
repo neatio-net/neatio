@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	wire "github.com/nio-net/wire"
 	cmn "github.com/nio-net/common"
 	ctest "github.com/nio-net/common/test"
+	wire "github.com/nio-net/wire"
 	"github.com/stretchr/testify/assert"
 )
 

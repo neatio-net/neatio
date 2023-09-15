@@ -9,7 +9,7 @@ import (
 	"gopkg.in/urfave/cli.v1"
 
 	cfg "github.com/nio-net/config"
-	tmcfg "github.com/nio-net/neatio/chain/consensus/neatcon/config/neatcon"
+	tmcfg "github.com/nio-net/nio/chain/consensus/neatcon/config/neatcon"
 )
 
 func GetNeatConConfig(chainId string, ctx *cli.Context) cfg.Config {

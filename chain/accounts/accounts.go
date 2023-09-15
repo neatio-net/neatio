@@ -3,10 +3,10 @@ package accounts
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/event"
 )
 
 type Account struct {

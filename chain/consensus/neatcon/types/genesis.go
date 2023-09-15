@@ -7,11 +7,11 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 
-	"github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 var GenDocKey = []byte("GenDocKey")
@@ -148,22 +148,22 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatcon",
-	"genesis_time": "2021-10-01T09:43:43.382013542+02:00",
+	"genesis_time": "2022-01-01T01:00:03.947586096+01:00",
 	"reward_scheme": {
 			"total_reward": "0x3bc350d642877320400000",
 			"reward_first_year": "0x20f90076365c62d400000",
-			"epoch_no_per_year": "0x2238",
+			"epoch_no_per_year": "0x16d",
 			"total_year": "0x1d"
 	},
 	"current_epoch": {
 			"number": "0x0",
-			"reward_per_block": "0x1c110215b9c000",
+			"reward_per_block": "0x1d0cae4f5dd000",
 			"start_block": "0x0",
-			"end_block": "0xe10",
+			"end_block": "0x151b9",
 			"validators": [
 					{
-							"address": "NEAThqiY535HtJxfD84ixftPijPqormo",
-							"pub_key": "0x0ABAB092B51F825462165648C521CEB419C34E07E7AE4BF2DC98586432CA47C47D54384FC19911AB3AA588C4F92B6DBE14435D4F1DC75FB201F797BEDEA2A0AD7AEE414FDA32A98B082BBDB9122D49FB80566F3A28556BAC6994D5EF9E6066BE73423386CAF3E1CACCC399763117862C94F7F24EB356D5677F3345454F06D881",
+							"address": "NEATxdFbo7zsqQqr829U9p7rFja1ZGyk",
+							"pub_key": "0x1F100176AA1DA63BEDD72FA0463162DDB78D9E90AAB36A6E90B6CA1B7196C29F0CF878BCB9DDD78135BD551891B5B8D3B248264BB72DE7F64D17EEC6EE091E9958B0B9C5C3646D>
 							"amount": "0x104e2da94483f6200000",
 							"name": "",
 							"epoch": "0x0"

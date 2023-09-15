@@ -3,7 +3,7 @@ package params
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 var DAOForkBlockExtra = common.FromHex("0x64616f2d686172642d666f726b")

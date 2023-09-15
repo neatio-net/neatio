@@ -19,10 +19,10 @@ package core
 import (
 	"fmt"
 
-	"github.com/nio-net/neatio/chain/consensus"
-	"github.com/nio-net/neatio/chain/core/state"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/nio/chain/consensus"
+	"github.com/nio-net/nio/chain/core/state"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/params"
 )
 
 // BlockValidator is responsible for validating block headers, uncles and

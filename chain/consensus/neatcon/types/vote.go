@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nio-net/crypto"
-	"github.com/nio-net/wire"
 	. "github.com/nio-net/common"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/crypto"
+	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/nio-net/wire"
 )
 
 var (

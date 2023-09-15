@@ -22,12 +22,12 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/chain/trie"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/crypto"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/chain/trie"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 type revision struct {
@@ -539,8 +539,8 @@ func (self *StateDB) createObject(addr common.Address) (newobj, prev *stateObjec
 // CreateAccount is called during the EVM CREATE operation. The situation might arise that
 // a contract does the following:
 //
-//   1. sends funds to sha(account ++ (nonce + 1))
-//   2. tx_create(sha(account ++ nonce)) (note that this gets the address of 1)
+//  1. sends funds to sha(account ++ (nonce + 1))
+//  2. tx_create(sha(account ++ nonce)) (note that this gets the address of 1)
 //
 // Carrying over the balance ensures that Ether doesn't disappear.
 func (self *StateDB) CreateAccount(addr common.Address) {

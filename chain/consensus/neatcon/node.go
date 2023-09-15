@@ -5,15 +5,15 @@ import (
 	"os"
 	"strings"
 
-	cfg "github.com/nio-net/config"
 	cmn "github.com/nio-net/common"
+	cfg "github.com/nio-net/config"
 	dbm "github.com/nio-net/database"
-	"github.com/nio-net/neatio/chain/consensus/neatcon/consensus"
-	"github.com/nio-net/neatio/chain/consensus/neatcon/epoch"
-	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
-	"github.com/nio-net/neatio/chain/core"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/nio/chain/consensus/neatcon/consensus"
+	"github.com/nio-net/nio/chain/consensus/neatcon/epoch"
+	"github.com/nio-net/nio/chain/consensus/neatcon/types"
+	"github.com/nio-net/nio/chain/core"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/params"
 )
 
 type Node struct {

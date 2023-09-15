@@ -12,10 +12,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/btcsuite/btcd/btcutil/base58"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/btcsuite/btcutil/base58"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 var testAddrHex = "970e8128ab834e8eac17ab8e3812f010678cf791"

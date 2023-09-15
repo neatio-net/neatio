@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/neatio/network/p2p/discover"
+	"github.com/nio-net/nio/network/p2p/discover"
 )
 
 func TestMocker(t *testing.T) {

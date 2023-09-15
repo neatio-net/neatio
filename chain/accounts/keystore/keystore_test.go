@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/neatio/chain/accounts"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio/chain/accounts"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/event"
 )
 
 var testSigData = make([]byte, 32)

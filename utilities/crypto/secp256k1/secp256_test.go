@@ -24,8 +24,8 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/nio-net/neatio/utilities/common/math"
-	"github.com/nio-net/neatio/utilities/crypto/randentropy"
+	"github.com/nio-net/nio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/crypto/randentropy"
 )
 
 const TestCount = 1000

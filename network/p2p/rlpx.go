@@ -20,11 +20,11 @@ import (
 	"time"
 
 	"github.com/golang/snappy"
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/utilities/crypto"
-	"github.com/nio-net/neatio/utilities/crypto/ecies"
-	"github.com/nio-net/neatio/utilities/crypto/secp256k1"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/nio-net/nio/utilities/crypto/ecies"
+	"github.com/nio-net/nio/utilities/crypto/secp256k1"
+	"github.com/nio-net/nio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 

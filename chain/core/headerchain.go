@@ -26,17 +26,17 @@ import (
 	"time"
 
 	lru "github.com/hashicorp/golang-lru"
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/chain/core/state"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/chain/core/state"
 
 	"sync/atomic"
 
-	"github.com/nio-net/neatio/chain/consensus"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/consensus"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 const (
@@ -70,9 +70,10 @@ type HeaderChain struct {
 }
 
 // NewHeaderChain creates a new HeaderChain structure.
-//  getValidator should return the parent's validator
-//  procInterrupt points to the parent's interrupt semaphore
-//  wg points to the parent's shutdown wait group
+//
+//	getValidator should return the parent's validator
+//	procInterrupt points to the parent's interrupt semaphore
+//	wg points to the parent's shutdown wait group
 func NewHeaderChain(chainDb neatdb.Database, config *params.ChainConfig, engine consensus.Engine, procInterrupt func() bool) (*HeaderChain, error) {
 	headerCache, _ := lru.New(headerCacheLimit)
 	tdCache, _ := lru.New(tdCacheLimit)
@@ -476,7 +477,7 @@ func (hc *HeaderChain) GetBlockByNumber(number uint64) *types.Block {
 }
 
 // CurrentBlock implements consensus.ChainReader, and returns nil for every input as
-///a header chain does not have blocks available for retrieval.
+// /a header chain does not have blocks available for retrieval.
 func (hc *HeaderChain) CurrentBlock() *types.Block {
 	return nil
 }

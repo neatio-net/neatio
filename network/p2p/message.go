@@ -9,9 +9,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/utilities/event"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/utilities/event"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 type Msg struct {

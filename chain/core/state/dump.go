@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/neatio/chain/trie"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/nio-net/nio/chain/trie"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/rlp"
 )
 
 type DumpAccount struct {

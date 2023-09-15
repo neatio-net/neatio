@@ -3,8 +3,8 @@ package node
 import (
 	"reflect"
 
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/rpc"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/rpc"
 )
 
 type NoopService struct{}

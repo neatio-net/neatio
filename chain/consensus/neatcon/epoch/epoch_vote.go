@@ -6,10 +6,10 @@ import (
 	"sync"
 
 	"github.com/nio-net/crypto"
+	db "github.com/nio-net/database"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
 	"github.com/nio-net/wire"
-	"github.com/nio-net/database"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
 )
 
 var voteRWMutex sync.RWMutex

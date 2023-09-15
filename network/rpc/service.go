@@ -27,7 +27,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/nio-net/neatio/chain/log"
+	"github.com/nio-net/nio/chain/log"
 )
 
 var (

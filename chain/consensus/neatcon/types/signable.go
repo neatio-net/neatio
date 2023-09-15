@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/nio-net/merkle"
 	. "github.com/nio-net/common"
+	"github.com/nio-net/merkle"
 )
 
 type Signable interface {

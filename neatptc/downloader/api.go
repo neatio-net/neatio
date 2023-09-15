@@ -4,9 +4,9 @@ import (
 	"context"
 	"sync"
 
-	"github.com/nio-net/neatio"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/event"
+	"github.com/nio-net/nio"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/event"
 )
 
 type PublicDownloaderAPI struct {

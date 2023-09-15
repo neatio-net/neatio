@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/crypto"
 	. "github.com/nio-net/common"
+	"github.com/nio-net/crypto"
 
 	"io"
 

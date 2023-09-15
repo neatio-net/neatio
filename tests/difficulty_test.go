@@ -21,8 +21,8 @@ import (
 
 	"math/big"
 
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 var (

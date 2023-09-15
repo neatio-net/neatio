@@ -15,10 +15,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/btcsuite/btcd/btcutil/base58"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/math"
-	"github.com/nio-net/neatio/utilities/rlp"
+	"github.com/btcsuite/btcutil/base58"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/rlp"
 	"golang.org/x/crypto/ripemd160"
 	"golang.org/x/crypto/sha3"
 )

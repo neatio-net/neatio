@@ -6,12 +6,12 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/params"
-	"github.com/nio-net/neatio/utilities/common"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/params"
+	"github.com/nio-net/nio/utilities/common"
 )
 
 func WriteGenesisBlock(chainDb neatdb.Database, reader io.Reader) (*types.Block, error) {
@@ -197,7 +197,7 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{
 	"config": {
-			"NeatChainId": "neatio",
+			"neatChainId": "neatio",
 			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
@@ -206,19 +206,19 @@ var DefaultMainnetGenesisJSON = `{
 			"eip158Block": 0,
 			"byzantiumBlock": 0,
 			"neatcon": {
-					"epoch": 30000,
+					"epoch": 86457,
 					"policy": 0
 			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6156bc27",
+	"timestamp": "0x61cf9982",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "NEATioBlockchainsGenesisCoinbase",
 	"alloc": {
-			"NEAThqiY535HtJxfD84ixftPijPqormo": {
+			"NEATxdFbo7zsqQqr829U9p7rFja1ZGyk": {
 					"balance": "0x3ee1186f11c064cc00000",
 					"amount": "0x104e2da94483f6200000"
 			}
@@ -230,7 +230,7 @@ var DefaultMainnetGenesisJSON = `{
 
 var DefaultTestnetGenesisJSON = `{
 	"config": {
-			"NeatChainId": "neatio",
+			"neatChainId": "neatio",
 			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,

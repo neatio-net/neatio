@@ -25,11 +25,11 @@ import (
 	"os"
 
 	"github.com/docker/docker/pkg/reexec"
-	"github.com/nio-net/neatio/network/node"
-	"github.com/nio-net/neatio/network/p2p"
-	"github.com/nio-net/neatio/network/p2p/discover"
-	"github.com/nio-net/neatio/network/rpc"
-	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/nio/network/node"
+	"github.com/nio-net/nio/network/p2p"
+	"github.com/nio-net/nio/network/p2p/discover"
+	"github.com/nio-net/nio/network/rpc"
+	"github.com/nio-net/nio/utilities/crypto"
 )
 
 // Node represents a node in a simulation network which is created by a
@@ -38,7 +38,6 @@ import (
 // * SimNode    - An in-memory node
 // * ExecNode   - A side process node
 // * DockerNode - A Docker container node
-//
 type Node interface {
 	// Addr returns the node's address (e.g. an Enode URL)
 	Addr() []byte

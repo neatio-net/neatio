@@ -1,7 +1,7 @@
 package consensus
 
 import (
-	"github.com/nio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/nio-net/nio/chain/consensus/neatcon/types"
 )
 
 func subscribeToEvent(evsw types.EventSwitch, receiver, eventID string, chanCap int) chan interface{} {

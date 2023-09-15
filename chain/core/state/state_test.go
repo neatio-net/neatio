@@ -21,10 +21,10 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/neatio/chain/core/rawdb"
-	"github.com/nio-net/neatio/neatdb"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/crypto"
+	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/nio-net/nio/neatdb"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/crypto"
 	checker "gopkg.in/check.v1"
 )
 

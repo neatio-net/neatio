@@ -19,7 +19,7 @@ package vm
 import (
 	"fmt"
 
-	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/nio/params"
 )
 
 func makeStackFunc(pop, push int) stackValidationFunc {

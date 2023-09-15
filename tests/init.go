@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/neatio/params"
+	"github.com/nio-net/nio/params"
 )
 
 // This table defines supported forks and their chain config.

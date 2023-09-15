@@ -19,7 +19,7 @@ package vm
 import (
 	"math/big"
 
-	"github.com/nio-net/neatio/utilities/common/math"
+	"github.com/nio-net/nio/utilities/common/math"
 )
 
 func memorySha3(stack *Stack) *big.Int {

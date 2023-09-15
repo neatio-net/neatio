@@ -20,8 +20,8 @@ import (
 	"context"
 	"net"
 
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/network/p2p/netutil"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/network/p2p/netutil"
 )
 
 // ServeListener accepts connections on l, serving JSON-RPC on them.

@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nio-net/wire"
 	dbm "github.com/nio-net/database"
-	ncTypes "github.com/nio-net/neatio/chain/consensus/neatcon/types"
-	"github.com/nio-net/neatio/chain/core/state"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
+	ncTypes "github.com/nio-net/nio/chain/consensus/neatcon/types"
+	"github.com/nio-net/nio/chain/core/state"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/wire"
 
 	"math/big"
 	"sort"
@@ -222,7 +222,7 @@ func (epoch *Epoch) ValidateNextEpoch(next *Epoch, lastHeight uint64, lastBlockT
 func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 
 	fmt.Printf("\n")
-	fmt.Printf("✨✨✨✨✨ NEAT Epoch Info ✨✨✨✨✨\n")
+	fmt.Printf("✨✨✨✨✨ Neatio Epoch Info ✨✨✨✨✨\n")
 	fmt.Printf("Next epoch proposed: %v", epoch.nextEpoch)
 
 	if epoch.nextEpoch != nil {
@@ -715,7 +715,7 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Reward: %v"+" NEAT"+",\n"+
+			"Reward: %v"+" NIO"+",\n"+
 			"Next epoch is starting at block: %v,\n"+
 			"The epoch will last until block: %v,\n",
 		epoch.Number,

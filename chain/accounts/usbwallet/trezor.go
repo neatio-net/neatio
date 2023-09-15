@@ -28,12 +28,12 @@ import (
 	"math/big"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/nio-net/neatio/chain/accounts"
-	"github.com/nio-net/neatio/chain/accounts/usbwallet/internal/trezor"
-	"github.com/nio-net/neatio/chain/core/types"
-	"github.com/nio-net/neatio/chain/log"
-	"github.com/nio-net/neatio/utilities/common"
-	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/nio/chain/accounts"
+	"github.com/nio-net/nio/chain/accounts/usbwallet/internal/trezor"
+	"github.com/nio-net/nio/chain/core/types"
+	"github.com/nio-net/nio/chain/log"
+	"github.com/nio-net/nio/utilities/common"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 )
 
 // ErrTrezorPINNeeded is returned if opening the trezor requires a PIN code. In
@@ -80,13 +80,13 @@ func (w *trezorDriver) Status() (string, error) {
 
 // Open implements usbwallet.driver, attempting to initialize the connection to
 // the Trezor hardware wallet. Initializing the Trezor is a two phase operation:
-//  * The first phase is to initialize the connection and read the wallet's
-//    features. This phase is invoked is the provided passphrase is empty. The
-//    device will display the pinpad as a result and will return an appropriate
-//    error to notify the user that a second open phase is needed.
-//  * The second phase is to unlock access to the Trezor, which is done by the
-//    user actually providing a passphrase mapping a keyboard keypad to the pin
-//    number of the user (shuffled according to the pinpad displayed).
+//   - The first phase is to initialize the connection and read the wallet's
+//     features. This phase is invoked is the provided passphrase is empty. The
+//     device will display the pinpad as a result and will return an appropriate
+//     error to notify the user that a second open phase is needed.
+//   - The second phase is to unlock access to the Trezor, which is done by the
+//     user actually providing a passphrase mapping a keyboard keypad to the pin
+//     number of the user (shuffled according to the pinpad displayed).
 func (w *trezorDriver) Open(device io.ReadWriter, passphrase string) error {
 	w.device, w.failure = device, nil
 

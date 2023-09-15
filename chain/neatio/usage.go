@@ -22,8 +22,8 @@ import (
 	"io"
 	"sort"
 
-	"github.com/nio-net/neatio/internal/debug"
-	"github.com/nio-net/neatio/utilities/utils"
+	"github.com/nio-net/nio/internal/debug"
+	"github.com/nio-net/nio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

@@ -21,7 +21,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/nio-net/neatio/utilities/common/hexutil"
+	"github.com/nio-net/nio/utilities/common/hexutil"
 )
 
 // Tests that data bitset encoding and decoding works and is bijective.
