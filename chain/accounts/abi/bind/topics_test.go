@@ -1,0 +1,169 @@
+package bind
+
+import (
+	"math/big"
+	"reflect"
+	"testing"
+
+	"github.com/nio-net/nio/chain/accounts/abi"
+	"github.com/nio-net/nio/utilities/common"
+)
+
+func TestMakeTopics(t *testing.T) {
+	type args struct {
+		query [][]interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    [][]common.Hash
+		wantErr bool
+	}{
+		{
+			"support fixed byte types, right padded to 32 bytes",
+			args{[][]interface{}{{[5]byte{1, 2, 3, 4, 5}}}},
+			[][]common.Hash{{common.Hash{1, 2, 3, 4, 5}}},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := makeTopics(tt.args.query...)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("makeTopics() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("makeTopics() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+type args struct {
+	createObj func() interface{}
+	resultObj func() interface{}
+	resultMap func() map[string]interface{}
+	fields    abi.Arguments
+	topics    []common.Hash
+}
+
+type bytesStruct struct {
+	StaticBytes [5]byte
+}
+type int8Struct struct {
+	Int8Value int8
+}
+type int256Struct struct {
+	Int256Value *big.Int
+}
+
+type topicTest struct {
+	name    string
+	args    args
+	wantErr bool
+}
+
+func setupTopicsTests() []topicTest {
+	bytesType, _ := abi.NewType("bytes5", "", nil)
+	int8Type, _ := abi.NewType("int8", "", nil)
+	int256Type, _ := abi.NewType("int256", "", nil)
+
+	tests := []topicTest{
+		{
+			name: "support fixed byte types, right padded to 32 bytes",
+			args: args{
+				createObj: func() interface{} { return &bytesStruct{} },
+				resultObj: func() interface{} { return &bytesStruct{StaticBytes: [5]byte{1, 2, 3, 4, 5}} },
+				resultMap: func() map[string]interface{} {
+					return map[string]interface{}{"staticBytes": [5]byte{1, 2, 3, 4, 5}}
+				},
+				fields: abi.Arguments{abi.Argument{
+					Name:    "staticBytes",
+					Type:    bytesType,
+					Indexed: true,
+				}},
+				topics: []common.Hash{
+					{1, 2, 3, 4, 5},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "int8 with negative value",
+			args: args{
+				createObj: func() interface{} { return &int8Struct{} },
+				resultObj: func() interface{} { return &int8Struct{Int8Value: -1} },
+				resultMap: func() map[string]interface{} {
+					return map[string]interface{}{"int8Value": int8(-1)}
+				},
+				fields: abi.Arguments{abi.Argument{
+					Name:    "int8Value",
+					Type:    int8Type,
+					Indexed: true,
+				}},
+				topics: []common.Hash{
+					{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+						255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "int256 with negative value",
+			args: args{
+				createObj: func() interface{} { return &int256Struct{} },
+				resultObj: func() interface{} { return &int256Struct{Int256Value: big.NewInt(-1)} },
+				resultMap: func() map[string]interface{} {
+					return map[string]interface{}{"int256Value": big.NewInt(-1)}
+				},
+				fields: abi.Arguments{abi.Argument{
+					Name:    "int256Value",
+					Type:    int256Type,
+					Indexed: true,
+				}},
+				topics: []common.Hash{
+					{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
+						255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+				},
+			},
+			wantErr: false,
+		},
+	}
+
+	return tests
+}
+
+func TestParseTopics(t *testing.T) {
+	tests := setupTopicsTests()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			createObj := tt.args.createObj()
+			if err := parseTopics(createObj, tt.args.fields, tt.args.topics); (err != nil) != tt.wantErr {
+				t.Errorf("parseTopics() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			resultObj := tt.args.resultObj()
+			if !reflect.DeepEqual(createObj, resultObj) {
+				t.Errorf("parseTopics() = %v, want %v", createObj, resultObj)
+			}
+		})
+	}
+}
+
+func TestParseTopicsIntoMap(t *testing.T) {
+	tests := setupTopicsTests()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			outMap := make(map[string]interface{})
+			if err := parseTopicsIntoMap(outMap, tt.args.fields, tt.args.topics); (err != nil) != tt.wantErr {
+				t.Errorf("parseTopicsIntoMap() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			resultMap := tt.args.resultMap()
+			if !reflect.DeepEqual(outMap, resultMap) {
+				t.Errorf("parseTopicsIntoMap() = %v, want %v", outMap, resultMap)
+			}
+		})
+	}
+}
