@@ -93,11 +93,11 @@ func (cch *CrossChainHelper) CanCreateSideChain(from common.Address, chainId str
 
 	officialMinimumDeposit := math.MustParseBig256(core.OFFICIAL_MINIMUM_DEPOSIT)
 	if minDepositAmount.Cmp(officialMinimumDeposit) == -1 {
-		return fmt.Errorf("Deposit amount is not meet the minimum official deposit amount (%v NEAT)", new(big.Int).Div(officialMinimumDeposit, big.NewInt(params.NEAT)))
+		return fmt.Errorf("Deposit amount is not meet the minimum official deposit amount (%v NEAT)", new(big.Int).Div(officialMinimumDeposit, big.NewInt(params.NIO)))
 	}
 
 	if startupCost.Cmp(officialMinimumDeposit) != 0 {
-		return fmt.Errorf("Startup cost is not meet the required amount (%v NEAT)", new(big.Int).Div(officialMinimumDeposit, big.NewInt(params.NEAT)))
+		return fmt.Errorf("Startup cost is not meet the required amount (%v NEAT)", new(big.Int).Div(officialMinimumDeposit, big.NewInt(params.NIO)))
 	}
 
 	if startBlock.Cmp(endBlock) >= 0 {

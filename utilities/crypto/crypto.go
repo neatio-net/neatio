@@ -25,8 +25,8 @@ import (
 
 var (
 	pubkeyVersion  = byte(0x00)
-	scriptVersion  = byte(0x42)
-	addressPrefix  = "NEA"
+	scriptVersion  = byte(0x05)
+	addressPrefix  = "NIO"
 	bs58Str        = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 	secp256k1N, _  = new(big.Int).SetString("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16)
 	secp256k1halfN = new(big.Int).Div(secp256k1N, big.NewInt(2))
