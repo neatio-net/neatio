@@ -1906,15 +1906,15 @@ var unitMap = {
     'milliether':   '1000000000000000',
     'milli':        '1000000000000000',
     'ether':        '1000000000000000000',
-    'neat':         '1000000000000000000',
+    'nio':          '1000000000000000000',
     'kether':       '1000000000000000000000',
-    'kneat':        '1000000000000000000000',
+    'knio':         '1000000000000000000000',
     'grand':        '1000000000000000000000',
     'mether':       '1000000000000000000000000',
-    'mneat':        '1000000000000000000000000',
+    'mnio':         '1000000000000000000000000',
     'gether':       '1000000000000000000000000000',
-    'gneat':        '1000000000000000000000000000',
-    'tneat':        '1000000000000000000000000000000',
+    'gnio':         '1000000000000000000000000000',
+    'tnio':         '1000000000000000000000000000000',
     'tether':       '1000000000000000000000000000000'
 };
 
@@ -2544,7 +2544,7 @@ function Web3 (provider) {
     this._requestManager = new RequestManager(provider);
     this.currentProvider = provider;
     this.eth = new Eth(this);
-    this.neat = new Eth(this);
+    this.nio = new Eth(this);
     this.db = new DB(this);
     this.shh = new Shh(this);
     this.net = new Net(this);
@@ -5231,7 +5231,7 @@ module.exports = DB;
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
- * @file neatptc.js
+ * @file nioptc.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @author Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
@@ -5586,7 +5586,7 @@ module.exports = Eth;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** @file neatptc.js
+/** @file nioptc.js
  * @authors:
  *   Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -5606,7 +5606,7 @@ var Net = function (web3) {
     });
 };
 
-/// @returns an array of objects describing web3.neatptc api properties
+/// @returns an array of objects describing web3.nioptc api properties
 var properties = function () {
     return [
         new Property({
@@ -5641,7 +5641,7 @@ module.exports = Net;
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
- * @file neatptc.js
+ * @file nioptc.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @author Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
@@ -5759,7 +5759,7 @@ module.exports = Personal;
 */
 /** @file shh.js
  * @authors:
- *   Fabian Vogelsteller <fabian@neatio.org>
+ *   Fabian Vogelsteller <fabian@ethereum.org>
  *   Marek Kotewicz <marek@ethcore.io>
  * @date 2017
  */
@@ -6058,7 +6058,7 @@ module.exports = Swarm;
 
 var Method = require('../method');
 
-/// @returns an array of objects describing web3.neatptc.filter api methods
+/// @returns an array of objects describing web3.nioptc.filter api methods
 var eth = function () {
     var newFilterCall = function (args) {
         var type = args[0];
