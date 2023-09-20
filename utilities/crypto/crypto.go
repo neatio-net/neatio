@@ -26,7 +26,7 @@ import (
 var (
 	pubkeyVersion  = byte(0x00)
 	scriptVersion  = byte(0x05)
-	addressPrefix  = "NIO"
+	addressPrefix  = "Nio"
 	bs58Str        = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 	secp256k1N, _  = new(big.Int).SetString("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16)
 	secp256k1halfN = new(big.Int).Div(secp256k1N, big.NewInt(2))
@@ -207,7 +207,7 @@ func ValidateNEATAddr(input string) bool {
 		return false
 	}
 
-	if inputByte[0] != 'N' || inputByte[1] != 'E' || inputByte[2] != 'A' || inputByte[3] != 'T' {
+	if inputByte[0] != 'N' || inputByte[1] != 'i' || inputByte[2] != 'o' || inputByte[3] != '3' {
 		return false
 	}
 

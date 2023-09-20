@@ -21,7 +21,7 @@ func neatchainCmd(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Info("NEAT | Blazing FAST, ultra SECURE and ECO friendly payment solution.")
+	log.Info("Neatio | Blazing FAST, ultra SECURE and ECO friendly payment solution.")
 
 	chainMgr := GetCMInstance(ctx)
 
