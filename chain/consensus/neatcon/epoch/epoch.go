@@ -30,7 +30,7 @@ const (
 	EPOCH_SAVED
 
 	MinimumValidatorsSize = 1
-	MaximumValidatorsSize = 40
+	MaximumValidatorsSize = 100
 
 	epochKey       = "Epoch:%v"
 	latestEpochKey = "LatestEpoch"
