@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package keystore
 
 import (
@@ -31,7 +15,6 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-// creates a Key and stores that in the given KeyStore by decrypting a presale key JSON
 func importPreSaleKey(keyStore keyStore, keyJSON []byte, password string) (accounts.Account, *Key, error) {
 	key, err := decryptPreSaleKey(keyJSON, password)
 	if err != nil {
@@ -63,13 +46,7 @@ func decryptPreSaleKey(fileContent []byte, password string) (key *Key, err error
 	}
 	iv := encSeedBytes[:16]
 	cipherText := encSeedBytes[16:]
-	/*
-		See https://github.com/ethereum/pyethsaletool
 
-		pyethsaletool generates the encryption key from password by
-		2000 rounds of PBKDF2 with HMAC-SHA-256 using password as salt (:().
-		16 byte key length within PBKDF2 and resulting key is used as AES key
-	*/
 	passBytes := []byte(password)
 	derivedKey := pbkdf2.Key(passBytes, passBytes, 2000, 16, sha256.New)
 	plainText, err := aesCBCDecrypt(derivedKey, cipherText, iv)
@@ -84,7 +61,7 @@ func decryptPreSaleKey(fileContent []byte, password string) (key *Key, err error
 		Address:    crypto.PubkeyToAddress(ecKey.PublicKey),
 		PrivateKey: ecKey,
 	}
-	derivedAddr := hex.EncodeToString(key.Address.Bytes()) // needed because .Hex() gives leading "0x"
+	derivedAddr := hex.EncodeToString(key.Address.Bytes()) 
 	expectedAddr := preSaleKeyStruct.EthAddr
 	if derivedAddr != expectedAddr {
 		err = fmt.Errorf("decrypted addr '%s' not equal to expected addr '%s'", derivedAddr, expectedAddr)
@@ -93,7 +70,6 @@ func decryptPreSaleKey(fileContent []byte, password string) (key *Key, err error
 }
 
 func aesCTRXOR(key, inText, iv []byte) ([]byte, error) {
-	// AES-128 is selected due to size of encryptKey.
 	aesBlock, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
@@ -119,7 +95,6 @@ func aesCBCDecrypt(key, cipherText, iv []byte) ([]byte, error) {
 	return plaintext, err
 }
 
-// From https://leanpub.com/gocrypto/read#leanpub-auto-block-cipher-modes
 func pkcs7Unpad(in []byte) []byte {
 	if len(in) == 0 {
 		return nil
