@@ -43,30 +43,6 @@ func TestMethodId(t *testing.T) {
 
 func TestABI_UnpackMethodInputs(t *testing.T) {
 
-	//inputByte, err := hexutil.Decode(inputHex)
-	//if err != nil {
-	//	t.Error(err)
-	//}
-	//
-	//function, err := neatAbi.FunctionTypeFromId(inputByte[:4])
-	//if err != nil {
-	//	t.Error(err)
-	//}
-	//fmt.Printf("function=%v\n", function)
-	//
-	////var args neatAbi.CandidateArgs
-	//var args neatAbi.DelegateArgs
-	////var args neatAbi.EditValidatorArgs
-	//
-	//err = neatAbi.ChainABI.UnpackMethodInputs(&args, function.String(), inputByte[4:])
-	//if err != nil {
-	//	t.Error(err)
-	//}
-	//fmt.Printf("unpack method %v\n", args.Moniker)
-	//fmt.Printf("unpack website %v\n", args.Website)
-	//fmt.Printf("unpack identify %v\n", args.Identity)
-	//fmt.Printf("unpack details %v\n", args.Details)
-
 	for _, v := range inputArray {
 		inputByte, err := hexutil.Decode(v.Input)
 		if err != nil {
