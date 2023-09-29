@@ -282,7 +282,7 @@ func TestNewNEATAddr(t *testing.T) {
 }
 
 func BenchmarkCreateNEATAddress(b *testing.B) {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		key, _ := GenerateKey()
 		addr := NewNEATScriptAddr(FromECDSAPub(&key.PublicKey))
 		fmt.Printf("NEAT address %v\n", addr)
@@ -299,14 +299,14 @@ type addressTest struct {
 }
 
 var addressList = []*addressTest{
-	{Address: "Nio3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: true},
-	{Address: "Nio3b437dSzaqRGxhTgW4qCq877ytYx", Valid: false},
-	{Address: "Nio2b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nIO3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nio3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NIo3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NIO3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nio3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: true},
+	{Address: "NEATb437dSzaqRGxhTgW4qCq877ytYx", Valid: false},
+	{Address: "NEAHb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "nEATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NeATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "neaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "neATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "NeaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "NEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
@@ -314,11 +314,11 @@ var addressList = []*addressTest{
 	{Address: "NeAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "nEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "Nio3", Valid: false},
-	{Address: "Nio3b43ldSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "Nio3b43IdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "Nio3b430dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "Nio3b43OdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEAT", Valid: false},
+	{Address: "NEATb43ldSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEATb43IdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEATb430dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NEATb43OdSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 }
 
 func TestValidateNEATAddress(t *testing.T) {
