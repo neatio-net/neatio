@@ -285,10 +285,10 @@ func BenchmarkCreateNEATAddress(b *testing.B) {
 	for i := 0; i < 10; i++ {
 		key, _ := GenerateKey()
 		addr := NewNEATScriptAddr(FromECDSAPub(&key.PublicKey))
-		fmt.Printf("NEAT address %v\n", addr)
+		fmt.Printf("NIO address %v\n", addr)
 		addrLen := len([]byte(addr))
 		if addrLen != common.NEATAddressLength {
-			b.Errorf("NEAT address %v lenght mismatch want %v, but %v\n", addr, common.NEATAddressLength, addrLen)
+			b.Errorf("NIO address %v lenght mismatch want %v, but %v\n", addr, common.NEATAddressLength, addrLen)
 		}
 	}
 }
@@ -307,12 +307,8 @@ var addressList = []*addressTest{
 	{Address: "NIo3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "NIO3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "nio3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "neATb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NeaTb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nEAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "NeAtb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
-	{Address: "nEatb437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "niO3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
+	{Address: "NiO3b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "b437dSzaqRGxhTgW4qCq877ytYxb", Valid: false},
 	{Address: "Nio3", Valid: false},
 	{Address: "Nio3b43ldSzaqRGxhTgW4qCq877ytYxb", Valid: false},
