@@ -1,19 +1,3 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package tests
 
 import (
@@ -38,13 +22,10 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-// StateTest checks transaction processing without block context.
-// See https://github.com/ethereum/EIPs/issues/176 for the test format specification.
 type StateTest struct {
 	json stJSON
 }
 
-// StateSubtest selects a specific configuration of a General State Test.
 type StateSubtest struct {
 	Fork  string
 	Index int
@@ -109,7 +90,6 @@ type stTransactionMarshaling struct {
 	PrivateKey hexutil.Bytes
 }
 
-// Subtests returns all valid subtests of the test.
 func (t *StateTest) Subtests() []StateSubtest {
 	var sub []StateSubtest
 	for fork, pss := range t.json.Post {
@@ -120,7 +100,6 @@ func (t *StateTest) Subtests() []StateSubtest {
 	return sub
 }
 
-// Run executes a specific subtest.
 func (t *StateTest) Run(subtest StateSubtest, vmconfig vm.Config) (*state.StateDB, error) {
 	config, ok := Forks[subtest.Fork]
 	if !ok {
@@ -170,7 +149,6 @@ func MakePreState(db neatdb.Database, accounts core.GenesisAlloc) *state.StateDB
 			statedb.SetState(addr, k, v)
 		}
 	}
-	// Commit and re-open to start with a clean state.
 	root, _ := statedb.Commit(false)
 	statedb, _ = state.New(root, sdb)
 	return statedb
@@ -189,7 +167,6 @@ func (t *StateTest) genesis(config *params.ChainConfig) *core.Genesis {
 }
 
 func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
-	// Derive sender from private key if present.
 	var from common.Address
 	if len(tx.PrivateKey) > 0 {
 		key, err := crypto.ToECDSA(tx.PrivateKey)
@@ -198,7 +175,6 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 		}
 		from = crypto.PubkeyToAddress(key.PublicKey)
 	}
-	// Parse recipient if present.
 	var to *common.Address
 	if tx.To != "" {
 		to = new(common.Address)
@@ -207,7 +183,6 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 		}
 	}
 
-	// Get values specific to this post state.
 	if ps.Indexes.Data > len(tx.Data) {
 		return nil, fmt.Errorf("tx data index %d out of bounds", ps.Indexes.Data)
 	}
@@ -220,7 +195,6 @@ func (tx *stTransaction) toMessage(ps stPostState) (core.Message, error) {
 	dataHex := tx.Data[ps.Indexes.Data]
 	valueHex := tx.Value[ps.Indexes.Value]
 	gasLimit := tx.GasLimit[ps.Indexes.Gas]
-	// Value, Data hex encoding is messy: https://github.com/ethereum/tests/issues/203
 	value := new(big.Int)
 	if valueHex != "0x" {
 		v, ok := math.ParseBig256(valueHex)
