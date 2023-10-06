@@ -8,7 +8,6 @@ import (
 
 var versionRegexp = regexp.MustCompile(`([0-9]+)\.([0-9]+)\.([0-9]+)`)
 
-// Contract contains information about a compiled contract, alongside its code and runtime code.
 type Contract struct {
 	Code        string            `json:"code"`
 	RuntimeCode string            `json:"runtime-code"`
@@ -16,11 +15,6 @@ type Contract struct {
 	Hashes      map[string]string `json:"hashes"`
 }
 
-// ContractInfo contains information about a compiled contract, including access
-// to the ABI definition, source mapping, user and developer docs, and metadata.
-//
-// Depending on the source, language version, compiler version, and compiler
-// options will provide information about how the contract was compiled.
 type ContractInfo struct {
 	Source          string      `json:"source"`
 	Language        string      `json:"language"`
