@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package event
 
 import (
@@ -24,28 +8,11 @@ import (
 	"github.com/nio-net/nio/utilities/common/mclock"
 )
 
-// Subscription represents a stream of events. The carrier of the events is typically a
-// channel, but isn't part of the interface.
-//
-// Subscriptions can fail while established. Failures are reported through an error
-// channel. It receives a value if there is an issue with the subscription (e.g. the
-// network connection delivering the events has been closed). Only one value will ever be
-// sent.
-//
-// The error channel is closed when the subscription ends successfully (i.e. when the
-// source of events is closed). It is also closed when Unsubscribe is called.
-//
-// The Unsubscribe method cancels the sending of events. You must call Unsubscribe in all
-// cases to ensure that resources related to the subscription are released. It can be
-// called any number of times.
 type Subscription interface {
-	Err() <-chan error // returns the error channel
-	Unsubscribe()      // cancels sending of events, closing the error channel
+	Err() <-chan error
+	Unsubscribe()
 }
 
-// NewSubscription runs a producer function as a subscription in a new goroutine. The
-// channel given to the producer is closed when Unsubscribe is called. If fn returns an
-// error, it is sent on the subscription's error channel.
 func NewSubscription(producer func(<-chan struct{}) error) Subscription {
 	s := &funcSub{unsub: make(chan struct{}), err: make(chan error, 1)}
 	go func() {
@@ -79,7 +46,6 @@ func (s *funcSub) Unsubscribe() {
 	s.unsubscribed = true
 	close(s.unsub)
 	s.mu.Unlock()
-	// Wait for producer shutdown.
 	<-s.err
 }
 
@@ -87,13 +53,6 @@ func (s *funcSub) Err() <-chan error {
 	return s.err
 }
 
-// Resubscribe calls fn repeatedly to keep a subscription established. When the
-// subscription is established, Resubscribe waits for it to fail and calls fn again. This
-// process repeats until Unsubscribe is called or the active subscription ends
-// successfully.
-//
-// Resubscribe applies backoff between calls to fn. The time between calls is adapted
-// based on the error rate, but will never exceed backoffMax.
 func Resubscribe(backoffMax time.Duration, fn ResubscribeFunc) Subscription {
 	s := &resubscribeSub{
 		waitTime:   backoffMax / 10,
@@ -106,7 +65,6 @@ func Resubscribe(backoffMax time.Duration, fn ResubscribeFunc) Subscription {
 	return s
 }
 
-// A ResubscribeFunc attempts to establish a subscription.
 type ResubscribeFunc func(context.Context) (Subscription, error)
 
 type resubscribeSub struct {
@@ -158,7 +116,6 @@ retry:
 		case err := <-subscribed:
 			cancel()
 			if err != nil {
-				// Subscribing failed, wait before launching the next try.
 				if s.backoffWait() {
 					return nil
 				}
@@ -205,13 +162,6 @@ func (s *resubscribeSub) backoffWait() bool {
 	}
 }
 
-// SubscriptionScope provides a facility to unsubscribe multiple subscriptions at once.
-//
-// For code that handle more than one subscription, a scope can be used to conveniently
-// unsubscribe all of them with a single call. The example demonstrates a typical use in a
-// larger program.
-//
-// The zero value is ready to use.
 type SubscriptionScope struct {
 	mu     sync.Mutex
 	subs   map[*scopeSub]struct{}
@@ -223,9 +173,6 @@ type scopeSub struct {
 	s  Subscription
 }
 
-// Track starts tracking a subscription. If the scope is closed, Track returns nil. The
-// returned subscription is a wrapper. Unsubscribing the wrapper removes it from the
-// scope.
 func (sc *SubscriptionScope) Track(s Subscription) Subscription {
 	sc.mu.Lock()
 	defer sc.mu.Unlock()
@@ -240,8 +187,6 @@ func (sc *SubscriptionScope) Track(s Subscription) Subscription {
 	return ss
 }
 
-// Close calls Unsubscribe on all tracked subscriptions and prevents further additions to
-// the tracked set. Calls to Track after Close return nil.
 func (sc *SubscriptionScope) Close() {
 	sc.mu.Lock()
 	defer sc.mu.Unlock()
@@ -255,8 +200,6 @@ func (sc *SubscriptionScope) Close() {
 	sc.subs = nil
 }
 
-// Count returns the number of tracked subscriptions.
-// It is meant to be used for debugging.
 func (sc *SubscriptionScope) Count() int {
 	sc.mu.Lock()
 	defer sc.mu.Unlock()
