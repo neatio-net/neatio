@@ -23,7 +23,7 @@ func ExampleFeed_acknowledgedEvents() {
 			for {
 				select {
 				case ev := <-ch:
-					fmt.Println(ev.i) // "process" the event
+					fmt.Println(ev.i)
 					ev.ack <- struct{}{}
 				case <-done:
 					return
