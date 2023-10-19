@@ -197,7 +197,7 @@ func DefaultGenesisBlockFromJson(genesisJson string) *Genesis {
 
 var DefaultMainnetGenesisJSON = `{
 	"config": {
-			"neatChainId": "neatio",
+			"NeatChainId": "neatio",
 			"chainId": 1,
 			"homesteadBlock": 0,
 			"eip150Block": 0,
@@ -211,16 +211,16 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x61cf9982",
+	"timestamp": "0x652eeacc",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "Nio3BlockchainGenesisBaseAddress",
 	"alloc": {
-			"NEATxdFbo7zsqQqr829U9p7rFja1ZGyk": {
-					"balance": "0x3ee1186f11c064cc00000",
-					"amount": "0x104e2da94483f6200000"
+			"Nio39UEs87WPXixRwU3LLdb7fFWAgzTw": {
+					"balance": "0x383f8f62ee6f1ec4000000",
+					"amount": "0x52b7d2dcc80cd2e4000000"
 			}
 	},
 	"number": "0x0",
