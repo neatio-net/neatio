@@ -148,23 +148,23 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatcon",
-	"genesis_time": "2022-01-01T01:00:03.947586096+01:00",
+	"genesis_time": "2023-10-17T22:13:23.586038224+02:00",
 	"reward_scheme": {
-			"total_reward": "0x3bc350d642877320400000",
-			"reward_first_year": "0x20f90076365c62d400000",
+			"total_reward": "0x108b2a2c280290940000000",
+			"reward_first_year": "0x1a784379d99db420000000",
 			"epoch_no_per_year": "0x16d",
-			"total_year": "0x1d"
+			"total_year": "0xa"
 	},
 	"current_epoch": {
 			"number": "0x0",
-			"reward_per_block": "0x1d0cae4f5dd000",
+			"reward_per_block": "0x70958a6f1c61f00",
 			"start_block": "0x0",
-			"end_block": "0x151b9",
+			"end_block": "0x438a",
 			"validators": [
 					{
-							"address": "NEATxdFbo7zsqQqr829U9p7rFja1ZGyk",
-							"pub_key": "0x1F100176AA1DA63BEDD72FA0463162DDB78D9E90AAB36A6E90B6CA1B7196C29F0CF878BCB9DDD78135BD551891B5B8D3B248264BB72DE7F64D17EEC6EE091E9958B0B9C5C3646D>
-							"amount": "0x104e2da94483f6200000",
+							"address": "Nio39UEs87WPXixRwU3LLdb7fFWAgzTw",
+							"pub_key": "0x43D0DF702CFADD0C85EC2CB1A25EB374973DD43B44CD1B546D3E8374FEC087D414615BADEE783D4C2EE85601B3B48A72ACF865456D674082062905C4861749DF0CAFC1ACB870222A7207C4F2D68C1F6D2FD7C1CAE5E69530FBC9BFCEDB34120B4B038A33351E230BE037C8F3FA2F6A7C6710C14381436F6D9B68286CA6124F93",
+							"amount": "0x52b7d2dcc80cd2e4000000",
 							"name": "",
 							"epoch": "0x0"
 					}
