@@ -251,7 +251,7 @@ var DefaultTestnetGenesisJSON = `{
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "Nio3BlockchainGenesisBaseAddress",
 	"alloc": {
-			"NEATjQoTmRNypoWaTpMebKmED8bbA32b": {
+			"Nio39UEs87WPXixRwU3LLdb7fFWAgzTw": {
 					"balance": "0x3ee1186f11c064cc00000",
 					"amount": "0x104e2da94483f6200000"
 			}

@@ -60,7 +60,7 @@ func neatchainCmd(ctx *cli.Context) error {
 
 	err = chainMgr.StartRPC()
 	if err != nil {
-		log.Error("start NEAT RPC failed")
+		log.Error("start Neatio RPC failed")
 		return err
 	}
 

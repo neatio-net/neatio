@@ -340,7 +340,7 @@ func (s *PrivateAccountAPI) SignTransaction(ctx context.Context, args SendTxArgs
 }
 
 func signHash(data []byte) []byte {
-	msg := fmt.Sprintf("\x19NEAT Chain Signed Message:\n%d%s", len(data), data)
+	msg := fmt.Sprintf("\x19NIO Chain Signed Message:\n%d%s", len(data), data)
 	return crypto.Keccak256([]byte(msg))
 }
 
@@ -366,7 +366,7 @@ func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Byt
 		return "", fmt.Errorf("signature must be 65 bytes long")
 	}
 	if sig[64] != 27 && sig[64] != 28 {
-		return "", fmt.Errorf("invalid NEAT Blockchain signature (V is not 27 or 28)")
+		return "", fmt.Errorf("invalid Neatio Blockchain signature (V is not 27 or 28)")
 	}
 	sig[64] -= 27
 

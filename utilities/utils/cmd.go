@@ -104,7 +104,7 @@ func StartNode(ctx *cli.Context, stack *node.Node) error {
 		// Mining only makes sense if a full neatio node is running
 		var neatio *neatptc.NeatIO
 		if err := stack.Service(&neatio); err != nil {
-			Fatalf("NEAT Blockchain service not running: %v", err)
+			Fatalf("Neatio Blockchain service not running: %v", err)
 		}
 
 		// Use a reduced number of threads if requested

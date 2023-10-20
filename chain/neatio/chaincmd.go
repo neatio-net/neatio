@@ -30,13 +30,13 @@ var (
 	initNEATGenesisCmd = cli.Command{
 		Action:    utils.MigrateFlags(initNeatGenesis),
 		Name:      "init-neatio",
-		Usage:     "Initialize NEAT genesis.json file. init-neatio {\"1000000000000000000000000000\",\"100000000000000000000000\"}",
+		Usage:     "Initialize Neatio genesis.json file. init-neatio {\"1000000000000000000000000000\",\"100000000000000000000000\"}",
 		ArgsUsage: "<genesisPath>",
 		Flags: []cli.Flag{
 			utils.DataDirFlag,
 		},
 		Category:    "BLOCKCHAIN COMMANDS",
-		Description: "The init-neatio initializes a new NEAT genesis.json file for the network.",
+		Description: "The init-neatio initializes a new Neatio genesis.json file for the network.",
 	}
 
 	initCommand = cli.Command{
