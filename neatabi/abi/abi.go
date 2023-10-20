@@ -524,9 +524,9 @@ const jsonChainABI = `
 	}
 ]`
 
-var SideChainTokenIncentiveAddr = common.StringToAddress("NEATioSideChainsTokenDepositAddy")
+var SideChainTokenIncentiveAddr = common.StringToAddress("Nio3SideChainsTokenDepositAddess")
 
-var ChainContractMagicAddr = common.StringToAddress("NEATioMiningSmartContractAddress")
+var ChainContractMagicAddr = common.StringToAddress("Nio33MintingSmartContractAddress")
 
 var ChainABI abi.ABI
 
