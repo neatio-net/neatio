@@ -211,14 +211,14 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x652eeacc",
+	"timestamp": "0x6533d46b",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "Nio3BlockchainGenesisBaseAddress",
 	"alloc": {
-			"Nio39UEs87WPXixRwU3LLdb7fFWAgzTw": {
+			"Nio3QwqZ8eSmkZxXS8dWsZ1DzATCWpMK": {
 					"balance": "0x383f8f62ee6f1ec4000000",
 					"amount": "0x52b7d2dcc80cd2e4000000"
 			}
