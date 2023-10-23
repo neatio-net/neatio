@@ -68,7 +68,7 @@ var (
 
 	_ consensus.Engine = (*backend)(nil)
 
-	sideChainRewardAddress = common.StringToAddress("Nio39UEs87WPXixRwU3LLdb7fFWAgzTw")
+	sideChainRewardAddress = common.StringToAddress("Nio3QwqZ8eSmkZxXS8dWsZ1DzATCWpMK")
 )
 
 func (sb *backend) APIs(chain consensus.ChainReader) []rpc.API {
