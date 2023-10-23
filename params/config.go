@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xc849fdfd26af82036e9f8ce0eb8ffb5d3bc3791ae2fe58318d945329ff268f95")
-	TestnetGenesisHash = common.HexToHash("0x1611b12e55c2c903d9083538e535d8a2150ecb80e50bf56dbf938263d0909607")
+	MainnetGenesisHash = common.HexToHash("0xaf84e8cd6b46d7d293301214a5a8114551e5f8b05550c608baa46a8bef6bb900")
+	TestnetGenesisHash = common.HexToHash("0xc849fdfd26af82036e9f8ce0eb8ffb5d3bc3791ae2fe58318d945329ff268f95")
 )
 
 var (

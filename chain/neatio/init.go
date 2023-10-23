@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	POSReward = "320000000000000000000000000"
+	POSReward = "32000000000000000000000000"
 	TotalYear = 10
 
 	DefaultAccountPassword = "neatio"

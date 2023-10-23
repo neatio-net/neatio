@@ -148,6 +148,33 @@ func GenesisDocFromJSON(jsonBlob []byte) (genDoc *GenesisDoc, err error) {
 var MainnetGenesisJSON string = `{
 	"chain_id": "neatio",
 	"consensus": "neatcon",
+	"genesis_time": "2023-10-21T15:39:00.744472879+02:00",
+	"reward_scheme": {
+			"total_reward": "0x1a784379d99db420000000",
+			"reward_first_year": "0x2a5a058fc295ed0000000",
+			"epoch_no_per_year": "0x16d",
+			"total_year": "0xa"
+	},
+	"current_epoch": {
+			"number": "0x0",
+			"reward_per_block": "0x70958a6f1c61f00",
+			"start_block": "0x0",
+			"end_block": "0x438a",
+			"validators": [
+					{
+							"address": "Nio3QwqZ8eSmkZxXS8dWsZ1DzATCWpMK",
+							"pub_key": "0x454A0C86B95E2E1AC466B4F1E03BBF11B8FD7587C039805FBA5E05C14D0B03B94A157AE48C4E1D13A43FB727356974B4125F6E4D78E278C921F35895BC9920784FCFD05F6A15E8B5BF827FD84FB25FC9D0ADA969C133BC58E294C163F42C2114836D4345A420A2733267F22D45C397179DEEC96BB9709CC10663BA7B7B45C263",
+							"amount": "0x52b7d2dcc80cd2e4000000",
+							"name": "",
+							"epoch": "0x0"
+					}
+			]
+	}
+}`
+
+var TestnetGenesisJSON string = `{
+	"chain_id": "neatio",
+	"consensus": "neatcon",
 	"genesis_time": "2023-10-17T22:13:23.586038224+02:00",
 	"reward_scheme": {
 			"total_reward": "0x108b2a2c280290940000000",
@@ -165,33 +192,6 @@ var MainnetGenesisJSON string = `{
 							"address": "Nio39UEs87WPXixRwU3LLdb7fFWAgzTw",
 							"pub_key": "0x43D0DF702CFADD0C85EC2CB1A25EB374973DD43B44CD1B546D3E8374FEC087D414615BADEE783D4C2EE85601B3B48A72ACF865456D674082062905C4861749DF0CAFC1ACB870222A7207C4F2D68C1F6D2FD7C1CAE5E69530FBC9BFCEDB34120B4B038A33351E230BE037C8F3FA2F6A7C6710C14381436F6D9B68286CA6124F93",
 							"amount": "0x52b7d2dcc80cd2e4000000",
-							"name": "",
-							"epoch": "0x0"
-					}
-			]
-	}
-}`
-
-var TestnetGenesisJSON string = `{
-	"chain_id": "neatio",
-	"consensus": "neatcon",
-	"genesis_time": "2021-08-29T08:22:48.630594977+02:00",
-	"reward_scheme": {
-			"total_reward": "0x3bc350d642877320400000",
-			"reward_first_year": "0x20f90076365c62d400000",
-			"epoch_no_per_year": "0x2238",
-			"total_year": "0x1d"
-	},
-	"current_epoch": {
-			"number": "0x0",
-			"reward_per_block": "0x1c110215b9c000",
-			"start_block": "0x0",
-			"end_block": "0xe10",
-			"validators": [
-					{
-							"address": "Nio39UEs87WPXixRwU3LLdb7fFWAgzTw",
-							"pub_key": "0x1D39A5FBF22E6EE55595F3021A6846F250C42A48E98AC21F0BB584FA62AE5A936CFAF51F97A406FC7EAF74C8640B4B3E2E041E99D0A5736E7E6B5D8F0D54992000FF1329824700AAAB01D616D43943007F3E4A357F910EC2DB3E15112ADEBBE07EF3E95C7641C249AAB335E37515F5FD9F818F915A48F7B56FE3F5702392EBB5",
-							"amount": "0x104e2da94483f6200000",
 							"name": "",
 							"epoch": "0x0"
 					}
