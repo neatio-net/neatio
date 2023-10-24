@@ -1,19 +1,3 @@
-// Copyright 2014 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package core
 
 import (
@@ -42,8 +26,6 @@ import (
 
 var errGenesisNoConfig = errors.New("genesis has no chain configuration")
 
-// Genesis specifies the header fields, state of a genesis block. It also defines hard
-// fork switch-over blocks through the chain configuration.
 type Genesis struct {
 	Config     *params.ChainConfig `json:"config"`
 	Nonce      uint64              `json:"nonce"`
@@ -55,8 +37,6 @@ type Genesis struct {
 	Coinbase   common.Address      `json:"coinbase"`
 	Alloc      GenesisAlloc        `json:"alloc"      gencodec:"required"`
 
-	// These fields are used for consensus tests. Please don't use them
-	// in actual genesis blocks.
 	Number     uint64      `json:"number"`
 	GasUsed    uint64      `json:"gasUsed"`
 	ParentHash common.Hash `json:"parentHash"`
@@ -73,14 +53,11 @@ type GenesisWrite struct {
 	Coinbase   string              `json:"coinbase"`
 	Alloc      GenesisAllocWrite   `json:"alloc"      gencodec:"required"`
 
-	// These fields are used for consensus tests. Please don't use them
-	// in actual genesis blocks.
 	Number     uint64      `json:"number"`
 	GasUsed    uint64      `json:"gasUsed"`
 	ParentHash common.Hash `json:"parentHash"`
 }
 
-// GenesisAlloc specifies the initial state that is part of the genesis block.
 type GenesisAlloc map[common.Address]GenesisAccount
 
 type GenesisAllocWrite map[string]GenesisAccount
@@ -97,27 +74,21 @@ func (ga *GenesisAlloc) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// GenesisAccount is an account in the state of the genesis block.
 type GenesisAccount struct {
 	Code    []byte                      `json:"code,omitempty"`
 	Storage map[common.Hash]common.Hash `json:"storage,omitempty"`
 	Balance *big.Int                    `json:"balance" gencodec:"required"`
 	Nonce   uint64                      `json:"nonce,omitempty"`
 
-	// Stack
-	Amount *big.Int `json:"amount,omitempty"`
-	// Delegate
-	DelegateBalance *big.Int `json:"delegate,omitempty"`
-	// Proxied Balance
+	Amount               *big.Int                    `json:"amount,omitempty"`
+	DelegateBalance      *big.Int                    `json:"delegate,omitempty"`
 	DepositProxiedDetail map[common.Address]*big.Int `json:"proxiedList,omitempty"`
-	// Candidate
-	Candidate  bool  `json:"candidate,omitempty"`
-	Commission uint8 `json:"commission,omitempty"`
+	Candidate            bool                        `json:"candidate,omitempty"`
+	Commission           uint8                       `json:"commission,omitempty"`
 
-	PrivateKey []byte `json:"secretKey,omitempty"` // for tests
+	PrivateKey []byte `json:"secretKey,omitempty"`
 }
 
-// field type overrides for gencodec
 type genesisSpecMarshaling struct {
 	Nonce      math.HexOrDecimal64
 	Timestamp  math.HexOrDecimal64
@@ -138,8 +109,6 @@ type genesisAccountMarshaling struct {
 	PrivateKey hexutil.Bytes
 }
 
-// storageJSON represents a 256 bit byte array, but allows less than 256 bits when
-// unmarshaling from hex.
 type storageJSON common.Hash
 
 func (h *storageJSON) UnmarshalText(text []byte) error {
@@ -158,8 +127,6 @@ func (h storageJSON) MarshalText() ([]byte, error) {
 	return hexutil.Bytes(h[:]).MarshalText()
 }
 
-// GenesisMismatchError is raised when trying to overwrite an existing
-// genesis block with an incompatible one.
 type GenesisMismatchError struct {
 	Stored, New common.Hash
 }
@@ -168,25 +135,11 @@ func (e *GenesisMismatchError) Error() string {
 	return fmt.Sprintf("database already contains an incompatible genesis block (have %x, new %x)", e.Stored[:8], e.New[:8])
 }
 
-// SetupGenesisBlock writes or updates the genesis block in db.
-// The block that will be used is:
-//
-//	                     genesis == nil       genesis != nil
-//	                  +------------------------------------------
-//	db has no genesis |  main-net default  |  genesis
-//	db has genesis    |  from DB           |  genesis (if compatible)
-//
-// The stored chain configuration will be updated if it is compatible (i.e. does not
-// specify a fork block below the local head block). In case of a conflict, the
-// error is a *params.ConfigCompatError and the new, unwritten config is returned.
-//
-// The returned chain configuration is never nil.
 func SetupGenesisBlock(db neatdb.Database, genesis *Genesis) (*params.ChainConfig, common.Hash, error) {
 	if genesis != nil && genesis.Config == nil {
 		return nil, common.Hash{}, errGenesisNoConfig
 	}
 
-	// Just commit the new block if there is no stored genesis block.
 	stored := rawdb.ReadCanonicalHash(db, 0)
 	if (stored == common.Hash{}) {
 		if genesis == nil {
@@ -199,7 +152,6 @@ func SetupGenesisBlock(db neatdb.Database, genesis *Genesis) (*params.ChainConfi
 		return genesis.Config, block.Hash(), err
 	}
 
-	// Check whether the genesis block is already written.
 	if genesis != nil {
 		hash := genesis.ToBlock(nil).Hash()
 		if hash != stored {
@@ -207,7 +159,6 @@ func SetupGenesisBlock(db neatdb.Database, genesis *Genesis) (*params.ChainConfi
 		}
 	}
 
-	// Get the existing chain configuration.
 	newcfg := genesis.configOrDefault(stored)
 	storedcfg := rawdb.ReadChainConfig(db, stored)
 	if storedcfg == nil {
@@ -215,15 +166,10 @@ func SetupGenesisBlock(db neatdb.Database, genesis *Genesis) (*params.ChainConfi
 		rawdb.WriteChainConfig(db, stored, newcfg)
 		return newcfg, stored, nil
 	}
-	// Special case: don't change the existing config of a non-mainnet chain if no new
-	// config is supplied. These chains would get AllProtocolChanges (and a compat error)
-	// if we just continued here.
 	if genesis == nil && stored != params.MainnetGenesisHash {
 		return storedcfg, stored, nil
 	}
 
-	// Check config compatibility and write the config. Compatibility errors
-	// are returned to the caller unless we're already at block zero.
 	height := rawdb.ReadHeaderNumber(db, rawdb.ReadHeadHeaderHash(db))
 	if height == nil {
 		return newcfg, stored, fmt.Errorf("missing block number for head header hash")
@@ -249,8 +195,6 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 	}
 }
 
-// ToBlock creates the genesis block and writes state of a genesis specification
-// to the given database (or discards it if nil).
 func (g *Genesis) ToBlock(db neatdb.Database) *types.Block {
 	if db == nil {
 		db = rawdb.NewMemoryDatabase()
@@ -258,22 +202,18 @@ func (g *Genesis) ToBlock(db neatdb.Database) *types.Block {
 	statedb, _ := state.New(common.Hash{}, state.NewDatabase(db))
 	for addr, account := range g.Alloc {
 		statedb.AddBalance(addr, account.Balance)
-		// Deposit Balance for POS
 		statedb.AddDepositBalance(addr, account.Amount)
 
-		// Delegate Balance
 		if account.DelegateBalance != nil {
 			statedb.AddDelegateBalance(addr, account.DelegateBalance)
 		}
 
-		// Deposit Proxied Detail
 		if account.DepositProxiedDetail != nil {
 			for proxiedAddr, depositProxiedBalance := range account.DepositProxiedDetail {
 				statedb.AddDepositProxiedBalanceByUser(addr, proxiedAddr, depositProxiedBalance)
 			}
 		}
 
-		// Candidate, set empty pubkey for genesis candidate
 		fmt.Printf("toblock pubkey %v\n", "")
 		if account.Candidate {
 			statedb.ApplyForCandidate(addr, "", account.Commission)
@@ -311,8 +251,6 @@ func (g *Genesis) ToBlock(db neatdb.Database) *types.Block {
 	return types.NewBlock(head, nil, nil, nil)
 }
 
-// Commit writes the block and state of a genesis specification to the database.
-// The block is committed as the canonical head block.
 func (g *Genesis) Commit(db neatdb.Database) (*types.Block, error) {
 	block := g.ToBlock(db)
 	if block.Number().Sign() != 0 {
@@ -331,8 +269,6 @@ func (g *Genesis) Commit(db neatdb.Database) (*types.Block, error) {
 	return block, nil
 }
 
-// MustCommit writes the genesis block and state to db, panicking on error.
-// The block is committed as the canonical head block.
 func (g *Genesis) MustCommit(db neatdb.Database) *types.Block {
 	block, err := g.Commit(db)
 	if err != nil {
@@ -341,13 +277,11 @@ func (g *Genesis) MustCommit(db neatdb.Database) *types.Block {
 	return block
 }
 
-// GenesisBlockForTesting creates and writes a block in which addr has the given wei balance.
 func GenesisBlockForTesting(db neatdb.Database, addr common.Address, balance *big.Int) *types.Block {
 	g := Genesis{Alloc: GenesisAlloc{addr: {Balance: balance}}}
 	return g.MustCommit(db)
 }
 
-// DefaultGenesisBlock returns the Ethereum main net genesis block.
 func DefaultGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.MainnetChainConfig,
@@ -359,7 +293,6 @@ func DefaultGenesisBlock() *Genesis {
 	}
 }
 
-// DefaultTestnetGenesisBlock returns the Ropsten network genesis block.
 func DefaultTestnetGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.TestnetChainConfig,
