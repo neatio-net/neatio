@@ -211,16 +211,16 @@ var DefaultMainnetGenesisJSON = `{
 			}
 	},
 	"nonce": "0xdeadbeefdeadbeef",
-	"timestamp": "0x6533d46b",
+	"timestamp": "0x6536beee",
 	"extraData": "0x",
 	"gasLimit": "0x7270e00",
 	"difficulty": "0x1",
 	"mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
 	"coinbase": "Nio3BlockchainGenesisBaseAddress",
 	"alloc": {
-			"Nio3QwqZ8eSmkZxXS8dWsZ1DzATCWpMK": {
+			"Nio3BHxKwCW65jRysbsBNh454h6XrPuK": {
 					"balance": "0x383f8f62ee6f1ec4000000",
-					"amount": "0x52b7d2dcc80cd2e4000000"
+					"amount": "0xd3c21bcecceda1000000"
 			}
 	},
 	"number": "0x0",
