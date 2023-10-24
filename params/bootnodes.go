@@ -1,7 +1,7 @@
 package params
 
 var MainnetBootnodes = []string{
-	"enode://6313a0b3bc9bc473c985bf992ad56aeb1a9ebf0f3a0194e26d84ca9cbef863f5e5b798f59fb0df6198afdd60b64e69f113662d025516e23b59f328569ecf7ef2@185.202.236.101:9910",
+	"enode://cebe3fd4d559bb35defdb1a3fe7441c6ddff450ab606d9d322bb8f23b2e89ceea1f076442bf709047c2b9dd56975d192c58309bd0c239af37829cda955749d43@185.202.236.101:9910",
 }
 
 var TestnetBootnodes = []string{
