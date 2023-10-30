@@ -142,7 +142,7 @@ func (sb *backend) Author(header *types.Header) (common.Address, error) {
 
 func (sb *backend) VerifyHeader(chain consensus.ChainReader, header *types.Header, seal bool) error {
 
-	sb.logger.Info("Your node is synchronized. This is Neat!")
+	// sb.logger.Info("Your node is synchronized. This is Neat!")
 
 	return sb.verifyHeader(chain, header, nil)
 }
@@ -244,7 +244,7 @@ func (sb *backend) verifyCascadingFields(chain consensus.ChainReader, header *ty
 }
 
 func (sb *backend) VerifyHeaderBeforeConsensus(chain consensus.ChainReader, header *types.Header, seal bool) error {
-	sb.logger.Info("NeatCon backend verify header before consensus")
+	// sb.logger.Info("NeatCon backend verify header before consensus")
 
 	if header.Number == nil {
 		return errUnknownBlock
