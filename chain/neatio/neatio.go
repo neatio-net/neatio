@@ -7,10 +7,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nio-net/nio/chain/consensus/neatcon/consensus"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/internal/debug"
-	"github.com/nio-net/nio/utilities/utils"
+	"github.com/neatio-net/neatio/chain/consensus/neatcon/consensus"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/internal/debug"
+	"github.com/neatio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -21,7 +21,7 @@ func neatchainCmd(ctx *cli.Context) error {
 		return nil
 	}
 
-	log.Info("Neatio | Blazing FAST, ultra SECURE and ECO friendly payment solution.")
+	log.Info("Neatio | Beyond payments.")
 
 	chainMgr := GetCMInstance(ctx)
 

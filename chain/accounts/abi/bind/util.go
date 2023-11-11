@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 func WaitMined(ctx context.Context, b DeployBackend, tx *types.Transaction) (*types.Receipt, error) {

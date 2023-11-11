@@ -4,51 +4,55 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/nio/chain/log"
+	"github.com/neatio-net/neatio/chain/log"
 
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xd24bc15a083123aca78682487c06f7ce015e21983d4f294855f77f6160b5df04")
-	TestnetGenesisHash = common.HexToHash("0xc849fdfd26af82036e9f8ce0eb8ffb5d3bc3791ae2fe58318d945329ff268f95")
+	MainnetGenesisHash = common.HexToHash("0x2819c8cb1eae983ff4da7019a99a7aca7db9e08741c53dcd7c4a7017d0a299f7")
+	TestnetGenesisHash = common.HexToHash("0x473e0300dc12441d4d7450033a4ca4ba5c003547f6ffb7ef6cdeb2d02f475c39")
 )
 
 var (
 	MainnetChainConfig = &ChainConfig{
 		NeatChainId:         "neatio",
-		ChainId:             big.NewInt(1),
+		ChainId:             big.NewInt(1001),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
 		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
 
 	TestnetChainConfig = &ChainConfig{
 		NeatChainId:         "testnet",
-		ChainId:             big.NewInt(2),
+		ChainId:             big.NewInt(525),
 		HomesteadBlock:      big.NewInt(0),
 		EIP150Block:         big.NewInt(0),
 		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
 		ConstantinopleBlock: nil,
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
 
-	TestChainConfig = &ChainConfig{"", big.NewInt(1), big.NewInt(0), big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, nil}
+	TestChainConfig = &ChainConfig{"", big.NewInt(1), big.NewInt(0), big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil}
 	TestRules       = TestChainConfig.Rules(new(big.Int))
 )
 
@@ -57,7 +61,7 @@ func init() {
 }
 
 type ChainConfig struct {
-	NeatChainId string   `json:"NeatChainId"`
+	NeatChainId string   `json:"neatChainId"`
 	ChainId     *big.Int `json:"chainId"`
 
 	HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"`
@@ -70,6 +74,8 @@ type ChainConfig struct {
 
 	ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`
 	ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"`
+	PetersburgBlock     *big.Int `json:"petersburgBlock,omitempty"`
+	IstanbulBlock       *big.Int `json:"istanbulBlock,omitempty"`
 
 	NeatCon *NeatConConfig `json:"neatcon,omitempty"`
 
@@ -87,17 +93,18 @@ func (c *NeatConConfig) String() string {
 
 func NewSideChainConfig(sideChainID string) *ChainConfig {
 	config := &ChainConfig{
-		NeatChainId:    sideChainID,
-		HomesteadBlock: big.NewInt(0),
-		EIP150Block:    big.NewInt(0),
-		EIP150Hash:     common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
-		EIP155Block:    big.NewInt(0),
-		EIP158Block:    big.NewInt(0),
-
+		NeatChainId:         sideChainID,
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP150Hash:          common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
 		ByzantiumBlock:      big.NewInt(0),
-		ConstantinopleBlock: nil,
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
 		NeatCon: &NeatConConfig{
-			Epoch:          86457,
+			Epoch:          30000,
 			ProposerPolicy: 0,
 		},
 	}
@@ -116,7 +123,7 @@ func (c *ChainConfig) String() string {
 	default:
 		engine = "unknown"
 	}
-	return fmt.Sprintf("{NeatChainId: %s ChainID: %v Homestead: %v  EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v Engine: %v}",
+	return fmt.Sprintf("{NeatChainId: %s ChainID: %v Homestead: %v  EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v Petersburg: %v Istanbul: %v Engine: %v}",
 		c.NeatChainId,
 		c.ChainId,
 		c.HomesteadBlock,
@@ -125,6 +132,8 @@ func (c *ChainConfig) String() string {
 		c.EIP158Block,
 		c.ByzantiumBlock,
 		c.ConstantinopleBlock,
+		c.PetersburgBlock,
+		c.IstanbulBlock,
 		engine,
 	)
 }
@@ -151,6 +160,14 @@ func (c *ChainConfig) IsByzantium(num *big.Int) bool {
 
 func (c *ChainConfig) IsConstantinople(num *big.Int) bool {
 	return isForked(c.ConstantinopleBlock, num)
+}
+
+func (c *ChainConfig) IsPetersburg(num *big.Int) bool {
+	return isForked(c.PetersburgBlock, num) || c.PetersburgBlock == nil && isForked(c.ConstantinopleBlock, num)
+}
+
+func (c *ChainConfig) IsIstanbul(num *big.Int) bool {
+	return isForked(c.IstanbulBlock, num)
 }
 
 func (c *ChainConfig) IsEWASM(num *big.Int) bool {
@@ -215,6 +232,12 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, head *big.Int) *Confi
 	}
 	if isForkIncompatible(c.ConstantinopleBlock, newcfg.ConstantinopleBlock, head) {
 		return newCompatError("Constantinople fork block", c.ConstantinopleBlock, newcfg.ConstantinopleBlock)
+	}
+	if isForkIncompatible(c.PetersburgBlock, newcfg.PetersburgBlock, head) {
+		return newCompatError("Petersburg fork block", c.PetersburgBlock, newcfg.PetersburgBlock)
+	}
+	if isForkIncompatible(c.IstanbulBlock, newcfg.IstanbulBlock, head) {
+		return newCompatError("Istanbul fork block", c.IstanbulBlock, newcfg.IstanbulBlock)
 	}
 	return nil
 }
@@ -287,8 +310,8 @@ func (c *ChainConfig) Rules(num *big.Int) Rules {
 		IsEIP155:         c.IsEIP155(num),
 		IsEIP158:         c.IsEIP158(num),
 		IsByzantium:      c.IsByzantium(num),
-		IsConstantinople: false,
-		IsPetersburg:     false,
-		IsIstanbul:       false,
+		IsConstantinople: c.IsConstantinople(num),
+		IsPetersburg:     c.IsPetersburg(num),
+		IsIstanbul:       c.IsIstanbul(num),
 	}
 }

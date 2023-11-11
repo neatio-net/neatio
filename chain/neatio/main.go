@@ -7,12 +7,12 @@ import (
 	"sort"
 	"time"
 
-	"github.com/nio-net/nio/chain/log"
+	"github.com/neatio-net/neatio/chain/log"
 
-	"github.com/nio-net/nio/internal/debug"
-	"github.com/nio-net/nio/utilities/console"
-	"github.com/nio-net/nio/utilities/metrics"
-	"github.com/nio-net/nio/utilities/utils"
+	"github.com/neatio-net/neatio/internal/debug"
+	"github.com/neatio-net/neatio/utilities/console"
+	"github.com/neatio-net/neatio/utilities/metrics"
+	"github.com/neatio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -102,7 +102,7 @@ func init() {
 
 	app.Action = neatchainCmd
 	app.HideVersion = true
-	app.Copyright = "Copyright 2020-2023 Neatio Developers"
+	app.Copyright = "Copyright 2022 Neatio Developers"
 	app.Commands = []cli.Command{
 
 		createValidatorCmd,

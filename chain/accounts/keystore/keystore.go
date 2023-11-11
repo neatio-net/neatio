@@ -13,11 +13,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 var (

@@ -112,8 +112,10 @@ func ParseCombinedJSON(combinedJSON []byte, source string, languageVersion strin
 	if err := json.Unmarshal(combinedJSON, &output); err != nil {
 		return nil, err
 	}
+
 	contracts := make(map[string]*Contract)
 	for name, info := range output.Contracts {
+
 		var abi interface{}
 		if err := json.Unmarshal([]byte(info.Abi), &abi); err != nil {
 			return nil, fmt.Errorf("solc: error reading abi definition (%v)", err)

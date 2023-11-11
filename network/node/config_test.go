@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 func TestDatadirCreation(t *testing.T) {

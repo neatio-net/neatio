@@ -23,9 +23,9 @@ import (
 	"time"
 
 	"github.com/karalabe/hid"
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 // LedgerScheme is the protocol scheme prefixing account and wallet URLs.

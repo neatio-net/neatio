@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 var (

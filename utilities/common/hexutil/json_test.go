@@ -44,6 +44,7 @@ func referenceBytes(s string) []byte {
 var errJSONEOF = errors.New("unexpected end of JSON input")
 
 var unmarshalBytesTests = []unmarshalTest{
+
 	{input: "", wantErr: errJSONEOF},
 	{input: "null", wantErr: errNonString(bytesT)},
 	{input: "10", wantErr: errNonString(bytesT)},
@@ -107,6 +108,7 @@ func TestMarshalBytes(t *testing.T) {
 }
 
 var unmarshalBigTests = []unmarshalTest{
+
 	{input: "", wantErr: errJSONEOF},
 	{input: "null", wantErr: errNonString(bigT)},
 	{input: "10", wantErr: errNonString(bigT)},
@@ -186,6 +188,7 @@ func TestMarshalBig(t *testing.T) {
 }
 
 var unmarshalUint64Tests = []unmarshalTest{
+
 	{input: "", wantErr: errJSONEOF},
 	{input: "null", wantErr: errNonString(uint64T)},
 	{input: "10", wantErr: errNonString(uint64T)},
@@ -272,6 +275,7 @@ var (
 )
 
 var unmarshalUintTests = []unmarshalTest{
+
 	{input: "", wantErr: errJSONEOF},
 	{input: "null", wantErr: errNonString(uintT)},
 	{input: "10", wantErr: errNonString(uintT)},
@@ -322,8 +326,10 @@ func TestUnmarshalFixedUnprefixedText(t *testing.T) {
 		{input: "2", wantErr: ErrOddLength},
 		{input: "4444", wantErr: errors.New("hex string has length 4, want 8 for x")},
 		{input: "4444", wantErr: errors.New("hex string has length 4, want 8 for x")},
+
 		{input: "444444gg", wantErr: ErrSyntax, want: []byte{0, 0, 0, 0}},
 		{input: "0x444444gg", wantErr: ErrSyntax, want: []byte{0, 0, 0, 0}},
+
 		{input: "44444444", want: []byte{0x44, 0x44, 0x44, 0x44}},
 		{input: "0x44444444", want: []byte{0x44, 0x44, 0x44, 0x44}},
 	}

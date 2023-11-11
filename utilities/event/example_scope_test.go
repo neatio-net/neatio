@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 type divServer struct{ results event.Feed }
@@ -55,6 +55,7 @@ func (s *App) Stop() {
 }
 
 func ExampleSubscriptionScope() {
+
 	var (
 		app  App
 		wg   sync.WaitGroup

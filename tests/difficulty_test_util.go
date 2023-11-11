@@ -3,9 +3,9 @@ package tests
 import (
 	"math/big"
 
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/math"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/math"
 )
 
 //go:generate gencodec -type DifficultyTest -field-override difficultyTestMarshaling -out gen_difficultytest.go
@@ -29,7 +29,6 @@ type difficultyTestMarshaling struct {
 }
 
 func (test *DifficultyTest) Run(config *params.ChainConfig) error {
-
 	return nil
 
 }

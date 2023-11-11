@@ -25,15 +25,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/core/vm"
-	"github.com/nio-net/nio/tests"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/common/math"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/core/vm"
+	"github.com/neatio-net/neatio/tests"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/math"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 // To generate a new callTracer test, copy paste the makeTest method below into

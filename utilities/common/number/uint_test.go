@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 func TestSet(t *testing.T) {

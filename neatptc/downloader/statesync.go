@@ -6,12 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/chain/trie"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/chain/trie"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/utilities/common"
 	"golang.org/x/crypto/sha3"
 )
 

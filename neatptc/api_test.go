@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 var dumper = spew.ConfigState{Indent: "    "}

@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/crypto"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/wire"
+	"github.com/neatio-net/crypto-go"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/wire-go"
 )
 
 var extraHex = "0x0108696e74636861696e0000000000002c0615cd7d205898b7400000000000000000000201149d2b5214e24104f648819a2b851970e02e0f73c50114dae66c6bca991012f6f62d4db42c79c60e3c2e44010114980aaa734720bdc9d93e3d4030a135aec4910bac0000000000000001011415a43260d301c016d636ec117eac56578f1157990000000000002c06000140439243a34a9ef90323f7db46d7800b7049fa4a50599956054d716de1cf37f7dc686c8a5c6510a17609cda05dd53737cc8635f15da4f7f48ccc1c288db0960e730100000000000000010101000000000000000100"
@@ -47,7 +47,7 @@ func TestValidator_Hash(t *testing.T) {
 	}
 	fmt.Printf("blsPubKey%v\n", blsPubKey)
 	validator := Validator{
-		Address:        []byte("32H8py5Jg396p7QNDUwTwkeVod15ksxne5"),
+		Address:        []byte("0xBdC81a9D73cC9a79994a93115BC2693fa0161cdf"),
 		PubKey:         blsPubKey,
 		VotingPower:    big.NewInt(10000000000),
 		RemainingEpoch: uint64(0),

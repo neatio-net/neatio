@@ -3,12 +3,12 @@ package consensus
 import (
 	"math/big"
 
-	"github.com/nio-net/nio/chain/consensus/neatcon/epoch"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/network/rpc"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/consensus/neatcon/epoch"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/network/rpc"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 type ChainReader interface {

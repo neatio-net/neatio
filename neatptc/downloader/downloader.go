@@ -8,15 +8,15 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/nio-net/nio"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/event"
-	"github.com/nio-net/nio/utilities/metrics"
+	"github.com/neatio-net/neatio"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/metrics"
 )
 
 var (

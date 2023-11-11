@@ -3,10 +3,11 @@ package event_test
 import (
 	"fmt"
 
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 func ExampleFeed_acknowledgedEvents() {
+
 	var feed event.Feed
 	type ackedEvent struct {
 		i   int
@@ -39,4 +40,5 @@ func ExampleFeed_acknowledgedEvents() {
 			<-acksignal
 		}
 	}
+
 }

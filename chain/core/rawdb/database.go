@@ -17,9 +17,9 @@
 package rawdb
 
 import (
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/neatdb/leveldb"
-	"github.com/nio-net/nio/neatdb/memorydb"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/neatdb/leveldb"
+	"github.com/neatio-net/neatio/neatdb/memorydb"
 )
 
 // NewDatabase creates a high level database on top of a given key-value data

@@ -40,7 +40,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 var dumpEnc bool

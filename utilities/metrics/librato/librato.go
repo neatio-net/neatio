@@ -7,13 +7,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/nio-net/nio/utilities/metrics"
+	"github.com/neatio-net/neatio/utilities/metrics"
 )
 
-// a regexp for extracting the unit from time.Duration.String
 var unitRegexp = regexp.MustCompile(`[^\\d]+$`)
 
-// a helper that turns a time.Duration into librato display attributes for timer metrics
 func translateTimerAttributes(d time.Duration) (attrs map[string]interface{}) {
 	attrs = make(map[string]interface{})
 	attrs[DisplayTransform] = fmt.Sprintf("x/%d", int64(d))
@@ -27,8 +25,8 @@ type Reporter struct {
 	Source          string
 	Interval        time.Duration
 	Registry        metrics.Registry
-	Percentiles     []float64              // percentiles to report on histogram metrics
-	TimerAttributes map[string]interface{} // units in which timers will be displayed
+	Percentiles     []float64
+	TimerAttributes map[string]interface{}
 	intervalSec     int64
 }
 
@@ -58,8 +56,6 @@ func (self *Reporter) Run() {
 	}
 }
 
-// calculate sum of squares from data provided by metrics.Histogram
-// see http://en.wikipedia.org/wiki/Standard_deviation#Rapid_calculation_methods
 func sumSquares(s metrics.Sample) float64 {
 	count := float64(s.Count())
 	sumSquared := math.Pow(count*s.Mean(), 2)
@@ -81,7 +77,6 @@ func sumSquaresTimer(t metrics.Timer) float64 {
 
 func (self *Reporter) BuildRequest(now time.Time, r metrics.Registry) (snapshot Batch, err error) {
 	snapshot = Batch{
-		// coerce timestamps to a stepping fn so that they line up in Librato graphs
 		MeasureTime: (now.Unix() / self.intervalSec) * self.intervalSec,
 		Source:      self.Source,
 	}

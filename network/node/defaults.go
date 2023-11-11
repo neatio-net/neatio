@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/p2p/nat"
-	"github.com/nio-net/nio/network/rpc"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/p2p/nat"
+	"github.com/neatio-net/neatio/network/rpc"
 )
 
 const (

@@ -1,7 +1,7 @@
 package downloader
 
 import (
-	"github.com/nio-net/nio/utilities/metrics"
+	"github.com/neatio-net/neatio/utilities/metrics"
 )
 
 var (

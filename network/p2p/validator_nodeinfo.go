@@ -3,9 +3,9 @@ package p2p
 import (
 	"time"
 
-	"github.com/nio-net/nio/network/p2p/discover"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/network/p2p/discover"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/rlp"
 	"golang.org/x/crypto/sha3"
 )
 

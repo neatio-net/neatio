@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/set"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/set-go"
 )
 
 const minReloadInterval = 2 * time.Second
@@ -230,7 +230,7 @@ func (ac *accountCache) scanAccounts() error {
 		key.Address = ""
 		err = json.NewDecoder(buf).Decode(&key)
 
-		addr := common.StringToAddress(key.Address)
+		addr := common.HexToAddress(key.Address)
 		switch {
 		case err != nil:
 			log.Debug("Failed to decode keystore key", "path", path, "err", err)

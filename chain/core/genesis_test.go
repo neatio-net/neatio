@@ -6,10 +6,10 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 func TestDefaultGenesisBlock(t *testing.T) {

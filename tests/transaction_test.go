@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/params"
 )
 
 func TestTransaction(t *testing.T) {

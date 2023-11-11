@@ -10,16 +10,16 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
 
-	flock "github.com/nio-net/flock"
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/internal/debug"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/rpc"
-	"github.com/nio-net/nio/utilities/event"
+	flock "github.com/neatio-net/flock-go"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/internal/debug"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/rpc"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 type Node struct {

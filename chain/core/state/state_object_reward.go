@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 type Reward map[common.Address]*big.Int
@@ -18,12 +19,10 @@ func (p Reward) String() (str string) {
 }
 
 func (p Reward) Copy() Reward {
-	fmt.Printf("state objetct reward reward:%v\n", p)
-	fmt.Printf("state objetct reward reward:%v\n", p.String())
 	cpy := make(Reward)
 	for key, value := range p {
-		fmt.Printf("state objetct reward k:%v, v:%v\n", key, value)
-		cpy[key] = new(big.Int).Set(value)
+
+		cpy[key] = value
 	}
 	return cpy
 }
@@ -47,6 +46,11 @@ func (c *stateObject) SubRewardBalance(amount *big.Int) {
 }
 
 func (self *stateObject) SetRewardBalance(amount *big.Int) {
+	if amount.Sign() < 0 {
+		log.Infof("!!!amount is negative, not support yet, make it 0 by force")
+		amount = big.NewInt(0)
+	}
+
 	self.db.journal = append(self.db.journal, rewardBalanceChange{
 		account: &self.address,
 		prev:    new(big.Int).Set(self.data.RewardBalance),
@@ -64,44 +68,6 @@ func (self *stateObject) setRewardBalance(amount *big.Int) {
 
 func (self *stateObject) RewardBalance() *big.Int {
 	return self.data.RewardBalance
-}
-
-func (self *stateObject) AddAvailableRewardBalance(amount *big.Int) {
-	if amount.Sign() == 0 {
-		if self.empty() {
-			self.touch()
-		}
-		return
-	}
-	self.SetAvailableRewardBalance(new(big.Int).Add(self.AvailableRewardBalance(), amount))
-}
-
-func (self *stateObject) SubAvailableRewardBalance(amount *big.Int) {
-	if amount.Sign() == 0 {
-		return
-	}
-	self.SetAvailableRewardBalance(new(big.Int).Sub(self.AvailableRewardBalance(), amount))
-}
-
-func (self *stateObject) SetAvailableRewardBalance(amount *big.Int) {
-	self.db.journal = append(self.db.journal, availableRewardBalanceChange{
-		account: &self.address,
-		prev:    new(big.Int).Set(self.data.AvailableRewardBalance),
-	})
-
-	self.setAvailableRewardBalance(amount)
-}
-
-func (self *stateObject) setAvailableRewardBalance(amount *big.Int) {
-	self.data.AvailableRewardBalance = amount
-	if self.onDirty != nil {
-		self.onDirty(self.Address())
-		self.onDirty = nil
-	}
-}
-
-func (self *stateObject) AvailableRewardBalance() *big.Int {
-	return self.data.AvailableRewardBalance
 }
 
 func (c *stateObject) getRewardTrie(db Database) Trie {

@@ -85,12 +85,14 @@ func TestOR(t *testing.T) {
 
 func TestTest(t *testing.T) {
 	for align := 0; align < 2; align++ {
+
 		p := make([]byte, 1023)[align:]
 		p[100] = 1
 
 		if TestBytes(p) != safeTestBytes(p) {
 			t.Error("not equal")
 		}
+
 		q := make([]byte, 1023)[align:]
 		q[len(q)-1] = 1
 

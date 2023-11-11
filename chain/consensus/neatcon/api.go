@@ -2,16 +2,15 @@ package neatcon
 
 import (
 	"errors"
-	"fmt"
 	"math/big"
 
-	"github.com/nio-net/crypto"
-	"github.com/nio-net/nio/chain/consensus"
-	"github.com/nio-net/nio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/nio-net/nio/chain/consensus/neatcon/types"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	neatCrypto "github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/crypto-go"
+	"github.com/neatio-net/neatio/chain/consensus"
+	"github.com/neatio-net/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/neatio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	neatCrypto "github.com/neatio-net/neatio/utilities/crypto"
 )
 
 type API struct {
@@ -23,7 +22,7 @@ func (api *API) GetCurrentEpochNumber() (hexutil.Uint64, error) {
 	return hexutil.Uint64(api.neatcon.core.consensusState.Epoch.Number), nil
 }
 
-func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApiForConsole, error) {
+func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApi, error) {
 
 	number := uint64(num)
 	var resultEpoch *epoch.Epoch
@@ -38,17 +37,17 @@ func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApiForConsole, erro
 		resultEpoch = epoch.LoadOneEpoch(curEpoch.GetDB(), number, nil)
 	}
 
-	validators := make([]*ntcTypes.EpochValidatorForConsole, len(resultEpoch.Validators.Validators))
+	validators := make([]*ntcTypes.EpochValidator, len(resultEpoch.Validators.Validators))
 	for i, val := range resultEpoch.Validators.Validators {
-		validators[i] = &ntcTypes.EpochValidatorForConsole{
-			Address:        common.BytesToAddress(val.Address).String(),
+		validators[i] = &ntcTypes.EpochValidator{
+			Address:        common.BytesToAddress(val.Address),
 			PubKey:         val.PubKey.KeyString(),
 			Amount:         (*hexutil.Big)(val.VotingPower),
 			RemainingEpoch: hexutil.Uint64(val.RemainingEpoch),
 		}
 	}
 
-	return &ntcTypes.EpochApiForConsole{
+	return &ntcTypes.EpochApi{
 		Number:         hexutil.Uint64(resultEpoch.Number),
 		RewardPerBlock: (*hexutil.Big)(resultEpoch.RewardPerBlock),
 		StartBlock:     hexutil.Uint64(resultEpoch.StartBlock),
@@ -59,7 +58,7 @@ func (api *API) GetEpoch(num hexutil.Uint64) (*ntcTypes.EpochApiForConsole, erro
 	}, nil
 }
 
-func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApiForConsole, error) {
+func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApi, error) {
 
 	ep := api.neatcon.core.consensusState.Epoch
 	if ep.GetNextEpoch() != nil {
@@ -68,16 +67,16 @@ func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApiForConsole, error) {
 		if ep.GetNextEpoch().GetEpochValidatorVoteSet() != nil {
 			votes = ep.GetNextEpoch().GetEpochValidatorVoteSet().Votes
 		}
-		votesApi := make([]*ntcTypes.EpochValidatorVoteApiForConsole, 0, len(votes))
+		votesApi := make([]*ntcTypes.EpochValidatorVoteApi, 0, len(votes))
 		for _, v := range votes {
 			var pkstring string
 			if v.PubKey != nil {
 				pkstring = v.PubKey.KeyString()
 			}
 
-			votesApi = append(votesApi, &ntcTypes.EpochValidatorVoteApiForConsole{
-				EpochValidatorForConsole: ntcTypes.EpochValidatorForConsole{
-					Address: v.Address.String(),
+			votesApi = append(votesApi, &ntcTypes.EpochValidatorVoteApi{
+				EpochValidator: ntcTypes.EpochValidator{
+					Address: v.Address,
 					PubKey:  pkstring,
 					Amount:  (*hexutil.Big)(v.Amount),
 				},
@@ -87,7 +86,7 @@ func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApiForConsole, error) {
 			})
 		}
 
-		return &ntcTypes.EpochVotesApiForConsole{
+		return &ntcTypes.EpochVotesApi{
 			EpochNumber: hexutil.Uint64(ep.GetNextEpoch().Number),
 			StartBlock:  hexutil.Uint64(ep.GetNextEpoch().StartBlock),
 			EndBlock:    hexutil.Uint64(ep.GetNextEpoch().EndBlock),
@@ -97,9 +96,7 @@ func (api *API) GetNextEpochVote() (*ntcTypes.EpochVotesApiForConsole, error) {
 	return nil, errors.New("next epoch has not been proposed")
 }
 
-func (api *API) GetNextEpochValidators() ([]*ntcTypes.EpochValidatorForConsole, error) {
-
-	//height := api.chain.CurrentBlock().NumberU64()
+func (api *API) GetNextEpochValidators() ([]*ntcTypes.EpochValidator, error) {
 
 	ep := api.neatcon.core.consensusState.Epoch
 	nextEp := ep.GetNextEpoch()
@@ -112,19 +109,20 @@ func (api *API) GetNextEpochValidators() ([]*ntcTypes.EpochValidatorForConsole, 
 		}
 
 		nextValidators := ep.Validators.Copy()
+
 		err = epoch.DryRunUpdateEpochValidatorSet(state, nextValidators, nextEp.GetEpochValidatorVoteSet())
 		if err != nil {
 			return nil, err
 		}
 
-		validators := make([]*ntcTypes.EpochValidatorForConsole, 0, len(nextValidators.Validators))
+		validators := make([]*ntcTypes.EpochValidator, 0, len(nextValidators.Validators))
 		for _, val := range nextValidators.Validators {
 			var pkstring string
 			if val.PubKey != nil {
 				pkstring = val.PubKey.KeyString()
 			}
-			validators = append(validators, &ntcTypes.EpochValidatorForConsole{
-				Address:        common.BytesToAddress(val.Address).String(),
+			validators = append(validators, &ntcTypes.EpochValidator{
+				Address:        common.BytesToAddress(val.Address),
 				PubKey:         pkstring,
 				Amount:         (*hexutil.Big)(val.VotingPower),
 				RemainingEpoch: hexutil.Uint64(val.RemainingEpoch),
@@ -135,18 +133,6 @@ func (api *API) GetNextEpochValidators() ([]*ntcTypes.EpochValidatorForConsole, 
 	}
 }
 
-// CreateValidator
-func (api *API) CreateValidator(from common.Address) (*ntcTypes.PrivV, error) {
-	validator := ntcTypes.GenPrivValidatorKey(from)
-	privV := &ntcTypes.PrivV{
-		Address: validator.Address.String(),
-		PubKey:  validator.PubKey,
-		PrivKey: validator.PrivKey,
-	}
-	return privV, nil
-}
-
-// decode extra data
 func (api *API) DecodeExtraData(extra string) (extraApi *ntcTypes.NeatConExtraApi, err error) {
 	ncExtra, err := ntcTypes.DecodeExtraData(extra)
 	if err != nil {
@@ -179,14 +165,12 @@ func (api *API) DecodeExtraData(extra string) (extraApi *ntcTypes.NeatConExtraAp
 	return extraApi, nil
 }
 
-// get consensus publickey of the block
 func (api *API) GetConsensusPublicKey(extra string) ([]string, error) {
 	ncExtra, err := ntcTypes.DecodeExtraData(extra)
 	if err != nil {
 		return nil, err
 	}
 
-	//fmt.Printf("GetConsensusPublicKey ncExtra %v\n", ncExtra)
 	number := uint64(ncExtra.EpochNumber)
 	var resultEpoch *epoch.Epoch
 	curEpoch := api.neatcon.core.consensusState.Epoch
@@ -200,9 +184,7 @@ func (api *API) GetConsensusPublicKey(extra string) ([]string, error) {
 		resultEpoch = epoch.LoadOneEpoch(curEpoch.GetDB(), number, nil)
 	}
 
-	//fmt.Printf("GetConsensusPublicKey result epoch %v\n", resultEpoch)
 	validatorSet := resultEpoch.Validators
-	//fmt.Printf("GetConsensusPublicKey validatorset %v\n", validatorSet)
 
 	aggr, err := validatorSet.GetAggrPubKeyAndAddress(ncExtra.SeenCommit.BitArray)
 	if err != nil {
@@ -229,58 +211,4 @@ func (api *API) GetVoteHash(from common.Address, pubkey crypto.BLSPubKey, amount
 		[]byte(salt),
 	}
 	return neatCrypto.Keccak256Hash(ConcatCopyPreAllocate(byteData))
-}
-
-func (api *API) GetValidatorStatus(from common.Address) (*ntcTypes.ValidatorStatus, error) {
-	state, err := api.chain.State()
-	if state == nil || err != nil {
-		return nil, err
-	}
-	status := &ntcTypes.ValidatorStatus{
-		IsBanned: state.GetOrNewStateObject(from).IsBanned(),
-	}
-
-	return status, nil
-}
-
-func (api *API) GetCandidateList() (*ntcTypes.CandidateApi, error) {
-	state, err := api.chain.State()
-
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	candidateList := make([]string, 0)
-	candidateSet := state.GetCandidateSet()
-	fmt.Printf("candidate set %v", candidateSet)
-	for addr := range candidateSet {
-		candidateList = append(candidateList, addr.String())
-	}
-
-	candidates := &ntcTypes.CandidateApi{
-		CandidateList: candidateList,
-	}
-
-	return candidates, nil
-}
-
-func (api *API) GetBannedList() (*ntcTypes.BannedApi, error) {
-	state, err := api.chain.State()
-
-	if state == nil || err != nil {
-		return nil, err
-	}
-
-	bannedList := make([]string, 0)
-	bannedSet := state.GetBannedSet()
-	fmt.Printf("banned set %v", bannedSet)
-	for addr := range bannedSet {
-		bannedList = append(bannedList, addr.String())
-	}
-
-	bannedAddresses := &ntcTypes.BannedApi{
-		BannedList: bannedList,
-	}
-
-	return bannedAddresses, nil
 }

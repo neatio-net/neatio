@@ -7,13 +7,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 func makeReceipt(addr common.Address) *types.Receipt {

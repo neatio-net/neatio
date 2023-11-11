@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"math/big"
 
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/common/math"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/math"
 )
 
 var _ = (*btHeaderMarshaling)(nil)

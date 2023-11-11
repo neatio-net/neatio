@@ -12,8 +12,6 @@ func Log(r Registry, freq time.Duration, l Logger) {
 	LogScaled(r, freq, time.Nanosecond, l)
 }
 
-// Output each metric in the given registry periodically using the given
-// logger. Print timings in `scale` units (eg time.Millisecond) rather than nanos.
 func LogScaled(r Registry, freq time.Duration, scale time.Duration, l Logger) {
 	du := float64(scale)
 	duSuffix := scale.String()[1:]

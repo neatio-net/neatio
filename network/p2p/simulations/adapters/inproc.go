@@ -23,12 +23,12 @@ import (
 	"net"
 	"sync"
 
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/network/node"
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/p2p/discover"
-	"github.com/nio-net/nio/network/rpc"
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/network/node"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/p2p/discover"
+	"github.com/neatio-net/neatio/network/rpc"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 // SimAdapter is a NodeAdapter which creates in-memory simulation nodes and

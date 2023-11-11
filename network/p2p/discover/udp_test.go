@@ -18,9 +18,9 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 func init() {

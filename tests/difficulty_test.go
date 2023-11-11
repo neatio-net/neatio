@@ -5,8 +5,8 @@ import (
 
 	"math/big"
 
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 var (
@@ -27,6 +27,7 @@ func TestDifficulty(t *testing.T) {
 	t.Parallel()
 
 	dt := new(testMatcher)
+
 	dt.skipLoad("hexencodetest.*")
 	dt.skipLoad("crypto.*")
 	dt.skipLoad("blockgenesistest\\.json")

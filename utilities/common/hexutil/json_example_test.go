@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
 )
 
 type MyType [5]byte
@@ -22,4 +22,5 @@ func ExampleUnmarshalFixedText() {
 	fmt.Println("v1 error:", json.Unmarshal([]byte(`"0x01"`), &v1))
 	fmt.Println("v2 error:", json.Unmarshal([]byte(`"0x0101010101"`), &v2))
 	fmt.Println("v2:", v2)
+
 }

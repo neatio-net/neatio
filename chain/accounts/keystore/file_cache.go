@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/chain/log"
-	set "github.com/nio-net/set"
+	"github.com/neatio-net/neatio/chain/log"
+	set "github.com/neatio-net/set-go"
 )
 
 type fileCache struct {

@@ -8,8 +8,8 @@ import (
 	"crypto/elliptic"
 	"fmt"
 
-	"github.com/nio-net/nio/utilities/common/math"
-	"github.com/nio-net/nio/utilities/crypto/secp256k1"
+	"github.com/neatio-net/neatio/utilities/common/math"
+	"github.com/neatio-net/neatio/utilities/crypto/secp256k1"
 )
 
 func Ecrecover(hash, sig []byte) ([]byte, error) {

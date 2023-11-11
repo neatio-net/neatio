@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 func (t *Trie) Prove(key []byte, fromLevel uint, proofDb neatdb.Writer) error {
-
 	key = keybytesToHex(key)
 	var nodes []node
 	tn := t.root
@@ -19,7 +18,6 @@ func (t *Trie) Prove(key []byte, fromLevel uint, proofDb neatdb.Writer) error {
 		switch n := tn.(type) {
 		case *shortNode:
 			if len(key) < len(n.Key) || !bytes.Equal(n.Key, key[:len(n.Key)]) {
-
 				tn = nil
 			} else {
 				tn = n.Val
@@ -45,11 +43,9 @@ func (t *Trie) Prove(key []byte, fromLevel uint, proofDb neatdb.Writer) error {
 	defer returnHasherToPool(hasher)
 
 	for i, n := range nodes {
-
 		n, _, _ = hasher.hashChildren(n, nil)
 		hn, _ := hasher.store(n, nil, false)
 		if hash, ok := hn.(hashNode); ok || i == 0 {
-
 			if fromLevel > 0 {
 				fromLevel--
 			} else {
@@ -83,7 +79,6 @@ func VerifyProof(rootHash common.Hash, key []byte, proofDb neatdb.Reader) (value
 		keyrest, cld := get(n, key)
 		switch cld := cld.(type) {
 		case nil:
-
 			return nil, i, nil
 		case hashNode:
 			key = keyrest

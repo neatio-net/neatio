@@ -6,16 +6,19 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nio-net/nio/chain/core/vm"
+	"github.com/neatio-net/neatio/chain/core/vm"
 )
 
 func TestState(t *testing.T) {
 	t.Parallel()
 
 	st := new(testMatcher)
+
 	st.skipShortMode(`^stQuadraticComplexityTest/`)
+
 	st.skipLoad(`^stTransactionTest/OverflowGasRequire\.json`)
 	st.skipLoad(`^stTransactionTest/zeroSigTransa[^/]*\.json`)
+
 	st.fails(`^stRevertTest/RevertPrecompiledTouch\.json/EIP158`, "bug in test")
 	st.fails(`^stRevertTest/RevertPrefoundEmptyOOG\.json/EIP158`, "bug in test")
 	st.fails(`^stRevertTest/RevertPrecompiledTouch\.json/Byzantium`, "bug in test")
@@ -44,7 +47,6 @@ func TestState(t *testing.T) {
 	})
 }
 
-// Transactions with gasLimit above this value will not get a VM trace on failure.
 const traceErrorLimit = 400000
 
 func withTrace(t *testing.T, gasLimit uint64, test func(vm.Config) error) {

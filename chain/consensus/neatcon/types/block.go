@@ -7,14 +7,14 @@ import (
 	"io"
 	"time"
 
-	. "github.com/nio-net/common"
-	"github.com/nio-net/crypto"
-	"github.com/nio-net/merkle"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/rlp"
-	"github.com/nio-net/wire"
+	. "github.com/neatio-net/common-go"
+	"github.com/neatio-net/crypto-go"
+	"github.com/neatio-net/merkle-go"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/rlp"
+	"github.com/neatio-net/wire-go"
 )
 
 const MaxBlockSize = 22020096
@@ -204,7 +204,6 @@ func (commit *Commit) ValidateBasic() error {
 	if commit.BlockID.IsZero() {
 		return errors.New("Commit cannot be for nil block")
 	}
-
 	return nil
 }
 
@@ -218,9 +217,21 @@ func (commit *Commit) Hash() []byte {
 
 func (commit *Commit) StringIndented(indent string) string {
 	if commit == nil {
-		return ""
+		return "nil-Commit"
 	}
-	return ""
+	return fmt.Sprintf(`Commit{
+%s  BlockID:    %v
+%s  Height:     %v
+%s  Round:      %v
+%s  Type:       %v
+%s  BitArray:   %v
+%s}#%X`,
+		indent, commit.BlockID,
+		indent, commit.Height,
+		indent, commit.Round,
+		indent, commit.Type(),
+		indent, commit.BitArray.String(),
+		indent, commit.hash)
 }
 
 type BlockID struct {

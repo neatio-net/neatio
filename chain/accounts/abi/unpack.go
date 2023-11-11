@@ -6,7 +6,7 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 var (

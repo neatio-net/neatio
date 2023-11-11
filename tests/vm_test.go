@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/nio-net/nio/chain/core/vm"
+	"github.com/neatio-net/neatio/chain/core/vm"
 )
 
 func TestVM(t *testing.T) {
@@ -11,7 +11,7 @@ func TestVM(t *testing.T) {
 	vmt := new(testMatcher)
 	vmt.fails("^vmSystemOperationsTest.json/createNameRegistrator$", "fails without parallel execution")
 
-	vmt.skipLoad(`^vmInputLimits(Light)?.json`) // log format broken
+	vmt.skipLoad(`^vmInputLimits(Light)?.json`)
 
 	vmt.skipShortMode("^vmPerformanceTest.json")
 	vmt.skipShortMode("^vmInputLimits(Light)?.json")

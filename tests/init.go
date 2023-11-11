@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/params"
 )
 
 var Forks = map[string]*params.ChainConfig{
@@ -33,8 +33,38 @@ var Forks = map[string]*params.ChainConfig{
 		EIP150Block:    big.NewInt(0),
 		EIP155Block:    big.NewInt(0),
 		EIP158Block:    big.NewInt(0),
-		DAOForkBlock:   big.NewInt(0),
 		ByzantiumBlock: big.NewInt(0),
+	},
+	"Constantinople": {
+		ChainId:             big.NewInt(1),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+	},
+	"ConstantinopleFix": {
+		ChainId:             big.NewInt(1),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+	},
+	"Istanbul": {
+		ChainId:             big.NewInt(1),
+		HomesteadBlock:      big.NewInt(0),
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
 	},
 	"FrontierToHomesteadAt5": {
 		ChainId:        big.NewInt(1),
@@ -48,8 +78,6 @@ var Forks = map[string]*params.ChainConfig{
 	"HomesteadToDaoAt5": {
 		ChainId:        big.NewInt(1),
 		HomesteadBlock: big.NewInt(0),
-		DAOForkBlock:   big.NewInt(5),
-		DAOForkSupport: true,
 	},
 	"EIP158ToByzantiumAt5": {
 		ChainId:        big.NewInt(1),

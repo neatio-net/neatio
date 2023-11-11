@@ -7,13 +7,13 @@ import (
 	"math/rand"
 	"reflect"
 
-	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"golang.org/x/crypto/sha3"
 )
 
 const (
-	HashLength = 32
-
-	NEATAddressLength = 32
+	HashLength    = 32
+	AddressLength = 20
 )
 
 var (
@@ -99,7 +99,7 @@ func (h UnprefixedHash) MarshalText() ([]byte, error) {
 	return []byte(hex.EncodeToString(h[:])), nil
 }
 
-type Address [NEATAddressLength]byte
+type Address [AddressLength]byte
 
 func BytesToAddress(b []byte) Address {
 	var a Address
@@ -114,8 +114,7 @@ func IsHexAddress(s string) bool {
 	if hasHexPrefix(s) {
 		s = s[2:]
 	}
-
-	return len(s) == 2*NEATAddressLength && isHex(s)
+	return len(s) == 2*AddressLength && isHex(s)
 }
 
 func (a Address) Str() string   { return string(a[:]) }
@@ -125,12 +124,27 @@ func (a Address) Hash() Hash    { return BytesToHash(a[:]) }
 
 func (a Address) Hex() string {
 	unchecksummed := hex.EncodeToString(a[:])
+	sha := sha3.NewLegacyKeccak256()
+	sha.Write([]byte(unchecksummed))
+	hash := sha.Sum(nil)
+
 	result := []byte(unchecksummed)
+	for i := 0; i < len(result); i++ {
+		hashByte := hash[i/2]
+		if i%2 == 0 {
+			hashByte = hashByte >> 4
+		} else {
+			hashByte &= 0xf
+		}
+		if result[i] > '9' && hashByte > 7 {
+			result[i] -= 32
+		}
+	}
 	return "0x" + string(result)
 }
 
 func (a Address) String() string {
-	return string(a[:])
+	return a.Hex()
 }
 
 func (a Address) Format(s fmt.State, c rune) {
@@ -138,10 +152,10 @@ func (a Address) Format(s fmt.State, c rune) {
 }
 
 func (a *Address) SetBytes(b []byte) {
-	if len(b) > NEATAddressLength {
-		b = b[len(b)-NEATAddressLength:]
+	if len(b) > len(a) {
+		b = b[len(b)-AddressLength:]
 	}
-	copy(a[NEATAddressLength-len(b):], b)
+	copy(a[AddressLength-len(b):], b)
 }
 
 func (a *Address) SetString(s string) { a.SetBytes([]byte(s)) }
@@ -153,28 +167,23 @@ func (a *Address) Set(other Address) {
 }
 
 func (a Address) MarshalText() ([]byte, error) {
-
 	return hexutil.Bytes(a[:]).MarshalText()
 }
 
 func (a *Address) UnmarshalText(input []byte) error {
-	fmt.Printf("types Address UnmarshalText address=%v, input=%v\n", a, input)
 	return hexutil.UnmarshalFixedText("Address", input, a[:])
 }
 
 func (a *Address) UnmarshalJSON(input []byte) error {
-
-	return hexutil.UnmarshalAddrFixedJSON(addressT, input, a[:])
+	return hexutil.UnmarshalFixedJSON(addressT, input, a[:])
 }
 
 type UnprefixedAddress Address
 
 func (a *UnprefixedAddress) UnmarshalText(input []byte) error {
-
 	return hexutil.UnmarshalFixedUnprefixedText("UnprefixedAddress", input, a[:])
 }
 
 func (a UnprefixedAddress) MarshalText() ([]byte, error) {
-
 	return []byte(hex.EncodeToString(a[:])), nil
 }

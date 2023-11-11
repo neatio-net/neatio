@@ -26,6 +26,7 @@ func (mux *TypeMux) Subscribe(types ...interface{}) *TypeMuxSubscription {
 	mux.mutex.Lock()
 	defer mux.mutex.Unlock()
 	if mux.stopped {
+
 		sub.closed = true
 		close(sub.postC)
 	} else {
@@ -162,9 +163,11 @@ func (s *TypeMuxSubscription) closewait() {
 }
 
 func (s *TypeMuxSubscription) deliver(event *TypeMuxEvent) {
+
 	if s.created.After(event.Time) {
 		return
 	}
+
 	s.postMu.RLock()
 	defer s.postMu.RUnlock()
 

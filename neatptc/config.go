@@ -8,27 +8,27 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/nio-net/nio/chain/consensus/neatcon"
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/neatptc/downloader"
-	"github.com/nio-net/nio/neatptc/gasprice"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/chain/consensus/neatcon"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/neatptc/downloader"
+	"github.com/neatio-net/neatio/neatptc/gasprice"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
 )
 
 var DefaultConfig = Config{
 
 	SyncMode: downloader.FullSync,
 
-	NetworkId:      9910,
+	NetworkId:      1001,
 	DatabaseCache:  512,
 	TrieCleanCache: 256,
 	TrieDirtyCache: 256,
 	TrieTimeout:    60 * time.Minute,
 	MinerGasFloor:  120000000,
 	MinerGasCeil:   120000000,
-	MinerGasPrice:  big.NewInt(params.GWei),
+	MinerGasPrice:  big.NewInt(500 * params.GWei),
 
 	TxPool: core.DefaultTxPoolConfig,
 	GPO: gasprice.Config{

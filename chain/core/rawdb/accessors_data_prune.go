@@ -3,9 +3,9 @@ package rawdb
 import (
 	"encoding/binary"
 
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 // ReadDataPruneTrieRootHash retrieves the root hash of a data prune process trie

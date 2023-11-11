@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/nio-net/common"
-	cfg "github.com/nio-net/config"
+	. "github.com/neatio-net/common-go"
+	cfg "github.com/neatio-net/config-go"
 )
 
 const (
@@ -71,7 +71,6 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("pex_reactor", false)
 	mapConfig.SetDefault("priv_validator_file", filepath.Join(rootDir, chainId, "priv_validator.json"))
 	mapConfig.SetDefault("priv_validator_file_root", filepath.Join(rootDir, chainId, "priv_validator"))
-	mapConfig.SetDefault("db_backend", "leveldb")
 	mapConfig.SetDefault("db_dir", filepath.Join(rootDir, chainId, defaultDataDir))
 	mapConfig.SetDefault("grpc_laddr", "")
 	mapConfig.SetDefault("prof_laddr", "")
@@ -89,9 +88,9 @@ func GetConfig(rootDir, chainId string) cfg.Config {
 	mapConfig.SetDefault("timeout_propose", 1500)
 	mapConfig.SetDefault("timeout_propose_delta", 500)
 	mapConfig.SetDefault("timeout_prevote", 2000)
-	mapConfig.SetDefault("timeout_prevote_delta", 1000)
+	mapConfig.SetDefault("timeout_prevote_delta", 2000)
 	mapConfig.SetDefault("timeout_precommit", 2000)
-	mapConfig.SetDefault("timeout_precommit_delta", 1000)
+	mapConfig.SetDefault("timeout_precommit_delta", 2000)
 	mapConfig.SetDefault("timeout_commit", 5000)
 
 	mapConfig.SetDefault("skip_timeout_commit", false)
@@ -110,7 +109,6 @@ moniker = "__MONIKER__"
 node_laddr = "tcp://0.0.0.0:46656"
 seeds = ""
 fast_sync = true
-db_backend = "leveldb"
 #rpc_laddr = "tcp://0.0.0.0:46657"
 `
 

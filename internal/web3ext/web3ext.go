@@ -504,8 +504,8 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'withdrawReward',
 			call: 'neat_withdrawReward',
-			params: 3,
-			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputAddressFormatter, null]
+			params: 4,
+			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputAddressFormatter, null, null]
 		}),
 		new web3._extend.Method({
 			name: 'voteNextEpoch',
@@ -535,16 +535,19 @@ web3._extend({
 			call: 'neat_getNextEpochValidators'
 		}),
 		new web3._extend.Method({
+			name: 'getNextEpochCandidates',
+			call: 'neat_getNextEpochCandidates'
+		}),
+		new web3._extend.Method({
+			name: 'getEpochCandidates',
+			call: 'neat_getEpochCandidates',
+			params: 1
+		}),
+		new web3._extend.Method({
 			name: 'getValidatorStatus',
 			call: 'neat_getValidatorStatus',
 			params: 1,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
-		}),
-		new web3._extend.Method({
-			name: 'unBanned',
-			call: 'neat_unBanned',
-			params: 2,
-			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null]
 		}),
 		new web3._extend.Method({
 			name: 'editValidator',
@@ -569,16 +572,6 @@ web3._extend({
 			params: 1
 		}),
 		new web3._extend.Method({
-			name: 'getCandidateList',
-			call: 'neat_getCandidateList',
-			params: 0
-		}),
-		new web3._extend.Method({
-			name: 'getBannedList',
-			call: 'neat_getBannedList',
-			params: 0
-		}),
-		new web3._extend.Method({
 			name: 'delegate',
 			call: 'neat_delegate',
 			params: 4
@@ -591,12 +584,14 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'register',
 			call: 'neat_register',
-			params: 6
+			params: 6,
+			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null, null, null, null]
 		}),
 		new web3._extend.Method({
 			name: 'unRegister',
 			call: 'neat_unRegister',
-			params: 2
+			params: 2,
+			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null]
 		}),
 		new web3._extend.Method({
 			name: 'checkCandidate',
@@ -615,6 +610,12 @@ web3._extend({
 			call: 'neat_setCommission',
 			params: 3,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null, null]
+		}),
+		new web3._extend.Method({
+			name: 'setAddress',
+			call: 'neat_setAddress',
+			params: 3,
+			inputFormatter: [web3._extend.formatters.inputAddressFormatter, web3._extend.formatters.inputAddressFormatter, null]
 		})
 	],
 	properties: [

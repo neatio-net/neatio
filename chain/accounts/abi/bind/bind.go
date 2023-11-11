@@ -10,8 +10,8 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/nio-net/nio/chain/accounts/abi"
-	"github.com/nio-net/nio/chain/log"
+	"github.com/neatio-net/neatio/chain/accounts/abi"
+	"github.com/neatio-net/neatio/chain/log"
 )
 
 type Lang int

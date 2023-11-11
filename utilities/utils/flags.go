@@ -9,30 +9,30 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/accounts/keystore"
-	"github.com/nio-net/nio/chain/consensus"
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/vm"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/neatdb"
-	neatptc "github.com/nio-net/nio/neatptc"
-	"github.com/nio-net/nio/neatptc/downloader"
-	"github.com/nio-net/nio/neatptc/gasprice"
-	"github.com/nio-net/nio/network/node"
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/p2p/discover"
-	"github.com/nio-net/nio/network/p2p/nat"
-	"github.com/nio-net/nio/network/p2p/netutil"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/fdlimit"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/metrics"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/accounts/keystore"
+	"github.com/neatio-net/neatio/chain/consensus"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/vm"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/neatdb"
+	neatptc "github.com/neatio-net/neatio/neatptc"
+	"github.com/neatio-net/neatio/neatptc/downloader"
+	"github.com/neatio-net/neatio/neatptc/gasprice"
+	"github.com/neatio-net/neatio/network/node"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/p2p/discover"
+	"github.com/neatio-net/neatio/network/p2p/nat"
+	"github.com/neatio-net/neatio/network/p2p/netutil"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/fdlimit"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/metrics"
 	"gopkg.in/urfave/cli.v1"
 
-	cfg "github.com/nio-net/config"
-	tmcfg "github.com/nio-net/nio/chain/consensus/neatcon/config/neatcon"
+	cfg "github.com/neatio-net/config-go"
+	tmcfg "github.com/neatio-net/neatio/chain/consensus/neatcon/config/neatcon"
 )
 
 var (
@@ -94,7 +94,7 @@ var (
 	}
 	NetworkIdFlag = cli.Uint64Flag{
 		Name:  "networkid",
-		Usage: "Network identifier (integer, mainnet=9910, testnet=9911)",
+		Usage: "Network identifier (integer, mainnet=1001, testnet=1002)",
 		Value: neatptc.DefaultConfig.NetworkId,
 	}
 	TestnetFlag = cli.BoolFlag{
@@ -860,7 +860,7 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *neatptc.Config) {
 	switch {
 	case ctx.GlobalBool(TestnetFlag.Name):
 		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
-			cfg.NetworkId = 9911
+			cfg.NetworkId = 525
 		}
 	}
 

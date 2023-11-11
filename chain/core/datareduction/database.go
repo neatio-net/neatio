@@ -3,10 +3,10 @@ package datareduction
 import (
 	"fmt"
 
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/trie"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/trie"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 // PruneDatabase wraps access to prune tries.

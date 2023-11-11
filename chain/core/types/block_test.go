@@ -23,8 +23,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 // from bcValidBlockTest.json, "SimpleTx"

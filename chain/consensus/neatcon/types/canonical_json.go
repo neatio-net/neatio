@@ -1,7 +1,7 @@
 package types
 
 import (
-	crypto "github.com/nio-net/crypto"
+	crypto "github.com/neatio-net/crypto-go"
 )
 
 type CanonicalJSONBlockID struct {

@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nio-net/nio/internal/jsre"
-	neatptc "github.com/nio-net/nio/neatptc"
-	"github.com/nio-net/nio/network/node"
+	"github.com/neatio-net/neatio/internal/jsre"
+	neatptc "github.com/neatio-net/neatio/neatptc"
+	"github.com/neatio-net/neatio/network/node"
 )
 
 const (

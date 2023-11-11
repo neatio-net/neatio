@@ -1,7 +1,7 @@
 package state
 
 import (
-	. "github.com/nio-net/common"
+	. "github.com/neatio-net/common-go"
 )
 
 type (

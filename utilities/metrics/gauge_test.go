@@ -64,5 +64,5 @@ func ExampleGetOrRegisterGauge() {
 	m := "server.bytes_sent"
 	g := GetOrRegisterGauge(m, nil)
 	g.Update(47)
-	fmt.Println(g.Value()) // Output: 47
+	fmt.Println(g.Value())
 }

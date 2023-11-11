@@ -5,8 +5,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 func TestLoose23MajorThreshold(t *testing.T) {
@@ -16,7 +16,7 @@ func TestLoose23MajorThreshold(t *testing.T) {
 	quroum := Loose23MajorThreshold(totalVP, round)
 	t.Logf("Loose 2/3 major threshold %v", quroum)
 
-	stringByte := []byte("like")
+	stringByte := []byte("love")
 
 	encode := hexutil.Encode(stringByte)
 

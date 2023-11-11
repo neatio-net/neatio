@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nio-net/nio/chain/accounts/abi"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/accounts/abi"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 func TestMakeTopics(t *testing.T) {

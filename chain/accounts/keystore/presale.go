@@ -25,8 +25,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/utilities/crypto"
 	"github.com/pborman/uuid"
 	"golang.org/x/crypto/pbkdf2"
 )

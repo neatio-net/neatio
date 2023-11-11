@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/p2p/discover"
-	"github.com/nio-net/nio/network/rpc"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/metrics"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/p2p/discover"
+	"github.com/neatio-net/neatio/network/rpc"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/metrics"
 )
 
 type PrivateAdminAPI struct {

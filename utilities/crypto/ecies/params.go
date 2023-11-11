@@ -42,7 +42,7 @@ import (
 	"fmt"
 	"hash"
 
-	ethcrypto "github.com/nio-net/nio/utilities/crypto"
+	ethcrypto "github.com/neatio-net/neatio/utilities/crypto"
 )
 
 var (

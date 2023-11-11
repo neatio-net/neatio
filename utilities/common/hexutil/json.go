@@ -57,13 +57,6 @@ func UnmarshalFixedJSON(typ reflect.Type, input, out []byte) error {
 	return wrapTypeError(UnmarshalFixedText(typ.String(), input[1:len(input)-1], out), typ)
 }
 
-func UnmarshalAddrFixedJSON(typ reflect.Type, input, out []byte) error {
-	if !isString(input) {
-		return errNonString(typ)
-	}
-	return wrapTypeError(UnmarshalAddrFixedText(typ.String(), input[1:len(input)-1], out), typ)
-}
-
 func UnmarshalFixedText(typname string, input, out []byte) error {
 	raw, err := checkText(input, true)
 	if err != nil {
@@ -72,38 +65,13 @@ func UnmarshalFixedText(typname string, input, out []byte) error {
 	if len(raw)/2 != len(out) {
 		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(out)*2, typname)
 	}
+
 	for _, b := range raw {
 		if decodeNibble(b) == badNibble {
 			return ErrSyntax
 		}
 	}
 	hex.Decode(out, raw)
-	return nil
-}
-
-func UnmarshalAddrFixedText(typname string, input, out []byte) error {
-	raw, err := checkText(input, false)
-
-	if err != nil {
-		return err
-	}
-
-	var rawBytes []byte
-	if len(raw) == 2*len(out) {
-		rawBytes, err = Decode(string(append([]byte("0x"), raw...)))
-		if err != nil {
-			return fmt.Errorf("hex decode %s err %v ", typname, err)
-		}
-		raw = rawBytes
-	}
-
-	if len(raw) != len(out) {
-		return fmt.Errorf("byte has length %d, want %d for %s", len(raw), len(out), typname)
-	}
-
-	for i, v := range raw {
-		out[i] = v
-	}
 
 	return nil
 }
@@ -116,6 +84,7 @@ func UnmarshalFixedUnprefixedText(typname string, input, out []byte) error {
 	if len(raw)/2 != len(out) {
 		return fmt.Errorf("hex string has length %d, want %d for %s", len(raw), len(out)*2, typname)
 	}
+
 	for _, b := range raw {
 		if decodeNibble(b) == badNibble {
 			return ErrSyntax

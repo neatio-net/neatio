@@ -3,8 +3,8 @@ package consensus
 import (
 	"math/big"
 
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 const (

@@ -1,36 +1,18 @@
-// Copyright 2015 The go-ethereum Authors
-// This file is part of go-neatio.
-//
-// go-ethereum is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// go-ethereum is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with go-neatio. If not, see <http://www.gnu.org/licenses/>.
-
-// Contains the neatio command usage template and generator.
-
 package main
 
 import (
 	"io"
 	"sort"
 
-	"github.com/nio-net/nio/internal/debug"
-	"github.com/nio-net/nio/utilities/utils"
+	"github.com/neatio-net/neatio/internal/debug"
+	"github.com/neatio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 
 var AppHelpTemplate = `NAME:
    {{.App.Name}} - {{.App.Usage}}
 
-   Copyright 2020-2023 Neatio Developers
+   Copyright 2022 Neatio Developers
 
 USAGE:
    {{.App.HelpName}} [options]{{if .App.Commands}} command [command options]{{end}} {{if .App.ArgsUsage}}{{.App.ArgsUsage}}{{else}}[arguments...]{{end}}

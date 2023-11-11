@@ -17,14 +17,14 @@
 package core
 
 import (
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 // TxPreEvent is posted when a transaction enters the transaction pool.
 type TxPreEvent struct{ Tx *types.Transaction }
 
-// Tx3ProofDataEvent is posted when a tx3ProofData enters
+//Tx3ProofDataEvent is posted when a tx3ProofData enters
 type Tx3ProofDataEvent struct{ Tx3PrfDt *types.TX3ProofData }
 
 // PendingLogsEvent is posted pre mining and notifies of pending logs.

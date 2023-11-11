@@ -11,26 +11,26 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/nio-net/crypto"
-	dbm "github.com/nio-net/database"
-	"github.com/nio-net/nio/chain/consensus"
-	"github.com/nio-net/nio/chain/consensus/neatcon/epoch"
-	ntcTypes "github.com/nio-net/nio/chain/consensus/neatcon/types"
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/chain/trie"
-	neatAbi "github.com/nio-net/nio/neatabi/abi"
-	"github.com/nio-net/nio/neatcli"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/neatptc"
-	"github.com/nio-net/nio/network/node"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/math"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/crypto-go"
+	dbm "github.com/neatio-net/db-go"
+	"github.com/neatio-net/neatio/chain/consensus"
+	"github.com/neatio-net/neatio/chain/consensus/neatcon/epoch"
+	ntcTypes "github.com/neatio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/chain/trie"
+	neatAbi "github.com/neatio-net/neatio/neatabi/abi"
+	"github.com/neatio-net/neatio/neatcli"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/neatptc"
+	"github.com/neatio-net/neatio/network/node"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/math"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 type CrossChainHelper struct {
@@ -389,6 +389,13 @@ func (cch *CrossChainHelper) VerifySideChainProofData(bs []byte) error {
 		if epoch == nil {
 			return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 		}
+
+		if epoch.Number > ci.EpochNumber {
+			ci.EpochNumber = epoch.Number
+			ci.Epoch = epoch
+			core.SaveChainInfo(cch.chainInfoDB, ci)
+		}
+
 		valSet := epoch.Validators
 		if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 			return errors.New("inconsistent validator set")
@@ -513,6 +520,13 @@ func (cch *CrossChainHelper) ValidateTX3ProofData(proofData *types.TX3ProofData)
 	if epoch == nil {
 		return fmt.Errorf("could not get epoch for block height %v", ncExtra.Height)
 	}
+
+	if epoch.Number > ci.EpochNumber {
+		ci.EpochNumber = epoch.Number
+		ci.Epoch = epoch
+		core.SaveChainInfo(cch.chainInfoDB, ci)
+	}
+
 	valSet := epoch.Validators
 	if !bytes.Equal(valSet.Hash(), ncExtra.ValidatorsHash) {
 		return errors.New("inconsistent validator set")

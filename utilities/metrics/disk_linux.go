@@ -10,6 +10,7 @@ import (
 )
 
 func ReadDiskStats(stats *DiskStats) error {
+
 	inf, err := os.Open(fmt.Sprintf("/proc/%d/io", os.Getpid()))
 	if err != nil {
 		return err
@@ -18,6 +19,7 @@ func ReadDiskStats(stats *DiskStats) error {
 	in := bufio.NewReader(inf)
 
 	for {
+
 		line, err := in.ReadString('\n')
 		if err != nil {
 			if err == io.EOF {

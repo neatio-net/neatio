@@ -1,15 +1,14 @@
-//go:build freebsd
-// +build freebsd
-
 package fdlimit
 
 import "syscall"
 
 func Raise(max uint64) error {
+
 	var limit syscall.Rlimit
 	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &limit); err != nil {
 		return err
 	}
+
 	limit.Cur = limit.Max
 	if limit.Cur > int64(max) {
 		limit.Cur = int64(max)

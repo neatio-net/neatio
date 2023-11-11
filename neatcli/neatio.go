@@ -7,13 +7,13 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	neatAbi "github.com/nio-net/nio/neatabi/abi"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	neatAbi "github.com/neatio-net/neatio/neatabi/abi"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/crypto"
 	"github.com/pkg/errors"
 )
 
@@ -56,7 +56,7 @@ func (ec *Client) SendDataToMainChain(ctx context.Context, data []byte, prv *ecd
 
 	SendTX:
 
-		tx := types.NewTransaction(nonce, neatAbi.ChainContractMagicAddr, nil, 0, gasPrice, bs)
+		tx := types.NewTransaction(nonce, neatAbi.NeatioSmartContractAddress, nil, 0, gasPrice, bs)
 
 		signedTx, err := types.SignTx(tx, signer, prv)
 		if err != nil {

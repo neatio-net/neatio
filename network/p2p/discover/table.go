@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/network/p2p/netutil"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/network/p2p/netutil"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 const (

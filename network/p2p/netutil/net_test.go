@@ -1,19 +1,3 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package netutil
 
 import (
@@ -75,7 +59,7 @@ func TestNilNetListContains(t *testing.T) {
 
 func TestIsLAN(t *testing.T) {
 	checkContains(t, IsLAN,
-		[]string{ // included
+		[]string{
 			"0.0.0.0",
 			"0.2.0.8",
 			"127.0.0.1",
@@ -87,7 +71,7 @@ func TestIsLAN(t *testing.T) {
 			"febf::ab32:2233",
 			"fc00::4",
 		},
-		[]string{ // excluded
+		[]string{
 			"192.0.2.1",
 			"1.0.0.0",
 			"172.32.0.1",
@@ -98,15 +82,15 @@ func TestIsLAN(t *testing.T) {
 
 func TestIsSpecialNetwork(t *testing.T) {
 	checkContains(t, IsSpecialNetwork,
-		[]string{ // included
+		[]string{
 			"192.0.2.1",
 			"192.0.2.44",
 			"2001:db8:85a3:8d3:1319:8a2e:370:7348",
 			"255.255.255.255",
-			"224.0.0.22", // IPv4 multicast
-			"ff05::1:3",  // IPv6 multicast
+			"224.0.0.22",
+			"ff05::1:3",
 		},
-		[]string{ // excluded
+		[]string{
 			"192.0.3.1",
 			"1.0.0.0",
 			"172.32.0.1",
@@ -197,13 +181,11 @@ func TestSameNet(t *testing.T) {
 }
 
 func ExampleSameNet() {
-	// This returns true because the IPs are in the same /24 network:
+
 	fmt.Println(SameNet(24, net.IP{127, 0, 0, 1}, net.IP{127, 0, 0, 3}))
-	// This call returns false:
+
 	fmt.Println(SameNet(24, net.IP{127, 3, 0, 1}, net.IP{127, 5, 0, 3}))
-	// Output:
-	// true
-	// false
+
 }
 
 func TestDistinctNetSet(t *testing.T) {
@@ -221,7 +203,7 @@ func TestDistinctNetSet(t *testing.T) {
 		{add: "127.34.0.1"},
 		{add: "127.34.0.2"},
 		{add: "127.34.0.3", fails: true},
-		// Make room for an address, then add again.
+
 		{remove: "127.0.0.1"},
 		{add: "127.0.0.3"},
 		{add: "127.0.0.3", fails: true},

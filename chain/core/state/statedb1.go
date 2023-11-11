@@ -3,7 +3,7 @@ package state
 import (
 	"math/big"
 
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 // Retrieve the deposit balance from the given address or 0 if object not found

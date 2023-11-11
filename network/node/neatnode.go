@@ -3,9 +3,9 @@ package node
 import (
 	"reflect"
 
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/rpc"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/rpc"
 )
 
 func (n *Node) RpcAPIs() []rpc.API {

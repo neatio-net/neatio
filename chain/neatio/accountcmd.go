@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/params"
 
-	"github.com/nio-net/nio/chain/accounts"
-	"github.com/nio-net/nio/chain/accounts/keystore"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/console"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/utils"
+	"github.com/neatio-net/neatio/chain/accounts"
+	"github.com/neatio-net/neatio/chain/accounts/keystore"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/console"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 

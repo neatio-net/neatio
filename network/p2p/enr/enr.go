@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-// Package enr implements NEAT Blockchain Node Records as defined in EIP-778. A node record holds
+// Package enr implements Neatio Blockchain Node Records as defined in EIP-778. A node record holds
 // arbitrary information about a node on the peer-to-peer network.
 //
 // Records contain named keys. To store and retrieve key/values in a record, use the Entry
@@ -35,9 +35,9 @@ import (
 	"io"
 	"sort"
 
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/crypto/sha3"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/crypto/sha3"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 const SizeLimit = 300 // maximum encoded size of a node record in bytes

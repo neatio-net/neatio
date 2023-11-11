@@ -5,10 +5,9 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/nio-net/nio/chain/core/vm"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/core/vm"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 var (
@@ -29,6 +28,7 @@ type StateTransition struct {
 
 type Message interface {
 	From() common.Address
+
 	To() *common.Address
 
 	GasPrice() *big.Int
@@ -40,20 +40,50 @@ type Message interface {
 	Data() []byte
 }
 
+type ExecutionResult struct {
+	UsedGas    uint64
+	Err        error
+	ReturnData []byte
+}
+
+func (result *ExecutionResult) Unwrap() error {
+	return result.Err
+}
+
+func (result *ExecutionResult) Failed() bool { return result.Err != nil }
+
+func (result *ExecutionResult) Return() []byte {
+	if result.Err != nil {
+		return nil
+	}
+	return common.CopyBytes(result.ReturnData)
+}
+
+func (result *ExecutionResult) Revert() []byte {
+	if result.Err != vm.ErrExecutionReverted {
+		return nil
+	}
+	return common.CopyBytes(result.ReturnData)
+}
+
 func IntrinsicGas(data []byte, contractCreation, homestead bool) (uint64, error) {
+
 	var gas uint64
 	if contractCreation && homestead {
 		gas = params.TxGasContractCreation
 	} else {
 		gas = params.TxGas
 	}
+
 	if len(data) > 0 {
+
 		var nz uint64
 		for _, byt := range data {
 			if byt != 0 {
 				nz++
 			}
 		}
+
 		nonZeroGas := params.TxDataNonZeroGasFrontier
 		if (math.MaxUint64-gas)/nonZeroGas < nz {
 			return 0, vm.ErrOutOfGas
@@ -81,7 +111,7 @@ func NewStateTransition(evm *vm.EVM, msg Message, gp *GasPool) *StateTransition 
 	}
 }
 
-func ApplyMessage(evm *vm.EVM, msg Message, gp *GasPool) ([]byte, uint64, bool, error) {
+func ApplyMessage(evm *vm.EVM, msg Message, gp *GasPool) (*ExecutionResult, error) {
 	return NewStateTransition(evm, msg, gp).TransitionDb()
 }
 
@@ -152,9 +182,9 @@ func (st *StateTransition) preCheck() error {
 	return st.buyGas()
 }
 
-func (st *StateTransition) TransitionDb() (ret []byte, usedGas uint64, failed bool, err error) {
-	if err = st.preCheck(); err != nil {
-		return
+func (st *StateTransition) TransitionDb() (*ExecutionResult, error) {
+	if err := st.preCheck(); err != nil {
+		return nil, err
 	}
 	msg := st.msg
 	sender := st.from()
@@ -164,32 +194,34 @@ func (st *StateTransition) TransitionDb() (ret []byte, usedGas uint64, failed bo
 
 	gas, err := IntrinsicGas(st.data, contractCreation, homestead)
 	if err != nil {
-		return nil, 0, false, err
+		return nil, err
 	}
 	if err = st.useGas(gas); err != nil {
-		return nil, 0, false, err
+		return nil, err
 	}
 
 	var (
-		evm   = st.evm
+		evm = st.evm
+
 		vmerr error
+		ret   []byte
 	)
 	if contractCreation {
 		ret, _, st.gas, vmerr = evm.Create(sender, st.data, st.gas, st.value)
 	} else {
+
 		st.state.SetNonce(sender.Address(), st.state.GetNonce(sender.Address())+1)
 		ret, st.gas, vmerr = evm.Call(sender, st.to().Address(), st.data, st.gas, st.value)
 	}
-	if vmerr != nil {
-		log.Debug("VM returned with error", "err", vmerr)
-		if vmerr == vm.ErrInsufficientBalance {
-			return nil, 0, false, vmerr
-		}
-	}
+
 	st.refundGas()
 	st.state.AddBalance(st.evm.Coinbase, new(big.Int).Mul(new(big.Int).SetUint64(st.gasUsed()), st.gasPrice))
 
-	return ret, st.gasUsed(), vmerr != nil, err
+	return &ExecutionResult{
+		UsedGas:    st.gasUsed(),
+		Err:        vmerr,
+		ReturnData: ret,
+	}, nil
 }
 
 func (st *StateTransition) refundGas() {
@@ -211,4 +243,54 @@ func (st *StateTransition) refundGas() {
 
 func (st *StateTransition) gasUsed() uint64 {
 	return st.initialGas - st.gas
+}
+
+func ApplyMessageEx(evm *vm.EVM, msg Message, gp *GasPool) (*ExecutionResult, *big.Int, error) {
+	return NewStateTransition(evm, msg, gp).TransitionDbEx()
+}
+
+func (st *StateTransition) TransitionDbEx() (*ExecutionResult, *big.Int, error) {
+
+	if err := st.preCheck(); err != nil {
+		return nil, nil, err
+	}
+	msg := st.msg
+	sender := st.from()
+
+	homestead := st.evm.ChainConfig().IsHomestead(st.evm.BlockNumber)
+	contractCreation := msg.To() == nil
+
+	gas, err := IntrinsicGas(st.data, contractCreation, homestead)
+	if err != nil {
+		return nil, nil, err
+	}
+	if err = st.useGas(gas); err != nil {
+		return nil, nil, err
+	}
+
+	var (
+		evm = st.evm
+
+		vmerr error
+		ret   []byte
+	)
+
+	if contractCreation {
+		ret, _, st.gas, vmerr = evm.Create(sender, st.data, st.gas, st.value)
+	} else {
+
+		st.state.SetNonce(sender.Address(), st.state.GetNonce(sender.Address())+1)
+		ret, st.gas, vmerr = evm.Call(sender, st.to().Address(), st.data, st.gas, st.value)
+
+	}
+
+	st.refundGas()
+
+	usedMoney := new(big.Int).Mul(new(big.Int).SetUint64(st.gasUsed()), st.gasPrice)
+
+	return &ExecutionResult{
+		UsedGas:    st.gasUsed(),
+		Err:        vmerr,
+		ReturnData: ret,
+	}, usedMoney, nil
 }

@@ -20,9 +20,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/vm"
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/vm"
+	"github.com/neatio-net/neatio/params"
 )
 
 // Tests that DAO-fork enabled clients can properly filter out fork-commencing

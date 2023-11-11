@@ -4,12 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	dbm "github.com/nio-net/database"
-	ncTypes "github.com/nio-net/nio/chain/consensus/neatcon/types"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/wire"
+	dbm "github.com/neatio-net/db-go"
+	ncTypes "github.com/neatio-net/neatio/chain/consensus/neatcon/types"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/wire-go"
 
 	"math/big"
 	"sort"
@@ -20,8 +20,6 @@ import (
 
 var NextEpochNotExist = errors.New("next epoch parameters do not exist, fatal error")
 var NextEpochNotEXPECTED = errors.New("next epoch parameters are not excepted, fatal error")
-
-var BannedEpoch = big.NewInt(2)
 
 const (
 	EPOCH_NOT_EXIST = iota
@@ -66,7 +64,6 @@ func InitEpoch(db dbm.DB, genDoc *ncTypes.GenesisDoc, logger log.Logger) *Epoch 
 
 	epochNumber := db.Get([]byte(latestEpochKey))
 	if epochNumber == nil {
-
 		rewardScheme := MakeRewardScheme(db, &genDoc.RewardScheme)
 		rewardScheme.Save()
 
@@ -76,32 +73,25 @@ func InitEpoch(db dbm.DB, genDoc *ncTypes.GenesisDoc, logger log.Logger) *Epoch 
 		ep.SetRewardScheme(rewardScheme)
 		return ep
 	} else {
-
 		epNo, _ := strconv.ParseUint(string(epochNumber), 10, 64)
 		return LoadOneEpoch(db, epNo, logger)
 	}
 }
 
 func LoadOneEpoch(db dbm.DB, epochNumber uint64, logger log.Logger) *Epoch {
-
 	epoch := loadOneEpoch(db, epochNumber, logger)
-
 	rewardscheme := LoadRewardScheme(db)
 	epoch.rs = rewardscheme
-
 	epoch.validatorVoteSet = LoadEpochVoteSet(db, epochNumber)
-
 	if epochNumber > 0 {
 		epoch.previousEpoch = loadOneEpoch(db, epochNumber-1, logger)
 		if epoch.previousEpoch != nil {
 			epoch.previousEpoch.rs = rewardscheme
 		}
 	}
-
 	epoch.nextEpoch = loadOneEpoch(db, epochNumber+1, logger)
 	if epoch.nextEpoch != nil {
 		epoch.nextEpoch.rs = rewardscheme
-
 		epoch.nextEpoch.validatorVoteSet = LoadEpochVoteSet(db, epochNumber+1)
 	}
 
@@ -123,7 +113,6 @@ func MakeOneEpoch(db dbm.DB, oneEpoch *ncTypes.OneEpochDoc, logger log.Logger) *
 
 	validators := make([]*ncTypes.Validator, len(oneEpoch.Validators))
 	for i, val := range oneEpoch.Validators {
-
 		validators[i] = &ncTypes.Validator{
 			Address:        val.EthAccount.Bytes(),
 			PubKey:         val.PubKey,
@@ -143,8 +132,7 @@ func MakeOneEpoch(db dbm.DB, oneEpoch *ncTypes.OneEpochDoc, logger log.Logger) *
 		EndTime:        time.Unix(0, 0),
 		Status:         oneEpoch.Status,
 		Validators:     ncTypes.NewValidatorSet(validators),
-
-		logger: logger,
+		logger:         logger,
 	}
 
 	return te
@@ -155,7 +143,6 @@ func (epoch *Epoch) GetDB() dbm.DB {
 }
 
 func (epoch *Epoch) GetEpochValidatorVoteSet() *EpochValidatorVoteSet {
-
 	if epoch.validatorVoteSet == nil {
 		epoch.validatorVoteSet = LoadEpochVoteSet(epoch.db, epoch.Number)
 	}
@@ -178,14 +165,9 @@ func (epoch *Epoch) Save() {
 
 	if epoch.nextEpoch != nil && epoch.nextEpoch.Status == EPOCH_VOTED_NOT_SAVED {
 		epoch.nextEpoch.Status = EPOCH_SAVED
-
 		epoch.db.SetSync(calcEpochKeyWithHeight(epoch.nextEpoch.Number), epoch.nextEpoch.Bytes())
 	}
 
-	if epoch.nextEpoch != nil && epoch.nextEpoch.validatorVoteSet != nil {
-
-		SaveEpochVoteSet(epoch.db, epoch.nextEpoch.Number, epoch.nextEpoch.validatorVoteSet)
-	}
 }
 
 func FromBytes(buf []byte) *Epoch {
@@ -222,7 +204,7 @@ func (epoch *Epoch) ValidateNextEpoch(next *Epoch, lastHeight uint64, lastBlockT
 func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 
 	fmt.Printf("\n")
-	fmt.Printf("----------- Next Epoch Info -----------\n")
+	fmt.Printf("-------- Next Epoch Info --------\n")
 	fmt.Printf("Next epoch proposed: %v", epoch.nextEpoch)
 
 	if epoch.nextEpoch != nil {
@@ -230,7 +212,7 @@ func (epoch *Epoch) ShouldProposeNextEpoch(curBlockHeight uint64) bool {
 		return false
 	}
 
-	shouldPropose := curBlockHeight > epoch.StartBlock && curBlockHeight != 1 && curBlockHeight != epoch.EndBlock
+	shouldPropose := curBlockHeight > (epoch.StartBlock+1) && curBlockHeight != epoch.EndBlock
 	return shouldPropose
 }
 
@@ -293,7 +275,6 @@ func (epoch *Epoch) ShouldEnterNewEpoch(height uint64, state *state.StateDB) (bo
 			for refundAddress := range state.GetDelegateAddressRefundSet() {
 				state.ForEachProxied(refundAddress, func(key common.Address, proxiedBalance, depositProxiedBalance, pendingRefundBalance *big.Int) bool {
 					if pendingRefundBalance.Sign() > 0 {
-
 						state.SubDepositProxiedBalanceByUser(refundAddress, key, pendingRefundBalance)
 						state.SubPendingRefundBalanceByUser(refundAddress, key, pendingRefundBalance)
 						state.SubDelegateBalance(key, pendingRefundBalance)
@@ -301,7 +282,6 @@ func (epoch *Epoch) ShouldEnterNewEpoch(height uint64, state *state.StateDB) (bo
 					}
 					return true
 				})
-
 				if !state.IsCandidate(refundAddress) {
 					state.ClearCommission(refundAddress)
 				}
@@ -403,7 +383,8 @@ func (epoch *Epoch) EnterNewEpoch(newValidators *ncTypes.ValidatorSet) (*Epoch, 
 		epoch.logger.Infof("Epoch %v reach to his end", epoch.Number)
 
 		nextEpoch := epoch.nextEpoch
-		nextEpoch.previousEpoch = epoch.Copy()
+		nextEpoch.previousEpoch = &Epoch{Validators: epoch.Validators}
+
 		nextEpoch.StartTime = now
 		nextEpoch.Validators = newValidators
 
@@ -417,7 +398,6 @@ func (epoch *Epoch) EnterNewEpoch(newValidators *ncTypes.ValidatorSet) (*Epoch, 
 }
 
 func DryRunUpdateEpochValidatorSet(state *state.StateDB, validators *ncTypes.ValidatorSet, voteSet *EpochValidatorVoteSet) error {
-
 	for i := 0; i < len(validators.Validators); i++ {
 		v := validators.Validators[i]
 		vAddr := common.BytesToAddress(v.Address)
@@ -435,16 +415,20 @@ func DryRunUpdateEpochValidatorSet(state *state.StateDB, validators *ncTypes.Val
 	}
 
 	if voteSet == nil {
+		fmt.Printf("DryRunUpdateEpochValidatorSet, voteSet is nil %v\n", voteSet)
 		voteSet = NewEpochValidatorVoteSet()
 	}
 
 	_, err := updateEpochValidatorSet(validators, voteSet)
 	return err
 }
+
 func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochValidatorVoteSet) ([]*ncTypes.RefundValidatorAmount, error) {
 
 	var refund []*ncTypes.RefundValidatorAmount
 	oldValSize, newValSize := validators.Size(), 0
+	fmt.Printf("updateEpochValidatorSet, validators: %v\n, voteSet: %v\n", validators, voteSet)
+
 	if !voteSet.IsEmpty() {
 		for _, v := range voteSet.Votes {
 			if v.Amount == nil || v.Salt == "" || v.PubKey == nil {
@@ -454,19 +438,22 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 			if validator == nil {
 				added := validators.Add(ncTypes.NewValidator(v.Address[:], v.PubKey, v.Amount))
 				if !added {
+					fmt.Print(fmt.Errorf("Failed to add new validator %v with voting power %d", v.Address, v.Amount))
 				} else {
 					newValSize++
 				}
 			} else {
-
 				if v.Amount.Sign() == 0 {
+					fmt.Printf("updateEpochValidatorSet amount is zero\n")
 					_, removed := validators.Remove(validator.Address)
 					if !removed {
+						fmt.Print(fmt.Errorf("Failed to remove validator %v", validator.Address))
 					} else {
 						refund = append(refund, &ncTypes.RefundValidatorAmount{Address: v.Address, Amount: validator.VotingPower, Voteout: false})
 					}
 				} else {
 					if v.Amount.Cmp(validator.VotingPower) == -1 {
+						fmt.Printf("updateEpochValidatorSet amount less than the voting power, amount: %v, votingPower: %v\n", v.Amount, validator.VotingPower)
 						refundAmount := new(big.Int).Sub(validator.VotingPower, v.Amount)
 						refund = append(refund, &ncTypes.RefundValidatorAmount{Address: v.Address, Amount: refundAmount, Voteout: false})
 					}
@@ -474,6 +461,7 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 					validator.VotingPower = v.Amount
 					updated := validators.Update(validator)
 					if !updated {
+						fmt.Print(fmt.Errorf("Failed to update validator %v with voting power %d", validator.Address, v.Amount))
 					}
 				}
 			}
@@ -481,6 +469,7 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 	}
 
 	valSize := oldValSize + newValSize
+
 	if valSize > MaximumValidatorsSize {
 		valSize = MaximumValidatorsSize
 	} else if valSize < MinimumValidatorsSize {
@@ -513,7 +502,6 @@ func updateEpochValidatorSet(validators *ncTypes.ValidatorSet, voteSet *EpochVal
 }
 
 func (epoch *Epoch) GetEpochByBlockNumber(blockNumber uint64) *Epoch {
-
 	if blockNumber >= epoch.StartBlock && blockNumber <= epoch.EndBlock {
 		return epoch
 	}
@@ -573,14 +561,17 @@ func (epoch *Epoch) copy(copyPrevNext bool) *Epoch {
 	}
 }
 
-func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime time.Time) (rewardPerBlock *big.Int, blocksOfNextEpoch uint64) {
+func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime time.Time) (rewardPerBlock *big.Int, nextEpochBlocks uint64) {
 
 	var rewardFirstYear = epoch.rs.RewardFirstYear
 	var epochNumberPerYear = epoch.rs.EpochNumberPerYear
-	var totalYear = epoch.rs.TotalYear
+	var totalYear = epoch.rs.TotalMintingYears
 	var timePerBlockOfEpoch int64
 
-	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH uint64 = 1000
+	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER uint64 = 1000
+	const EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER uint64 = 5000
+
+	const DEFAULT_TIME_PER_BLOCK_OF_EPOCH int64 = 5000000000
 
 	zeroEpoch := loadOneEpoch(epoch.db, 0, epoch.logger)
 	initStartTime := zeroEpoch.StartTime
@@ -588,20 +579,20 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 	thisYear := epoch.Number / epochNumberPerYear
 	nextYear := thisYear + 1
 
-	if epoch.previousEpoch != nil {
-		prevEpoch := epoch.previousEpoch
-		timePerBlockOfEpoch = prevEpoch.EndTime.Sub(prevEpoch.StartTime).Nanoseconds() / int64(prevEpoch.EndBlock-prevEpoch.StartBlock)
-	} else {
-		timePerBlockOfEpoch = lastBlockTime.Sub(epoch.StartTime).Nanoseconds() / int64(lastBlockHeight-epoch.StartBlock)
-	}
+	timePerBlockOfEpoch = lastBlockTime.Sub(epoch.StartTime).Nanoseconds() / int64(lastBlockHeight-epoch.StartBlock)
 
-	if timePerBlockOfEpoch == 0 {
-		timePerBlockOfEpoch = 5000000000
+	if timePerBlockOfEpoch <= 0 {
+		log.Debugf("estimateForNextEpoch, timePerBlockOfEpoch is %v", timePerBlockOfEpoch)
+		timePerBlockOfEpoch = DEFAULT_TIME_PER_BLOCK_OF_EPOCH
 	}
 
 	epochLeftThisYear := epochNumberPerYear - epoch.Number%epochNumberPerYear - 1
 
-	blocksOfNextEpoch = 0
+	nextEpochBlocks = 0
+
+	// log.Info("estimateForNextEpoch",
+	// 	"epochLeftThisYear", epochLeftThisYear,
+	// 	"timePerBlockOfEpoch", timePerBlockOfEpoch)
 
 	if epochLeftThisYear == 0 {
 
@@ -615,24 +606,28 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 		epochTimePerEpochLeftNextYear := timeLeftNextYear.Nanoseconds() / int64(epochLeftNextYear)
 
-		blocksOfNextEpoch = uint64(epochTimePerEpochLeftNextYear / timePerBlockOfEpoch)
+		nextEpochBlocks = uint64(epochTimePerEpochLeftNextYear / timePerBlockOfEpoch)
 
-		log.Info("estimateForNextEpoch 0",
-			"timePerBlockOfEpoch", timePerBlockOfEpoch,
-			"nextYearStartTime", nextYearStartTime,
-			"timeLeftNextYear", timeLeftNextYear,
-			"epochLeftNextYear", epochLeftNextYear,
-			"epochTimePerEpochLeftNextYear", epochTimePerEpochLeftNextYear,
-			"blocksOfNextEpoch", blocksOfNextEpoch)
+		// log.Info("estimateForNextEpoch 0",
+		// 	"timePerBlockOfEpoch", timePerBlockOfEpoch,
+		// 	"nextYearStartTime", nextYearStartTime,
+		// 	"timeLeftNextYear", timeLeftNextYear,
+		// 	"epochLeftNextYear", epochLeftNextYear,
+		// 	"epochTimePerEpochLeftNextYear", epochTimePerEpochLeftNextYear,
+		// 	"nextEpochBlocks", nextEpochBlocks)
 
-		if blocksOfNextEpoch < EMERGENCY_BLOCKS_OF_NEXT_EPOCH {
-			blocksOfNextEpoch = EMERGENCY_BLOCKS_OF_NEXT_EPOCH
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+		if nextEpochBlocks <= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
+		}
+		if nextEpochBlocks >= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
 
 		rewardPerEpochNextYear := calculateRewardPerEpochByYear(rewardFirstYear, int64(nextYear), int64(totalYear), int64(epochNumberPerYear))
 
-		rewardPerBlock = new(big.Int).Div(rewardPerEpochNextYear, big.NewInt(int64(blocksOfNextEpoch)))
+		rewardPerBlock = new(big.Int).Div(rewardPerEpochNextYear, big.NewInt(int64(nextEpochBlocks)))
 
 	} else {
 
@@ -644,31 +639,25 @@ func (epoch *Epoch) estimateForNextEpoch(lastBlockHeight uint64, lastBlockTime t
 
 			epochTimePerEpochLeftThisYear := timeLeftThisYear.Nanoseconds() / int64(epochLeftThisYear)
 
-			blocksOfNextEpoch = uint64(epochTimePerEpochLeftThisYear / timePerBlockOfEpoch)
+			nextEpochBlocks = uint64(epochTimePerEpochLeftThisYear / timePerBlockOfEpoch)
 
-			log.Info("estimateForNextEpoch 1",
-				"timePerBlockOfEpoch", timePerBlockOfEpoch,
-				"nextYearStartTime", nextYearStartTime,
-				"timeLeftThisYear", timeLeftThisYear,
-				"epochTimePerEpochLeftThisYear", epochTimePerEpochLeftThisYear,
-				"blocksOfNextEpoch", blocksOfNextEpoch)
 		}
 
-		if blocksOfNextEpoch < EMERGENCY_BLOCKS_OF_NEXT_EPOCH {
-			blocksOfNextEpoch = EMERGENCY_BLOCKS_OF_NEXT_EPOCH
-			epoch.logger.Error("EstimateForNextEpoch Error: Please check the epoch_no_per_year setup in Genesis")
+		if nextEpochBlocks <= EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_LOWER
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
 		}
-
-		log.Debugf("Current Epoch Number %v, This Year %v, Next Year %v, Epoch No Per Year %v, Epoch Left This year %v\n"+
-			"initStartTime %v ; nextYearStartTime %v\n"+
-			"Time Left This year %v, timePerBlockOfEpoch %v, blocksOfNextEpoch %v\n", epoch.Number, thisYear, nextYear, epochNumberPerYear, epochLeftThisYear, initStartTime, nextYearStartTime, timeLeftThisYear, timePerBlockOfEpoch, blocksOfNextEpoch)
+		if nextEpochBlocks > EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER {
+			nextEpochBlocks = EMERGENCY_BLOCKS_OF_NEXT_EPOCH_UPPER
+			epoch.logger.Warn("EstimateForNextEpoch warning: You should probably take a look at 'epoch_no_per_year' setup in genesis")
+		}
 
 		rewardPerEpochThisYear := calculateRewardPerEpochByYear(rewardFirstYear, int64(thisYear), int64(totalYear), int64(epochNumberPerYear))
 
-		rewardPerBlock = new(big.Int).Div(rewardPerEpochThisYear, big.NewInt(int64(blocksOfNextEpoch)))
+		rewardPerBlock = new(big.Int).Div(rewardPerEpochThisYear, big.NewInt(int64(nextEpochBlocks)))
 
 	}
-	return rewardPerBlock, blocksOfNextEpoch
+	return rewardPerBlock, nextEpochBlocks
 }
 
 func calculateRewardPerEpochByYear(rewardFirstYear *big.Int, year, totalYear, epochNumberPerYear int64) *big.Int {
@@ -686,7 +675,7 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 	}
 
 	if epoch == nil && other == nil {
-		log.Debugf("Epoch equals epoch %v, other %v", epoch, other)
+		// log.Debugf("Epoch equals epoch %v, other %v", epoch, other)
 		return true
 	}
 
@@ -707,7 +696,6 @@ func (epoch *Epoch) Equals(other *Epoch, checkPrevNext bool) bool {
 }
 
 func (epoch *Epoch) String() string {
-
 	erpb := epoch.RewardPerBlock
 	intToFloat := new(big.Float).SetInt(erpb)
 	floatToBigFloat := new(big.Float).SetFloat64(1e18)
@@ -715,15 +703,14 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Reward / block: %v"+" NIO"+",\n"+
-			"Next epoch is starting at block: %v,\n"+
-			"The epoch will last until block: %v,\n",
+			"Reward per block will be: %v "+"NIO"+",\n"+
+			"Next epoch is starting at block height: %v,\n"+
+			"The epoch will last until block height: %v,\n",
 		epoch.Number,
 		blockReward,
 		epoch.StartBlock,
 		epoch.EndBlock,
 	)
-
 }
 
 func UpdateEpochEndTime(db dbm.DB, epNumber uint64, endTime time.Time) {

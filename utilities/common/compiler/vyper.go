@@ -86,6 +86,7 @@ func ParseVyperJSON(combinedJSON []byte, source string, languageVersion string, 
 
 	contracts := make(map[string]*Contract)
 	for name, info := range output {
+
 		if name == "version" {
 			continue
 		}

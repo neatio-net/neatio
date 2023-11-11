@@ -21,7 +21,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/nio-net/nio/neatptc/tracers/internal/tracers"
+	"github.com/neatio-net/neatio/neatptc/tracers/internal/tracers"
 )
 
 // all contains all the built in JavaScript tracers by name.

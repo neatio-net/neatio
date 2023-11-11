@@ -1,15 +1,33 @@
+// Copyright 2014 The go-ethereum Authors
+// This file is part of the go-ethereum library.
+//
+// The go-ethereum library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The go-ethereum library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
+
 package core
 
 import (
 	"container/list"
 
-	"github.com/nio-net/nio/chain/core/rawdb"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
+// Implement our EthTest Manager
 type TestManager struct {
+	// stateManager *StateManager
 	eventMux *event.TypeMux
 
 	db         neatdb.Database
@@ -42,19 +60,35 @@ func (tm *TestManager) TxPool() *TxPool {
 	return tm.txPool
 }
 
+// func (tm *TestManager) StateManager() *StateManager {
+// 	return tm.stateManager
+// }
+
 func (tm *TestManager) EventMux() *event.TypeMux {
 	return tm.eventMux
 }
+
+// func (tm *TestManager) KeyManager() *crypto.KeyManager {
+// 	return nil
+// }
 
 func (tm *TestManager) Db() neatdb.Database {
 	return tm.db
 }
 
 func NewTestManager() *TestManager {
+	//db, err := rawdb.NewMemoryDatabase()
+	//if err != nil {
+	//	fmt.Println("Could not create mem-db, failing")
+	//	return nil
+	//}
 
 	testManager := &TestManager{}
 	testManager.eventMux = new(event.TypeMux)
 	testManager.db = rawdb.NewMemoryDatabase()
+	// testManager.txPool = NewTxPool(testManager)
+	// testManager.blockChain = NewBlockChain(testManager)
+	// testManager.stateManager = NewStateManager(testManager)
 
 	return testManager
 }

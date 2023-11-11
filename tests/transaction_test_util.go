@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/common/math"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/math"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 type TransactionTest struct {
@@ -24,8 +24,6 @@ type ttJSON struct {
 	Sender      hexutil.Bytes       `json:"sender"`
 	Transaction *ttTransaction      `json:"transaction"`
 }
-
-//go:generate gencodec -type ttTransaction -field-override ttTransactionMarshaling -out gen_tttransaction.go
 
 type ttTransaction struct {
 	Data     []byte         `gencodec:"required"`
@@ -59,6 +57,7 @@ func (tt *TransactionTest) Run(config *params.ChainConfig) error {
 			return fmt.Errorf("RLP decoding failed: %v", err)
 		}
 	}
+
 	signer := types.MakeSigner(config, new(big.Int).SetUint64(uint64(tt.json.BlockNumber)))
 	sender, err := types.Sender(signer, tx)
 	if err != nil {
@@ -67,6 +66,7 @@ func (tt *TransactionTest) Run(config *params.ChainConfig) error {
 	if sender != common.BytesToAddress(tt.json.Sender) {
 		return fmt.Errorf("Sender mismatch: got %x, want %x", sender, tt.json.Sender)
 	}
+
 	err = tt.json.Transaction.verify(signer, tx)
 	if tt.json.Sender == nil && err == nil {
 		return errors.New("field validations succeeded but should fail")

@@ -15,7 +15,8 @@ var (
 )
 
 const (
-	wordBits  = 32 << (uint64(^big.Word(0)) >> 63)
+	wordBits = 32 << (uint64(^big.Word(0)) >> 63)
+
 	wordBytes = wordBits / 8
 )
 
@@ -101,11 +102,13 @@ func PaddedBigBytes(bigint *big.Int, n int) []byte {
 
 func bigEndianByteAt(bigint *big.Int, n int) byte {
 	words := bigint.Bits()
+
 	i := n / wordBytes
 	if i >= len(words) {
 		return byte(0)
 	}
 	word := words[i]
+
 	shift := 8 * uint(n%wordBytes)
 
 	return byte(word >> shift)

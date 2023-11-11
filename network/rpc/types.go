@@ -22,7 +22,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
 )
 
 // API describes the set of methods offered over the RPC interface
@@ -37,6 +37,12 @@ type API struct {
 type Error interface {
 	Error() string  // returns the message
 	ErrorCode() int // returns the code
+}
+
+// A DataError contains some data in addition to the error message.
+type DataError interface {
+	Error() string          // returns the message
+	ErrorData() interface{} // returns the error data
 }
 
 // ServerCodec implements reading, parsing and writing RPC messages for the server side of

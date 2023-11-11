@@ -19,6 +19,7 @@ func TestOverflow(t *testing.T) {
 		overflow bool
 		op       operation
 	}{
+
 		{MaxUint64, 1, true, add},
 		{MaxUint64 - 1, 1, false, add},
 
@@ -58,11 +59,14 @@ func TestHexOrDecimal64(t *testing.T) {
 		{"12345678", 12345678, true},
 		{"0x12345678", 0x12345678, true},
 		{"0X12345678", 0x12345678, true},
+
 		{"0123456789", 123456789, true},
 		{"0x00", 0, true},
 		{"0x012345678abc", 0x12345678abc, true},
+
 		{"abcdef", 0, false},
 		{"0xgg", 0, false},
+
 		{"18446744073709551617", 0, false},
 	}
 	for _, test := range tests {

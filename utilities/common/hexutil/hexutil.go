@@ -83,6 +83,7 @@ func EncodeUint64(i uint64) string {
 var bigWordNibbles int
 
 func init() {
+
 	b, _ := new(big.Int).SetString("FFFFFFFFFF", 16)
 	switch len(b.Bits()) {
 	case 1:

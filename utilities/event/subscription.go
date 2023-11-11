@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nio-net/nio/utilities/common/mclock"
+	"github.com/neatio-net/neatio/utilities/common/mclock"
 )
 
 type Subscription interface {
@@ -46,6 +46,7 @@ func (s *funcSub) Unsubscribe() {
 	s.unsubscribed = true
 	close(s.unsub)
 	s.mu.Unlock()
+
 	<-s.err
 }
 
@@ -116,6 +117,7 @@ retry:
 		case err := <-subscribed:
 			cancel()
 			if err != nil {
+
 				if s.backoffWait() {
 					return nil
 				}

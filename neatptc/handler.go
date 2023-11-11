@@ -10,22 +10,22 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/nio-net/nio/chain/core/rawdb"
+	"github.com/neatio-net/neatio/chain/core/rawdb"
 
-	"github.com/nio-net/nio/chain/consensus"
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/chain/log"
-	"github.com/nio-net/nio/neatdb"
-	"github.com/nio-net/nio/neatptc/downloader"
-	"github.com/nio-net/nio/neatptc/fetcher"
-	"github.com/nio-net/nio/network/p2p"
-	"github.com/nio-net/nio/network/p2p/discover"
-	"github.com/nio-net/nio/params"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/crypto"
-	"github.com/nio-net/nio/utilities/event"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/consensus"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/chain/log"
+	"github.com/neatio-net/neatio/neatdb"
+	"github.com/neatio-net/neatio/neatptc/downloader"
+	"github.com/neatio-net/neatio/neatptc/fetcher"
+	"github.com/neatio-net/neatio/network/p2p"
+	"github.com/neatio-net/neatio/network/p2p/discover"
+	"github.com/neatio-net/neatio/params"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/crypto"
+	"github.com/neatio-net/neatio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 const (
@@ -188,7 +188,7 @@ func (pm *ProtocolManager) removePeer(id string) {
 	if peer == nil {
 		return
 	}
-	pm.logger.Debug("Removing NEAT Blockchain peer", "peer", id)
+	pm.logger.Debug("Removin Neatio Blockchain peer", "peer", id)
 
 	pm.downloader.UnregisterPeer(id)
 	if err := pm.peers.Unregister(id); err != nil {
@@ -245,7 +245,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	if pm.peers.Len() >= pm.maxPeers && !p.Peer.Info().Network.Trusted {
 		return p2p.DiscTooManyPeers
 	}
-	p.Log().Debug("NEAT Blockchain peer connected", "name", p.Name())
+	p.Log().Debug("Neatio Blockchain peer connected", "name", p.Name())
 
 	var (
 		genesis = pm.blockchain.Genesis()
@@ -255,7 +255,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 		td      = pm.blockchain.GetTd(hash, number)
 	)
 	if err := p.Handshake(pm.networkId, td, hash, genesis.Hash()); err != nil {
-		p.Log().Debug("NEAT Blockchain handshake failed", "err", err)
+		p.Log().Debug("Neatio Blockchain handshake failed", "err", err)
 		return err
 	}
 	if rw, ok := p.rw.(*meteredMsgReadWriter); ok {
@@ -263,7 +263,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	}
 
 	if err := pm.peers.Register(p); err != nil {
-		p.Log().Error("NEAT Blockchain peer registration failed", "err", err)
+		p.Log().Error("Neatio Blockchain peer registration failed", "err", err)
 		return err
 	}
 
@@ -288,7 +288,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 
 	for {
 		if err := pm.handleMsg(p); err != nil {
-			p.Log().Debug("NEAT Blockchain message handling failed", "err", err)
+			p.Log().Debug("Neatio Blockchain message handling failed", "err", err)
 			return err
 		}
 	}

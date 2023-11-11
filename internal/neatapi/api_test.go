@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	neatAbi "github.com/nio-net/nio/neatabi/abi"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/common/hexutil"
-	"github.com/nio-net/nio/utilities/common/math"
-	"github.com/nio-net/nio/utilities/crypto"
+	neatAbi "github.com/neatio-net/neatio/neatabi/abi"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/math"
+	"github.com/neatio-net/neatio/utilities/crypto"
 )
 
 type MethoadParams struct {
@@ -114,7 +114,7 @@ func unpackMethod(input []byte, funType neatAbi.FunctionType) (unpackArgs neatAb
 
 }
 
-var FromAddr = "Nio39UEs87WPXixRwU3LLdb7fFWAgzTw"
+var FromAddr = "NEAToB7XfdxkFBotPapruktdRNkALpUT"
 var PubKey = "0x618CEAF6AD449B826E2521222A94426B82800202332251F0929EC47B36A647C65E00D2EA34C07A8EF7953C2E1555D8321449423CCFB0B64BB13090E7A433114D68F1C1891BAA20101E5CC8E2B10E207F5D21D1A1116547E1EED5E92FDFE4F5E58119C5267B82AE06BBA5016827396B74E1ECDCC3801746242CA24C7749EB2F88"
 var Amount = "0x152d02c7e14af68000000"
 var Salt = "like"

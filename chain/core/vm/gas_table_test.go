@@ -1,36 +1,55 @@
-// Copyright 2017 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package vm
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func TestMemoryGasCost(t *testing.T) {
-	//size := uint64(math.MaxUint64 - 64)
-	size := uint64(0xffffffffe0)
-	v, err := memoryGasCost(&Memory{}, size)
-	if err != nil {
-		t.Error("didn't expect error:", err)
+	tests := []struct {
+		size     uint64
+		cost     uint64
+		overflow bool
+	}{
+		{0x1fffffffe0, 36028809887088637, false},
+		{0x1fffffffe1, 0, true},
 	}
-	if v != 36028899963961341 {
-		t.Errorf("Expected: 36028899963961341, got %d", v)
+	for i, tt := range tests {
+		v, err := memoryGasCost(&Memory{}, tt.size)
+		if (err == errGasUintOverflow) != tt.overflow {
+			t.Errorf("test %d: overflow mismatch: have %v, want %v", i, err == errGasUintOverflow, tt.overflow)
+		}
+		if v != tt.cost {
+			t.Errorf("test %d: gas cost mismatch: have %v, want %v", i, v, tt.cost)
+		}
 	}
+}
 
-	_, err = memoryGasCost(&Memory{}, size+1)
-	if err == nil {
-		t.Error("expected error")
-	}
+var eip2200Tests = []struct {
+	original byte
+	gaspool  uint64
+	input    string
+	used     uint64
+	refund   uint64
+	failure  error
+}{
+	{0, math.MaxUint64, "0x60006000556000600055", 1612, 0, nil},
+	{0, math.MaxUint64, "0x60006000556001600055", 20812, 0, nil},
+	{0, math.MaxUint64, "0x60016000556000600055", 20812, 19200, nil},
+	{0, math.MaxUint64, "0x60016000556002600055", 20812, 0, nil},
+	{0, math.MaxUint64, "0x60016000556001600055", 20812, 0, nil},
+	{1, math.MaxUint64, "0x60006000556000600055", 5812, 15000, nil},
+	{1, math.MaxUint64, "0x60006000556001600055", 5812, 4200, nil},
+	{1, math.MaxUint64, "0x60006000556002600055", 5812, 0, nil},
+	{1, math.MaxUint64, "0x60026000556000600055", 5812, 15000, nil},
+	{1, math.MaxUint64, "0x60026000556003600055", 5812, 0, nil},
+	{1, math.MaxUint64, "0x60026000556001600055", 5812, 4200, nil},
+	{1, math.MaxUint64, "0x60026000556002600055", 5812, 0, nil},
+	{1, math.MaxUint64, "0x60016000556000600055", 5812, 15000, nil},
+	{1, math.MaxUint64, "0x60016000556002600055", 5812, 0, nil},
+	{1, math.MaxUint64, "0x60016000556001600055", 1612, 0, nil},
+	{0, math.MaxUint64, "0x600160005560006000556001600055", 40818, 19200, nil},
+	{1, math.MaxUint64, "0x600060005560016000556000600055", 10818, 19200, nil},
+	{1, 2306, "0x6001600055", 2306, 0, ErrOutOfGas},
+	{1, 2307, "0x6001600055", 806, 0, nil},
 }

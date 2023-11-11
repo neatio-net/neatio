@@ -8,7 +8,7 @@ import (
 	"os"
 	"runtime/trace"
 
-	"github.com/nio-net/nio/chain/log"
+	"github.com/neatio-net/neatio/chain/log"
 )
 
 func (h *HandlerT) StartGoTrace(file string) error {

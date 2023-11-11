@@ -49,12 +49,14 @@ var (
 	}
 
 	decodeBytesTests = []unmarshalTest{
+
 		{input: ``, wantErr: ErrEmptyString},
 		{input: `0`, wantErr: ErrMissingPrefix},
 		{input: `0x0`, wantErr: ErrOddLength},
 		{input: `0x023`, wantErr: ErrOddLength},
 		{input: `0xxx`, wantErr: ErrSyntax},
 		{input: `0x01zz01`, wantErr: ErrSyntax},
+
 		{input: `0x`, want: []byte{}},
 		{input: `0X`, want: []byte{}},
 		{input: `0x02`, want: []byte{0x02}},
@@ -67,6 +69,7 @@ var (
 	}
 
 	decodeBigTests = []unmarshalTest{
+
 		{input: `0`, wantErr: ErrMissingPrefix},
 		{input: `0x`, wantErr: ErrEmptyNumber},
 		{input: `0x01`, wantErr: ErrLeadingZero},
@@ -76,6 +79,7 @@ var (
 			input:   `0x10000000000000000000000000000000000000000000000000000000000000000`,
 			wantErr: ErrBig256Range,
 		},
+
 		{input: `0x0`, want: big.NewInt(0)},
 		{input: `0x2`, want: big.NewInt(0x2)},
 		{input: `0x2F2`, want: big.NewInt(0x2f2)},
@@ -98,12 +102,14 @@ var (
 	}
 
 	decodeUint64Tests = []unmarshalTest{
+
 		{input: `0`, wantErr: ErrMissingPrefix},
 		{input: `0x`, wantErr: ErrEmptyNumber},
 		{input: `0x01`, wantErr: ErrLeadingZero},
 		{input: `0xfffffffffffffffff`, wantErr: ErrUint64Range},
 		{input: `0xx`, wantErr: ErrSyntax},
 		{input: `0x1zz01`, wantErr: ErrSyntax},
+
 		{input: `0x0`, want: uint64(0)},
 		{input: `0x2`, want: uint64(0x2)},
 		{input: `0x2F2`, want: uint64(0x2f2)},

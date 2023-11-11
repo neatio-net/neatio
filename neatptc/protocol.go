@@ -5,11 +5,11 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/nio-net/nio/chain/core"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/nio/utilities/event"
-	"github.com/nio-net/nio/utilities/rlp"
+	"github.com/neatio-net/neatio/chain/core"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/rlp"
 )
 
 const (

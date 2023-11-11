@@ -5,11 +5,12 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/nio-net/nio/utilities/common/hexutil"
+	"github.com/neatio-net/neatio/utilities/common/hexutil"
 )
 
 func TestEncodingCycle(t *testing.T) {
 	tests := []string{
+
 		"0x000000000000000000",
 		"0xef0400",
 		"0xdf7070533534333636313639343638373532313536346c1bc33339343837313070706336343035336336346c65fefb3930393233383838ac2f65fefb",
@@ -94,6 +95,7 @@ func TestDecodingCycle(t *testing.T) {
 }
 
 func TestCompression(t *testing.T) {
+
 	in := hexutil.MustDecode("0x4912385c0e7b64000000")
 	out := hexutil.MustDecode("0x80fe4912385c0e7b64")
 
@@ -103,6 +105,7 @@ func TestCompression(t *testing.T) {
 	if data, err := DecompressBytes(out, len(in)); err != nil || !bytes.Equal(data, in) {
 		t.Errorf("decoding mismatch for sparse data: have %x, want %x, error %v", data, in, err)
 	}
+
 	in = hexutil.MustDecode("0xdf7070533534333636313639343638373532313536346c1bc33339343837313070706336343035336336346c65fefb3930393233383838ac2f65fefb")
 	out = hexutil.MustDecode("0xdf7070533534333636313639343638373532313536346c1bc33339343837313070706336343035336336346c65fefb3930393233383838ac2f65fefb")
 
@@ -112,6 +115,7 @@ func TestCompression(t *testing.T) {
 	if data, err := DecompressBytes(out, len(in)); err != nil || !bytes.Equal(data, in) {
 		t.Errorf("decoding mismatch for dense data: have %x, want %x, error %v", data, in, err)
 	}
+
 	if _, err := DecompressBytes([]byte{0xc0, 0x01, 0x01}, 2); err != errExceededTarget {
 		t.Errorf("decoding error mismatch for long data: have %v, want %v", err, errExceededTarget)
 	}
@@ -134,6 +138,7 @@ func BenchmarkEncoding2KBSaturated(b *testing.B) { benchmarkEncoding(b, 2048, 0.
 func BenchmarkEncoding4KBSaturated(b *testing.B) { benchmarkEncoding(b, 4096, 0.5) }
 
 func benchmarkEncoding(b *testing.B, bytes int, fill float64) {
+
 	random := rand.NewSource(0)
 
 	data := make([]byte, bytes)
@@ -144,6 +149,7 @@ func benchmarkEncoding(b *testing.B, bytes int, fill float64) {
 		bit := uint(random.Int63() % 8)
 		data[idx] |= 1 << bit
 	}
+
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {

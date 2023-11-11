@@ -3,10 +3,11 @@ package event_test
 import (
 	"fmt"
 
-	"github.com/nio-net/nio/utilities/event"
+	"github.com/neatio-net/neatio/utilities/event"
 )
 
 func ExampleNewSubscription() {
+
 	ch := make(chan int)
 	sub := event.NewSubscription(func(quit <-chan struct{}) error {
 		for i := 0; i < 10; i++ {
@@ -27,4 +28,5 @@ func ExampleNewSubscription() {
 			break
 		}
 	}
+
 }

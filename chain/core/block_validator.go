@@ -3,10 +3,10 @@ package core
 import (
 	"fmt"
 
-	"github.com/nio-net/nio/chain/consensus"
-	"github.com/nio-net/nio/chain/core/state"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/chain/consensus"
+	"github.com/neatio-net/neatio/chain/core/state"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/params"
 )
 
 type BlockValidator struct {
@@ -25,10 +25,13 @@ func NewBlockValidator(config *params.ChainConfig, blockchain *BlockChain, engin
 }
 
 func (v *BlockValidator) ValidateBody(block *types.Block) error {
+
 	if v.bc.HasBlockAndState(block.Hash(), block.NumberU64()) {
+
 		return ErrKnownBlock
 
 	}
+
 	header := block.Header()
 	if err := v.engine.VerifyUncles(v.bc, block); err != nil {
 		return err
@@ -53,14 +56,17 @@ func (v *BlockValidator) ValidateState(block *types.Block, statedb *state.StateD
 	if block.GasUsed() != usedGas {
 		return fmt.Errorf("invalid gas used (remote: %d local: %d)", block.GasUsed(), usedGas)
 	}
+
 	rbloom := types.CreateBloom(receipts)
 	if rbloom != header.Bloom {
 		return fmt.Errorf("invalid bloom (remote: %x  local: %x)", header.Bloom, rbloom)
 	}
+
 	receiptSha := types.DeriveSha(receipts)
 	if receiptSha != header.ReceiptHash {
 		return fmt.Errorf("invalid receipt root hash (remote: %x local: %x)", header.ReceiptHash, receiptSha)
 	}
+
 	if root := statedb.IntermediateRoot(v.config.IsEIP158(header.Number)); header.Root != root {
 		return fmt.Errorf("invalid merkle root (remote: %x local: %x)", header.Root, root)
 	}
@@ -68,6 +74,7 @@ func (v *BlockValidator) ValidateState(block *types.Block, statedb *state.StateD
 }
 
 func CalcGasLimit(parent *types.Block, gasFloor, gasCeil uint64) uint64 {
+
 	contrib := (parent.GasUsed() + parent.GasUsed()/2) / params.GasLimitBoundDivisor
 
 	decay := parent.GasLimit()/params.GasLimitBoundDivisor - 1
@@ -76,6 +83,7 @@ func CalcGasLimit(parent *types.Block, gasFloor, gasCeil uint64) uint64 {
 	if limit < params.MinGasLimit {
 		limit = params.MinGasLimit
 	}
+
 	if limit < gasFloor {
 		limit = parent.GasLimit() + decay
 		if limit > gasFloor {

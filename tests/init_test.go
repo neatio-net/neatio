@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/nio-net/nio/params"
+	"github.com/neatio-net/neatio/params"
 )
 
 var (
@@ -55,7 +55,6 @@ func readJsonFile(fn string, value interface{}) error {
 	return nil
 }
 
-// findLine returns the line number for the given offset into data.
 func findLine(data []byte, offset int64) (line int) {
 	line = 1
 	for i, r := range string(data) {
@@ -69,7 +68,6 @@ func findLine(data []byte, offset int64) (line int) {
 	return
 }
 
-// testMatcher controls skipping and chain config assignment to tests.
 type testMatcher struct {
 	configpat    []testConfig
 	failpat      []testFailure
@@ -87,17 +85,14 @@ type testFailure struct {
 	reason string
 }
 
-// skipShortMode skips tests matching when the -short flag is used.
 func (tm *testMatcher) skipShortMode(pattern string) {
 	tm.skipshortpat = append(tm.skipshortpat, regexp.MustCompile(pattern))
 }
 
-// skipLoad skips JSON loading of tests matching the pattern.
 func (tm *testMatcher) skipLoad(pattern string) {
 	tm.skiploadpat = append(tm.skiploadpat, regexp.MustCompile(pattern))
 }
 
-// fails adds an expected failure for tests matching the pattern.
 func (tm *testMatcher) fails(pattern string, reason string) {
 	if reason == "" {
 		panic("empty fail reason")
@@ -105,12 +100,10 @@ func (tm *testMatcher) fails(pattern string, reason string) {
 	tm.failpat = append(tm.failpat, testFailure{regexp.MustCompile(pattern), reason})
 }
 
-// config defines chain config for tests matching the pattern.
 func (tm *testMatcher) config(pattern string, cfg params.ChainConfig) {
 	tm.configpat = append(tm.configpat, testConfig{regexp.MustCompile(pattern), cfg})
 }
 
-// findSkip matches name against test skip patterns.
 func (tm *testMatcher) findSkip(name string) (reason string, skipload bool) {
 	if testing.Short() {
 		for _, re := range tm.skipshortpat {
@@ -127,9 +120,8 @@ func (tm *testMatcher) findSkip(name string) (reason string, skipload bool) {
 	return "", false
 }
 
-// findConfig returns the chain config matching defined patterns.
 func (tm *testMatcher) findConfig(name string) *params.ChainConfig {
-	// TODO(fjl): name can be derived from testing.T when min Go version is 1.8
+
 	for _, m := range tm.configpat {
 		if m.p.MatchString(name) {
 			return &m.config
@@ -138,9 +130,8 @@ func (tm *testMatcher) findConfig(name string) *params.ChainConfig {
 	return new(params.ChainConfig)
 }
 
-// checkFailure checks whether a failure is expected.
 func (tm *testMatcher) checkFailure(t *testing.T, name string, err error) error {
-	// TODO(fjl): name can be derived from t when min Go version is 1.8
+
 	failReason := ""
 	for _, m := range tm.failpat {
 		if m.p.MatchString(name) {
@@ -160,12 +151,8 @@ func (tm *testMatcher) checkFailure(t *testing.T, name string, err error) error 
 	return err
 }
 
-// walk invokes its runTest argument for all subtests in the given directory.
-//
-// runTest should be a function of type func(t *testing.T, name string, x <TestType>),
-// where TestType is the type of the test contained in test files.
 func (tm *testMatcher) walk(t *testing.T, dir string, runTest interface{}) {
-	// Walk the directory.
+
 	dirinfo, err := os.Stat(dir)
 	if os.IsNotExist(err) || !dirinfo.IsDir() {
 		fmt.Fprintf(os.Stderr, "can't find test files in %s, did you clone the tests submodule?\n", dir)
@@ -195,13 +182,11 @@ func (tm *testMatcher) runTestFile(t *testing.T, path, name string, runTest inte
 	}
 	t.Parallel()
 
-	// Load the file as map[string]<testType>.
 	m := makeMapFromTestFunc(runTest)
 	if err := readJsonFile(path, m.Addr().Interface()); err != nil {
 		t.Fatal(err)
 	}
 
-	// Run all tests from the map. Don't wrap in a subtest if there is only one test in the file.
 	keys := sortedMapKeys(m)
 	if len(keys) == 1 {
 		runTestFunc(runTest, t, name, m, keys[0])

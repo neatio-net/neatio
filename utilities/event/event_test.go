@@ -10,6 +10,7 @@ import (
 type testEvent int
 
 func TestSubCloseUnsub(t *testing.T) {
+
 	var mux TypeMux
 	mux.Stop()
 	sub := mux.Subscribe(int(0))

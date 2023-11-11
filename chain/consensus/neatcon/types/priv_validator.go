@@ -6,26 +6,15 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/nio-net/bls"
-	. "github.com/nio-net/common"
-	"github.com/nio-net/crypto"
-	"github.com/nio-net/nio/utilities/common"
-	"github.com/nio-net/wire"
+	"github.com/neatio-net/bls-go"
+	. "github.com/neatio-net/common-go"
+	"github.com/neatio-net/crypto-go"
+	"github.com/neatio-net/neatio/utilities/common"
+	"github.com/neatio-net/wire-go"
 )
 
 type PrivValidator struct {
 	Address common.Address `json:"address"`
-	PubKey  crypto.PubKey  `json:"consensus_pub_key"`
-	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
-
-	Signer `json:"-"`
-
-	filePath string
-	mtx      sync.Mutex
-}
-
-type PrivV struct {
-	Address string         `json:"address"`
 	PubKey  crypto.PubKey  `json:"consensus_pub_key"`
 	PrivKey crypto.PrivKey `json:"consensus_priv_key"`
 
@@ -74,20 +63,13 @@ func LoadPrivValidator(filePath string) *PrivValidator {
 	if err != nil {
 		Exit(err.Error())
 	}
-	privVal := wire.ReadJSON(&PrivV{}, privValJSONBytes, &err).(*PrivV)
-
+	privVal := wire.ReadJSON(&PrivValidator{}, privValJSONBytes, &err).(*PrivValidator)
 	if err != nil {
 		Exit(Fmt("Error reading PrivValidator from %v: %v\n", filePath, err))
 	}
-	privV := &PrivValidator{
-		Address:  common.StringToAddress(privVal.Address),
-		PubKey:   privVal.PubKey,
-		PrivKey:  privVal.PrivKey,
-		filePath: filePath,
-		Signer:   NewDefaultSigner(privVal.PrivKey),
-	}
-
-	return privV
+	privVal.filePath = filePath
+	privVal.Signer = NewDefaultSigner(privVal.PrivKey)
+	return privVal
 }
 
 func (pv *PrivValidator) SetFile(filePath string) {
@@ -108,12 +90,7 @@ func (pv *PrivValidator) save() {
 	if pv.filePath == "" {
 		PanicSanity("Cannot save PrivValidator: filePath not set")
 	}
-	var priv PrivV
-	priv.Address = pv.Address.String()
-	priv.PubKey = pv.PubKey
-	priv.PrivKey = pv.PrivKey
-
-	jsonBytes := wire.JSONBytesPretty(priv)
+	jsonBytes := wire.JSONBytesPretty(pv)
 	err := WriteFileAtomic(pv.filePath, jsonBytes, 0600)
 	if err != nil {
 		PanicCrisis(err)

@@ -8,10 +8,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/nio-net/nio/network/node"
-	"github.com/nio-net/nio/network/rpc"
-	"github.com/nio-net/nio/utilities/console"
-	"github.com/nio-net/nio/utilities/utils"
+	"github.com/neatio-net/neatio/network/node"
+	"github.com/neatio-net/neatio/network/rpc"
+	"github.com/neatio-net/neatio/utilities/console"
+	"github.com/neatio-net/neatio/utilities/utils"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -27,7 +27,7 @@ var (
 		Description: `
 The Geth console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://github.com/nio-net/nio/wiki/JavaScript-Console.`,
+See https://github.com/neatlab/neatio/wiki/JavaScript-Console.`,
 	}
 
 	attachCommand = cli.Command{
@@ -40,7 +40,7 @@ See https://github.com/nio-net/nio/wiki/JavaScript-Console.`,
 		Description: `
 The Geth console is an interactive shell for the JavaScript runtime environment
 which exposes a node admin interface as well as the Ðapp JavaScript API.
-See https://github.com/nio-net/nio/wiki/JavaScript-Console.
+See https://github.com/neatlab/neatio/wiki/JavaScript-Console.
 This command allows to open a console on a running neatio node.`,
 	}
 
@@ -53,7 +53,7 @@ This command allows to open a console on a running neatio node.`,
 		Category:  "CONSOLE COMMANDS",
 		Description: `
 The JavaScript VM exposes a node admin interface as well as the Ðapp
-JavaScript API. See https://github.com/nio-net/nio/wiki/JavaScript-Console`,
+JavaScript API. See https://github.com/neatlab/neatio/wiki/JavaScript-Console`,
 	}
 )
 

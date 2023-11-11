@@ -1,25 +1,9 @@
-// Copyright 2016 The go-ethereum Authors
-// This file is part of the go-ethereum library.
-//
-// The go-ethereum library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The go-ethereum library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
-
 package state
 
 import (
 	"math/big"
 
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 type journalEntry interface {
@@ -29,7 +13,6 @@ type journalEntry interface {
 type journal []journalEntry
 
 type (
-	// Changes to the account trie.
 	createObjectChange struct {
 		account *common.Address
 	}
@@ -38,11 +21,10 @@ type (
 	}
 	suicideChange struct {
 		account     *common.Address
-		prev        bool // whether account had already suicided
+		prev        bool
 		prevbalance *big.Int
 	}
 
-	// Changes to individual accounts.
 	balanceChange struct {
 		account *common.Address
 		prev    *big.Int
@@ -77,10 +59,6 @@ type (
 		prev    *big.Int
 	}
 	rewardBalanceChange struct {
-		account *common.Address
-		prev    *big.Int
-	}
-	availableRewardBalanceChange struct {
 		account *common.Address
 		prev    *big.Int
 	}
@@ -142,12 +120,16 @@ type (
 		prev    *big.Int
 	}
 
+	fAddressChange struct {
+		account *common.Address
+		prev    common.Address
+	}
+
 	codeChange struct {
 		account            *common.Address
 		prevcode, prevhash []byte
 	}
 
-	// Changes to other state values.
 	refundChange struct {
 		prev uint64
 	}
@@ -210,7 +192,7 @@ func (ch sideChainDepositBalanceChange) undo(s *StateDB) {
 			break
 		}
 	}
-	if index < 0 { // not found, we'll append
+	if index < 0 {
 		self.data.SideChainDepositBalance = append(self.data.SideChainDepositBalance, &sideChainDepositBalance{
 			ChainId:        ch.chainId,
 			DepositBalance: new(big.Int),
@@ -243,10 +225,6 @@ func (ch pendingRefundBalanceChange) undo(s *StateDB) {
 
 func (ch rewardBalanceChange) undo(s *StateDB) {
 	s.getStateObject(*ch.account).setRewardBalance(ch.prev)
-}
-
-func (ch availableRewardBalanceChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setAvailableRewardBalance(ch.prev)
 }
 
 func (ch nonceChange) undo(s *StateDB) {
@@ -289,16 +267,8 @@ func (ch commissionChange) undo(s *StateDB) {
 	s.getStateObject(*ch.account).setCommission(ch.prev)
 }
 
-func (ch bannedChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setBanned(ch.prev)
-}
-
-func (ch blockTimeChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setBlockTime(ch.prev)
-}
-
-func (ch bannedTimeChange) undo(s *StateDB) {
-	s.getStateObject(*ch.account).setBannedTime(ch.prev)
+func (ch fAddressChange) undo(s *StateDB) {
+	s.getStateObject(*ch.account).setAddress(ch.prev)
 }
 
 func (ch refundChange) undo(s *StateDB) {

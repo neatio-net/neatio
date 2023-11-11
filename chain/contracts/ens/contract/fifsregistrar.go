@@ -6,10 +6,10 @@ package contract
 import (
 	"strings"
 
-	"github.com/nio-net/nio/chain/accounts/abi"
-	"github.com/nio-net/nio/chain/accounts/abi/bind"
-	"github.com/nio-net/nio/chain/core/types"
-	"github.com/nio-net/nio/utilities/common"
+	"github.com/neatio-net/neatio/chain/accounts/abi"
+	"github.com/neatio-net/neatio/chain/accounts/abi/bind"
+	"github.com/neatio-net/neatio/chain/core/types"
+	"github.com/neatio-net/neatio/utilities/common"
 )
 
 // FIFSRegistrarABI is the input ABI used to generate the binding from.
