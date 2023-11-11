@@ -703,9 +703,9 @@ func (epoch *Epoch) String() string {
 
 	return fmt.Sprintf(
 		"Number %v,\n"+
-			"Reward per block will be: %v "+"NIO"+",\n"+
-			"Next epoch is starting at block height: %v,\n"+
-			"The epoch will last until block height: %v,\n",
+			"Reward / block: %v "+"NIO"+",\n"+
+			"Next epoch is starting at block: %v,\n"+
+			"The epoch will last until block: %v,\n",
 		epoch.Number,
 		blockReward,
 		epoch.StartBlock,

@@ -1630,7 +1630,7 @@ func (cs *ConsensusState) signAddVote(type_ byte, hash []byte, header types.Part
 				v2pMsg := types.EventDataVote2Proposer{vote, cs.ProposerPeerKey}
 				types.FireEventVote2Proposer(cs.evsw, v2pMsg)
 			} else {
-				cs.logger.Warn("sign and vote, Proposer key is nil")
+				//cs.logger.Warn("sign and vote, Proposer key is nil")
 			}
 		} else {
 			cs.sendInternalMessage(msgInfo{&VoteMessage{vote}, ""})
